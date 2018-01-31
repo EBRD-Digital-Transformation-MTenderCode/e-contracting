@@ -1,0 +1,139 @@
+{
+  "Contracts":
+  {
+    "budgetSource":
+    [{
+      "budgetBreakdownID": "",
+      "amount": 0
+    }],
+    "id": "",
+    "awardID": "",
+    "title": "",
+    "description": "",
+    "statusDetails":"",
+    "period":
+    {
+      "startDate": "",
+      "endDate": ""
+    },
+    --"dateSigned": "",
+    --"documents":
+  [{
+    "documentType": "",
+    "datePublished": "",
+    "id": "",
+    "url": "",
+    --"title": "",
+    --"description": "",
+    "language": ""
+  }],
+    --"implementation":
+  {
+    "transactions":
+    [{
+      "id":"",
+      "source":"",
+      "date":"",
+      "value":
+      {
+        "amount": 0,
+        "currency": ""
+      },
+      "payer":
+      {
+        "name": "",
+        "id": "",
+        "identifier":
+        {
+          "scheme": "",
+          "id": "",
+          "legalName": "",
+          "uri": ""
+        },
+        --"additionalIdentifiers":
+      [{
+        "scheme": "",
+        "id": "",
+        "legalName": "",
+        "uri": ""
+      }],
+        "address":
+        {
+          "streetAddress": "",
+          "locality": "",
+          "region": "",
+          "postalCode": "",
+          "countryName": ""
+        },
+        "contactPoint":
+        {
+          "name": "",
+          "email": "",
+          "telephone": "",
+          --"faxNumber": "",
+          "url": ""
+        }
+      },
+      "payee":
+      {
+        "name": "",
+        "id": "",
+        "identifier":
+        {
+          "scheme": "",
+          "id": "",
+          "legalName": "",
+          "uri": ""
+        },
+        --"additionalIdentifiers":
+      [{
+        "scheme": "",
+        "id": "",
+        "legalName": "",
+        "uri": ""
+      }],
+        "address":
+        {
+          "streetAddress": "",
+          "locality": "",
+          "region": "",
+          "postalCode": "",
+          "countryName": ""
+        },
+        "contactPoint":
+        {
+          "name": "",
+          "email": "",
+          "telephone": "",
+          --"faxNumber": "",
+          "url": ""
+        }
+      },
+      "uri":""
+    }],
+    --"documents":
+  [{
+    "documentType": "",
+    "datePublished": "",
+    "id": "",
+    "url": "",
+    --"title": "",
+    --"description": "",
+    "language": ""
+  }],
+  },
+    --"relatedProcesses":
+  [{
+    "relationship": [""],
+    --"title": "",
+    "identifier": "",
+    "scheme": "ocid"
+  }],
+    "amendments":
+    [{
+      "rationale": "",
+      --"description": "",
+      "id":""
+    }]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "token":"",
+  "Contracts":
+  {
+    "id": "",
+    "budgetSource":
+    [
+      {
+        "budgetBreakdownID": "",
+        "amount": 0
+      }
+    ],
+    "awardID": "",
+    "extendsContractID": "",
+    "title": "",                    // contracts.title = lots.title если значение отсутствует в Request
+    "description": "",                  // contracts.description = lots.description если значение отсутствует в Request
+    "status": "",                       // = "pending" if "DataSigned" is NULL OR "active" if "DataSigned" is NOT NULL
+    "statusDetails": "contract",
+    "period":
+    {
+      "startDate": "",
+      "endDate": ""
+    },
+    "value":                        // object "value" from "awards"
+    {
+      "amount": 0,
+      "currency": ""
+    },
+    "items":
+    [{
+      "id": "",
+      "description": "",
+      "classification":
+      {
+        "scheme": "",
+        "description": "",
+        "id": ""
+      },
+      "--additionalClassifications":
+      [{
+        "scheme": "",
+        "description": "",
+        "id": ""
+      }],
+      "quantity": 0,
+      "unit":
+      {
+        "id": "",
+        "name": ""
+      }
+    }],
+    "--dateSigned": "",
+    "--documents":
+  [{
+    "documentType": "",
+    "datePublished": "",
+    "id": "",
+    "url": "",
+    "--title": "",
+    "--description": "",
+    "language": ""
+  }],
+  }
+}

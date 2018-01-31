@@ -1,0 +1,99 @@
+{
+  "Contracts":
+  {
+    "budgetSource":
+    [
+      {
+        "budgetBreakdownID": "",
+        "amount": 0
+      }
+    ],
+    "awardID": "",
+    "extendsContractID": "",
+    "--title": "",
+    "--description": "",
+    "classification": {
+      "scheme": "",
+      "description": "",
+      "id": ""
+    },
+    "period":
+    {
+      "startDate": "",
+      "endDate": ""
+    },
+    "--dateSigned": "",
+    "--documents":
+  [
+    {
+      "documentType": "",
+      "datePublished": "",
+      "id": "",
+      "url": "",
+      "--title": "",
+      "--description": "",
+      "language": ""
+    }
+  ]
+  },
+  "lots":
+  [{
+    "id": "",
+    "title": "",
+    "description": "",
+    "status": "",
+    "placeOfPerformance":
+    {
+      "address":
+      {
+        "streetAddress": "",
+        "locality": "",
+        "region": "",
+        "postalCode": "",
+        "countryName": ""
+      },
+      "description": ""
+    }
+  }],
+  "items":
+  [{
+    "id": "",
+    "description": "",
+    "classification": {
+      "scheme": "",
+      "description": "",
+      "id": ""
+    },
+    "--additionalClassifications": [
+      {
+          "scheme": "",
+          "description": "",
+          "id": ""
+      }
+    ],
+    "quantity": 0,
+    "unit": {
+      "id": "",
+      "name": ""
+    },
+    "relatedLot": ""
+  }],
+  "awards":
+  {
+    "id": "",
+    "date": "",
+    "status": "",
+    "--description":"",
+    "relatedLots":[""],
+    "value":
+    {
+      "amount":"",
+      "currency":""
+    },
+    "suppliers":
+    [{
+      "id":"",
+      "name":""
+    }]
+  }
+}
