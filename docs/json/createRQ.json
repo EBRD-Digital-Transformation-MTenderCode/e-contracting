@@ -1,40 +1,8 @@
 {
   "Contracts":
   {
-    "budgetSource":
-    [
-      {
-        "budgetBreakdownID": "",
-        "amount": 0
-      }
-    ],
-    "awardID": "",
-    "extendsContractID": "",
-    "--title": "",
-    "--description": "",
-    "classification": {
-      "scheme": "",
-      "description": "",
-      "id": ""
-    },
-    "period":
-    {
-      "startDate": "",
-      "endDate": ""
-    },
-    "--dateSigned": "",
-    "--documents":
-  [
-    {
-      "documentType": "",
-      "datePublished": "",
-      "id": "",
-      "url": "",
-      "--title": "",
-      "--description": "",
-      "language": ""
-    }
-  ]
+    "id": "",
+    "awardID": ""
   },
   "lots":
   [{
@@ -66,9 +34,9 @@
     },
     "--additionalClassifications": [
       {
-          "scheme": "",
-          "description": "",
-          "id": ""
+        "scheme": "",
+        "description": "",
+        "id": ""
       }
     ],
     "quantity": 0,

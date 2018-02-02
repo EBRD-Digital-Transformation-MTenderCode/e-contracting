@@ -1,18 +1,16 @@
 package com.procurement.contracting.model.dto.createContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.procurement.contracting.databind.LocalDateTimeDeserializer;
-import com.procurement.contracting.databind.LocalDateTimeSerializer;
-import java.time.LocalDateTime;
+import com.procurement.contracting.model.dto.ContractValueDto;
+import com.procurement.contracting.model.dto.ContractItemDto;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,22 +20,20 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Getter
 @JsonPropertyOrder({
-    "budgetSource",
+    "id",
     "awardID",
     "extendsContractID",
     "title",
     "description",
-    "classification",
-    "period",
-    "dateSigned",
-    "documents"
+    "status",
+    "statusDetails",
+    "value",
+    "items"
 })
-public class Contract {
-
-    @JsonProperty("budgetSource")
-    @NotEmpty
-    @Valid
-    private final List<BudgetBreakdown> budgetBreakdown;
+public class CreateContractRSDto {
+    @JsonProperty("id")
+    @NotNull
+    private final String id;
 
     @JsonProperty("awardID")
     @NotNull
@@ -48,66 +44,65 @@ public class Contract {
     private final String extendsContractID;
 
     @JsonProperty("title")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @NotNull
     private final String title;
 
     @JsonProperty("description")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @NotNull
     private final String description;
 
-    @JsonProperty("classification")
+    @JsonProperty("status")
     @NotNull
     @Valid
-    private final Classification classification;
+    private final Status status;
 
-    @JsonProperty("period")
+    @JsonProperty("statusDetails")
     @NotNull
     @Valid
-    private final Period period;
+    private final Status statusDetails;
 
-    @JsonProperty("dateSigned")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private final LocalDateTime dateSigned;
-
-    @JsonProperty("documents")
+    @JsonProperty("value")
     @Valid
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final List<Document> documents;
+    @NotNull
+    private final ContractValueDto value;
 
-    @JsonCreator
-    public Contract(@JsonProperty("budgetSource") @NotEmpty @Valid final List<BudgetBreakdown> budget,
-                    @JsonProperty("awardID") @NotNull final String awardID,
-                    @JsonProperty("extendsContractID") @NotNull final String extendsContractID,
-                    @JsonProperty("title") @NotNull final String title,
-                    @JsonProperty("description") @NotNull final String description,
-                    @JsonProperty("classification") @NotNull @Valid final Classification classification,
-                    @JsonProperty("period") @NotNull @Valid final Period period,
-                    @JsonProperty("dateSigned")@NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final LocalDateTime dateSigned,
-                    @JsonProperty("documents")@Valid @JsonInclude(JsonInclude.Include.NON_NULL) final List<Document> documents) {
+    @JsonProperty("items")
+    @JsonDeserialize(as = LinkedHashSet.class)
+    @NotEmpty
+    @Valid
+    private final Set<ContractItemDto> items;
 
-        this.budgetBreakdown = budget;
+    public CreateContractRSDto(@NotNull String id,
+                               @NotNull String awardID,
+                               @NotNull String extendsContractID,
+                               @NotNull String title,
+                               @NotNull String description,
+                               @NotNull @Valid Status status,
+                               @NotNull @Valid Status statusDetails,
+                               @Valid @NotNull ContractValueDto value,
+                               @NotEmpty @Valid Set<ContractItemDto> items) {
+        this.id = id;
         this.awardID = awardID;
         this.extendsContractID = extendsContractID;
         this.title = title;
         this.description = description;
-        this.classification = classification;
-        this.period = period;
-        this.dateSigned = dateSigned;
-        this.documents = documents;
+        this.status = status;
+        this.statusDetails = statusDetails;
+        this.value = value;
+        this.items = items;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(budgetBreakdown)
+        return new HashCodeBuilder().append(id)
                                     .append(awardID)
                                     .append(extendsContractID)
                                     .append(title)
                                     .append(description)
-                                    .append(classification)
-                                    .append(period)
-                                    .append(dateSigned)
-                                    .append(documents)
+                                    .append(status)
+                                    .append(statusDetails)
+                                    .append(value)
+                                    .append(items)
                                     .toHashCode();
     }
 
@@ -116,20 +111,20 @@ public class Contract {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Contract)) {
+        if (!(other instanceof CreateContractRSDto)) {
             return false;
         }
-        final Contract rhs = (Contract) other;
+        final CreateContractRSDto rhs = (CreateContractRSDto) other;
 
-        return new EqualsBuilder().append(budgetBreakdown, rhs.budgetBreakdown)
+        return new EqualsBuilder().append(id, rhs.id)
                                   .append(awardID, rhs.awardID)
                                   .append(extendsContractID, rhs.extendsContractID)
                                   .append(title, rhs.title)
                                   .append(description, rhs.description)
-                                  .append(classification, rhs.classification)
-                                  .append(period, rhs.period)
-                                  .append(dateSigned, rhs.dateSigned)
-                                  .append(documents, rhs.documents)
+                                  .append(status, rhs.status)
+                                  .append(statusDetails,rhs.statusDetails)
+                                  .append(value, rhs.value)
+                                  .append(items, rhs.items)
                                   .isEquals();
     }
 

@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createContract;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +18,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "amount",
     "currency"
 })
-public class Value {
+public class ContractValueDto {
     @JsonProperty("amount")
     @NotNull
     private final Double amount;
@@ -29,8 +29,8 @@ public class Value {
     private final Currency currency;
 
     @JsonCreator
-    public Value(@JsonProperty("amount") @NotNull final Double amount,
-                 @JsonProperty("currency") @NotNull @Valid final Currency currency) {
+    public ContractValueDto(@JsonProperty("amount") @NotNull final Double amount,
+                            @JsonProperty("currency") @NotNull @Valid final Currency currency) {
         this.amount = amount;
         this.currency = currency;
     }
@@ -47,10 +47,10 @@ public class Value {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Value)) {
+        if (!(other instanceof ContractValueDto)) {
             return false;
         }
-        final Value rhs = (Value) other;
+        final ContractValueDto rhs = (ContractValueDto) other;
         return new EqualsBuilder().append(amount, rhs.amount)
                                   .append(currency, rhs.currency)
                                   .isEquals();

@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createContract;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "postalCode",
     "countryName"
 })
-public class Address {
+public class ContractAddressDto {
     @JsonProperty("streetAddress")
     @NotNull
     private final String streetAddress;
@@ -37,11 +37,11 @@ public class Address {
     @NotNull
     private final String countryName;
 
-    public Address(@JsonProperty("streetAddress") @NotNull String streetAddress,
-                   @JsonProperty("locality") @NotNull String locality,
-                   @JsonProperty("region") @NotNull String region,
-                   @JsonProperty("postalCode") @NotNull String postalCode,
-                   @JsonProperty("countryName") @NotNull String countryName) {
+    public ContractAddressDto(@JsonProperty("streetAddress") @NotNull String streetAddress,
+                              @JsonProperty("locality") @NotNull String locality,
+                              @JsonProperty("region") @NotNull String region,
+                              @JsonProperty("postalCode") @NotNull String postalCode,
+                              @JsonProperty("countryName") @NotNull String countryName) {
         this.streetAddress = streetAddress;
         this.locality = locality;
         this.region = region;
@@ -64,10 +64,10 @@ public class Address {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Address)) {
+        if (!(other instanceof ContractAddressDto)) {
             return false;
         }
-        final Address rhs = (Address) other;
+        final ContractAddressDto rhs = (ContractAddressDto) other;
         return new EqualsBuilder().append(streetAddress, rhs.streetAddress)
                                   .append(locality, rhs.locality)
                                   .append(region, rhs.region)

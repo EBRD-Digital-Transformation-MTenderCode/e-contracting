@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createContract;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "description",
     "language"
 })
-public class Document {
+public class ContractDocumentDto {
 
     @JsonProperty("documentType")
     @NotNull
@@ -62,14 +62,14 @@ public class Document {
     private final String language;
 
     @JsonCreator
-    public Document(@JsonProperty("id") final String id,
-                    @JsonProperty("documentType") final DocumentType documentType,
-                    @JsonProperty("title") final String title,
-                    @JsonProperty("description") final String description,
-                    @JsonProperty("url") final URI url,
-                    @JsonProperty("datePublished")@JsonDeserialize(using = LocalDateTimeDeserializer.class)  final
+    public ContractDocumentDto(@JsonProperty("id") final String id,
+                               @JsonProperty("documentType") final DocumentType documentType,
+                               @JsonProperty("title") final String title,
+                               @JsonProperty("description") final String description,
+                               @JsonProperty("url") final URI url,
+                               @JsonProperty("datePublished")@JsonDeserialize(using = LocalDateTimeDeserializer.class)  final
                         LocalDateTime datePublished,
-                    @JsonProperty("language") final String language) {
+                               @JsonProperty("language") final String language) {
         this.id = id;
         this.documentType = documentType;
         this.title = title;
@@ -96,10 +96,10 @@ public class Document {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Document)) {
+        if (!(other instanceof ContractDocumentDto)) {
             return false;
         }
-        final Document rhs = (Document) other;
+        final ContractDocumentDto rhs = (ContractDocumentDto) other;
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(documentType, rhs.documentType)
                                   .append(title, rhs.title)

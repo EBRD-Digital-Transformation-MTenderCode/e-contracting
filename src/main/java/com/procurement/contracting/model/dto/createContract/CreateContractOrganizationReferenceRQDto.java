@@ -1,4 +1,3 @@
-
 package com.procurement.contracting.model.dto.createContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -11,30 +10,31 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Getter
 @JsonPropertyOrder({
-    "budgetBreakdownID",
-    "amount"
+    "id",
+    "name"
 })
-public class BudgetBreakdown {
-    @JsonProperty("budgetBreakdownID")
+public class CreateContractOrganizationReferenceRQDto {
+    @JsonProperty("id")
     @NotNull
     private final String id;
 
-    @JsonProperty("amount")
+    @JsonProperty("name")
     @NotNull
-    private final Double amount;
+    private final String name;
+
 
 
     @JsonCreator
-    public BudgetBreakdown(@JsonProperty("budgetBreakdownID")@NotNull final String id,
-                           @JsonProperty("amount")@NotNull final Double amount) {
+    public CreateContractOrganizationReferenceRQDto(@JsonProperty("name")@NotNull final String name,
+                                                    @JsonProperty("id")@NotNull final String id) {
         this.id = id;
-        this.amount = amount;
+        this.name = name;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id)
-                                    .append(amount)
+        return new HashCodeBuilder().append(name)
+                                    .append(id)
                                     .toHashCode();
     }
 
@@ -43,12 +43,12 @@ public class BudgetBreakdown {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof BudgetBreakdown)) {
+        if (!(other instanceof CreateContractOrganizationReferenceRQDto)) {
             return false;
         }
-        final BudgetBreakdown rhs = (BudgetBreakdown) other;
-        return new EqualsBuilder().append(id, rhs.id)
-                                  .append(amount, rhs.amount)
+        final CreateContractOrganizationReferenceRQDto rhs = (CreateContractOrganizationReferenceRQDto) other;
+        return new EqualsBuilder().append(name, rhs.name)
+                                  .append(id, rhs.id)
                                   .isEquals();
     }
 }

@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createContract;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "startDate",
     "endDate"
 })
-public class Period {
+public class ContractPeriodDto {
     @JsonProperty("startDate")
     @NotNull
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -31,9 +31,9 @@ public class Period {
     private final LocalDateTime endDate;
 
     @JsonCreator
-    public Period(@JsonProperty("startDate") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final
+    public ContractPeriodDto(@JsonProperty("startDate") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final
                       LocalDateTime startDate,
-                  @JsonProperty("endDate") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final
+                             @JsonProperty("endDate") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final
                   LocalDateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -51,10 +51,10 @@ public class Period {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Period)) {
+        if (!(other instanceof ContractPeriodDto)) {
             return false;
         }
-        final Period rhs = (Period) other;
+        final ContractPeriodDto rhs = (ContractPeriodDto) other;
         return new EqualsBuilder().append(startDate, rhs.startDate)
                                   .append(endDate, rhs.endDate)
                                   .isEquals();

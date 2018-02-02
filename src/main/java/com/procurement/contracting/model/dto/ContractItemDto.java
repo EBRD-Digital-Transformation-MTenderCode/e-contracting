@@ -1,18 +1,16 @@
 
-package com.procurement.contracting.model.dto.createContract;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.procurement.contracting.model.dto.createContract.CreateContractClassificationDto;
+import com.procurement.contracting.model.dto.createContract.CreateContractUnitDto;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -27,7 +25,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "unit",
     "relatedLot"
 })
-public class Item {
+public class ContractItemDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -39,12 +37,12 @@ public class Item {
     @JsonProperty("classification")
     @NotNull
     @Valid
-    private final Classification classification;
+    private final CreateContractClassificationDto classification;
 
     @JsonProperty("additionalClassifications")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
-    private final Set<Classification> additionalClassifications;
+    private final Set<CreateContractClassificationDto> additionalClassifications;
 
     @JsonProperty("quantity")
     @NotNull
@@ -53,20 +51,20 @@ public class Item {
     @JsonProperty("unit")
     @Valid
     @NotNull
-    private final Unit unit;
+    private final CreateContractUnitDto unit;
 
     @JsonProperty("relatedLot")
     private final String relatedLot;
 
     @JsonCreator
-    public Item(@JsonProperty("id") final String id,
-                @JsonProperty("description") final String description,
-                @JsonProperty("classification") final Classification classification,
-                @JsonProperty("additionalClassifications") final LinkedHashSet<Classification>
+    public ContractItemDto(@JsonProperty("id") final String id,
+                           @JsonProperty("description") final String description,
+                           @JsonProperty("classification") final CreateContractClassificationDto classification,
+                           @JsonProperty("additionalClassifications") final LinkedHashSet<CreateContractClassificationDto>
                     additionalClassifications,
-                @JsonProperty("quantity") final Double quantity,
-                @JsonProperty("unit") final Unit unit,
-                @JsonProperty("relatedLot") final String relatedLot) {
+                           @JsonProperty("quantity") final Double quantity,
+                           @JsonProperty("unit") final CreateContractUnitDto unit,
+                           @JsonProperty("relatedLot") final String relatedLot) {
         this.id = id;
         this.description = description;
         this.classification = classification;
@@ -93,10 +91,10 @@ public class Item {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Item)) {
+        if (!(other instanceof ContractItemDto)) {
             return false;
         }
-        final Item rhs = (Item) other;
+        final ContractItemDto rhs = (ContractItemDto) other;
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(description, rhs.description)
                                   .append(classification, rhs.classification)

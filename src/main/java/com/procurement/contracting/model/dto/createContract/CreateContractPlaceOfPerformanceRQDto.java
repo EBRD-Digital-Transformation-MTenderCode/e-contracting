@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto.createContract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.procurement.contracting.model.dto.ContractAddressDto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -14,18 +15,18 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "address",
     "description"
 })
-public class PlaceOfPerformance {
+public class CreateContractPlaceOfPerformanceRQDto {
     @JsonProperty("address")
     @NotNull
     @Valid
-    private final Address address;
+    private final ContractAddressDto address;
 
     @JsonProperty("description")
     @NotNull
     private final String description;
 
-    public PlaceOfPerformance(@JsonProperty("address") @NotNull @Valid final Address address,
-                              @JsonProperty("description") @NotNull final String description) {
+    public CreateContractPlaceOfPerformanceRQDto(@JsonProperty("address") @NotNull @Valid final ContractAddressDto address,
+                                                 @JsonProperty("description") @NotNull final String description) {
         this.address = address;
         this.description = description;
     }
@@ -42,10 +43,10 @@ public class PlaceOfPerformance {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof PlaceOfPerformance)) {
+        if (!(other instanceof CreateContractPlaceOfPerformanceRQDto)) {
             return false;
         }
-        final PlaceOfPerformance rhs = (PlaceOfPerformance) other;
+        final CreateContractPlaceOfPerformanceRQDto rhs = (CreateContractPlaceOfPerformanceRQDto) other;
         return new EqualsBuilder().append(address, rhs.address)
                                   .append(description, rhs.description)
                                   .isEquals();

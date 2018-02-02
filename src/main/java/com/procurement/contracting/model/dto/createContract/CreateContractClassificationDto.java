@@ -18,7 +18,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "description",
     "id"
 })
-public class Classification {
+public class CreateContractClassificationDto {
     @JsonProperty("scheme")
     @NotNull
     private final Scheme scheme;
@@ -32,9 +32,9 @@ public class Classification {
     private final String id;
 
     @JsonCreator
-    public Classification(@JsonProperty("scheme") @NotNull final Scheme scheme,
-                          @JsonProperty("id") @NotNull final String id,
-                          @JsonProperty("description") @NotNull final String description
+    public CreateContractClassificationDto(@JsonProperty("scheme") @NotNull final Scheme scheme,
+                                           @JsonProperty("id") @NotNull final String id,
+                                           @JsonProperty("description") @NotNull final String description
     ) {
         this.id = id;
         this.description = description;
@@ -54,10 +54,10 @@ public class Classification {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Classification)) {
+        if (!(other instanceof CreateContractClassificationDto)) {
             return false;
         }
-        final Classification rhs = (Classification) other;
+        final CreateContractClassificationDto rhs = (CreateContractClassificationDto) other;
         return new EqualsBuilder().append(scheme, rhs.scheme)
                                   .append(id, rhs.id)
                                   .append(description, rhs.description)

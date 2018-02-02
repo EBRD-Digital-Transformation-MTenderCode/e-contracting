@@ -9,7 +9,6 @@
     }],
     "title": "",
     "description": "",
-    "status": "",
     "statusDetails":"",
     "period":
     {
@@ -21,6 +20,30 @@
       "amount": 0,
       "currency": ""
     },
+    "items":
+    [{
+      "id": "",
+      "description": "",
+      "classification":
+      {
+        "scheme": "",
+        "description": "",
+        "id": ""
+      },
+      "--additionalClassifications":
+      [{
+        "scheme": "",
+        "description": "",
+        "id": ""
+      }],
+      "quantity": 0,
+      "unit":
+      {
+        "id": "",
+        "name": ""
+      },
+      "relatedLot": ""
+    }],
     "--dateSigned": "",
     "--documents":
   [{

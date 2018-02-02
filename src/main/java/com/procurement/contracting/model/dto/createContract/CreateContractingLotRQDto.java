@@ -17,7 +17,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "status",
     "placeOfPerformance"
 })
-public class Lot {
+public class CreateContractingLotRQDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -38,13 +38,13 @@ public class Lot {
     @JsonProperty("placeOfPerformance")
     @NotNull
     @Valid
-    private final PlaceOfPerformance placeOfPerformance;
+    private final CreateContractPlaceOfPerformanceRQDto placeOfPerformance;
 
-    public Lot(@JsonProperty("id") @NotNull final String id,
-               @JsonProperty("title") @NotNull final String title,
-               @JsonProperty("description") @NotNull final String description,
-               @JsonProperty("status") @NotNull @Valid final TenderStatus status,
-               @JsonProperty("placeOfPerformance") @NotNull @Valid final PlaceOfPerformance placeOfPerformance) {
+    public CreateContractingLotRQDto(@JsonProperty("id") @NotNull final String id,
+                                     @JsonProperty("title") @NotNull final String title,
+                                     @JsonProperty("description") @NotNull final String description,
+                                     @JsonProperty("status") @NotNull @Valid final TenderStatus status,
+                                     @JsonProperty("placeOfPerformance") @NotNull @Valid final CreateContractPlaceOfPerformanceRQDto placeOfPerformance) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -67,10 +67,10 @@ public class Lot {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Lot)) {
+        if (!(other instanceof CreateContractingLotRQDto)) {
             return false;
         }
-        final Lot rhs = (Lot) other;
+        final CreateContractingLotRQDto rhs = (CreateContractingLotRQDto) other;
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(title, rhs.title)
                                   .append(description, rhs.description)

@@ -1,46 +1,40 @@
+
 package com.procurement.contracting.model.dto.createContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Getter
 @JsonPropertyOrder({
-    "id",
-    "name"
+    "budgetBreakdownID",
+    "amount"
 })
-public class Unit {
-    @JsonProperty("id")
+public class CreateContractBudgetSourceDto {
+    @JsonProperty("budgetBreakdownID")
     @NotNull
     private final String id;
 
-    @JsonProperty("name")
+    @JsonProperty("amount")
     @NotNull
-    private final String name;
-
+    private final Double amount;
 
 
     @JsonCreator
-    public Unit(@JsonProperty("name") final String name,
-                @JsonProperty("id") final String id) {
-        this.name = name;
+    public CreateContractBudgetSourceDto(@JsonProperty("budgetBreakdownID")@NotNull final String id,
+                                         @JsonProperty("amount")@NotNull final Double amount) {
         this.id = id;
+        this.amount = amount;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name)
-                                    .append(id)
+        return new HashCodeBuilder().append(id)
+                                    .append(amount)
                                     .toHashCode();
     }
 
@@ -49,14 +43,12 @@ public class Unit {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Unit)) {
+        if (!(other instanceof CreateContractBudgetSourceDto)) {
             return false;
         }
-        final Unit rhs = (Unit) other;
-        return new EqualsBuilder().append(name, rhs.name)
-                                  .append(id, rhs.id)
+        final CreateContractBudgetSourceDto rhs = (CreateContractBudgetSourceDto) other;
+        return new EqualsBuilder().append(id, rhs.id)
+                                  .append(amount, rhs.amount)
                                   .isEquals();
     }
-
-
 }
