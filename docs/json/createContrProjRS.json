@@ -1,10 +1,13 @@
 {
-  "token":"",
-  "Contracts":
-  {
-    "id": "",
-    "awardID": "",
-    "status": "pending",
-    "statusDetails":"contract project"
-  }
+  "CANs": [
+    {
+      "token": "",
+      "Contracts": {
+        "id": "",
+        "awardID": "",
+        "status": "pending",
+        "statusDetails": "contractProject"
+      }
+    }
+  ]
 }
