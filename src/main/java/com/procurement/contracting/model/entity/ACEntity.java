@@ -1,32 +1,36 @@
 package com.procurement.contracting.model.entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("contract_award_notice")
+@Table("contracting_awarded_contract")
 @Getter
 @Setter
-public class ContractAwardNoticeEntity {
+public class ACEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private UUID cpId;
-    @PrimaryKeyColumn(name = "can_id", type = PrimaryKeyType.CLUSTERED)
-    private UUID canId;
-    @PrimaryKeyColumn(name = "award_id")
-    private String award_id;
-    @PrimaryKeyColumn(value = "owner")
-    private String owner;
-    @PrimaryKeyColumn(value = "awarded_contract_id")
+    @PrimaryKeyColumn(name = "ac_id", type = PrimaryKeyType.PARTITIONED)
     private UUID acId;
-    @PrimaryKeyColumn(value = "status")
+    @Column(value = "can_id")
+    private UUID canId;
+    @Column(value = "owner")
+    private String owner;
+    @PrimaryKeyColumn(name = "release_date",type = PrimaryKeyType.CLUSTERED)
+    private LocalDateTime releaseDate;
+    @Column(value = "status")
     private String status;
-    @PrimaryKeyColumn(value = "status_details")
+    @Column(value = "status_details")
     private String statusDetails;
+    @Column(value = "json_data")
+    private String jsonData;
 
 
     @Override
@@ -34,29 +38,31 @@ public class ContractAwardNoticeEntity {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof ContractAwardNoticeEntity)) {
+        if (!(other instanceof ACEntity)) {
             return false;
         }
-        final ContractAwardNoticeEntity rhs = (ContractAwardNoticeEntity) other;
+        final ACEntity rhs = (ACEntity) other;
         return new EqualsBuilder().append(cpId, rhs.cpId)
-                                  .append(canId, rhs.canId)
-                                  .append(award_id, rhs.award_id)
+                                  .append(acId, rhs.acId)
+                                  .append(canId,rhs.canId)
                                   .append(owner, rhs.owner)
-                                  .append(acId,rhs.acId)
+                                  .append(releaseDate,rhs.releaseDate)
                                   .append(status,rhs.status)
                                   .append(statusDetails,rhs.statusDetails)
+                                  .append(jsonData, rhs.jsonData)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(cpId)
-                                    .append(canId)
-                                    .append(award_id)
-                                    .append(owner)
                                     .append(acId)
+                                    .append(canId)
+                                    .append(owner)
+                                    .append(releaseDate)
                                     .append(status)
                                     .append(statusDetails)
+                                    .append(jsonData)
                                     .toHashCode();
     }
 

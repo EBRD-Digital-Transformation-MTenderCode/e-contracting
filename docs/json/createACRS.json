@@ -1,5 +1,7 @@
 {
   "token":"",
+  "statusCAN": "active",
+  "statusDetailsCAN":"",
   "Contracts":
   {
     "id": "",

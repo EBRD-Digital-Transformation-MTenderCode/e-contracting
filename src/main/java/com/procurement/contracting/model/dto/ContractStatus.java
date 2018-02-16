@@ -1,26 +1,27 @@
-package com.procurement.contracting.model.dto.createCAN;
+package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum Status {
+public enum ContractStatus {
     PENDING("pending"),
     ACTIVE("active"),
-    CANCELLED("cancelled");
-
+    CANCELLED("cancelled"),
+    COMPLETE("complete"),
+    TERMINATED("terminated");
 
     private final String value;
-    private final static Map<String, Status> CONSTANTS = new HashMap<>();
+    private final static Map<String, ContractStatus> CONSTANTS = new HashMap<>();
 
     static {
-        for (final Status c : values()) {
+        for (final ContractStatus c : values()) {
             CONSTANTS.put(c.value, c);
         }
     }
 
-    Status(final String value) {
+    private ContractStatus(final String value) {
         this.value = value;
     }
 
@@ -35,8 +36,8 @@ public enum Status {
     }
 
     @JsonCreator
-    public static Status fromValue(final String value) {
-        final Status constant = CONSTANTS.get(value);
+    public static ContractStatus fromValue(final String value) {
+        final ContractStatus constant = CONSTANTS.get(value);
         if (constant == null) {
             throw new IllegalArgumentException(value);
         }

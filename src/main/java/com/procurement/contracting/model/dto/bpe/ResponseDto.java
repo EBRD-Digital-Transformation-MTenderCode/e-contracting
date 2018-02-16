@@ -15,17 +15,18 @@ public class ResponseDto<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final List<ResponseDetailsDto> responseDetail;
 
-    @JsonProperty("data")
+    @JsonProperty("jsonData")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final T data;
 
     public ResponseDto(@JsonProperty("success") final Boolean success,
                        @JsonProperty("responseDetail") final List<ResponseDetailsDto> responseDetail,
-                       @JsonProperty(value = "data") final T data) {
+                       @JsonProperty(value = "jsonData") final T data) {
         this.success = success;
         this.responseDetail = responseDetail;
         this.data = data;
     }
+
 
     @Getter
     public static class ResponseDetailsDto {

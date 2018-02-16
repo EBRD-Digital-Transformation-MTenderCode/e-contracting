@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,31 +11,30 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Getter
 @JsonPropertyOrder({
     "id",
-    "awardID"
+    "name"
 })
-public class CreateContractRQDto {
-
+public class CreateACUnitDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
 
-    @JsonProperty("awardID")
+    @JsonProperty("name")
     @NotNull
-    private final String awardID;
+    private final String name;
+
+
 
     @JsonCreator
-    public CreateContractRQDto(@JsonProperty("id")
-                               @NotNull final String id,
-                               @JsonProperty("awardID") @NotNull final String awardID) {
-
+    public CreateACUnitDto(@JsonProperty("name") final String name,
+                           @JsonProperty("id") final String id) {
+        this.name = name;
         this.id = id;
-        this.awardID = awardID;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id)
-                                    .append(awardID)
+        return new HashCodeBuilder().append(name)
+                                    .append(id)
                                     .toHashCode();
     }
 
@@ -44,14 +43,14 @@ public class CreateContractRQDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractRQDto)) {
+        if (!(other instanceof CreateACUnitDto)) {
             return false;
         }
-        final CreateContractRQDto rhs = (CreateContractRQDto) other;
-
-        return new EqualsBuilder().append(id, rhs.id)
-                                  .append(awardID, rhs.awardID)
+        final CreateACUnitDto rhs = (CreateACUnitDto) other;
+        return new EqualsBuilder().append(name, rhs.name)
+                                  .append(id, rhs.id)
                                   .isEquals();
     }
+
 
 }

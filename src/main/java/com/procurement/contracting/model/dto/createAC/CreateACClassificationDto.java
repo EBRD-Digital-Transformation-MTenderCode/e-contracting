@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +18,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "description",
     "id"
 })
-public class CreateContractClassificationDto {
+public class CreateACClassificationDto {
     @JsonProperty("scheme")
     @NotNull
     private final Scheme scheme;
@@ -32,9 +32,9 @@ public class CreateContractClassificationDto {
     private final String id;
 
     @JsonCreator
-    public CreateContractClassificationDto(@JsonProperty("scheme") @NotNull final Scheme scheme,
-                                           @JsonProperty("id") @NotNull final String id,
-                                           @JsonProperty("description") @NotNull final String description
+    public CreateACClassificationDto(@JsonProperty("scheme") @NotNull final Scheme scheme,
+                                     @JsonProperty("id") @NotNull final String id,
+                                     @JsonProperty("description") @NotNull final String description
     ) {
         this.id = id;
         this.description = description;
@@ -54,10 +54,10 @@ public class CreateContractClassificationDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractClassificationDto)) {
+        if (!(other instanceof CreateACClassificationDto)) {
             return false;
         }
-        final CreateContractClassificationDto rhs = (CreateContractClassificationDto) other;
+        final CreateACClassificationDto rhs = (CreateACClassificationDto) other;
         return new EqualsBuilder().append(scheme, rhs.scheme)
                                   .append(id, rhs.id)
                                   .append(description, rhs.description)

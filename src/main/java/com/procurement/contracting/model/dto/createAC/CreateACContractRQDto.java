@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,30 +11,31 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Getter
 @JsonPropertyOrder({
     "id",
-    "name"
+    "awardID"
 })
-public class CreateContractOrganizationReferenceRQDto {
+public class CreateACContractRQDto {
+
     @JsonProperty("id")
     @NotNull
     private final String id;
 
-    @JsonProperty("name")
+    @JsonProperty("awardID")
     @NotNull
-    private final String name;
-
-
+    private final String awardID;
 
     @JsonCreator
-    public CreateContractOrganizationReferenceRQDto(@JsonProperty("name")@NotNull final String name,
-                                                    @JsonProperty("id")@NotNull final String id) {
+    public CreateACContractRQDto(@JsonProperty("id")
+                               @NotNull final String id,
+                                 @JsonProperty("awardID") @NotNull final String awardID) {
+
         this.id = id;
-        this.name = name;
+        this.awardID = awardID;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name)
-                                    .append(id)
+        return new HashCodeBuilder().append(id)
+                                    .append(awardID)
                                     .toHashCode();
     }
 
@@ -43,12 +44,14 @@ public class CreateContractOrganizationReferenceRQDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractOrganizationReferenceRQDto)) {
+        if (!(other instanceof CreateACContractRQDto)) {
             return false;
         }
-        final CreateContractOrganizationReferenceRQDto rhs = (CreateContractOrganizationReferenceRQDto) other;
-        return new EqualsBuilder().append(name, rhs.name)
-                                  .append(id, rhs.id)
+        final CreateACContractRQDto rhs = (CreateACContractRQDto) other;
+
+        return new EqualsBuilder().append(id, rhs.id)
+                                  .append(awardID, rhs.awardID)
                                   .isEquals();
     }
+
 }

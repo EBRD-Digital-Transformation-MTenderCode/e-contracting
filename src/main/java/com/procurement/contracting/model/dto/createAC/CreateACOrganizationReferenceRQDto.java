@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,7 +13,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "id",
     "name"
 })
-public class CreateContractUnitDto {
+public class CreateACOrganizationReferenceRQDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -25,10 +25,10 @@ public class CreateContractUnitDto {
 
 
     @JsonCreator
-    public CreateContractUnitDto(@JsonProperty("name") final String name,
-                                 @JsonProperty("id") final String id) {
-        this.name = name;
+    public CreateACOrganizationReferenceRQDto(@JsonProperty("name")@NotNull final String name,
+                                              @JsonProperty("id")@NotNull final String id) {
         this.id = id;
+        this.name = name;
     }
 
     @Override
@@ -43,14 +43,12 @@ public class CreateContractUnitDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractUnitDto)) {
+        if (!(other instanceof CreateACOrganizationReferenceRQDto)) {
             return false;
         }
-        final CreateContractUnitDto rhs = (CreateContractUnitDto) other;
+        final CreateACOrganizationReferenceRQDto rhs = (CreateACOrganizationReferenceRQDto) other;
         return new EqualsBuilder().append(name, rhs.name)
                                   .append(id, rhs.id)
                                   .isEquals();
     }
-
-
 }

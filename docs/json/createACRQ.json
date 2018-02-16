@@ -8,20 +8,7 @@
   [{
     "id": "",
     "title": "",
-    "description": "",
-    "status": "",
-    "placeOfPerformance":
-    {
-      "address":
-      {
-        "streetAddress": "",
-        "locality": "",
-        "region": "",
-        "postalCode": "",
-        "countryName": ""
-      },
-      "description": ""
-    }
+    "description": ""
   }],
   "items":
   [{

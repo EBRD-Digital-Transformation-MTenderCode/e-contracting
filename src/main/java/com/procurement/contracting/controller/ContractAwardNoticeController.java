@@ -6,6 +6,7 @@ import com.procurement.contracting.service.CANServise;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,20 @@ public class ContractAwardNoticeController {
     @PostMapping("createCAN")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> createCAN(@Valid @RequestBody final CreateCanRQ contractRQDto,
-                                                 @RequestParam(value = "owner")final String owner,
-                                                 @RequestParam(value = "cpid")final String cpid) {
+                                                 @RequestParam(value = "owner") final String owner,
+                                                 @RequestParam(value = "cpid") final String cpid) {
 
+        ResponseDto responseDto = canServise.createCAN(cpid, owner, contractRQDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
+    @GetMapping("checkCAN")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public ResponseEntity<ResponseDto> checkCAN(@Valid @RequestParam(value = "token") final String token,
+                                                @RequestParam(value = "cpid") final String cpId,
+                                                @RequestParam(value = "idPlatform") final String idPlatform) {
 
-        ResponseDto responseDto = canServise.createCAN(cpid,owner,contractRQDto);
-        return new ResponseEntity<>(responseDto,HttpStatus.OK);
+        ResponseDto responseDto = canServise.checkCAN(cpId, token, idPlatform);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

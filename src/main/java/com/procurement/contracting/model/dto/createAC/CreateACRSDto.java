@@ -1,15 +1,14 @@
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.procurement.contracting.model.dto.ContractValueDto;
 import com.procurement.contracting.model.dto.ContractItemDto;
-import java.util.HashMap;
+import com.procurement.contracting.model.dto.ContractStatus;
+import com.procurement.contracting.model.dto.ContractStatusDetails;
+import com.procurement.contracting.model.dto.ContractValueDto;
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -30,7 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "value",
     "items"
 })
-public class CreateContractRSDto {
+public class CreateACRSDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -54,12 +53,12 @@ public class CreateContractRSDto {
     @JsonProperty("status")
     @NotNull
     @Valid
-    private final Status status;
+    private final ContractStatus status;
 
     @JsonProperty("statusDetails")
     @NotNull
     @Valid
-    private final Status statusDetails;
+    private final ContractStatusDetails statusDetails;
 
     @JsonProperty("value")
     @Valid
@@ -67,20 +66,19 @@ public class CreateContractRSDto {
     private final ContractValueDto value;
 
     @JsonProperty("items")
-    @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private final Set<ContractItemDto> items;
+    private final List<ContractItemDto> items;
 
-    public CreateContractRSDto(@NotNull String id,
-                               @NotNull String awardID,
-                               @NotNull String extendsContractID,
-                               @NotNull String title,
-                               @NotNull String description,
-                               @NotNull @Valid Status status,
-                               @NotNull @Valid Status statusDetails,
-                               @Valid @NotNull ContractValueDto value,
-                               @NotEmpty @Valid Set<ContractItemDto> items) {
+    public CreateACRSDto(@NotNull String id,
+                         @NotNull String awardID,
+                         @NotNull String extendsContractID,
+                         @NotNull String title,
+                         @NotNull String description,
+                         @NotNull @Valid ContractStatus status,
+                         @NotNull @Valid ContractStatusDetails statusDetails,
+                         @Valid @NotNull ContractValueDto value,
+                         @NotEmpty @Valid List<ContractItemDto> items) {
         this.id = id;
         this.awardID = awardID;
         this.extendsContractID = extendsContractID;
@@ -111,10 +109,10 @@ public class CreateContractRSDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractRSDto)) {
+        if (!(other instanceof CreateACRSDto)) {
             return false;
         }
-        final CreateContractRSDto rhs = (CreateContractRSDto) other;
+        final CreateACRSDto rhs = (CreateACRSDto) other;
 
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(awardID, rhs.awardID)
@@ -128,42 +126,5 @@ public class CreateContractRSDto {
                                   .isEquals();
     }
 
-    public enum Status {
-        PENDING("pending"),
-        ACTIVE("active"),
-        CANCELLED("cancelled"),
-        TERMINATED("terminated");
 
-        private final String value;
-        private final static Map<String, Status> CONSTANTS = new HashMap<>();
-
-        static {
-            for (final Status c : values()) {
-                CONSTANTS.put(c.value, c);
-            }
-        }
-
-        Status(final String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        @JsonValue
-        public String value() {
-            return this.value;
-        }
-
-        @JsonCreator
-        public static Status fromValue(final String value) {
-            final Status constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            }
-            return constant;
-        }
-    }
 }

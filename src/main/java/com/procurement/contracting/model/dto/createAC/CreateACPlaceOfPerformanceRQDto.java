@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -15,7 +15,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "address",
     "description"
 })
-public class CreateContractPlaceOfPerformanceRQDto {
+public class CreateACPlaceOfPerformanceRQDto {
     @JsonProperty("address")
     @NotNull
     @Valid
@@ -25,8 +25,8 @@ public class CreateContractPlaceOfPerformanceRQDto {
     @NotNull
     private final String description;
 
-    public CreateContractPlaceOfPerformanceRQDto(@JsonProperty("address") @NotNull @Valid final ContractAddressDto address,
-                                                 @JsonProperty("description") @NotNull final String description) {
+    public CreateACPlaceOfPerformanceRQDto(@JsonProperty("address") @NotNull @Valid final ContractAddressDto address,
+                                           @JsonProperty("description") @NotNull final String description) {
         this.address = address;
         this.description = description;
     }
@@ -43,10 +43,10 @@ public class CreateContractPlaceOfPerformanceRQDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractPlaceOfPerformanceRQDto)) {
+        if (!(other instanceof CreateACPlaceOfPerformanceRQDto)) {
             return false;
         }
-        final CreateContractPlaceOfPerformanceRQDto rhs = (CreateContractPlaceOfPerformanceRQDto) other;
+        final CreateACPlaceOfPerformanceRQDto rhs = (CreateACPlaceOfPerformanceRQDto) other;
         return new EqualsBuilder().append(address, rhs.address)
                                   .append(description, rhs.description)
                                   .isEquals();

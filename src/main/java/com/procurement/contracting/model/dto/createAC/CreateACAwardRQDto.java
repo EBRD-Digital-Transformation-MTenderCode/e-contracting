@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.contracting.databind.LocalDateTimeDeserializer;
 import com.procurement.contracting.databind.LocalDateTimeSerializer;
+import com.procurement.contracting.model.dto.ContractStatus;
 import com.procurement.contracting.model.dto.ContractValueDto;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "value",
     "suppliers"
 })
-public class CreateContractAwardRQDto {
+public class CreateACAwardRQDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -65,15 +66,18 @@ public class CreateContractAwardRQDto {
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
     @Valid
-    private final Set<CreateContractOrganizationReferenceRQDto> suppliers;
+    private final Set<CreateACOrganizationReferenceRQDto> suppliers;
 
-    public CreateContractAwardRQDto(@JsonProperty("id") @NotNull final String id,
-                                    @JsonProperty("date") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer.class) final LocalDateTime date,
-                                    @JsonProperty("status") @NotNull final Status status,
-                                    @JsonProperty("description") @JsonInclude(JsonInclude.Include.NON_NULL) final String description,
-                                    @JsonProperty("relatedLots") @NotEmpty final List<String> relatedLots,
-                                    @JsonProperty("value") @Valid @NotNull final ContractValueDto value,
-                                    @JsonProperty("suppliers") @NotEmpty @Valid final Set<CreateContractOrganizationReferenceRQDto> suppliers) {
+    public CreateACAwardRQDto(@JsonProperty("id") @NotNull final String id,
+                              @JsonProperty("date") @NotNull @JsonDeserialize(using = LocalDateTimeDeserializer
+                                  .class) final LocalDateTime date,
+                              @JsonProperty("status") @NotNull final Status status,
+                              @JsonProperty("description") @JsonInclude(JsonInclude.Include.NON_NULL) final String
+                                  description,
+                              @JsonProperty("relatedLots") @NotEmpty final List<String> relatedLots,
+                              @JsonProperty("value") @Valid @NotNull final ContractValueDto value,
+                              @JsonProperty("suppliers") @NotEmpty @Valid final
+                              Set<CreateACOrganizationReferenceRQDto> suppliers) {
         this.id = id;
         this.date = date;
         this.status = status;
@@ -100,10 +104,10 @@ public class CreateContractAwardRQDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractAwardRQDto)) {
+        if (!(other instanceof CreateACAwardRQDto)) {
             return false;
         }
-        final CreateContractAwardRQDto rhs = (CreateContractAwardRQDto) other;
+        final CreateACAwardRQDto rhs = (CreateACAwardRQDto) other;
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(description, rhs.description)
                                   .append(status, rhs.status)
@@ -113,7 +117,6 @@ public class CreateContractAwardRQDto {
                                   .append(relatedLots, rhs.relatedLots)
                                   .isEquals();
     }
-
     public enum Status {
         PENDING("pending"),
         ACTIVE("active"),

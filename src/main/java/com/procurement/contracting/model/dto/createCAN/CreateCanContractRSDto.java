@@ -3,6 +3,8 @@ package com.procurement.contracting.model.dto.createCAN;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.procurement.contracting.model.dto.ContractStatus;
+import com.procurement.contracting.model.dto.ContractStatusDetails;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -26,16 +28,16 @@ public class CreateCanContractRSDto {
 
     @JsonProperty("status")
     @NotNull
-    private final Status status;
+    private final ContractStatus status;
 
     @JsonProperty("statusDetails")
-    private final String statusDetails;
+    private final ContractStatusDetails statusDetails;
 
     @JsonCreator
     public CreateCanContractRSDto(@JsonProperty("id") final String id,
                                   @JsonProperty("awardID") final String awardID,
-                                  @JsonProperty("status") final Status status,
-                                  @JsonProperty("status") final String statusDetails) {
+                                  @JsonProperty("status") final ContractStatus status,
+                                  @JsonProperty("status") final ContractStatusDetails statusDetails) {
         this.id = id;
         this.awardID = awardID;
         this.status = status;

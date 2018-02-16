@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.procurement.contracting.model.dto.createCA.CreateContractClassificationDto;
-import com.procurement.contracting.model.dto.createCA.CreateContractUnitDto;
+import com.procurement.contracting.model.dto.createAC.CreateACClassificationDto;
+import com.procurement.contracting.model.dto.createAC.CreateACUnitDto;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.validation.Valid;
@@ -37,12 +37,12 @@ public class ContractItemDto {
     @JsonProperty("classification")
     @NotNull
     @Valid
-    private final CreateContractClassificationDto classification;
+    private final CreateACClassificationDto classification;
 
     @JsonProperty("additionalClassifications")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
-    private final Set<CreateContractClassificationDto> additionalClassifications;
+    private final Set<CreateACClassificationDto> additionalClassifications;
 
     @JsonProperty("quantity")
     @NotNull
@@ -51,19 +51,20 @@ public class ContractItemDto {
     @JsonProperty("unit")
     @Valid
     @NotNull
-    private final CreateContractUnitDto unit;
+    private final CreateACUnitDto unit;
 
     @JsonProperty("relatedLot")
+    @NotNull
     private final String relatedLot;
 
     @JsonCreator
     public ContractItemDto(@JsonProperty("id") final String id,
                            @JsonProperty("description") final String description,
-                           @JsonProperty("classification") final CreateContractClassificationDto classification,
-                           @JsonProperty("additionalClassifications") final LinkedHashSet<CreateContractClassificationDto>
+                           @JsonProperty("classification") final CreateACClassificationDto classification,
+                           @JsonProperty("additionalClassifications") final LinkedHashSet<CreateACClassificationDto>
                     additionalClassifications,
                            @JsonProperty("quantity") final Double quantity,
-                           @JsonProperty("unit") final CreateContractUnitDto unit,
+                           @JsonProperty("unit") final CreateACUnitDto unit,
                            @JsonProperty("relatedLot") final String relatedLot) {
         this.id = id;
         this.description = description;

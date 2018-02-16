@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +14,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "budgetBreakdownID",
     "amount"
 })
-public class CreateContractBudgetSourceDto {
+public class CreateACBudgetSourceDto {
     @JsonProperty("budgetBreakdownID")
     @NotNull
     private final String id;
@@ -25,8 +25,8 @@ public class CreateContractBudgetSourceDto {
 
 
     @JsonCreator
-    public CreateContractBudgetSourceDto(@JsonProperty("budgetBreakdownID")@NotNull final String id,
-                                         @JsonProperty("amount")@NotNull final Double amount) {
+    public CreateACBudgetSourceDto(@JsonProperty("budgetBreakdownID")@NotNull final String id,
+                                   @JsonProperty("amount")@NotNull final Double amount) {
         this.id = id;
         this.amount = amount;
     }
@@ -43,10 +43,10 @@ public class CreateContractBudgetSourceDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateContractBudgetSourceDto)) {
+        if (!(other instanceof CreateACBudgetSourceDto)) {
             return false;
         }
-        final CreateContractBudgetSourceDto rhs = (CreateContractBudgetSourceDto) other;
+        final CreateACBudgetSourceDto rhs = (CreateACBudgetSourceDto) other;
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(amount, rhs.amount)
                                   .isEquals();

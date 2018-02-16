@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createCA;
+package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -16,16 +16,16 @@ import lombok.Getter;
     "items",
     "awards"
 })
-public class CreateRQ {
+public class CreateACRQ {
     @JsonProperty("contracts")
     @NotNull
     @Valid
-    private final CreateContractRQDto contract;
+    private final CreateACContractRQDto contract;
 
     @JsonProperty("lots")
     @NotEmpty
     @Valid
-    private final List<CreateContractingLotRQDto> lots;
+    private final List<CreateACContractingLotRQDto> lots;
 
     @JsonProperty("items")
     @NotEmpty
@@ -35,12 +35,12 @@ public class CreateRQ {
     @JsonProperty("awards")
     @Valid
     @NotNull
-    private final CreateContractAwardRQDto award;
+    private final CreateACAwardRQDto award;
 
-    public CreateRQ(@JsonProperty("contracts") @NotNull @Valid final CreateContractRQDto contract,
-                    @JsonProperty("lots") @NotEmpty @Valid final List<CreateContractingLotRQDto> lots,
-                    @JsonProperty("items") @NotEmpty @Valid final List<ContractItemDto> items,
-                    @JsonProperty("awards") @Valid @NotNull final CreateContractAwardRQDto award) {
+    public CreateACRQ(@JsonProperty("contracts") @NotNull @Valid final CreateACContractRQDto contract,
+                      @JsonProperty("lots") @NotEmpty @Valid final List<CreateACContractingLotRQDto> lots,
+                      @JsonProperty("items") @NotEmpty @Valid final List<ContractItemDto> items,
+                      @JsonProperty("awards") @Valid @NotNull final CreateACAwardRQDto award) {
         this.contract = contract;
         this.lots = lots;
         this.items = items;
