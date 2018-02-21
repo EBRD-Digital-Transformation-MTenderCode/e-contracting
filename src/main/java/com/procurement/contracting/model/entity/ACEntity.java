@@ -23,17 +23,14 @@ public class ACEntity {
     private UUID canId;
     @Column(value = "owner")
     private String owner;
-    @PrimaryKeyColumn(name = "release_date",type = PrimaryKeyType.CLUSTERED)
+    @PrimaryKeyColumn(name = "release_date", type = PrimaryKeyType.CLUSTERED)
     private LocalDateTime releaseDate;
     @Column(value = "status")
     private String status;
     @Column(value = "status_details")
     private String statusDetails;
-    @Column(value = "json_create_data")
-    private String jsonCreateData;
-    @Column(value = "json_update_data")
-    private String jsonUpdateData;
-
+    @Column(value = "json_data")
+    private String jsonData;
 
     @Override
     public boolean equals(final Object other) {
@@ -46,13 +43,12 @@ public class ACEntity {
         final ACEntity rhs = (ACEntity) other;
         return new EqualsBuilder().append(cpId, rhs.cpId)
                                   .append(acId, rhs.acId)
-                                  .append(canId,rhs.canId)
+                                  .append(canId, rhs.canId)
                                   .append(owner, rhs.owner)
-                                  .append(releaseDate,rhs.releaseDate)
-                                  .append(status,rhs.status)
-                                  .append(statusDetails,rhs.statusDetails)
-                                  .append(jsonCreateData, rhs.jsonCreateData)
-                                  .append(jsonUpdateData, rhs.jsonUpdateData)
+                                  .append(releaseDate, rhs.releaseDate)
+                                  .append(status, rhs.status)
+                                  .append(statusDetails, rhs.statusDetails)
+                                  .append(jsonData, rhs.jsonData)
                                   .isEquals();
     }
 
@@ -65,10 +61,7 @@ public class ACEntity {
                                     .append(releaseDate)
                                     .append(status)
                                     .append(statusDetails)
-                                    .append(jsonCreateData)
-                                    .append(jsonUpdateData)
+                                    .append(jsonData)
                                     .toHashCode();
     }
-
-
 }

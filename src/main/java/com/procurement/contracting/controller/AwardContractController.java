@@ -1,7 +1,7 @@
 package com.procurement.contracting.controller;
 
+import com.procurement.contracting.model.dto.awardedContract.CreateACRQ;
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
-import com.procurement.contracting.model.dto.createAC.CreateACRQ;
 import com.procurement.contracting.model.dto.updateAC.UpdateACRQ;
 import com.procurement.contracting.service.ACServise;
 import javax.validation.Valid;
@@ -27,10 +27,10 @@ public class AwardContractController {
     @PostMapping("createAC")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> createAC(@Valid @RequestBody final CreateACRQ createACRQ,
-                                                 @RequestParam(value = "token") final String token,
-                                                 @RequestParam(value = "cpid") final String cpid) {
+                                                @RequestParam(value = "token") final String token,
+                                                @RequestParam(value = "cpid") final String cpid) {
 
-        ResponseDto responseDto = acServise.createAC(cpid, token,createACRQ);
+        final ResponseDto responseDto = acServise.createAC(cpid, token, createACRQ);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -38,11 +38,8 @@ public class AwardContractController {
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public ResponseEntity<ResponseDto> updateAC(@Valid @RequestBody final UpdateACRQ updateContractRQ,
                                                 @RequestParam(value = "token") final String token,
-                                                @RequestParam(value = "cpid") final String cpid){
-         ResponseDto responseDto = acServise.updateAC(cpid, token,updateContractRQ);
+                                                @RequestParam(value = "cpid") final String cpid) {
+        final ResponseDto responseDto = acServise.updateAC(cpid, token, updateContractRQ);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
-
     }
-
-
 }
