@@ -1,0 +1,22 @@
+{
+  "Contracts":
+  {
+    "id": "",
+    "statusDetails":"",
+    "--documents":
+  [{
+    "documentType": "",
+    "datePublished": "",
+    "id": "",
+    "url": "",
+    "--title": "",
+    "--description": "",
+    "language": ""
+  }],
+    "amendments":
+    [{
+      "rationale": "",
+      "--description": ""
+    }]
+  }
+}

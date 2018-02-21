@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_awarded_contract (
     release_date timestamp,
     status text,
     status_details text,
-    json_data text,
+    json_create_data text,
+    json_update_data text,
     primary key((cp_id,ac_id),release_date)
 )WITH CLUSTERING ORDER BY (release_date DESC);

@@ -6,7 +6,9 @@ import com.procurement.contracting.model.dto.ContractStatusDetails;
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
 import com.procurement.contracting.model.dto.createAC.CreateACRQ;
 import com.procurement.contracting.model.dto.createAC.CreateACRS;
-import com.procurement.contracting.model.dto.createAC.CreateACRSDto;
+import com.procurement.contracting.model.dto.createAC.CreateACContractRSDto;
+import com.procurement.contracting.model.dto.updateAC.UpdateACRQ;
+import com.procurement.contracting.model.dto.updateAC.UpdateACRS;
 import com.procurement.contracting.model.entity.ACEntity;
 import com.procurement.contracting.model.entity.CANEntity;
 import com.procurement.contracting.repository.ACRepository;
@@ -50,9 +52,9 @@ public class ACServiseImpl implements ACServise {
                     canEntity.setStatusDetails(null);
 
                     CreateACRS createACRS = createCreateACRSFromRQ(createACRQ, token,ContractStatus.ACTIVE,null);
-                    ACEntity acEntity = convertACRSDtoToACEntity(cpId, createACRS);
+                    ACEntity acEntity = convertCreateACRSDtoToACEntity(cpId, createACRS);
                     String owner = canRepository.getOwnerByCpIdAndCanId(UUID.fromString(cpId),
-                                                                        UUID.fromString(createACRS.getContractRSDto().getExtendsContractID()));
+                                                                        UUID.fromString(createACRS.getContracts().getExtendsContractID()));
                     acEntity.setOwner(owner);
                     acEntity.setReleaseDate(dateUtil.getNowUTC());
 
@@ -91,7 +93,35 @@ public class ACServiseImpl implements ACServise {
         }
     }
 
-    private CreateACRS createCreateACRSFromRQ(CreateACRQ createACRQ, String CANid,ContractStatus contractStatus,ContractStatusDetails statusDetails) {
+    @Override
+    public ResponseDto updateAC(String cpId, String token, UpdateACRQ updateACRQ) {
+
+        ACEntity acEntity = acRepository.getByCpIdAndCanId(UUID.fromString(cpId),UUID.fromString(token));
+        if (acEntity!=null){
+            String jsonCreateData = acEntity.getJsonCreateData();
+            String jsonUpdateData = acEntity.getJsonUpdateData();
+            if (jsonUpdateData == null){
+                CreateACRS createACRS = jsonUtil.toObject(CreateACRS.class,jsonCreateData);
+                if(isTitleOrDescriptionChanged(createACRS, updateACRQ)){
+                    //меняем
+                }
+
+            }else{
+                UpdateACRS updateACRS = jsonUtil.toObject(UpdateACRS.class,jsonUpdateData);
+                if (isTitleOrDescriptionChanged(updateACRS,updateACRQ)){
+                    //меняем
+                }
+
+            }
+        }else{
+            //not found
+        }
+
+
+        return null;
+    }
+
+    private CreateACRS createCreateACRSFromRQ(CreateACRQ createACRQ, String CANid, ContractStatus contractStatus, ContractStatusDetails statusDetails) {
         final List<CreateACRS> createACRSList = new ArrayList<>();
 
         for (int i = 0; i < createACRQ.getLots()
@@ -105,17 +135,17 @@ public class ACServiseImpl implements ACServise {
             UUID acId = Generators.timeBasedGenerator()
                                   .generate();
 
-            CreateACRSDto createACRSDto = new CreateACRSDto(acId.toString(),
-                                                            createACRQ.getContract()
+            CreateACContractRSDto createACRSDto = new CreateACContractRSDto(acId.toString(),
+                                                                            createACRQ.getContract()
                                                                       .getAwardID(),
-                                                            CANid,
-                                                            contractTitle,
-                                                            contractDescription,
-                                                            ContractStatus.PENDING,
-                                                            ContractStatusDetails.CONTRACT_PROJECT,
-                                                            createACRQ.getAward()
+                                                                            CANid,
+                                                                            contractTitle,
+                                                                            contractDescription,
+                                                                            ContractStatus.PENDING,
+                                                                            ContractStatusDetails.CONTRACT_PROJECT,
+                                                                            createACRQ.getAward()
                                                                       .getValue(),
-                                                            createACRQ.getItems());
+                                                                            createACRQ.getItems());
 
 
 
@@ -124,20 +154,36 @@ public class ACServiseImpl implements ACServise {
         return createACRSList.get(0);
     }
 
-    private ACEntity convertACRSDtoToACEntity(String cpId, CreateACRS createACRS) {
+    private ACEntity convertCreateACRSDtoToACEntity(String cpId, CreateACRS createACRS) {
 
         ACEntity acEntity = new ACEntity();
         acEntity.setCpId(UUID.fromString(cpId));
         acEntity.setAcId(UUID.fromString(createACRS.getToken()));
-        acEntity.setCanId(UUID.fromString(createACRS.getContractRSDto()
+        acEntity.setCanId(UUID.fromString(createACRS.getContracts()
                                                     .getExtendsContractID()));
-        acEntity.setStatus(createACRS.getContractRSDto().getStatus()
+        acEntity.setStatus(createACRS.getContracts().getStatus()
                                      .toString());
 
-        acEntity.setStatusDetails(createACRS.getContractRSDto().getStatusDetails()
+        acEntity.setStatusDetails(createACRS.getContracts().getStatusDetails()
                                                 .toString());
 
-        acEntity.setJsonData(jsonUtil.toJson(createACRS));
+        acEntity.setJsonCreateData(jsonUtil.toJson(createACRS));
         return acEntity;
     }
+
+    private boolean isTitleOrDescriptionChanged(CreateACRS createACRS, UpdateACRQ updateACRQ){
+        if(!createACRS.getContracts().getDescription().equals(updateACRQ.getContracts().getDescription())
+            || !createACRS.getContracts().getTitle().equals(updateACRQ.getContracts().getTitle())){
+            return true;
+        }
+        return false;
+    }
+    private boolean isTitleOrDescriptionChanged(UpdateACRS createACRS, UpdateACRQ updateACRQ){
+        if(!createACRS.getContracts().getDescription().equals(updateACRQ.getContracts().getDescription())
+            || !createACRS.getContracts().getTitle().equals(updateACRQ.getContracts().getTitle())){
+            return true;
+        }
+        return false;
+    }
+
 }

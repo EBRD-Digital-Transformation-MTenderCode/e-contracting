@@ -2,6 +2,8 @@
   "Contracts":
   {
     "id": "",
+    "awardID": "",
+    "extendsContractID": "",
     "budgetSource":
     [{
       "budgetBreakdownID": "",
@@ -11,6 +13,12 @@
     "description": "",
     "status": "",
     "statusDetails":"",
+    "classification":
+    {
+      "scheme": "",
+      "description": "",
+      "id": ""
+    },
     "period":
     {
       "startDate": "",
@@ -21,6 +29,30 @@
       "amount": 0,
       "currency": ""
     },
+    "items":
+    [{
+      "id": "",
+      "description": "",
+      "classification":
+      {
+        "scheme": "",
+        "description": "",
+        "id": ""
+      },
+      "--additionalClassifications":
+      [{
+        "scheme": "",
+        "description": "",
+        "id": ""
+      }],
+      "quantity": 0,
+      "unit":
+      {
+        "id": "",
+        "name": ""
+      },
+      "relatedLot": ""
+    }],
     "--dateSigned": "",
     "--documents":
   [{
@@ -42,8 +74,7 @@
     "amendments":
     [{
       "rationale": "",
-      "--description": "",
-      "id":""
+      "--description": ""
     }]
   }
 }

@@ -2,6 +2,7 @@ package com.procurement.contracting.controller;
 
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
 import com.procurement.contracting.model.dto.createAC.CreateACRQ;
+import com.procurement.contracting.model.dto.updateAC.UpdateACRQ;
 import com.procurement.contracting.service.ACServise;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,22 @@ public class AwardContractController {
 
     @PostMapping("createAC")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<ResponseDto> createCAN(@Valid @RequestBody final CreateACRQ createACRQ,
+    public ResponseEntity<ResponseDto> createAC(@Valid @RequestBody final CreateACRQ createACRQ,
                                                  @RequestParam(value = "token") final String token,
                                                  @RequestParam(value = "cpid") final String cpid) {
 
         ResponseDto responseDto = acServise.createAC(cpid, token,createACRQ);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping("updateAC")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public ResponseEntity<ResponseDto> updateAC(@Valid @RequestBody final UpdateACRQ updateContractRQ,
+                                                @RequestParam(value = "token") final String token,
+                                                @RequestParam(value = "cpid") final String cpid){
+         ResponseDto responseDto = acServise.updateAC(cpid, token,updateContractRQ);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
     }
 
 

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.procurement.contracting.model.dto.createAC.CreateACClassificationDto;
 import com.procurement.contracting.model.dto.createAC.CreateACUnitDto;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -37,12 +36,12 @@ public class ContractItemDto {
     @JsonProperty("classification")
     @NotNull
     @Valid
-    private final CreateACClassificationDto classification;
+    private final ClassificationDto classification;
 
     @JsonProperty("additionalClassifications")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
-    private final Set<CreateACClassificationDto> additionalClassifications;
+    private final Set<ClassificationDto> additionalClassifications;
 
     @JsonProperty("quantity")
     @NotNull
@@ -60,8 +59,8 @@ public class ContractItemDto {
     @JsonCreator
     public ContractItemDto(@JsonProperty("id") final String id,
                            @JsonProperty("description") final String description,
-                           @JsonProperty("classification") final CreateACClassificationDto classification,
-                           @JsonProperty("additionalClassifications") final LinkedHashSet<CreateACClassificationDto>
+                           @JsonProperty("classification") final ClassificationDto classification,
+                           @JsonProperty("additionalClassifications") final LinkedHashSet<ClassificationDto>
                     additionalClassifications,
                            @JsonProperty("quantity") final Double quantity,
                            @JsonProperty("unit") final CreateACUnitDto unit,

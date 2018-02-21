@@ -1,5 +1,5 @@
 
-package com.procurement.contracting.model.dto.updateCA;
+package com.procurement.contracting.model.dto.updateAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "identifier",
     "scheme"
 })
-public class UpdateContractRelatedProcessRQDto {
+public class UpdateACRelatedProcessDto {
 
     @JsonProperty("relationship")
     @NotEmpty
@@ -43,17 +43,17 @@ public class UpdateContractRelatedProcessRQDto {
     @Valid
     private final RelatedProcessScheme scheme;
 
-    public UpdateContractRelatedProcessRQDto(@JsonProperty("relationship")
+    public UpdateACRelatedProcessDto(@JsonProperty("relationship")
                                              @NotEmpty
                                              @Valid
                                              final List<RelatedProcessType> relationship,
-                                             @JsonProperty("title")
+                                     @JsonProperty("title")
                                              @JsonInclude(JsonInclude.Include.NON_NULL)
                                              final String title,
-                                             @JsonProperty("identifier")
+                                     @JsonProperty("identifier")
                                              @NotNull
                                              final String identifier,
-                                             @JsonProperty("scheme")
+                                     @JsonProperty("scheme")
                                              @NotNull
                                              @Valid
                                              final RelatedProcessScheme scheme) {
@@ -78,10 +78,10 @@ public class UpdateContractRelatedProcessRQDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof UpdateContractRelatedProcessRQDto)) {
+        if (!(other instanceof UpdateACRelatedProcessDto)) {
             return false;
         }
-        final UpdateContractRelatedProcessRQDto rhs = (UpdateContractRelatedProcessRQDto) other;
+        final UpdateACRelatedProcessDto rhs = (UpdateACRelatedProcessDto) other;
         return new EqualsBuilder().append(relationship, rhs.relationship)
                                   .append(title, rhs.title)
                                   .append(scheme, rhs.scheme)

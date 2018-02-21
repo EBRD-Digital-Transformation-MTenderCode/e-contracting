@@ -16,6 +16,7 @@ import lombok.Getter;
     "statusDetailsCAN",
     "contracts"
 })
+
 public class CreateACRS {
     @JsonProperty("token")
     @NotNull
@@ -30,18 +31,18 @@ public class CreateACRS {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private final ContractStatusDetails statusDetailsCAN;
 
-    @JsonProperty("contractRSDto")
+    @JsonProperty("contracts")
     @NotNull
     @Valid
-    private final CreateACRSDto contractRSDto;
+    private final CreateACContractRSDto contracts;
 
     public CreateACRS(@JsonProperty("token") @NotNull String token,
                       @JsonProperty("statusCAN")@Valid @NotNull ContractStatus statusCAN,
                       @JsonProperty("statusDetailsCAN")@JsonInclude(JsonInclude.Include.ALWAYS) ContractStatusDetails statusDetailsCAN,
-                      @JsonProperty("contractRSDto") @NotNull @Valid CreateACRSDto contractRSDto) {
+                      @JsonProperty("contracts") @NotNull @Valid CreateACContractRSDto contracts) {
         this.token = token;
         this.statusCAN = statusCAN;
         this.statusDetailsCAN = statusDetailsCAN;
-        this.contractRSDto = contractRSDto;
+        this.contracts = contracts;
     }
 }

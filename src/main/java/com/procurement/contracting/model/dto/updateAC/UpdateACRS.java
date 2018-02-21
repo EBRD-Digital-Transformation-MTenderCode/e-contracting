@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.updateCA;
+package com.procurement.contracting.model.dto.updateAC;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -8,16 +8,16 @@ import lombok.Getter;
 
 @Getter
 @JsonPropertyOrder("contracts")
-public class UpdateContractRS {
+public class UpdateACRS {
     @JsonProperty("contracts")
     @NotNull
     @Valid
-    private final UpdateContractRSDto contracts;
+    private final UpdateACContractRSDto contracts;
 
-    public UpdateContractRS(@JsonProperty("contracts")
+    public UpdateACRS(@JsonProperty("contracts")
                             @Valid
                             @NotNull
-                            final UpdateContractRSDto contracts) {
+                            final UpdateACContractRSDto contracts) {
         this.contracts = contracts;
     }
 }

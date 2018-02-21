@@ -2,14 +2,11 @@ package com.procurement.contracting.model.dto.createAC;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.procurement.contracting.model.dto.ContractItemDto;
 import com.procurement.contracting.model.dto.ContractStatus;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
 import com.procurement.contracting.model.dto.ContractValueDto;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,7 +26,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "value",
     "items"
 })
-public class CreateACRSDto {
+public class CreateACContractRSDto {
     @JsonProperty("id")
     @NotNull
     private final String id;
@@ -70,15 +67,15 @@ public class CreateACRSDto {
     @Valid
     private final List<ContractItemDto> items;
 
-    public CreateACRSDto(@NotNull String id,
-                         @NotNull String awardID,
-                         @NotNull String extendsContractID,
-                         @NotNull String title,
-                         @NotNull String description,
-                         @NotNull @Valid ContractStatus status,
-                         @NotNull @Valid ContractStatusDetails statusDetails,
-                         @Valid @NotNull ContractValueDto value,
-                         @NotEmpty @Valid List<ContractItemDto> items) {
+    public CreateACContractRSDto(@NotNull String id,
+                                 @NotNull String awardID,
+                                 @NotNull String extendsContractID,
+                                 @NotNull String title,
+                                 @NotNull String description,
+                                 @NotNull @Valid ContractStatus status,
+                                 @NotNull @Valid ContractStatusDetails statusDetails,
+                                 @Valid @NotNull ContractValueDto value,
+                                 @NotEmpty @Valid List<ContractItemDto> items) {
         this.id = id;
         this.awardID = awardID;
         this.extendsContractID = extendsContractID;
@@ -109,10 +106,10 @@ public class CreateACRSDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof CreateACRSDto)) {
+        if (!(other instanceof CreateACContractRSDto)) {
             return false;
         }
-        final CreateACRSDto rhs = (CreateACRSDto) other;
+        final CreateACContractRSDto rhs = (CreateACContractRSDto) other;
 
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(awardID, rhs.awardID)

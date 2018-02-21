@@ -29,8 +29,10 @@ public class ACEntity {
     private String status;
     @Column(value = "status_details")
     private String statusDetails;
-    @Column(value = "json_data")
-    private String jsonData;
+    @Column(value = "json_create_data")
+    private String jsonCreateData;
+    @Column(value = "json_update_data")
+    private String jsonUpdateData;
 
 
     @Override
@@ -49,7 +51,8 @@ public class ACEntity {
                                   .append(releaseDate,rhs.releaseDate)
                                   .append(status,rhs.status)
                                   .append(statusDetails,rhs.statusDetails)
-                                  .append(jsonData, rhs.jsonData)
+                                  .append(jsonCreateData, rhs.jsonCreateData)
+                                  .append(jsonUpdateData, rhs.jsonUpdateData)
                                   .isEquals();
     }
 
@@ -62,7 +65,8 @@ public class ACEntity {
                                     .append(releaseDate)
                                     .append(status)
                                     .append(statusDetails)
-                                    .append(jsonData)
+                                    .append(jsonCreateData)
+                                    .append(jsonUpdateData)
                                     .toHashCode();
     }
 

@@ -2,6 +2,7 @@
   "Contracts":
   {
     "id": "",
+    "awardID": "",
     "budgetSource":
     [{
       "budgetBreakdownID": "",
@@ -9,6 +10,7 @@
     }],
     "title": "",
     "description": "",
+    "status": "",
     "statusDetails":"",
     "classification":
     {
@@ -21,6 +23,11 @@
       "startDate": "",
       "endDate": ""
     },
+    "value":
+    {
+      "amount": 0,
+      "currency": ""
+    },
     "--dateSigned": "",
     "--documents":
   [{
@@ -32,13 +39,6 @@
     "--description": "",
     "language": ""
   }],
-    "relatedProcesses":
-    [{
-      "relationship": [""],
-      "--title": "",
-      "identifier": "",
-      "scheme": "ocid"
-    }],
     "amendments":
     [{
       "rationale": "",
