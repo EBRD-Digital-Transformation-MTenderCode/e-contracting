@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.changeStatus;
+package com.procurement.contracting.model.dto.awardedContract;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,29 +7,25 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.contracting.databind.LocalDateTimeDeserializer;
 import com.procurement.contracting.databind.LocalDateTimeSerializer;
-import com.procurement.contracting.model.dto.AmendmentDto;
-import com.procurement.contracting.model.dto.ClassificationDto;
-import com.procurement.contracting.model.dto.ContractBudgetSourceDto;
-import com.procurement.contracting.model.dto.ContractDocumentDto;
-import com.procurement.contracting.model.dto.ContractPeriodDto;
-import com.procurement.contracting.model.dto.ContractStatus;
-import com.procurement.contracting.model.dto.ContractStatusDetails;
-import com.procurement.contracting.model.dto.ContractValueDto;
+import com.procurement.contracting.model.dto.*;
+import com.procurement.contracting.model.dto.updateAC.UpdateACRelatedProcessDto;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Getter
+@Setter
 @JsonPropertyOrder({
     "id",
     "awardId",
+    "extendsContractId",
     "budgetSource",
     "title",
     "description",
@@ -38,110 +34,102 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
     "classification",
     "period",
     "value",
+    "items",
     "dateSigned",
     "documents",
+    "relatedProcesses",
     "amendments"
 })
-public class ChangeStatusContractRSDto {
-    @JsonProperty("id")
-    @NotNull
-    private final String id;
-
-    @JsonProperty("awardId")
-    @NotNull
-    private final String awardId;
-
-    @JsonProperty("budgetSource")
-    @NotEmpty
-    @Valid
-    private final ContractBudgetSourceDto budgetSource;
-
-    @JsonProperty("title")
-    @NotNull
-    private final String title;
-
-    @JsonProperty("description")
-    @NotNull
-    private final String description;
-
-    @JsonProperty("status")
-    @NotNull
-    @Valid
-    private final ContractStatus status;
-
-    @JsonProperty("statusDetails")
-    @NotNull
-    @Valid
-    private final ContractStatusDetails statusDetails;
-
-    @JsonProperty("classification")
-    @NotNull
-    @Valid
-    private final ClassificationDto classification;
-
-    @JsonProperty("period")
-    @Valid
-    @NotNull
-    private final ContractPeriodDto period;
-
+public class ACContractDto {
     @JsonProperty("value")
     @Valid
     @NotNull
     private final ContractValueDto value;
+    @JsonProperty("id")
+    @NotNull
+    private String id;
+    @JsonProperty("awardId")
+    @NotNull
+    private String awardId;
+    @JsonProperty("extendsContractId")
+    @NotNull
+    private String extendsContractId;
+    @JsonProperty("budgetSource")
+    @NotEmpty
+    @Valid
+    private ContractBudgetSourceDto budgetSource;
+    @JsonProperty("title")
+    @NotNull
+    private String title;
+    @JsonProperty("description")
+    @NotNull
+    private String description;
+    @JsonProperty("status")
+    @NotNull
+    @Valid
+    private ContractStatus status;
+    @JsonProperty("statusDetails")
+    @NotNull
+    @Valid
+    private ContractStatusDetails statusDetails;
+    @JsonProperty("classification")
+    @NotNull
+    @Valid
+    private ClassificationDto classification;
+    @JsonProperty("period")
+    @Valid
+    @NotNull
+    private ContractPeriodDto period;
+    @JsonProperty("items")
+    @NotEmpty
+    @Valid
+    private List<ContractItemDto> items;
 
     @JsonProperty("dateSigned")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final LocalDateTime dateSigned;
+    private LocalDateTime dateSigned;
 
     @JsonProperty("documents")
-    @JsonDeserialize(as = LinkedHashSet.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonDeserialize(as = LinkedHashSet.class)
     @Valid
-    private final Set<ContractDocumentDto> documents;
+    private List<ContractDocumentDto> documents;
+
+    @JsonProperty("relatedProcesses")
+    @JsonDeserialize(as = LinkedHashSet.class)
+    @NotNull
+    @Valid
+    private List<UpdateACRelatedProcessDto> relatedProcesses;
 
     @JsonProperty("amendments")
     @NotNull
     @Valid
-    private final List<AmendmentDto> amendments;
+    private List<AmendmentDto> amendments;
 
-    public ChangeStatusContractRSDto(@JsonProperty("id")
-                                     @NotNull final String id,
-                                     @JsonProperty("awardId")
-                                     @NotNull final String awardId,
-                                     @JsonProperty("budgetSource")
-                                     @NotEmpty
-                                     @Valid final ContractBudgetSourceDto budgetSource,
-                                     @JsonProperty("title")
-                                     @NotNull final String title,
-                                     @JsonProperty("description")
-                                     @NotNull final String description,
-                                     @JsonProperty("status")
-                                     @NotNull
-                                     @Valid final ContractStatus status,
-                                     @JsonProperty("statusDetails")
-                                     @NotNull
-                                     @Valid final ContractStatusDetails statusDetails,
-                                     @JsonProperty("classification")
-                                     @NotNull
-                                     @Valid final ClassificationDto classification,
-                                     @JsonProperty("period")
-                                     @Valid
-                                     @NotNull final ContractPeriodDto period,
-                                     @JsonProperty("value")
-                                     @Valid
-                                     @NotNull final ContractValueDto value,
-                                     @JsonProperty("dateSigned")
-                                     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-                                     @JsonInclude(JsonInclude.Include.NON_NULL) final LocalDateTime dateSigned,
-                                     @JsonProperty("documents")
-                                     @JsonInclude(JsonInclude.Include.NON_NULL)
-                                     @Valid final LinkedHashSet<ContractDocumentDto> documents,
-                                     @JsonProperty("amendments")
-                                     @NotNull
-                                     @Valid final List<AmendmentDto> amendments) {
+    public ACContractDto(@JsonProperty("id") @NotNull final String id,
+                         @JsonProperty("awardId") @NotNull final String awardId,
+                         @JsonProperty("extendsContractId") @NotNull final String extendsContractId,
+                         @JsonProperty("budgetSource") @NotEmpty @Valid final ContractBudgetSourceDto budgetSource,
+                         @JsonProperty("title") @NotNull final String title,
+                         @JsonProperty("description") @NotNull final String description,
+                         @JsonProperty("status") @NotNull @Valid final ContractStatus status,
+                         @JsonProperty("statusDetails") @NotNull @Valid final ContractStatusDetails statusDetails,
+                         @JsonProperty("classification") @NotNull @Valid final ClassificationDto classification,
+                         @JsonProperty("period") @JsonInclude(JsonInclude.Include.ALWAYS) @Valid @NotNull
+                         final ContractPeriodDto period,
+                         @JsonProperty("value") @Valid @NotNull final ContractValueDto value,
+                         @JsonProperty("items") @NotEmpty @Valid final List<ContractItemDto> items,
+                         @JsonProperty("dateSigned") @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+                         @JsonInclude(JsonInclude.Include.NON_NULL) final LocalDateTime dateSigned,
+                         @JsonProperty("documents")
+                         @JsonInclude(JsonInclude.Include.NON_NULL) @Valid final List<ContractDocumentDto> documents,
+                         @JsonProperty("relatedProcesses") @NotNull @Valid
+                         final List<UpdateACRelatedProcessDto> relatedProcesses,
+                         @JsonProperty("amendments") @NotNull @Valid final List<AmendmentDto> amendments) {
         this.id = id;
         this.awardId = awardId;
+        this.extendsContractId = extendsContractId;
         this.budgetSource = budgetSource;
         this.title = title;
         this.description = description;
@@ -150,8 +138,10 @@ public class ChangeStatusContractRSDto {
         this.classification = classification;
         this.period = period;
         this.value = value;
+        this.items = items;
         this.dateSigned = dateSigned;
         this.documents = documents;
+        this.relatedProcesses = relatedProcesses;
         this.amendments = amendments;
     }
 
@@ -159,6 +149,8 @@ public class ChangeStatusContractRSDto {
     public int hashCode() {
         return new HashCodeBuilder().append(id)
                                     .append(awardId)
+                                    .append(extendsContractId)
+                                    .append(budgetSource)
                                     .append(title)
                                     .append(description)
                                     .append(status)
@@ -166,8 +158,10 @@ public class ChangeStatusContractRSDto {
                                     .append(classification)
                                     .append(period)
                                     .append(value)
+                                    .append(items)
                                     .append(dateSigned)
                                     .append(documents)
+                                    .append(relatedProcesses)
                                     .append(amendments)
                                     .toHashCode();
     }
@@ -177,13 +171,15 @@ public class ChangeStatusContractRSDto {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof ChangeStatusContractRSDto)) {
+        if (!(other instanceof ACContractDto)) {
             return false;
         }
-        final ChangeStatusContractRSDto rhs = (ChangeStatusContractRSDto) other;
+        final ACContractDto rhs = (ACContractDto) other;
 
         return new EqualsBuilder().append(id, rhs.id)
                                   .append(awardId, rhs.awardId)
+                                  .append(extendsContractId, rhs.extendsContractId)
+                                  .append(budgetSource, rhs.budgetSource)
                                   .append(title, rhs.title)
                                   .append(description, rhs.description)
                                   .append(status, rhs.status)
@@ -191,8 +187,10 @@ public class ChangeStatusContractRSDto {
                                   .append(classification, rhs.classification)
                                   .append(period, rhs.period)
                                   .append(value, rhs.value)
+                                  .append(items, rhs.items)
                                   .append(dateSigned, rhs.dateSigned)
                                   .append(documents, rhs.documents)
+                                  .append(relatedProcesses, rhs.relatedProcesses)
                                   .append(amendments, rhs.amendments)
                                   .isEquals();
     }

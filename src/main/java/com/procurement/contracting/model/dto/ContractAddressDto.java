@@ -1,4 +1,3 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,11 +36,11 @@ public class ContractAddressDto {
     @NotNull
     private final String countryName;
 
-    public ContractAddressDto(@JsonProperty("streetAddress") @NotNull String streetAddress,
-                              @JsonProperty("locality") @NotNull String locality,
-                              @JsonProperty("region") @NotNull String region,
-                              @JsonProperty("postalCode") @NotNull String postalCode,
-                              @JsonProperty("countryName") @NotNull String countryName) {
+    public ContractAddressDto(@JsonProperty("streetAddress") @NotNull final String streetAddress,
+                              @JsonProperty("locality") @NotNull final String locality,
+                              @JsonProperty("region") @NotNull final String region,
+                              @JsonProperty("postalCode") @NotNull final String postalCode,
+                              @JsonProperty("countryName") @NotNull final String countryName) {
         this.streetAddress = streetAddress;
         this.locality = locality;
         this.region = region;

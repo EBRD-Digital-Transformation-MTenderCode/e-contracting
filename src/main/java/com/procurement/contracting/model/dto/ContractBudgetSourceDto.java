@@ -1,9 +1,10 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.procurement.contracting.jsonview.View;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -17,16 +18,17 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class ContractBudgetSourceDto {
     @JsonProperty("budgetBreakdownID")
     @NotNull
+    @JsonView(View.UpdateACView.class)
     private final String id;
 
     @JsonProperty("amount")
     @NotNull
+    @JsonView(View.UpdateACView.class)
     private final Double amount;
 
-
     @JsonCreator
-    public ContractBudgetSourceDto(@JsonProperty("budgetBreakdownID")@NotNull final String id,
-                                   @JsonProperty("amount")@NotNull final Double amount) {
+    public ContractBudgetSourceDto(@JsonProperty("budgetBreakdownID") @NotNull final String id,
+                                   @JsonProperty("amount") @NotNull final Double amount) {
         this.id = id;
         this.amount = amount;
     }

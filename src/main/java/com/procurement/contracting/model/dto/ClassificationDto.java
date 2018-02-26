@@ -1,10 +1,11 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.procurement.contracting.jsonview.View;
 import com.sun.istack.internal.NotNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,14 +22,17 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class ClassificationDto {
     @JsonProperty("scheme")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final Scheme scheme;
 
     @JsonProperty("description")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final String description;
 
     @JsonProperty("id")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final String id;
 
     @JsonCreator
@@ -73,8 +77,7 @@ public class ClassificationDto {
         OKDP("OKDP"),
         OKPD("OKPD");
 
-        private final String value;
-        private final static Map<String, Scheme> CONSTANTS = new HashMap<>();
+        private static final Map<String, Scheme> CONSTANTS = new HashMap<>();
 
         static {
             for (final Scheme c : values()) {
@@ -82,8 +85,19 @@ public class ClassificationDto {
             }
         }
 
-        private Scheme(final String value) {
+        private final String value;
+
+        Scheme(final String value) {
             this.value = value;
+        }
+
+        @JsonCreator
+        public static Scheme fromValue(final String value) {
+            final Scheme constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            }
+            return constant;
         }
 
         @Override
@@ -94,15 +108,6 @@ public class ClassificationDto {
         @JsonValue
         public String value() {
             return this.value;
-        }
-
-        @JsonCreator
-        public static Scheme fromValue(final String value) {
-            final Scheme constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            }
-            return constant;
         }
     }
 }

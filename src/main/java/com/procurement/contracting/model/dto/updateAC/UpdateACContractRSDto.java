@@ -137,8 +137,7 @@ public class UpdateACContractRSDto {
                                  @Valid final ContractStatusDetails statusDetails,
                                  @JsonProperty("classification")
                                  @NotNull
-                                 @Valid
-                                 final ClassificationDto classification,
+                                 @Valid final ClassificationDto classification,
                                  @JsonProperty("period")
                                  @Valid
                                  @NotNull final ContractPeriodDto period,
@@ -147,8 +146,7 @@ public class UpdateACContractRSDto {
                                  @NotNull final ContractValueDto value,
                                  @JsonProperty("items")
                                  @NotEmpty
-                                 @Valid
-                                 final List<ContractItemDto> items,
+                                 @Valid final List<ContractItemDto> items,
                                  @JsonProperty("dateSigned")
                                  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
                                  @JsonInclude(JsonInclude.Include.NON_NULL) final LocalDateTime dateSigned,
@@ -162,17 +160,17 @@ public class UpdateACContractRSDto {
                                  @NotNull
                                  @Valid final List<AmendmentDto> amendments) {
         this.id = id;
-        this.awardId=awardId;
-        this.extendsContractId=extendsContractId;
+        this.awardId = awardId;
+        this.extendsContractId = extendsContractId;
         this.budgetSource = budgetSource;
         this.title = title;
         this.description = description;
         this.status = status;
         this.statusDetails = statusDetails;
-        this.classification=classification;
+        this.classification = classification;
         this.period = period;
         this.value = value;
-        this.items=items;
+        this.items = items;
         this.dateSigned = dateSigned;
         this.documents = documents;
         this.relatedProcesses = relatedProcesses;
@@ -210,22 +208,20 @@ public class UpdateACContractRSDto {
         final UpdateACContractRSDto rhs = (UpdateACContractRSDto) other;
 
         return new EqualsBuilder().append(id, rhs.id)
-                                  .append(awardId,rhs.awardId)
-                                  .append(extendsContractId,rhs.extendsContractId)
+                                  .append(awardId, rhs.awardId)
+                                  .append(extendsContractId, rhs.extendsContractId)
                                   .append(title, rhs.title)
                                   .append(description, rhs.description)
                                   .append(status, rhs.status)
                                   .append(statusDetails, rhs.statusDetails)
-                                  .append(classification,rhs.classification)
+                                  .append(classification, rhs.classification)
                                   .append(period, rhs.period)
                                   .append(value, rhs.value)
-                                  .append(items,rhs.items)
+                                  .append(items, rhs.items)
                                   .append(dateSigned, rhs.dateSigned)
                                   .append(documents, rhs.documents)
                                   .append(relatedProcesses, rhs.relatedProcesses)
                                   .append(amendments, rhs.amendments)
                                   .isEquals();
     }
-
-
 }

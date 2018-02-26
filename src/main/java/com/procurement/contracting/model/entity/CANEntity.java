@@ -18,8 +18,8 @@ public class CANEntity {
     private UUID cpId;
     @PrimaryKeyColumn(name = "can_id", type = PrimaryKeyType.CLUSTERED)
     private UUID canId;
-    @Column(value = "award_id")
-    private String award_id;
+    @Column(value = "awardId")
+    private String awardId;
     @Column(value = "owner")
     private String owner;
     @Column(value = "ac_id")
@@ -28,7 +28,6 @@ public class CANEntity {
     private String status;
     @Column(value = "status_details")
     private String statusDetails;
-
 
     @Override
     public boolean equals(final Object other) {
@@ -41,11 +40,11 @@ public class CANEntity {
         final CANEntity rhs = (CANEntity) other;
         return new EqualsBuilder().append(cpId, rhs.cpId)
                                   .append(canId, rhs.canId)
-                                  .append(award_id, rhs.award_id)
+                                  .append(awardId, rhs.awardId)
                                   .append(owner, rhs.owner)
-                                  .append(acId,rhs.acId)
-                                  .append(status,rhs.status)
-                                  .append(statusDetails,rhs.statusDetails)
+                                  .append(acId, rhs.acId)
+                                  .append(status, rhs.status)
+                                  .append(statusDetails, rhs.statusDetails)
                                   .isEquals();
     }
 
@@ -53,13 +52,11 @@ public class CANEntity {
     public int hashCode() {
         return new HashCodeBuilder().append(cpId)
                                     .append(canId)
-                                    .append(award_id)
+                                    .append(awardId)
                                     .append(owner)
                                     .append(acId)
                                     .append(status)
                                     .append(statusDetails)
                                     .toHashCode();
     }
-
-
 }

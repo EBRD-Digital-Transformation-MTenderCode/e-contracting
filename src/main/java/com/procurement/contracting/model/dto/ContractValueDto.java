@@ -1,4 +1,3 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -226,8 +225,7 @@ public class ContractValueDto {
         ZAR("ZAR"),
         ZMK("ZMK"),
         ZWL("ZWL");
-        private final String value;
-        private final static Map<String, Currency> CONSTANTS = new HashMap<>();
+        private static final Map<String, Currency> CONSTANTS = new HashMap<>();
 
         static {
             for (final Currency c : values()) {
@@ -235,8 +233,19 @@ public class ContractValueDto {
             }
         }
 
-        private Currency(final String value) {
+        private final String value;
+
+        Currency(final String value) {
             this.value = value;
+        }
+
+        @JsonCreator
+        public static Currency fromValue(final String value) {
+            final Currency constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            }
+            return constant;
         }
 
         @Override
@@ -247,15 +256,6 @@ public class ContractValueDto {
         @JsonValue
         public String value() {
             return this.value;
-        }
-
-        @JsonCreator
-        public static Currency fromValue(final String value) {
-            final Currency constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            }
-            return constant;
         }
     }
 }

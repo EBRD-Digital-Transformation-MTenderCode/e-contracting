@@ -41,7 +41,7 @@ public class CreateCanContractRSDto {
         this.id = id;
         this.awardID = awardID;
         this.status = status;
-        this.statusDetails=statusDetails;
+        this.statusDetails = statusDetails;
     }
 
     @Override
@@ -69,6 +69,4 @@ public class CreateCanContractRSDto {
                                   .append(statusDetails, rhs.statusDetails)
                                   .isEquals();
     }
-
-
 }

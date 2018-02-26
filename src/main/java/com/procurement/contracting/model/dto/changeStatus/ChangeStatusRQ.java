@@ -2,7 +2,6 @@ package com.procurement.contracting.model.dto.changeStatus;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.procurement.contracting.model.dto.updateAC.UpdateACContractRQDto;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,9 +15,8 @@ public class ChangeStatusRQ {
     private final ChangeStatusContractRQDto contracts;
 
     public ChangeStatusRQ(@JsonProperty("contracts")
-                            @Valid
-                            @NotNull
-                            final ChangeStatusContractRQDto contracts) {
+                          @Valid
+                          @NotNull final ChangeStatusContractRQDto contracts) {
         this.contracts = contracts;
     }
 }

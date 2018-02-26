@@ -67,8 +67,9 @@ public class ContractDocumentDto {
                                @JsonProperty("title") final String title,
                                @JsonProperty("description") final String description,
                                @JsonProperty("url") final URI url,
-                               @JsonProperty("datePublished")@JsonDeserialize(using = LocalDateTimeDeserializer.class)  final
-                        LocalDateTime datePublished,
+                               @JsonProperty("datePublished")
+                               @JsonDeserialize(using = LocalDateTimeDeserializer.class) final LocalDateTime
+                                       datePublished,
                                @JsonProperty("language") final String language) {
         this.id = id;
         this.documentType = documentType;
@@ -152,8 +153,7 @@ public class ContractDocumentDto {
         CONTRACT_SUMMARY("contractSummary"),
         CANCELLATION_DETAILS("cancellationDetails");
 
-        private final String value;
-        private final static Map<String, DocumentType> CONSTANTS = new HashMap<>();
+        private static final Map<String, DocumentType> CONSTANTS = new HashMap<>();
 
         static {
             for (final DocumentType c : values()) {
@@ -161,8 +161,19 @@ public class ContractDocumentDto {
             }
         }
 
-        private DocumentType(final String value) {
+        private final String value;
+
+        DocumentType(final String value) {
             this.value = value;
+        }
+
+        @JsonCreator
+        public static DocumentType fromValue(final String value) {
+            final DocumentType constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            }
+            return constant;
         }
 
         @Override
@@ -173,15 +184,6 @@ public class ContractDocumentDto {
         @JsonValue
         public String value() {
             return this.value;
-        }
-
-        @JsonCreator
-        public static DocumentType fromValue(final String value) {
-            final DocumentType constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            }
-            return constant;
         }
     }
 }

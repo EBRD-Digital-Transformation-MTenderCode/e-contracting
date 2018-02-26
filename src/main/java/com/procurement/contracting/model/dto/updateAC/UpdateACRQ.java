@@ -15,9 +15,8 @@ public class UpdateACRQ {
     private final UpdateACContractRQDto contracts;
 
     public UpdateACRQ(@JsonProperty("contracts")
-                            @Valid
-                            @NotNull
-                            final UpdateACContractRQDto contracts) {
+                      @Valid
+                      @NotNull final UpdateACContractRQDto contracts) {
         this.contracts = contracts;
     }
 }

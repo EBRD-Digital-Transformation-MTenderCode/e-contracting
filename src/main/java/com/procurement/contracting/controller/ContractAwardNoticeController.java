@@ -30,7 +30,7 @@ public class ContractAwardNoticeController {
                                                  @RequestParam(value = "owner") final String owner,
                                                  @RequestParam(value = "cpid") final String cpid) {
 
-        ResponseDto responseDto = canServise.createCAN(cpid, owner, contractRQDto);
+        final ResponseDto responseDto = canServise.createCAN(cpid, owner, contractRQDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -40,7 +40,7 @@ public class ContractAwardNoticeController {
                                                 @RequestParam(value = "cpid") final String cpId,
                                                 @RequestParam(value = "idPlatform") final String idPlatform) {
 
-        ResponseDto responseDto = canServise.checkCAN(cpId, token, idPlatform);
+        final ResponseDto responseDto = canServise.checkCAN(cpId, token, idPlatform);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

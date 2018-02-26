@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.contracting.databind.LocalDateTimeDeserializer;
 import com.procurement.contracting.databind.LocalDateTimeSerializer;
+import com.procurement.contracting.model.dto.AmendmentDto;
 import com.procurement.contracting.model.dto.ClassificationDto;
 import com.procurement.contracting.model.dto.ContractBudgetSourceDto;
 import com.procurement.contracting.model.dto.ContractDocumentDto;
 import com.procurement.contracting.model.dto.ContractPeriodDto;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
-import com.procurement.contracting.model.dto.AmendmentDto;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -79,11 +79,9 @@ public class UpdateACContractRQDto {
     private final LocalDateTime dateSigned;
 
     @JsonProperty("documents")
-    @JsonDeserialize(as = LinkedHashSet.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
-    private final Set<ContractDocumentDto> documents;
-
+    private final List<ContractDocumentDto> documents;
 
     @JsonProperty("relatedProcesses")
     @JsonDeserialize(as = LinkedHashSet.class)
@@ -97,46 +95,35 @@ public class UpdateACContractRQDto {
     private final List<AmendmentDto> amendments;
 
     public UpdateACContractRQDto(@JsonProperty("id")
-                               @NotNull
-                               final String id,
+                                 @NotNull final String id,
                                  @JsonProperty("budgetSource")
-                               @NotEmpty
-                               @Valid
-                               final List<ContractBudgetSourceDto> budgetSource,
+                                 @NotEmpty
+                                 @Valid final List<ContractBudgetSourceDto> budgetSource,
                                  @JsonProperty("title")
-                               @NotNull
-                               final String title,
+                                 @NotNull final String title,
                                  @JsonProperty("description")
-                               @NotNull
-                               final String description,
+                                 @NotNull final String description,
                                  @JsonProperty("statusDetails")
-                               @NotNull
-                               @Valid
-                               final ContractStatusDetails statusDetails,
+                                 @NotNull
+                                 @Valid final ContractStatusDetails statusDetails,
                                  @JsonProperty("classification")
                                  @NotNull
-                                 @Valid
-                                 final ClassificationDto classification,
+                                 @Valid final ClassificationDto classification,
                                  @JsonProperty("period")
-                               @Valid
-                               @NotNull
-                               final ContractPeriodDto period,
+                                 @Valid
+                                 @NotNull final ContractPeriodDto period,
                                  @JsonProperty("dateSigned")
-                               @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-                               @JsonInclude(JsonInclude.Include.NON_NULL)
-                               final LocalDateTime dateSigned,
+                                 @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+                                 @JsonInclude(JsonInclude.Include.NON_NULL) final LocalDateTime dateSigned,
                                  @JsonProperty("documents")
-                               @JsonInclude(JsonInclude.Include.NON_NULL)
-                               @Valid
-                               final LinkedHashSet<ContractDocumentDto> documents,
+                                 @JsonInclude(JsonInclude.Include.NON_NULL)
+                                 @Valid final List<ContractDocumentDto> documents,
                                  @JsonProperty("relatedProcesses")
-                               @NotNull
-                               @Valid
-                               final LinkedHashSet<UpdateACRelatedProcessDto> relatedProcesses,
+                                 @NotNull
+                                 @Valid final LinkedHashSet<UpdateACRelatedProcessDto> relatedProcesses,
                                  @JsonProperty("amendments")
-                               @NotNull
-                               @Valid
-                               final List<AmendmentDto> amendments) {
+                                 @NotNull
+                                 @Valid final List<AmendmentDto> amendments) {
         this.id = id;
         this.budgetSource = budgetSource;
         this.title = title;
@@ -179,7 +166,7 @@ public class UpdateACContractRQDto {
                                   .append(title, rhs.title)
                                   .append(description, rhs.description)
                                   .append(statusDetails, rhs.statusDetails)
-                                  .append(classification,rhs.classification)
+                                  .append(classification, rhs.classification)
                                   .append(period, rhs.period)
                                   .append(dateSigned, rhs.dateSigned)
                                   .append(documents, rhs.documents)
@@ -187,5 +174,4 @@ public class UpdateACContractRQDto {
                                   .append(amendments, rhs.amendments)
                                   .isEquals();
     }
-
 }

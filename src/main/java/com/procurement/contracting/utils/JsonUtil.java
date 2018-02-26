@@ -29,6 +29,16 @@ public class JsonUtil {
         this.mapper = objectMapper;
     }
 
+    public <T> String toJsonfromView(final T object, final Class<?> serializationView) {
+        Objects.requireNonNull(object);
+        try {
+            return mapper.writerWithView(serializationView)
+                         .writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> String toJson(final T object) {
         Objects.requireNonNull(object);
         try {

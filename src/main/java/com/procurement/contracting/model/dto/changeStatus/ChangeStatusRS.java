@@ -15,9 +15,8 @@ public class ChangeStatusRS {
     private final ChangeStatusContractRSDto contracts;
 
     public ChangeStatusRS(@JsonProperty("contracts")
-                            @Valid
-                            @NotNull
-                            final ChangeStatusContractRSDto contracts) {
+                          @Valid
+                          @NotNull final ChangeStatusContractRSDto contracts) {
         this.contracts = contracts;
     }
 }

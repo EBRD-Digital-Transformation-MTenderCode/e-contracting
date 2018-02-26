@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createAC;
+package com.procurement.contracting.model.dto.awardedContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +25,7 @@ public class CreateACContractRQDto {
 
     @JsonCreator
     public CreateACContractRQDto(@JsonProperty("id")
-                               @NotNull final String id,
+                                 @NotNull final String id,
                                  @JsonProperty("awardID") @NotNull final String awardID) {
 
         this.id = id;
@@ -53,5 +53,4 @@ public class CreateACContractRQDto {
                                   .append(awardID, rhs.awardID)
                                   .isEquals();
     }
-
 }

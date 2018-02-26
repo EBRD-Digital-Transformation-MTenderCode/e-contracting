@@ -1,4 +1,3 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,10 +24,9 @@ public class AmendmentDto {
     private final String description;
 
     public AmendmentDto(@JsonProperty("rationale")
-                                        @NotNull final String rationale,
+                        @NotNull final String rationale,
                         @JsonProperty("description")
-                                        @JsonInclude(JsonInclude.Include.NON_NULL)
-                                        final String description) {
+                        @JsonInclude(JsonInclude.Include.NON_NULL) final String description) {
         this.rationale = rationale;
         this.description = description;
     }

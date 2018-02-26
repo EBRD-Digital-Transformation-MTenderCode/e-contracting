@@ -13,8 +13,7 @@ public enum ContractStatusDetails {
     COMPLETE("complete"),
     UNSUCCESSFUL("unsuccessful");
 
-    private final String value;
-    private final static Map<String, ContractStatusDetails> CONSTANTS = new HashMap<>();
+    private static final Map<String, ContractStatusDetails> CONSTANTS = new HashMap<>();
 
     static {
         for (final ContractStatusDetails c : values()) {
@@ -22,8 +21,19 @@ public enum ContractStatusDetails {
         }
     }
 
-    private ContractStatusDetails(final String value) {
+    private final String value;
+
+    ContractStatusDetails(final String value) {
         this.value = value;
+    }
+
+    @JsonCreator
+    public static ContractStatusDetails fromValue(final String value) {
+        final ContractStatusDetails constant = CONSTANTS.get(value);
+        if (constant == null) {
+            throw new IllegalArgumentException(value);
+        }
+        return constant;
     }
 
     @Override
@@ -34,14 +44,5 @@ public enum ContractStatusDetails {
     @JsonValue
     public String value() {
         return this.value;
-    }
-
-    @JsonCreator
-    public static ContractStatusDetails fromValue(final String value) {
-        final ContractStatusDetails constant = CONSTANTS.get(value);
-        if (constant == null) {
-            throw new IllegalArgumentException(value);
-        }
-        return constant;
     }
 }

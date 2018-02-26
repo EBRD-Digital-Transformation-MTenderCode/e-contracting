@@ -14,7 +14,7 @@ public class CreateCanRS {
     private final List<CreateCanCanRSDto> contracts;
 
     public CreateCanRS(@JsonProperty("CANs")
-                                   @NotNull final List<CreateCanCanRSDto> contracts) {
+                       @NotNull final List<CreateCanCanRSDto> contracts) {
         this.contracts = contracts;
     }
 }

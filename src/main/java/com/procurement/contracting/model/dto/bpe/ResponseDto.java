@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ResponseDto<T> {
 
     @JsonProperty("success")
-    private final Boolean success;
+    private Boolean success;
 
     @JsonProperty("responseDetail")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final List<ResponseDetailsDto> responseDetail;
+    private List<ResponseDetailsDto> responseDetail;
 
     @JsonProperty("jsonData")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final T data;
+    private T data;
 
     public ResponseDto(@JsonProperty("success") final Boolean success,
                        @JsonProperty("responseDetail") final List<ResponseDetailsDto> responseDetail,
@@ -26,7 +28,6 @@ public class ResponseDto<T> {
         this.responseDetail = responseDetail;
         this.data = data;
     }
-
 
     @Getter
     public static class ResponseDetailsDto {

@@ -1,4 +1,3 @@
-
 package com.procurement.contracting.model.dto.updateAC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -44,19 +43,15 @@ public class UpdateACRelatedProcessDto {
     private final RelatedProcessScheme scheme;
 
     public UpdateACRelatedProcessDto(@JsonProperty("relationship")
-                                             @NotEmpty
-                                             @Valid
-                                             final List<RelatedProcessType> relationship,
+                                     @NotEmpty
+                                     @Valid final List<RelatedProcessType> relationship,
                                      @JsonProperty("title")
-                                             @JsonInclude(JsonInclude.Include.NON_NULL)
-                                             final String title,
+                                     @JsonInclude(JsonInclude.Include.NON_NULL) final String title,
                                      @JsonProperty("identifier")
-                                             @NotNull
-                                             final String identifier,
+                                     @NotNull final String identifier,
                                      @JsonProperty("scheme")
-                                             @NotNull
-                                             @Valid
-                                             final RelatedProcessScheme scheme) {
+                                     @NotNull
+                                     @Valid final RelatedProcessScheme scheme) {
         this.relationship = relationship;
         this.title = title;
         this.identifier = identifier;
@@ -100,8 +95,7 @@ public class UpdateACRelatedProcessDto {
         REPLACEMENT_PROCESS("replacementProcess"),
         RENEWAL_PROCESS("renewalProcess");
 
-        private final String value;
-        private final static Map<String, RelatedProcessType> CONSTANTS = new HashMap<>();
+        private static final Map<String, RelatedProcessType> CONSTANTS = new HashMap<>();
 
         static {
             for (final RelatedProcessType c : values()) {
@@ -109,18 +103,10 @@ public class UpdateACRelatedProcessDto {
             }
         }
 
-        private RelatedProcessType(final String value) {
+        private final String value;
+
+        RelatedProcessType(final String value) {
             this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        @JsonValue
-        public String value() {
-            return this.value;
         }
 
         @JsonCreator
@@ -131,23 +117,6 @@ public class UpdateACRelatedProcessDto {
             }
             return constant;
         }
-    }
-
-    public enum RelatedProcessScheme {
-        OCID("ocid");
-
-        private final String value;
-        private final static Map<String, RelatedProcessScheme> CONSTANTS = new HashMap<>();
-
-        static {
-            for (final RelatedProcessScheme c : values()) {
-                CONSTANTS.put(c.value, c);
-            }
-        }
-
-        private RelatedProcessScheme(final String value) {
-            this.value = value;
-        }
 
         @Override
         public String toString() {
@@ -158,6 +127,24 @@ public class UpdateACRelatedProcessDto {
         public String value() {
             return this.value;
         }
+    }
+
+    public enum RelatedProcessScheme {
+        OCID("ocid");
+
+        private static final Map<String, RelatedProcessScheme> CONSTANTS = new HashMap<>();
+
+        static {
+            for (final RelatedProcessScheme c : values()) {
+                CONSTANTS.put(c.value, c);
+            }
+        }
+
+        private final String value;
+
+        RelatedProcessScheme(final String value) {
+            this.value = value;
+        }
 
         @JsonCreator
         public static RelatedProcessScheme fromValue(final String value) {
@@ -166,6 +153,16 @@ public class UpdateACRelatedProcessDto {
                 throw new IllegalArgumentException(value);
             }
             return constant;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        @JsonValue
+        public String value() {
+            return this.value;
         }
     }
 }

@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @JsonPropertyOrder("canCreateContract")
 @Getter
-public class CheckCANRS {
+public class CheckCanRS {
     @JsonProperty("canCreateContract")
     @NotNull
     private final Boolean canCreateContract;
 
-    public CheckCANRS(@JsonProperty("canCreateContract") @NotNull Boolean canCreateContract) {
+    public CheckCanRS(@JsonProperty("canCreateContract") @NotNull final Boolean canCreateContract) {
         this.canCreateContract = canCreateContract;
     }
 }

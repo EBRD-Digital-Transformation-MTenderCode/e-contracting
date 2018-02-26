@@ -1,11 +1,12 @@
-
 package com.procurement.contracting.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.procurement.contracting.model.dto.createAC.CreateACUnitDto;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.procurement.contracting.jsonview.View;
+import com.procurement.contracting.model.dto.awardedContract.CreateACUnitDto;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.validation.Valid;
@@ -27,33 +28,40 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class ContractItemDto {
     @JsonProperty("id")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final String id;
 
     @JsonProperty("description")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final String description;
 
     @JsonProperty("classification")
     @NotNull
     @Valid
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final ClassificationDto classification;
 
     @JsonProperty("additionalClassifications")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final Set<ClassificationDto> additionalClassifications;
 
     @JsonProperty("quantity")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final Double quantity;
 
     @JsonProperty("unit")
     @Valid
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final CreateACUnitDto unit;
 
     @JsonProperty("relatedLot")
     @NotNull
+    @JsonView({View.CreateACView.class, View.UpdateACView.class})
     private final String relatedLot;
 
     @JsonCreator
@@ -61,7 +69,7 @@ public class ContractItemDto {
                            @JsonProperty("description") final String description,
                            @JsonProperty("classification") final ClassificationDto classification,
                            @JsonProperty("additionalClassifications") final LinkedHashSet<ClassificationDto>
-                    additionalClassifications,
+                               additionalClassifications,
                            @JsonProperty("quantity") final Double quantity,
                            @JsonProperty("unit") final CreateACUnitDto unit,
                            @JsonProperty("relatedLot") final String relatedLot) {

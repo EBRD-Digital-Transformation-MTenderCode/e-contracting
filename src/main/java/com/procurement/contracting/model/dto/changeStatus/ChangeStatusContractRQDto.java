@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.procurement.contracting.model.dto.AmendmentDto;
 import com.procurement.contracting.model.dto.ContractDocumentDto;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
-import com.procurement.contracting.model.dto.AmendmentDto;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,10 +44,11 @@ public class ChangeStatusContractRQDto {
     @Valid
     private final List<AmendmentDto> amendments;
 
-    public ChangeStatusContractRQDto( @JsonProperty("id")@NotNull final String id,
-                                      @JsonProperty("statusDetails") @NotNull @Valid final ContractStatusDetails statusDetails,
-                                      @JsonProperty("documents") final @Valid Set<ContractDocumentDto> documents,
-                                      @JsonProperty("amendments") final @NotNull @Valid List<AmendmentDto> amendments) {
+    public ChangeStatusContractRQDto(@JsonProperty("id") @NotNull final String id,
+                                     @JsonProperty("statusDetails") @NotNull @Valid final ContractStatusDetails
+                                         statusDetails,
+                                     @JsonProperty("documents") final @Valid Set<ContractDocumentDto> documents,
+                                     @JsonProperty("amendments") final @NotNull @Valid List<AmendmentDto> amendments) {
         this.id = id;
         this.statusDetails = statusDetails;
         this.documents = documents;

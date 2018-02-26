@@ -1,5 +1,4 @@
-
-package com.procurement.contracting.model.dto.createAC;
+package com.procurement.contracting.model.dto.awardedContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,10 +22,9 @@ public class CreateACBudgetSourceDto {
     @NotNull
     private final Double amount;
 
-
     @JsonCreator
-    public CreateACBudgetSourceDto(@JsonProperty("budgetBreakdownID")@NotNull final String id,
-                                   @JsonProperty("amount")@NotNull final Double amount) {
+    public CreateACBudgetSourceDto(@JsonProperty("budgetBreakdownID") @NotNull final String id,
+                                   @JsonProperty("amount") @NotNull final Double amount) {
         this.id = id;
         this.amount = amount;
     }

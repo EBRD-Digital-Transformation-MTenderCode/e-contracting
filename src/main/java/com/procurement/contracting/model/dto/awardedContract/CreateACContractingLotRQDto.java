@@ -1,9 +1,7 @@
-
-package com.procurement.contracting.model.dto.createAC;
+package com.procurement.contracting.model.dto.awardedContract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -27,7 +25,6 @@ public class CreateACContractingLotRQDto {
     @JsonProperty("description")
     @NotNull
     private final String description;
-
 
     public CreateACContractingLotRQDto(@JsonProperty("id") @NotNull final String id,
                                        @JsonProperty("title") @NotNull final String title,

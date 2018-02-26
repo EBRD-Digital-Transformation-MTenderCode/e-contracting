@@ -20,9 +20,9 @@ public class CreateCanCanRSDto {
     private final CreateCanContractRSDto contracts;
 
     public CreateCanCanRSDto(@JsonProperty("token")
-                             @NotNull String token,
+                             @NotNull final String token,
                              @JsonProperty("contracts")
-                             @NotNull CreateCanContractRSDto contracts) {
+                             @NotNull final CreateCanContractRSDto contracts) {
         this.token = token;
         this.contracts = contracts;
     }

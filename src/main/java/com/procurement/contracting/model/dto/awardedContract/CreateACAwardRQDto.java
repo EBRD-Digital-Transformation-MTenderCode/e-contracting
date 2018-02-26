@@ -1,5 +1,4 @@
-
-package com.procurement.contracting.model.dto.createAC;
+package com.procurement.contracting.model.dto.awardedContract;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.contracting.databind.LocalDateTimeDeserializer;
 import com.procurement.contracting.databind.LocalDateTimeSerializer;
-import com.procurement.contracting.model.dto.ContractStatus;
 import com.procurement.contracting.model.dto.ContractValueDto;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -117,14 +115,14 @@ public class CreateACAwardRQDto {
                                   .append(relatedLots, rhs.relatedLots)
                                   .isEquals();
     }
+
     public enum Status {
         PENDING("pending"),
         ACTIVE("active"),
         CANCELLED("cancelled"),
         UNSUCCESSFUL("unsuccessful");
 
-        private final String value;
-        private final static Map<String, Status> CONSTANTS = new HashMap<>();
+        private static final Map<String, Status> CONSTANTS = new HashMap<>();
 
         static {
             for (final Status c : values()) {
@@ -132,8 +130,19 @@ public class CreateACAwardRQDto {
             }
         }
 
+        private final String value;
+
         Status(final String value) {
             this.value = value;
+        }
+
+        @JsonCreator
+        public static Status fromValue(final String value) {
+            final Status constant = CONSTANTS.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            }
+            return constant;
         }
 
         @Override
@@ -144,15 +153,6 @@ public class CreateACAwardRQDto {
         @JsonValue
         public String value() {
             return this.value;
-        }
-
-        @JsonCreator
-        public static Status fromValue(final String value) {
-            final Status constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            }
-            return constant;
         }
 
     }
