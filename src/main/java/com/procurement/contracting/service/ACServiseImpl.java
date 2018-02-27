@@ -193,6 +193,24 @@ public class ACServiseImpl implements ACServise {
                     }
                 }
 
+                //budget
+
+                double contractBudget = acDto.getContracts().getValue().getAmount();
+                double sumBudgetSources= sumBudgetSourceFromRequestDto(updateACRQ);
+
+                if(contractBudget==sumBudgetSources){
+                    acDto.getContracts().setBudgetSource(updateACRQ.getContracts().getBudgetSource());
+                }else {
+                    final ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto(
+                        "code",
+                        "budget sum is invalid"
+                    );
+                    final List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
+                    details.add(responseDetailsDto);
+                    responseDto.setSuccess(false);
+                    responseDto.setResponseDetail(details);
+                }
+
                 acEntity.setReleaseDate(dateUtil.getNowUTC());
                 acEntity.setJsonData(jsonUtil.toJson(acDto));
                 acRepository.save(acEntity);
@@ -359,5 +377,13 @@ public class ACServiseImpl implements ACServise {
             }
         }
         return true;
+    }
+
+    private double sumBudgetSourceFromRequestDto(UpdateACRQ updateACRQ){
+        double sumBudgetSources=0;
+        for (int i = 0; i < updateACRQ.getContracts().getBudgetSource().size(); i++) {
+            sumBudgetSources+=updateACRQ.getContracts().getBudgetSource().get(i).getAmount();
+        }
+        return sumBudgetSources;
     }
 }

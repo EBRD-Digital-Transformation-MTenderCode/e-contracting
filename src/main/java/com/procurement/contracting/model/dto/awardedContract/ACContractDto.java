@@ -57,7 +57,7 @@ public class ACContractDto {
     @JsonProperty("budgetSource")
     @NotEmpty
     @Valid
-    private ContractBudgetSourceDto budgetSource;
+    private List<ContractBudgetSourceDto> budgetSource;
     @JsonProperty("title")
     @NotNull
     private String title;
@@ -110,7 +110,7 @@ public class ACContractDto {
     public ACContractDto(@JsonProperty("id") @NotNull final String id,
                          @JsonProperty("awardId") @NotNull final String awardId,
                          @JsonProperty("extendsContractId") @NotNull final String extendsContractId,
-                         @JsonProperty("budgetSource") @NotEmpty @Valid final ContractBudgetSourceDto budgetSource,
+                         @JsonProperty("budgetSource") @NotEmpty @Valid final List<ContractBudgetSourceDto> budgetSource,
                          @JsonProperty("title") @NotNull final String title,
                          @JsonProperty("description") @NotNull final String description,
                          @JsonProperty("status") @NotNull @Valid final ContractStatus status,
