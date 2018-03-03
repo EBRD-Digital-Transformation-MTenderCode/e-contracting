@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.createCAN;
+package com.procurement.contracting.model.dto.contractAwardNotice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

@@ -10,7 +10,8 @@ public enum ContractStatus {
     ACTIVE("active"),
     CANCELLED("cancelled"),
     COMPLETE("complete"),
-    TERMINATED("terminated");
+    TERMINATED("terminated"),
+    UNSUCCESSFUL("unsuccessful");
 
     private static final Map<String, ContractStatus> CONSTANTS = new HashMap<>();
 

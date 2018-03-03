@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_contract_award_notice (
     cp_id UUID,
     can_id UUID,
     ac_id UUID,
-    awardId text,
+    award_id text,
     owner text,
     status text,
     status_details text,
-    primary key(cp_id,can_id)
+    primary key(cp_id,can_id,award_id)
 );
 
 CREATE TABLE IF NOT EXISTS  ocds.contracting_awarded_contract (

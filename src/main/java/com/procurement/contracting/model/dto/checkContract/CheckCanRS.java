@@ -1,4 +1,4 @@
-package com.procurement.contracting.model.dto.checkCAN;
+package com.procurement.contracting.model.dto.checkContract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

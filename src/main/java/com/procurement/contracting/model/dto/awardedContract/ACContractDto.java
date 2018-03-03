@@ -110,22 +110,23 @@ public class ACContractDto {
     public ACContractDto(@JsonProperty("id") @NotNull final String id,
                          @JsonProperty("awardId") @NotNull final String awardId,
                          @JsonProperty("extendsContractId") @NotNull final String extendsContractId,
-                         @JsonProperty("budgetSource") @NotEmpty @Valid final List<ContractBudgetSourceDto> budgetSource,
+                         @JsonProperty("budgetSource") @NotEmpty @Valid final List<ContractBudgetSourceDto>
+                             budgetSource,
                          @JsonProperty("title") @NotNull final String title,
                          @JsonProperty("description") @NotNull final String description,
                          @JsonProperty("status") @NotNull @Valid final ContractStatus status,
                          @JsonProperty("statusDetails") @NotNull @Valid final ContractStatusDetails statusDetails,
                          @JsonProperty("classification") @NotNull @Valid final ClassificationDto classification,
-                         @JsonProperty("period") @JsonInclude(JsonInclude.Include.ALWAYS) @Valid @NotNull
-                         final ContractPeriodDto period,
+                         @JsonProperty("period") @JsonInclude(JsonInclude.Include.ALWAYS) @Valid @NotNull final
+                         ContractPeriodDto period,
                          @JsonProperty("value") @Valid @NotNull final ContractValueDto value,
                          @JsonProperty("items") @NotEmpty @Valid final List<ContractItemDto> items,
                          @JsonProperty("dateSigned") @JsonDeserialize(using = LocalDateTimeDeserializer.class)
                          @JsonInclude(JsonInclude.Include.NON_NULL) final LocalDateTime dateSigned,
                          @JsonProperty("documents")
                          @JsonInclude(JsonInclude.Include.NON_NULL) @Valid final List<ContractDocumentDto> documents,
-                         @JsonProperty("relatedProcesses") @NotNull @Valid
-                         final List<UpdateACRelatedProcessDto> relatedProcesses,
+                         @JsonProperty("relatedProcesses") @NotNull @Valid final List<UpdateACRelatedProcessDto>
+                             relatedProcesses,
                          @JsonProperty("amendments") @NotNull @Valid final List<AmendmentDto> amendments) {
         this.id = id;
         this.awardId = awardId;

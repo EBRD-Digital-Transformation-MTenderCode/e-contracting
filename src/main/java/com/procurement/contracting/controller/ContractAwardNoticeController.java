@@ -1,7 +1,7 @@
 package com.procurement.contracting.controller;
 
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
-import com.procurement.contracting.model.dto.createCAN.CreateCanRQ;
+import com.procurement.contracting.model.dto.contractAwardNotice.CreateCanRQ;
 import com.procurement.contracting.service.CANServise;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,6 +41,15 @@ public class ContractAwardNoticeController {
                                                 @RequestParam(value = "idPlatform") final String idPlatform) {
 
         final ResponseDto responseDto = canServise.checkCAN(cpId, token, idPlatform);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    public ResponseEntity<ResponseDto> changeStatus(@Valid @RequestParam(value = "awardId") final String awardId,
+                                                    @RequestParam(value = "cpid") final String cpId) {
+
+        final ResponseDto responseDto = canServise.changeStatus(cpId, awardId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

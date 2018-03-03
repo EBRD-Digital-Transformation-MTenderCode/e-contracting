@@ -46,8 +46,8 @@ public class ACDto {
 
     public ACDto(@JsonProperty("token") @NotNull final String token,
                  @JsonProperty("statusCAN") @Valid @NotNull final ContractStatus statusCAN,
-                 @JsonProperty("statusDetailsCAN") @JsonInclude(JsonInclude.Include.ALWAYS)
-                 final ContractStatusDetails statusDetailsCAN,
+                 @JsonProperty("statusDetailsCAN") @JsonInclude(JsonInclude.Include.ALWAYS) final
+                 ContractStatusDetails statusDetailsCAN,
                  @JsonProperty("contracts") @NotEmpty @Valid final ACContractDto contracts) {
         this.token = token;
         this.statusCAN = statusCAN;

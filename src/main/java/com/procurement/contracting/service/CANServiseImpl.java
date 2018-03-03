@@ -4,12 +4,15 @@ import com.fasterxml.uuid.Generators;
 import com.procurement.contracting.model.dto.ContractStatus;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
-import com.procurement.contracting.model.dto.checkCAN.CheckCanRS;
-import com.procurement.contracting.model.dto.createCAN.CreateCanCanRSDto;
-import com.procurement.contracting.model.dto.createCAN.CreateCanContractRSDto;
-import com.procurement.contracting.model.dto.createCAN.CreateCanRQ;
-import com.procurement.contracting.model.dto.createCAN.CreateCanRS;
+import com.procurement.contracting.model.dto.checkContract.CheckCanRS;
+import com.procurement.contracting.model.dto.contractAwardNotice.ChangeStatusCanRS;
+import com.procurement.contracting.model.dto.contractAwardNotice.CreateCanCanRSDto;
+import com.procurement.contracting.model.dto.contractAwardNotice.CreateCanContractRSDto;
+import com.procurement.contracting.model.dto.contractAwardNotice.CreateCanRQ;
+import com.procurement.contracting.model.dto.contractAwardNotice.CreateCanRS;
+import com.procurement.contracting.model.entity.ACEntity;
 import com.procurement.contracting.model.entity.CANEntity;
+import com.procurement.contracting.repository.ACRepository;
 import com.procurement.contracting.repository.CANRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CANServiseImpl implements CANServise {
 
+    public static final String CAN_NOT_FOUND = "CAN not found";
     private final CANRepository canRepository;
+    private final ACRepository acRepository;
 
-    public CANServiseImpl(final CANRepository canRepository) {
+    public CANServiseImpl(final CANRepository canRepository, final ACRepository acRepository) {
         this.canRepository = canRepository;
+        this.acRepository = acRepository;
     }
 
     @Override
@@ -54,25 +60,35 @@ public class CANServiseImpl implements CANServise {
                     responseDto.setData(new CheckCanRS(false));
                 }
             } else {
-
-                final ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto(
-                    "code",
-                    "invalid owner"
-                );
-                final List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
-                details.add(responseDetailsDto);
-                responseDto.setSuccess(false);
-                responseDto.setResponseDetail(details);
+                responseDto.setError("invalid owner");
             }
         } else {
-            final ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto(
-                "code",
-                "CAN not found"
-            );
-            final List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
-            details.add(responseDetailsDto);
-            responseDto.setSuccess(false);
-            responseDto.setResponseDetail(details);
+            responseDto.setError(CAN_NOT_FOUND);
+        }
+        return responseDto;
+    }
+
+    @Override
+    public ResponseDto changeStatus(final String cpId, final String awardId) {
+        final CANEntity canEntity = canRepository.getByCpIdAndAwardId(UUID.fromString(cpId), awardId);
+        final ResponseDto responseDto = new ResponseDto(null, null, null);
+        if (canEntity != null) {
+            if (!isACCreated(canEntity)
+                || isStatusACCorresponds(canEntity, ContractStatus.CANCELLED)) {
+                canEntity.setStatus(ContractStatus.UNSUCCESSFUL.toString());
+                canEntity.setStatusDetails(null);
+                responseDto.setSuccess(true);
+                responseDto.setData(convertEntityToChangeStatusDto(canEntity));
+            } else if (isStatusACCorresponds(canEntity, ContractStatus.TERMINATED)) {
+                canEntity.setStatus(ContractStatus.CANCELLED.toString());
+                canEntity.setStatusDetails(null);
+                responseDto.setSuccess(true);
+                responseDto.setData(convertEntityToChangeStatusDto(canEntity));
+            } else {
+                responseDto.setError("do nothing");
+            }
+        } else {
+            responseDto.setError(CAN_NOT_FOUND);
         }
         return responseDto;
     }
@@ -95,11 +111,21 @@ public class CANServiseImpl implements CANServise {
         return canEntity;
     }
 
-    private CreateCanCanRSDto convertEntityToDto(final CANEntity contractAwardNoticeEntity) {
+    private CreateCanCanRSDto convertEntityToCreateCANDto(final CANEntity contractAwardNoticeEntity) {
 
         return new CreateCanCanRSDto(contractAwardNoticeEntity.getCanId()
                                                               .toString(),
                                      new CreateCanContractRSDto(contractAwardNoticeEntity.getCanId()
+                                                                                         .toString(),
+                                                                contractAwardNoticeEntity.getAwardId(),
+                                                                ContractStatus.fromValue(contractAwardNoticeEntity
+                                                                                             .getStatus()),
+                                                                ContractStatusDetails.fromValue(
+                                                                    contractAwardNoticeEntity.getStatusDetails())));
+    }
+
+    private ChangeStatusCanRS convertEntityToChangeStatusDto(final CANEntity contractAwardNoticeEntity) {
+        return new ChangeStatusCanRS(new CreateCanContractRSDto(contractAwardNoticeEntity.getCanId()
                                                                                          .toString(),
                                                                 contractAwardNoticeEntity.getAwardId(),
                                                                 ContractStatus.fromValue(contractAwardNoticeEntity
@@ -124,8 +150,26 @@ public class CANServiseImpl implements CANServise {
         final List<CreateCanCanRSDto> dtos = new ArrayList<>();
 
         for (int i = 0; i < canEntities.size(); i++) {
-            dtos.add(convertEntityToDto(canEntities.get(i)));
+            dtos.add(convertEntityToCreateCANDto(canEntities.get(i)));
         }
         return dtos;
+    }
+
+    private boolean isACCreated(final CANEntity canEntity) {
+        if (canEntity.getAcId() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isStatusACCorresponds(final CANEntity canEntity, final ContractStatus contractStatus) {
+        if (isACCreated(canEntity)) {
+            final ACEntity acEntity = acRepository.getByCpIdAndAcId(canEntity.getCpId(), canEntity.getAcId());
+            if (acEntity.getStatus()
+                        .equals(contractStatus.toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

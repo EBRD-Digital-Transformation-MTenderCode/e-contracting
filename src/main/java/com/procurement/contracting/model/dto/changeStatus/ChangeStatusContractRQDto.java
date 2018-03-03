@@ -9,7 +9,6 @@ import com.procurement.contracting.model.dto.ContractDocumentDto;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -37,7 +36,7 @@ public class ChangeStatusContractRQDto {
     @JsonDeserialize(as = LinkedHashSet.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Valid
-    private final Set<ContractDocumentDto> documents;
+    private final List<ContractDocumentDto> documents;
 
     @JsonProperty("amendments")
     @NotNull
@@ -47,7 +46,7 @@ public class ChangeStatusContractRQDto {
     public ChangeStatusContractRQDto(@JsonProperty("id") @NotNull final String id,
                                      @JsonProperty("statusDetails") @NotNull @Valid final ContractStatusDetails
                                          statusDetails,
-                                     @JsonProperty("documents") final @Valid Set<ContractDocumentDto> documents,
+                                     @JsonProperty("documents") final @Valid List<ContractDocumentDto> documents,
                                      @JsonProperty("amendments") final @NotNull @Valid List<AmendmentDto> amendments) {
         this.id = id;
         this.statusDetails = statusDetails;

@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.bpe;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,17 @@ public class ResponseDto<T> {
         this.success = success;
         this.responseDetail = responseDetail;
         this.data = data;
+    }
+
+    public void setError(final String message) {
+        final ResponseDto.ResponseDetailsDto responseDetailsDto = new ResponseDto.ResponseDetailsDto(
+            "code",
+            message
+        );
+        final List<ResponseDto.ResponseDetailsDto> details = new ArrayList<>();
+        details.add(responseDetailsDto);
+        this.success = false;
+        this.responseDetail = details;
     }
 
     @Getter

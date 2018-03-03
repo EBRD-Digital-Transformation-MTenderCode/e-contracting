@@ -69,7 +69,7 @@ public class ContractDocumentDto {
                                @JsonProperty("url") final URI url,
                                @JsonProperty("datePublished")
                                @JsonDeserialize(using = LocalDateTimeDeserializer.class) final LocalDateTime
-                                       datePublished,
+                                   datePublished,
                                @JsonProperty("language") final String language) {
         this.id = id;
         this.documentType = documentType;
