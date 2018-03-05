@@ -174,11 +174,11 @@ public class ACServiseImpl implements ACServise {
                     }
 
                     //budget
-                   final double contractBudget = acDto.getContracts()
-                                                 .getValue()
-                                                 .getAmount();
-                   final double sumBudgetSources = sumBudgetSourceFromRequestDto(updateACRQ);
-                    if (contractBudget == sumBudgetSources){
+                    final double contractBudget = acDto.getContracts()
+                                                       .getValue()
+                                                       .getAmount();
+                    final double sumBudgetSources = sumBudgetSourceFromRequestDto(updateACRQ);
+                    if (contractBudget == sumBudgetSources) {
                         acDto.getContracts()
                              .setBudgetSource(updateACRQ.getContracts()
                                                         .getBudgetSource());
@@ -222,7 +222,7 @@ public class ACServiseImpl implements ACServise {
                                   .getAmendments()
                                   .size() > 0) {
                     final List<ContractDocumentDto> docs = changeStatusRQ.getContracts()
-                                                                   .getDocuments();
+                                                                         .getDocuments();
                     switch (changeStatusRQ.getContracts()
                                           .getStatusDetails()) {
                         case ACTIVE:

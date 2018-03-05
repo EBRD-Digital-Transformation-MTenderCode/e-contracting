@@ -73,13 +73,13 @@ public class CANServiseImpl implements CANServise {
         final CANEntity canEntity = canRepository.getByCpIdAndAwardId(UUID.fromString(cpId), awardId);
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (canEntity != null) {
-            if (!isACCreated(canEntity)
-                || isStatusACCorresponds(canEntity, ContractStatus.CANCELLED)) {
+            if (!isACCreated(canEntity)) {
                 canEntity.setStatus(ContractStatus.UNSUCCESSFUL.toString());
                 canEntity.setStatusDetails(null);
                 responseDto.setSuccess(true);
                 responseDto.setData(convertEntityToChangeStatusDto(canEntity));
-            } else if (isStatusACCorresponds(canEntity, ContractStatus.TERMINATED)) {
+            } else if (isStatusACCorresponds(canEntity, ContractStatus.TERMINATED)
+                || isStatusACCorresponds(canEntity, ContractStatus.CANCELLED)) {
                 canEntity.setStatus(ContractStatus.CANCELLED.toString());
                 canEntity.setStatusDetails(null);
                 responseDto.setSuccess(true);
