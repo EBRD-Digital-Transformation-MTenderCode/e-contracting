@@ -18,7 +18,7 @@ public class CANEntity {
     private UUID cpId;
     @PrimaryKeyColumn(name = "can_id", type = PrimaryKeyType.CLUSTERED)
     private UUID canId;
-    @Column(value = "awardId")
+    @Column(value = "award_id")
     private String awardId;
     @Column(value = "owner")
     private String owner;
