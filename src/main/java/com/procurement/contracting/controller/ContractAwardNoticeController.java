@@ -44,7 +44,7 @@ public class ContractAwardNoticeController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("changeStatusCAN")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public ResponseEntity<ResponseDto> changeStatus(@Valid @RequestParam(value = "awardId") final String awardId,
                                                     @RequestParam(value = "cpid") final String cpId) {
