@@ -257,11 +257,11 @@ public class ACServiseImpl implements ACServise {
                             if (isValidDocumentsFromStatusComplete(changeStatusRQ.getContracts()
                                                                                  .getDocuments())) {
                                 acDto.getContracts()
-                                     .setStatusDetails(ContractStatusDetails.CANCELLED);
+                                     .setStatusDetails(ContractStatusDetails.COMPLETE);
                                 acDto.getContracts()
-                                     .setStatus(ContractStatus.CANCELLED);
-                                acEntity.setStatusDetails(ContractStatus.CANCELLED.toString());
-                                acEntity.setStatus(ContractStatus.CANCELLED.toString());
+                                     .setStatus(ContractStatus.COMPLETE);
+                                acEntity.setStatusDetails(ContractStatus.COMPLETE.toString());
+                                acEntity.setStatus(ContractStatus.COMPLETE.toString());
                             } else {
                                 responseDto.setError(DOCUMENTS_IS_INVALID);
                             }
