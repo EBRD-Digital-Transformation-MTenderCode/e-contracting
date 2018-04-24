@@ -6,8 +6,8 @@ import com.procurement.contracting.model.dto.changeStatus.ChangeStatusRQ;
 import com.procurement.contracting.model.dto.updateAC.UpdateACRQ;
 import org.springframework.stereotype.Service;
 
-@Service
-public interface ACServise {
+public interface ACService {
+
     ResponseDto createAC(String cpId, String token, CreateACRQ createACRQ);
 
     ResponseDto updateAC(String cpId, String token, String platformId, UpdateACRQ updateACRQ);

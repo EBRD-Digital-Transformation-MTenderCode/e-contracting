@@ -10,7 +10,7 @@ import lombok.Getter;
     "token",
     "contracts"
 })
-public class CreateCanCanRSDto {
+public class CreateCanRSDto {
     @JsonProperty("token")
     @NotNull
     private final String token;
@@ -19,9 +19,9 @@ public class CreateCanCanRSDto {
     @NotNull
     private final CreateCanContractRSDto contracts;
 
-    public CreateCanCanRSDto(@JsonProperty("token")
+    public CreateCanRSDto(@JsonProperty("token")
                              @NotNull final String token,
-                             @JsonProperty("contracts")
+                          @JsonProperty("contracts")
                              @NotNull final CreateCanContractRSDto contracts) {
         this.token = token;
         this.contracts = contracts;

@@ -23,25 +23,25 @@ import lombok.Setter;
 })
 
 public class ACDto {
-    @JsonProperty("token")
+
     @NotNull
+    @JsonProperty("token")
     @JsonView(View.CreateACView.class)
     private String token;
 
-    @JsonProperty("statusCAN")
-    @NotNull
     @Valid
+    @NotNull
+    @JsonProperty("statusCAN")
     @JsonView(View.CreateACView.class)
     private ContractStatus statusCAN;
 
     @JsonProperty("statusDetailsCAN")
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonView(View.CreateACView.class)
     private ContractStatusDetails statusDetailsCAN;
 
-    @JsonProperty("contracts")
-    @NotEmpty
     @Valid
+    @NotEmpty
+    @JsonProperty("contracts")
     private ACContractDto contracts;
 
     public ACDto(@JsonProperty("token") @NotNull final String token,

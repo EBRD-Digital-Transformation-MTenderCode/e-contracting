@@ -1,6 +1,8 @@
 package com.procurement.contracting.service;
 
 import com.fasterxml.uuid.Generators;
+import com.procurement.contracting.exception.ErrorException;
+import com.procurement.contracting.exception.ErrorType;
 import com.procurement.contracting.model.dto.ContractDocumentDto;
 import com.procurement.contracting.model.dto.ContractStatus;
 import com.procurement.contracting.model.dto.ContractStatusDetails;
@@ -24,17 +26,13 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ACServiseImpl implements ACServise {
-    public static final String DOCUMENTS_IS_NOT_VALID = "documents is not valid";
-    public static final String NO_AMENDMENTS = "no amendments!";
-    public static final String AC_NOT_FOUND = "ac not found";
-    public static final String DOCUMENTS_IS_INVALID = "documents is invalid";
+public class ACServiceImpl implements ACService {
     private final ACRepository acRepository;
     private final CANRepository canRepository;
     private final DateUtil dateUtil;
     private final JsonUtil jsonUtil;
 
-    public ACServiseImpl(final ACRepository acRepository,
+    public ACServiceImpl(final ACRepository acRepository,
                          final CANRepository canRepository,
                          final DateUtil dateUtil, final JsonUtil jsonUtil) {
         this.acRepository = acRepository;
@@ -50,14 +48,9 @@ public class ACServiseImpl implements ACServise {
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (canEntity != null) {
             if (canEntity.getAcId() == null) {
-
-                if (createACRQ.getContract()
-                              .getId()
-                              .equals(canEntity.getCanId()
-                                               .toString())) {
+                if (createACRQ.getContract().getId().equals(canEntity.getCanId().toString())) {
                     canEntity.setStatus(ContractStatus.ACTIVE.toString());
                     canEntity.setStatusDetails(null);
-
                     final ACDto acDto = createCreateACRSFromRQ(createACRQ, token, ContractStatus.ACTIVE, null);
                     final ACEntity acEntity = convertACDtoToACEntity(cpId, acDto);
                     final String owner = canRepository.getOwnerByCpIdAndCanId(UUID.fromString(cpId),
@@ -76,13 +69,13 @@ public class ACServiseImpl implements ACServise {
                     responseDto.setSuccess(true);
                     responseDto.setData(acDto);
                 } else {
-                    responseDto.setError("invalid CAN id");
+                    throw new ErrorException(ErrorType.INVALID_ID);
                 }
             } else {
-                responseDto.setError("AC already created");
+                throw new ErrorException(ErrorType.ALREADY_CREATED);
             }
         } else {
-            responseDto.setError("CAN not found");
+            throw new ErrorException(ErrorType.CAN_NOT_FOUND);
         }
         return responseDto;
     }
@@ -128,7 +121,7 @@ public class ACServiseImpl implements ACServise {
                                     acDto.getContracts()
                                          .setDocuments(savedDocs);
                                 } else {
-                                    responseDto.setError(DOCUMENTS_IS_NOT_VALID);
+                                    throw new ErrorException(ErrorType.DOCUMENTS_IS_INVALID);
                                 }
                             } else if (isStatusActive(acEntity)) {
                                 if (isValidDocumentFromActive(newDocs)) {
@@ -136,7 +129,7 @@ public class ACServiseImpl implements ACServise {
                                     acDto.getContracts()
                                          .setDocuments(newDocs);
                                 } else {
-                                    responseDto.setError(DOCUMENTS_IS_NOT_VALID);
+                                    throw new ErrorException(ErrorType.DOCUMENTS_IS_INVALID);
                                 }
                             }
                         }
@@ -183,23 +176,23 @@ public class ACServiseImpl implements ACServise {
                              .setBudgetSource(updateACRQ.getContracts()
                                                         .getBudgetSource());
                     } else {
-                        responseDto.setError("budget sum is invalid");
+                        throw new ErrorException(ErrorType.BUDGET_SUM_IS_NOT_VALID);
                     }
 
                     acEntity.setReleaseDate(dateUtil.getNowUTC());
                     acEntity.setJsonData(jsonUtil.toJson(acDto));
                     acRepository.save(acEntity);
                 } else {
-                    responseDto.setError(NO_AMENDMENTS);
+                    throw new ErrorException(ErrorType.NO_AMENDMENTS);
                 }
             } else {
-                responseDto.setError("invalid platform");
+                throw new ErrorException(ErrorType.INVALID_PLATFORM);
             }
 
             responseDto.setSuccess(true);
             responseDto.setData(responseDto);
         } else {
-            responseDto.setError(AC_NOT_FOUND);
+            throw new ErrorException(ErrorType.AC_NOT_FOUND);
         }
 
         return responseDto;
@@ -235,7 +228,7 @@ public class ACServiseImpl implements ACServise {
                                 acEntity.setStatus(ContractStatus.ACTIVE.toString());
                                 acEntity.setStatusDetails(ContractStatusDetails.ACTIVE.toString());
                             } else {
-                                responseDto.setError("dateSigned is empty");
+                                throw new ErrorException(ErrorType.INVALID_DATE);
                             }
                             break;
                         case CANCELLED:
@@ -250,7 +243,7 @@ public class ACServiseImpl implements ACServise {
                                 acEntity.setStatus(ContractStatus.CANCELLED.toString());
                                 acEntity.setStatusDetails(ContractStatusDetails.CANCELLED.toString());
                             } else {
-                                responseDto.setError(DOCUMENTS_IS_INVALID);
+                                throw new ErrorException(ErrorType.DOCUMENTS_IS_INVALID);
                             }
                             break;
                         case COMPLETE:
@@ -263,7 +256,7 @@ public class ACServiseImpl implements ACServise {
                                 acEntity.setStatusDetails(ContractStatus.COMPLETE.toString());
                                 acEntity.setStatus(ContractStatus.COMPLETE.toString());
                             } else {
-                                responseDto.setError(DOCUMENTS_IS_INVALID);
+                                throw new ErrorException(ErrorType.DOCUMENTS_IS_INVALID);
                             }
                             break;
                         case UNSUCCESSFUL:
@@ -276,22 +269,22 @@ public class ACServiseImpl implements ACServise {
                                 acEntity.setStatusDetails(ContractStatusDetails.UNSUCCESSFUL.toString());
                                 acEntity.setStatus(ContractStatus.TERMINATED.toString());
                             } else {
-                                responseDto.setError(DOCUMENTS_IS_INVALID);
+                                throw new ErrorException(ErrorType.DOCUMENTS_IS_INVALID);
                             }
                             break;
                     }
                 } else {
-                    responseDto.setError(NO_AMENDMENTS);
+                    throw new ErrorException(ErrorType.NO_AMENDMENTS);
                 }
             } else {
-                responseDto.setError("invalid owner");
+                throw new ErrorException(ErrorType.INVALID_OWNER);
             }
             acEntity.setJsonData(jsonUtil.toJson(acDto));
             acRepository.save(acEntity);
             responseDto.setSuccess(true);
             responseDto.setData(responseDto);
         } else {
-            responseDto.setError(AC_NOT_FOUND);
+            throw new ErrorException(ErrorType.AC_NOT_FOUND);
         }
 
         return responseDto;
@@ -312,7 +305,7 @@ public class ACServiseImpl implements ACServise {
                 responseDto.setData(new CheckAcRS(false));
             }
         } else {
-            responseDto.setError(AC_NOT_FOUND);
+            throw new ErrorException(ErrorType.AC_NOT_FOUND);
         }
         return responseDto;
     }

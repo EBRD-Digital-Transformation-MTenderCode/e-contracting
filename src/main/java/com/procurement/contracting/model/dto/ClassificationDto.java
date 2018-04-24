@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.procurement.contracting.jsonview.View;
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
