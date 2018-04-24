@@ -11,7 +11,8 @@ public enum ContractStatusDetails {
     VERIFIED("verified"),
     CANCELLED("cancelled"),
     COMPLETE("complete"),
-    UNSUCCESSFUL("unsuccessful");
+    UNSUCCESSFUL("unsuccessful"),
+    EMPTY("empty");
 
     private static final Map<String, ContractStatusDetails> CONSTANTS = new HashMap<>();
 
