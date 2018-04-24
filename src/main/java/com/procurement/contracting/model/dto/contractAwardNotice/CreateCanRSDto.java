@@ -1,29 +1,23 @@
 package com.procurement.contracting.model.dto.contractAwardNotice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-@JsonPropertyOrder({
-    "token",
-    "contracts"
-})
 public class CreateCanRSDto {
-    @JsonProperty("token")
+
     @NotNull
+    @JsonProperty("token")
     private final String token;
 
-    @JsonProperty("contracts")
     @NotNull
-    private final CreateCanContractRSDto contracts;
+    @JsonProperty("contract")
+    private final CreateCanContractRSDto contract;
 
-    public CreateCanRSDto(@JsonProperty("token")
-                             @NotNull final String token,
-                          @JsonProperty("contracts")
-                             @NotNull final CreateCanContractRSDto contracts) {
+    public CreateCanRSDto(@JsonProperty("token") final String token,
+                          @JsonProperty("contract") final CreateCanContractRSDto contract) {
         this.token = token;
-        this.contracts = contracts;
+        this.contract = contract;
     }
 }
