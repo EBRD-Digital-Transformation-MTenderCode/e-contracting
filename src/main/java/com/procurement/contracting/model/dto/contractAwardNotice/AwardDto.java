@@ -7,13 +7,13 @@ import lombok.Getter;
 
 @Getter
 @JsonPropertyOrder("id")
-public class CreateCanContractRQDto {
+public class AwardDto {
 
     @JsonProperty("id")
     @NotNull
     private final String id;
 
-    public CreateCanContractRQDto(@JsonProperty("id") final String id) {
+    public AwardDto(@JsonProperty("id") final String id) {
         this.id = id;
     }
 }

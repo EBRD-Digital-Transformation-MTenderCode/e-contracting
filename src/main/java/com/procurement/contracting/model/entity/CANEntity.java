@@ -15,7 +15,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Setter
 public class CANEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
-    private UUID cpId;
+    private String cpId;
     @PrimaryKeyColumn(name = "can_id", type = PrimaryKeyType.CLUSTERED)
     private UUID canId;
     @Column(value = "award_id")

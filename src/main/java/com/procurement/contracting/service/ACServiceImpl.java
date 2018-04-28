@@ -44,7 +44,7 @@ public class ACServiceImpl implements ACService {
     @Override
     public ResponseDto createAC(final String cpId, final String token, final CreateACRQ createACRQ) {
 
-        final CANEntity canEntity = canRepository.getByCpIdAndCanId(UUID.fromString(cpId), UUID.fromString(token));
+        final CANEntity canEntity = canRepository.getByCpIdAndCanId(cpId, UUID.fromString(token));
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (canEntity != null) {
             if (canEntity.getAcId() == null) {
@@ -53,7 +53,7 @@ public class ACServiceImpl implements ACService {
                     canEntity.setStatusDetails(null);
                     final ACDto acDto = createCreateACRSFromRQ(createACRQ, token, ContractStatus.ACTIVE, null);
                     final ACEntity acEntity = convertACDtoToACEntity(cpId, acDto);
-                    final String owner = canRepository.getOwnerByCpIdAndCanId(UUID.fromString(cpId),
+                    final String owner = canRepository.getOwnerByCpIdAndCanId(cpId,
                                                                               UUID.fromString(
                                                                                   acDto
                                                                                       .getContracts()
@@ -86,7 +86,7 @@ public class ACServiceImpl implements ACService {
                                 final String platformId,
                                 final UpdateACRQ updateACRQ) {
 
-        final ACEntity acEntity = acRepository.getByCpIdAndAcId(UUID.fromString(cpId), UUID.fromString(token));
+        final ACEntity acEntity = acRepository.getByCpIdAndAcId(cpId, UUID.fromString(token));
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (acEntity != null) {
             if (acEntity.getOwner()
@@ -204,7 +204,7 @@ public class ACServiceImpl implements ACService {
                                     final String platformId,
                                     final ChangeStatusRQ changeStatusRQ) {
 
-        final ACEntity acEntity = acRepository.getByCpIdAndAcId(UUID.fromString(cpId), UUID.fromString(token));
+        final ACEntity acEntity = acRepository.getByCpIdAndAcId(cpId, UUID.fromString(token));
 
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (acEntity != null) {
@@ -292,7 +292,7 @@ public class ACServiceImpl implements ACService {
 
     @Override
     public ResponseDto checkStatus(final String cpId, final String token) {
-        final ACEntity acEntity = acRepository.getByCpIdAndAcId(UUID.fromString(cpId), UUID.fromString(token));
+        final ACEntity acEntity = acRepository.getByCpIdAndAcId(cpId, UUID.fromString(token));
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (acEntity != null) {
             responseDto.setSuccess(true);
@@ -354,7 +354,7 @@ public class ACServiceImpl implements ACService {
     private ACEntity convertACDtoToACEntity(final String cpId, final ACDto acDto) {
 
         final ACEntity acEntity = new ACEntity();
-        acEntity.setCpId(UUID.fromString(cpId));
+        acEntity.setCpId(cpId);
         acEntity.setAcId(UUID.fromString(acDto.getToken()));
         acEntity.setCanId(UUID.fromString(acDto.getContracts()
                                                .getExtendsContractId()));

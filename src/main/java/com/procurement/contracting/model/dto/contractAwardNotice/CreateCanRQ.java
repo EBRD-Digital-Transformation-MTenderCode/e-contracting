@@ -9,15 +9,15 @@ import lombok.Getter;
 
 @Getter
 @JsonPropertyOrder(
-    "awards"
+        "awards"
 )
 public class CreateCanRQ {
-    @JsonProperty("awards")
     @Valid
     @NotEmpty
-    private List<CreateCanContractRQDto> contractDtos;
+    @JsonProperty("awards")
+    private List<AwardDto> awards;
 
-    public CreateCanRQ(@JsonProperty("awards") final List<CreateCanContractRQDto> contractDtos) {
-        this.contractDtos = contractDtos;
+    public CreateCanRQ(@JsonProperty("awards") final List<AwardDto> awards) {
+        this.awards = awards;
     }
 }
