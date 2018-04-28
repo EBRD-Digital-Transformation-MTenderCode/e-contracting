@@ -24,8 +24,7 @@ public class ContractAwardNoticeController {
                                                  @RequestParam(value = "owner") final String owner,
                                                  @Valid @RequestBody final CreateCanRQ contractRQDto) {
 
-        final ResponseDto responseDto = canService.createCAN(cpid, owner, contractRQDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(canService.createCAN(cpid, owner, contractRQDto), HttpStatus.OK);
     }
 
     @GetMapping("checkCAN")

@@ -37,7 +37,7 @@ public class CreateCanContractRSDto {
     public CreateCanContractRSDto(@JsonProperty("id") final String id,
                                   @JsonProperty("awardID") final String awardID,
                                   @JsonProperty("status") final ContractStatus status,
-                                  @JsonProperty("status") final ContractStatusDetails statusDetails) {
+                                  @JsonProperty("statusDetails") final ContractStatusDetails statusDetails) {
         this.id = id;
         this.awardID = awardID;
         this.status = status;
