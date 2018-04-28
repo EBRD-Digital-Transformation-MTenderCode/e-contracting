@@ -32,8 +32,7 @@ public class CANServiceImpl implements CANService {
     @Override
     public ResponseDto createCAN(final String cpId, final String owner, final CreateCanRQ contractDto) {
         final List<CANEntity> canEntities = createCANEntities(cpId, owner, contractDto);
-        final List<CreateCanRSDto> canDtos = convertCANEntitiesListToDtoList(canEntities);
-        return new ResponseDto(true, null, new CreateCanRS(canDtos));
+        return new ResponseDto(true, null, new CreateCanRS(convertCANEntitiesListToDtoList(canEntities)));
     }
 
     @Override
