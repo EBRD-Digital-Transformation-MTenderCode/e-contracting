@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CANRepository extends CassandraRepository<CANEntity, String> {
-    @Query(value = "select * from contracting_contract_award_notice where cp_id=?0 and can_id=?1 limit 1")
-    CANEntity getByCpIdAndCanId(String cpId, UUID canId);
+    @Query(value = "select * from contracting_contract_award_notice where cp_id=?0 and token_entity=?1 limit 1")
+    CANEntity getByCpIdAndToken(String cpId, UUID token);
 
-    @Query(value = "select owner from contracting_contract_award_notice where cp_id=?0 and can_id=?1 limit 1")
-    String getOwnerByCpIdAndCanId(String cpId, UUID canId);
+    @Query(value = "select owner from contracting_contract_award_notice where cp_id=?0 and token_entity=?1 limit 1")
+    String getOwnerByCpIdAndToken(String cpId, UUID token);
 
     @Query(value = "select * from contracting_contract_award_notice where cp_id=?0 and award_id=?1 limit 1")
     CANEntity getByCpIdAndAwardId(String cpId, String awardId);

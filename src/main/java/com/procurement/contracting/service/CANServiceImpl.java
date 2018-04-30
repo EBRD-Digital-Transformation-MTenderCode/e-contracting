@@ -1,7 +1,6 @@
 package com.procurement.contracting.service;
 
 import com.datastax.driver.core.utils.UUIDs;
-import com.fasterxml.uuid.Generators;
 import com.procurement.contracting.exception.ErrorException;
 import com.procurement.contracting.exception.ErrorType;
 import com.procurement.contracting.model.dto.ContractStatus;
@@ -38,7 +37,7 @@ public class CANServiceImpl implements CANService {
     @Override
     public ResponseDto checkCAN(final String cpId, final String token, final String idPlatform) {
 
-        final CANEntity entity = canRepository.getByCpIdAndCanId(cpId, UUID.fromString(token));
+        final CANEntity entity = canRepository.getByCpIdAndToken(cpId, UUID.fromString(token));
         final ResponseDto responseDto = new ResponseDto(null, null, null);
         if (entity != null) {
             if (idPlatform.equals(entity.getOwner())) {
@@ -86,7 +85,7 @@ public class CANServiceImpl implements CANService {
                                              final String owner) {
         final CANEntity canEntity = new CANEntity();
         canEntity.setCpId(cpId);
-        canEntity.setCanId(UUIDs.timeBased());
+        canEntity.setToken(UUIDs.random());
         canEntity.setAwardId(awardId);
         canEntity.setOwner(owner);
         canEntity.setStatus(ContractStatus.PENDING.toString());
@@ -97,8 +96,8 @@ public class CANServiceImpl implements CANService {
 
     private CreateCanRSDto convertEntityToCreateCANDto(final CANEntity contractAwardNoticeEntity) {
 
-        return new CreateCanRSDto(contractAwardNoticeEntity.getCanId().toString(),
-                                     new CreateCanContractRSDto(contractAwardNoticeEntity.getCanId()
+        return new CreateCanRSDto(contractAwardNoticeEntity.getToken().toString(),
+                                     new CreateCanContractRSDto(contractAwardNoticeEntity.getToken()
                                                                                          .toString(),
                                                                 contractAwardNoticeEntity.getAwardId(),
                                                                 ContractStatus.fromValue(contractAwardNoticeEntity
@@ -108,7 +107,7 @@ public class CANServiceImpl implements CANService {
     }
 
     private ChangeStatusCanRS convertEntityToChangeStatusDto(final CANEntity contractAwardNoticeEntity) {
-        return new ChangeStatusCanRS(new CreateCanContractRSDto(contractAwardNoticeEntity.getCanId()
+        return new ChangeStatusCanRS(new CreateCanContractRSDto(contractAwardNoticeEntity.getToken()
                                                                                          .toString(),
                                                                 contractAwardNoticeEntity.getAwardId(),
                                                                 ContractStatus.fromValue(contractAwardNoticeEntity

@@ -17,10 +17,6 @@ import lombok.Getter;
     "awards"
 })
 public class CreateACRQ {
-    @JsonProperty("contracts")
-    @NotNull
-    @Valid
-    private final CreateACContractRQDto contract;
 
     @JsonProperty("lots")
     @NotEmpty
@@ -37,11 +33,9 @@ public class CreateACRQ {
     @NotNull
     private final CreateACAwardRQDto award;
 
-    public CreateACRQ(@JsonProperty("contracts") @NotNull @Valid final CreateACContractRQDto contract,
-                      @JsonProperty("lots") @NotEmpty @Valid final List<CreateACContractingLotRQDto> lots,
+    public CreateACRQ(@JsonProperty("lots") @NotEmpty @Valid final List<CreateACContractingLotRQDto> lots,
                       @JsonProperty("items") @NotEmpty @Valid final List<ContractItemDto> items,
                       @JsonProperty("awards") @Valid @NotNull final CreateACAwardRQDto award) {
-        this.contract = contract;
         this.lots = lots;
         this.items = items;
         this.award = award;
