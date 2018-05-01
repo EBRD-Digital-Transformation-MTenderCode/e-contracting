@@ -63,7 +63,7 @@ public class ACServiceImpl implements ACService {
         }
         canRepository.saveAll(canEntities);
         acRepository.saveAll(acEntities);
-        return new ResponseDto<>(null, null, new CreateContractRS(cans, contracts));
+        return new ResponseDto<>(true, null, new CreateContractRS(cans, contracts));
     }
 
     private List<Award> getActiveAwards(List<Award> awards) {
