@@ -8,7 +8,6 @@ import com.procurement.contracting.model.dto.ocds.Lot;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter

@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.procurement.contracting.databind.LocalDateTimeDeserializer;
 import com.procurement.contracting.databind.LocalDateTimeSerializer;
-import com.procurement.contracting.model.dto.old.ContractDocumentDto;
-import com.procurement.contracting.model.dto.old.ContractItemDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.Valid;
