@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_notice (
     owner text,
     status text,
     status_details text,
-    primary key(cp_id, stage, token_entity, award_id)
+    primary key(cp_id, stage, token_entity)
 );
 
 CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
     stage text,
     token_entity UUID,
     owner text,
-    can_id UUID,
+    can_id text,
     created_date timestamp,
     status text,
     status_details text,

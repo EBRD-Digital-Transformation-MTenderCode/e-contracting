@@ -25,7 +25,7 @@ public class CANEntity {
     @Column(value = "owner")
     private String owner;
 
-    @PrimaryKeyColumn(name = "award_id", type = PrimaryKeyType.CLUSTERED)
+    @Column(value = "award_id")
     private String awardId;
 
     @Column(value = "ac_id")

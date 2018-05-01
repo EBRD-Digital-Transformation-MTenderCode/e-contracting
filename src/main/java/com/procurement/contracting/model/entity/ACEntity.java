@@ -29,7 +29,7 @@ public class ACEntity {
     private Date createdDate;
 
     @Column(value = "can_id")
-    private UUID canId;
+    private String canId;
 
     @Column(value = "status")
     private String status;

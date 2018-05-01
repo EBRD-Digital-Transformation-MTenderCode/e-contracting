@@ -147,7 +147,7 @@ public class ACServiceImpl implements ACService {
         acEntity.setToken(UUID.fromString(contract.getToken()));
         acEntity.setOwner(canEntity.getOwner());
         acEntity.setCreatedDate(dateUtil.localToDate(dateUtil.getNowUTC()));
-        acEntity.setCanId(canEntity.getToken());
+        acEntity.setCanId(canEntity.getToken().toString());
         acEntity.setStatus(contract.getStatus().value());
         acEntity.setStatusDetails(contract.getStatusDetails().value());
         acEntity.setJsonData(jsonUtil.toJson(contract));
