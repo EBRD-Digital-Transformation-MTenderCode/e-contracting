@@ -19,7 +19,6 @@ public class ACController {
     }
 
     @PostMapping("createAC")
-    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> createAC(@RequestParam(value = "identifier") final String cpid,
                                                 @RequestParam(value = "stage") final String stage,
                                                 @Valid @RequestBody final CreateContractRQ data) {

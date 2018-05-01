@@ -19,7 +19,6 @@ public class CANController {
     }
 
     @PostMapping("createCAN")
-    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<ResponseDto> createCAN(@RequestParam(value = "identifier") final String cpid,
                                                  @RequestParam(value = "stage") final String stage,
                                                  @RequestParam(value = "owner") final String owner,
