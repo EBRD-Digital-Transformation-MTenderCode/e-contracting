@@ -16,17 +16,20 @@ public class ACEntity {
     @PrimaryKeyColumn(name = "cp_id", type = PrimaryKeyType.PARTITIONED)
     private String cpId;
 
+    @PrimaryKeyColumn(name = "stage", type = PrimaryKeyType.CLUSTERED)
+    private String stage;
+
     @PrimaryKeyColumn(name = "token_entity", type = PrimaryKeyType.CLUSTERED)
     private UUID token;
-
-    @Column(value = "can_id")
-    private UUID canId;
 
     @Column(value = "owner")
     private String owner;
 
     @Column("created_date")
     private Date createdDate;
+
+    @Column(value = "can_id")
+    private UUID canId;
 
     @Column(value = "status")
     private String status;

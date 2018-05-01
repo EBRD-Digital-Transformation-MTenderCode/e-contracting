@@ -17,6 +17,6 @@ public class DateUtil {
 
     public long getMilliUTC(final LocalDateTime localDateTime) {
         return localDateTime.toInstant(ZoneOffset.UTC)
-                            .toEpochMilli();
+                .toEpochMilli();
     }
 }

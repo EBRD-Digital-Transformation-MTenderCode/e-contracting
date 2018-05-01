@@ -1,48 +1,51 @@
 {
-  "Contracts":
-  {
+  "Contracts": {
     "id": "",
-    "budgetSource":
-    [{
-      "budgetBreakdownID": "",
-      "amount": 0
-    }],
+    "budgetSource": [
+      {
+        "budgetBreakdownID": "",
+        "amount": 0
+      }
+    ],
     "title": "",
     "description": "",
-    "statusDetails":"",
-    "classification":
-    {
+    "statusDetails": "",
+    "classification": {
       "scheme": "",
       "description": "",
       "id": ""
     },
-    "period":
-    {
+    "period": {
       "startDate": "",
       "endDate": ""
     },
     "--dateSigned": "",
-    "--documents":
-  [{
-    "documentType": "",
-    "datePublished": "",
-    "id": "",
-    "url": "",
-    "--title": "",
-    "--description": "",
-    "language": ""
-  }],
-    "relatedProcesses":
-    [{
-      "relationship": [""],
-      "--title": "",
-      "identifier": "",
-      "scheme": "ocid"
-    }],
-    "amendments":
-    [{
-      "rationale": "",
-      "--description": ""
-    }]
+    "--documents": [
+      {
+        "documentType": "",
+        "datePublished": "",
+        "id": "",
+        "url": "",
+        "--title": "",
+        "--description": "",
+        "language": ""
+      }
+    ],
+    "relatedProcesses": [
+      {
+        "relationship": [
+          ""
+        ],
+        "--title": "",
+        "identifier": "",
+        "scheme": "ocid"
+      }
+    ],
+    "amendments": [
+      {
+        "rationale": "",
+        "--description": ""
+      }
+    ]
   }
 }

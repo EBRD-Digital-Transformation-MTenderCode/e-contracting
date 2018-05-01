@@ -1,9 +1,8 @@
 {
-  "token":"",
+  "token": "",
   "statusCAN": "active",
-  "statusDetailsCAN":"",
-  "Contracts":
-  {
+  "statusDetailsCAN": "",
+  "Contracts": {
     "id": "",
     "awardID": "",
     "extendsContractID": "",
@@ -11,34 +10,33 @@
     "description": "",
     "status": "pending",
     "statusDetails": "contractProject",
-    "value":
-    {
+    "value": {
       "amount": 0,
       "currency": ""
     },
-    "items":
-    [{
-      "id": "",
-      "description": "",
-      "classification":
-      {
-        "scheme": "",
-        "description": "",
-        "id": ""
-      },
-      "--additionalClassifications":
-      [{
-        "scheme": "",
-        "description": "",
-        "id": ""
-      }],
-      "quantity": 0,
-      "unit":
+    "items": [
       {
         "id": "",
-        "name": ""
-      },
-      "relatedLot": ""
-    }]
+        "description": "",
+        "classification": {
+          "scheme": "",
+          "description": "",
+          "id": ""
+        },
+        "--additionalClassifications": [
+          {
+            "scheme": "",
+            "description": "",
+            "id": ""
+          }
+        ],
+        "quantity": 0,
+        "unit": {
+          "id": "",
+          "name": ""
+        },
+        "relatedLot": ""
+      }
+    ]
   }
 }

@@ -1,54 +1,56 @@
 {
-  "Contracts":
-  {
+  "Contracts": {
     "id": "",
     "awardID": ""
   },
-  "lots":
-  [{
-    "id": "",
-    "title": "",
-    "description": ""
-  }],
-  "items":
-  [{
-    "id": "",
-    "description": "",
-    "classification": {
-      "scheme": "",
+  "lots": [
+    {
+      "id": "",
+      "title": "",
+      "description": ""
+    }
+  ],
+  "items": [
+    {
+      "id": "",
       "description": "",
-      "id": ""
-    },
-    "--additionalClassifications": [
-      {
+      "classification": {
         "scheme": "",
         "description": "",
         "id": ""
-      }
-    ],
-    "quantity": 0,
-    "unit": {
-      "id": "",
-      "name": ""
-    },
-    "relatedLot": ""
-  }],
-  "awards":
-  {
+      },
+      "--additionalClassifications": [
+        {
+          "scheme": "",
+          "description": "",
+          "id": ""
+        }
+      ],
+      "quantity": 0,
+      "unit": {
+        "id": "",
+        "name": ""
+      },
+      "relatedLot": ""
+    }
+  ],
+  "awards": {
     "id": "",
     "date": "",
     "status": "",
-    "--description":"",
-    "relatedLots":[""],
-    "value":
-    {
-      "amount":"",
-      "currency":""
+    "--description": "",
+    "relatedLots": [
+      ""
+    ],
+    "value": {
+      "amount": "",
+      "currency": ""
     },
-    "suppliers":
-    [{
-      "id":"",
-      "name":""
-    }]
+    "suppliers": [
+      {
+        "id": "",
+        "name": ""
+      }
+    ]
   }
 }

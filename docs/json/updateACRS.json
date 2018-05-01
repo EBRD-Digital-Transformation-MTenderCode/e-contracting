@@ -1,80 +1,82 @@
 {
-  "Contracts":
-  {
+  "Contracts": {
     "id": "",
     "awardID": "",
     "extendsContractID": "",
-    "budgetSource":
-    [{
-      "budgetBreakdownID": "",
-      "amount": 0
-    }],
+    "budgetSource": [
+      {
+        "budgetBreakdownID": "",
+        "amount": 0
+      }
+    ],
     "title": "",
     "description": "",
     "status": "",
-    "statusDetails":"",
-    "classification":
-    {
+    "statusDetails": "",
+    "classification": {
       "scheme": "",
       "description": "",
       "id": ""
     },
-    "period":
-    {
+    "period": {
       "startDate": "",
       "endDate": ""
     },
-    "value":
-    {
+    "value": {
       "amount": 0,
       "currency": ""
     },
-    "items":
-    [{
-      "id": "",
-      "description": "",
-      "classification":
-      {
-        "scheme": "",
-        "description": "",
-        "id": ""
-      },
-      "--additionalClassifications":
-      [{
-        "scheme": "",
-        "description": "",
-        "id": ""
-      }],
-      "quantity": 0,
-      "unit":
+    "items": [
       {
         "id": "",
-        "name": ""
-      },
-      "relatedLot": ""
-    }],
+        "description": "",
+        "classification": {
+          "scheme": "",
+          "description": "",
+          "id": ""
+        },
+        "--additionalClassifications": [
+          {
+            "scheme": "",
+            "description": "",
+            "id": ""
+          }
+        ],
+        "quantity": 0,
+        "unit": {
+          "id": "",
+          "name": ""
+        },
+        "relatedLot": ""
+      }
+    ],
     "--dateSigned": "",
-    "--documents":
-  [{
-    "documentType": "",
-    "datePublished": "",
-    "id": "",
-    "url": "",
-    "--title": "",
-    "--description": "",
-    "language": ""
-  }],
-    "relatedProcesses":
-    [{
-      "relationship": [""],
-      "--title": "",
-      "identifier": "",
-      "scheme": "ocid"
-    }],
-    "amendments":
-    [{
-      "rationale": "",
-      "--description": ""
-    }]
+    "--documents": [
+      {
+        "documentType": "",
+        "datePublished": "",
+        "id": "",
+        "url": "",
+        "--title": "",
+        "--description": "",
+        "language": ""
+      }
+    ],
+    "relatedProcesses": [
+      {
+        "relationship": [
+          ""
+        ],
+        "--title": "",
+        "identifier": "",
+        "scheme": "ocid"
+      }
+    ],
+    "amendments": [
+      {
+        "rationale": "",
+        "--description": ""
+      }
+    ]
   }
 }
