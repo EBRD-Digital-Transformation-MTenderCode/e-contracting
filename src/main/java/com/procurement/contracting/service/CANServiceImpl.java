@@ -28,16 +28,17 @@ public class CANServiceImpl implements CANService {
     }
 
     @Override
-    public ResponseDto createCAN(final String cpId, final String owner, final CreateCanRQ dto) {
-        final List<CANEntity> canEntities = createCANEntities(cpId, owner, dto);
+    public ResponseDto createCAN(final String cpId, final String stage, final String owner, final CreateCanRQ dto) {
+        final List<CANEntity> canEntities = createCANEntities(cpId, stage, owner, dto);
         final List<Can> cans = convertEntitiesToDtoList(canEntities);
-        return new ResponseDto(true, null, new CreateCanRS(cans));
+        canRepository.saveAll(canEntities);
+        return new ResponseDto<>(true, null, new CreateCanRS(cans));
     }
 
-    private List<CANEntity> createCANEntities(final String cpId, final String owner, final CreateCanRQ dto) {
+    private List<CANEntity> createCANEntities(final String cpId, final String stage, final String owner, final CreateCanRQ dto) {
         final List<CANEntity> canEntities = new ArrayList<>();
         for (Award awardDto : dto.getAwards()) {
-            canEntities.add(createAndSaveCANEntity(cpId, awardDto.getId(), owner));
+            canEntities.add(createAndSaveCANEntity(cpId, stage, awardDto.getId(), owner));
         }
         return canEntities;
     }
@@ -75,16 +76,17 @@ public class CANServiceImpl implements CANService {
     }
 
     private CANEntity createAndSaveCANEntity(final String cpId,
+                                             final String stage,
                                              final String awardId,
                                              final String owner) {
         final CANEntity canEntity = new CANEntity();
         canEntity.setCpId(cpId);
+        canEntity.setStage(stage);
         canEntity.setToken(UUIDs.random());
         canEntity.setAwardId(awardId);
         canEntity.setOwner(owner);
         canEntity.setStatus(ContractStatus.PENDING.value());
         canEntity.setStatusDetails(ContractStatusDetails.CONTRACT_PROJECT.value());
-        canRepository.save(canEntity);
         return canEntity;
     }
 

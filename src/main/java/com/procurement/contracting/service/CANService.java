@@ -5,7 +5,7 @@ import com.procurement.contracting.model.dto.bpe.ResponseDto;
 
 public interface CANService {
 
-    ResponseDto createCAN(String cpId, String owner, CreateCanRQ data);
+    ResponseDto createCAN(String cpId, String stage, String owner, CreateCanRQ data);
 
 //    ResponseDto checkCAN(String cpId, String token, String idPlatform);
 //

@@ -24,8 +24,9 @@ public class ACController {
                                                 @RequestParam(value = "stage") final String stage,
                                                 @Valid @RequestBody final CreateContractRQ data) {
 
-        final ResponseDto responseDto = acService.createAC(cpid, stage, data);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(
+                acService.createAC(cpid, stage, data),
+                HttpStatus.OK);
     }
 
 //    @PostMapping("updateAC")
