@@ -1,6 +1,8 @@
-package com.procurement.contracting.exception;
+package com.procurement.contracting.controller;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.procurement.contracting.exception.EnumException;
+import com.procurement.contracting.exception.ErrorException;
 import com.procurement.contracting.model.dto.bpe.ResponseDetailsDto;
 import com.procurement.contracting.model.dto.bpe.ResponseDto;
 import java.util.Collections;

@@ -54,7 +54,7 @@ public class ACServiceImpl implements ACService {
             final CANEntity canEntity = canEntities.stream()
                     .filter(e -> e.getAwardId().equals(award.getId()))
                     .findFirst().orElseThrow(() -> new ErrorException(ErrorType.CANS_NOT_FOUND));
-            if (Objects.nonNull(canEntity.getAcId())) throw new ErrorException(ErrorType.CONTRACT_ALREADY_CREATED);
+//            if (Objects.nonNull(canEntity.getAcId())) throw new ErrorException(ErrorType.CONTRACT_ALREADY_CREATED);
             canEntity.setStatus(ContractStatus.ACTIVE.value());
             canEntity.setStatusDetails(ContractStatusDetails.EMPTY.value());
             canEntity.setAcId(contract.getId());
