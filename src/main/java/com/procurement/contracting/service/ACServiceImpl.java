@@ -39,16 +39,21 @@ public class ACServiceImpl implements ACService {
 
     @Override
     public ResponseDto createAC(final String cpId, final String stage, final CreateContractRQ dto) {
-        if (dto.getItems().isEmpty()) return new ResponseDto<>(true, null, new CreateContractRS(null, null));
+        final List<Can> cans = new ArrayList<>();
+        final List<Contract> contracts = new ArrayList<>();
+        if (dto.getItems().isEmpty()){
+            return new ResponseDto<>(
+                    true,
+                    null,
+                    new CreateContractRS(cans, contracts));
+        }
         final List<CANEntity> canEntities = canRepository.getByCpIdAndStage(cpId, stage);
         if (canEntities.isEmpty()) throw new ErrorException(ErrorType.CANS_NOT_FOUND);
-        List<Award> activeAwards = getActiveAwards(dto.getAwards());
-        List<Can> cans = new ArrayList<>();
-        List<Contract> contracts = new ArrayList<>();
-        List<ACEntity> acEntities = new ArrayList<>();
+        final List<Award> activeAwards = getActiveAwards(dto.getAwards());
+        final List<ACEntity> acEntities = new ArrayList<>();
         for (Award award : activeAwards) {
-            Lot lotComplete = getCompletedLot(dto, award);
-            List<Item> items = getItemsForRelatedLot(dto, award);
+            final Lot lotComplete = getCompletedLot(dto, award);
+            final List<Item> items = getItemsForRelatedLot(dto, award);
             final Contract contract = createContract(award, lotComplete, items);
             contracts.add(contract);
             final CANEntity canEntity = canEntities.stream()
@@ -69,7 +74,7 @@ public class ACServiceImpl implements ACService {
     private List<Award> getActiveAwards(List<Award> awards) {
         if (Objects.isNull(awards) || awards.isEmpty())
             throw new ErrorException(ErrorType.NO_ACTIVE_AWARDS);
-        List<Award> activeAwards = awards.stream()
+        final List<Award> activeAwards = awards.stream()
                 .filter(award -> award.getStatus().equals(AwardStatus.ACTIVE))
                 .collect(Collectors.toList());
 
@@ -101,14 +106,13 @@ public class ACServiceImpl implements ACService {
     }
 
     private Lot getCompletedLot(final CreateContractRQ dto, Award award) {
-
         return dto.getLots().stream()
                 .filter(lot -> lot.getId().equals(award.getRelatedLots().get(0)))
                 .findFirst().orElseThrow(() -> new ErrorException(ErrorType.NO_COMPLETED_LOT));
     }
 
     private List<Item> getItemsForRelatedLot(final CreateContractRQ dto, Award award) {
-        List<Item> items = dto.getItems().stream()
+        final List<Item> items = dto.getItems().stream()
                 .filter(item -> item.getRelatedLot().equals(award.getRelatedLots().get(0)))
                 .collect(Collectors.toList());
         if (items.isEmpty()) throw new ErrorException(ErrorType.NO_ITEMS);
