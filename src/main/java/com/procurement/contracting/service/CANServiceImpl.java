@@ -12,6 +12,7 @@ import com.procurement.contracting.model.dto.ocds.ContractStatusDetails;
 import com.procurement.contracting.model.entity.CANEntity;
 import com.procurement.contracting.repository.ACRepository;
 import com.procurement.contracting.repository.CANRepository;
+import com.procurement.contracting.utils.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,14 @@ public class CANServiceImpl implements CANService {
 
     private final CANRepository canRepository;
     private final ACRepository acRepository;
+    private final DateUtil dateUtil;
 
-    public CANServiceImpl(final CANRepository canRepository, final ACRepository acRepository) {
+    public CANServiceImpl(final CANRepository canRepository,
+                          final ACRepository acRepository,
+                          final DateUtil dateUtil) {
         this.canRepository = canRepository;
         this.acRepository = acRepository;
+        this.dateUtil = dateUtil;
     }
 
     @Override
@@ -56,6 +61,7 @@ public class CANServiceImpl implements CANService {
         final Contract contract = new Contract(
                 entity.getToken().toString(),
                 entity.getToken().toString(),
+                dateUtil.getNowUTC(),
                 entity.getAwardId(),
                 ContractStatus.fromValue(entity.getStatus()),
                 ContractStatusDetails.fromValue(entity.getStatusDetails()),

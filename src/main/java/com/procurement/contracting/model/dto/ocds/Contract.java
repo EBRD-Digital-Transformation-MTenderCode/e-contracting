@@ -19,6 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Getter
 @JsonPropertyOrder({
         "id",
+        "date",
         "awardId",
         "status",
         "statusDetails",
@@ -44,6 +45,11 @@ public class Contract {
 
     @JsonProperty("token")
     private String token;
+
+    @JsonProperty("date")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime date;
 
     @NotNull
     @JsonProperty("awardId")
@@ -117,6 +123,7 @@ public class Contract {
 
     public Contract(@JsonProperty("id") final String id,
                     @JsonProperty("token") final String token,
+                    @JsonProperty("date") final LocalDateTime date,
                     @JsonProperty("awardId") final String awardId,
                     @JsonProperty("status") final ContractStatus status,
                     @JsonProperty("statusDetails") final ContractStatusDetails statusDetails,
@@ -134,6 +141,7 @@ public class Contract {
                     @JsonProperty("amendments") final List<Amendment> amendments) {
         this.id = id;
         this.token = token;
+        this.date = date;
         this.awardId = awardId;
         this.status = status;
         this.statusDetails = statusDetails;
@@ -153,7 +161,8 @@ public class Contract {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id)
+        return new HashCodeBuilder()
+                .append(id)
                 .append(awardId)
                 .append(extendsContractID)
                 .append(budgetSource)

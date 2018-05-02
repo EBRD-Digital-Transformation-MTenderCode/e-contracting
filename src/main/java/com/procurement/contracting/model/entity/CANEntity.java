@@ -1,5 +1,6 @@
 package com.procurement.contracting.model.entity;
 
+import java.util.Date;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,9 @@ public class CANEntity {
 
     @Column(value = "owner")
     private String owner;
+
+    @Column("created_date")
+    private Date createdDate;
 
     @Column(value = "award_id")
     private String awardId;

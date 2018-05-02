@@ -82,6 +82,7 @@ public class ACServiceImpl implements ACService {
         return new Contract(
                 UUIDs.timeBased().toString(),
                 UUIDs.random().toString(),
+                dateUtil.getNowUTC(),
                 award.getId(),
                 ContractStatus.PENDING,
                 ContractStatusDetails.CONTRACT_PROJECT,
@@ -118,6 +119,7 @@ public class ACServiceImpl implements ACService {
         final Contract contract = new Contract(
                 entity.getToken().toString(),
                 entity.getToken().toString(),
+                dateUtil.dateToLocal(entity.getCreatedDate()),
                 entity.getAwardId(),
                 ContractStatus.fromValue(entity.getStatus()),
                 ContractStatusDetails.fromValue(entity.getStatusDetails()),
