@@ -25,7 +25,6 @@ public class CreateContractRQ {
     private final List<Lot> lots;
 
     @Valid
-    @NotEmpty
     @JsonProperty("items")
     private final List<Item> items;
 

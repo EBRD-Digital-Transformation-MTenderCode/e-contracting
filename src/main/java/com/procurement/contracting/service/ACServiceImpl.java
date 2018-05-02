@@ -39,7 +39,7 @@ public class ACServiceImpl implements ACService {
 
     @Override
     public ResponseDto createAC(final String cpId, final String stage, final CreateContractRQ dto) {
-
+        if (dto.getItems().isEmpty()) return new ResponseDto<>(true, null, new CreateContractRS(null, null));
         final List<CANEntity> canEntities = canRepository.getByCpIdAndStage(cpId, stage);
         if (canEntities.isEmpty()) throw new ErrorException(ErrorType.CANS_NOT_FOUND);
         List<Award> activeAwards = getActiveAwards(dto.getAwards());
