@@ -93,6 +93,7 @@ public class CANServiceImpl implements CANService {
         canEntity.setOwner(owner);
         canEntity.setStatus(ContractStatus.PENDING.value());
         canEntity.setStatusDetails(ContractStatusDetails.CONTRACT_PROJECT.value());
+        canEntity.setCreatedDate(dateUtil.localToDate(dateUtil.getNowUTC()));
         return canEntity;
     }
 
