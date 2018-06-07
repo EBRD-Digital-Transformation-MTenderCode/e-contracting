@@ -1,7 +1,4 @@
 mvn clean package docker:build
-docker login https://docker-registry.eprocurement.systems
-Username: docker
-Password: 3FFcKYtMxzmwFMa
-docker push docker-registry.eprocurement.systems/e-contracting:17.12.1
+docker push dev.docker-registry.eprocurement.systems/e-contracting:18.06.1
 
 
