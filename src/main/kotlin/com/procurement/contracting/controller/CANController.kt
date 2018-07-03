@@ -18,7 +18,7 @@ class CANController(private val canService: CanService) {
     fun createCAN(@RequestParam(value = "identifier") cpid: String,
                   @RequestParam(value = "stage") stage: String,
                   @RequestParam(value = "owner") owner: String,
-                  @Valid @RequestBody data: CreateCanRQ): ResponseEntity<ResponseDto<*>> {
+                  @Valid @RequestBody data: CreateCanRQ): ResponseEntity<ResponseDto> {
 
         return ResponseEntity(
                 canService.createCAN(cpId = cpid, stage = stage, owner = owner, dto = data),

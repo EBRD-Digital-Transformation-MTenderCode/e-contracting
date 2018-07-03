@@ -17,7 +17,7 @@ class ACController(private val acService: ACService) {
     @PostMapping("createAC")
     fun createAC(@RequestParam(value = "identifier") cpid: String,
                  @RequestParam(value = "stage") stage: String,
-                 @Valid @RequestBody data: CreateContractRQ): ResponseEntity<ResponseDto<*>> {
+                 @Valid @RequestBody data: CreateContractRQ): ResponseEntity<ResponseDto> {
 
         return ResponseEntity(
                 acService.createAC(cpId = cpid, stage = stage, dto = data),

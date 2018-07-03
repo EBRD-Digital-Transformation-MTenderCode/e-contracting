@@ -4,7 +4,6 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.CreateContractRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto
@@ -20,7 +19,7 @@ import java.util.*
 
 interface ACService {
 
-    fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto<*>
+    fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto
 
 //    fun updateAC(cpId: String, token: String, platformId: String, updateACRQ: UpdateACRQ): ResponseDto<*>
 //
@@ -34,7 +33,7 @@ class ACServiceImpl(private val acDao: AcDao,
                     private val canDao: CanDao,
                     private val generationService: GenerationService) : ACService {
 
-    override fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto<*> {
+    override fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto {
         val cans = ArrayList<Can>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
@@ -46,7 +45,7 @@ class ACServiceImpl(private val acDao: AcDao,
             val contract = createContract(award, lotComplete, items)
             contracts.add(contract)
             val canEntity = canEntities.asSequence()
-                    .filter({ it.awardId == award.id }).firstOrNull()
+                    .filter { it.awardId == award.id }.firstOrNull()
                     ?: throw ErrorException(ErrorType.CANS_NOT_FOUND)
             canEntity.status = ContractStatus.ACTIVE.value()
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value()

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.contracting.model.dto.databinding.*
-import java.io.IOException
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime

@@ -2,10 +2,10 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
-import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 
 interface CanService {
 
-    fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto<*>
+    fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto
 
 //    fun checkCAN(cpId: String, token: String, idPlatform: String): ResponseDto<*>
 //
@@ -28,7 +28,7 @@ class CanServiceImpl(private val canDao: CanDao,
                      private val acDao: AcDao,
                      private val generationService: GenerationService) : CanService {
 
-    override fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto<*> {
+    override fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto {
         val canEntities = createCANEntities(cpId, stage, owner, dto)
         val cans = convertEntitiesToDtoList(canEntities)
         canDao.saveAll(canEntities)
