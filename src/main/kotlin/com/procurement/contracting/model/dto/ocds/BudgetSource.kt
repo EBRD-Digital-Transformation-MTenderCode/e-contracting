@@ -1,17 +1,18 @@
 package com.procurement.contracting.model.dto.ocds
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import java.math.BigDecimal
 import javax.validation.constraints.NotNull
 
-data class BudgetSource(
+data class BudgetSource @JsonCreator constructor(
 
-        @JsonProperty("budgetBreakdownID") @NotNull
+        @field:NotNull
         val id: String,
 
-        @JsonProperty("amount") @NotNull
-        @JsonDeserialize(using = MoneyDeserializer::class)
+        @field:NotNull
+        @field: JsonDeserialize(using = MoneyDeserializer::class)
         val amount: BigDecimal
 )

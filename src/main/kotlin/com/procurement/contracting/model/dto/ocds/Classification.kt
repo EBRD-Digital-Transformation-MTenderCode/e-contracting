@@ -1,21 +1,18 @@
 package com.procurement.contracting.model.dto.ocds
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 import javax.validation.constraints.NotNull
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class Classification(
+data class Classification @JsonCreator constructor(
 
-        @JsonProperty("scheme") @NotNull
+        @field:NotNull
         val scheme: Scheme,
 
-        @JsonProperty("id") @NotNull
+        @field:NotNull
         val id: String,
 
-        @JsonProperty("description") @NotNull
+        @field:NotNull
         val description: String,
 
-        @JsonProperty("uri")
         val uri: String?
 )

@@ -2,7 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
-import com.procurement.contracting.model.dto.Can
+import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto

@@ -1,12 +1,15 @@
 package com.procurement.contracting.model.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.procurement.contracting.model.dto.ocds.Award
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
-data class CreateCanRQ(
+data class CreateCanRQ @JsonCreator constructor(
 
-        @JsonProperty("awards") @Valid @NotEmpty
+        @field:Valid
+        @field:NotNull
+        @field:NotEmpty
         val awards: List<Award>
 )

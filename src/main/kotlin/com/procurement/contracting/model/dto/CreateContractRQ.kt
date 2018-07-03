@@ -1,20 +1,20 @@
 package com.procurement.contracting.model.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.procurement.contracting.model.dto.ocds.Award
 import com.procurement.contracting.model.dto.ocds.Item
 import com.procurement.contracting.model.dto.ocds.Lot
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 
-data class CreateContractRQ(
+data class CreateContractRQ @JsonCreator constructor(
 
-        @JsonProperty("lots") @Valid @NotEmpty
+        @field:Valid @field:NotEmpty
         val lots: List<Lot>,
 
-        @JsonProperty("items") @Valid @NotEmpty
+        @field:Valid @field:NotEmpty
         val items: List<Item>,
 
-        @JsonProperty("awards") @Valid @NotEmpty
+        @field:Valid @field:NotEmpty
         val awards: List<Award>
 )

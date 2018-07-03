@@ -4,7 +4,7 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.dto.Can
+import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.CreateContractRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto

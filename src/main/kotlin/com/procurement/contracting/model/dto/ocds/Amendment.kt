@@ -1,15 +1,12 @@
 package com.procurement.contracting.model.dto.ocds
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonCreator
 import javax.validation.constraints.NotNull
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class Amendment(
+data class Amendment @JsonCreator constructor(
 
-        @JsonProperty("rationale") @NotNull
+        @field:NotNull
         val rationale: String,
 
-        @JsonProperty("description")
         val description: String?
 )
