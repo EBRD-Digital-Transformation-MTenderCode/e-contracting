@@ -6,7 +6,7 @@ spring:
     name: e-contracting
 
 cassandra:
-  contact-points: 10.0.10.104,10.0.10.105,10.0.10.106
+  contact-points: 10.0.20.104,10.0.20.105,10.0.20.106
   keyspace-name: ocds
   port: 9042
   username: caclient
