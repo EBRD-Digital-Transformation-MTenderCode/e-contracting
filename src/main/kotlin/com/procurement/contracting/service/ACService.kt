@@ -38,6 +38,9 @@ class ACServiceImpl(private val acDao: AcDao,
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
+        if (canEntities.isEmpty()) {
+            return ResponseDto(true, null, CreateContractRS(listOf(), listOf()))
+        }
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
             val lotComplete = getCompletedLot(dto.lots, award)

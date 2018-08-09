@@ -103,7 +103,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
                             statusDetails = row.getString(STATUS_DETAILS))
             )
         }
-        if (entities.isEmpty()) throw ErrorException(ErrorType.CANS_NOT_FOUND)
         return entities
     }
 
