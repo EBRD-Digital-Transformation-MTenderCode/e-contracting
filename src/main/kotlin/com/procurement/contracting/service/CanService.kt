@@ -5,10 +5,7 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
@@ -36,7 +33,10 @@ class CanServiceImpl(private val canDao: CanDao,
     }
 
     private fun createCANEntities(cpId: String, stage: String, owner: String, dto: CreateCanRQ): List<CanEntity> {
-        return dto.awards.asSequence().map { createCanEntity(cpId, stage, it.id, owner) }.toList()
+        return dto.awards.asSequence()
+                .filter { it.status == AwardStatus.ACTIVE }
+                .map { createCanEntity(cpId, stage, it.id, owner) }
+                .toList()
     }
 
     private fun convertEntitiesToDtoList(canEntities: List<CanEntity>): List<Can> {
