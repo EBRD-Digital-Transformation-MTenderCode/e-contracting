@@ -34,7 +34,7 @@ class CanServiceImpl(private val canDao: CanDao,
 
     private fun createCANEntities(cpId: String, stage: String, owner: String, dto: CreateCanRQ): List<CanEntity> {
         return dto.awards.asSequence()
-                .filter { it.status == AwardStatus.ACTIVE }
+                .filter { it.statusDetails == AwardStatus.ACTIVE }
                 .map { createCanEntity(cpId, stage, it.id, owner) }
                 .toList()
     }
