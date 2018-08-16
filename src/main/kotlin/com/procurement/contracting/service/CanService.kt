@@ -1,6 +1,5 @@
 package com.procurement.contracting.service
 
-import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
@@ -10,10 +9,12 @@ import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.util.*
 
 interface CanService {
 
-    fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto
+    fun createCAN(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): ResponseDto
 
 //    fun checkCAN(cpId: String, token: String, idPlatform: String): ResponseDto<*>
 //
@@ -22,12 +23,11 @@ interface CanService {
 
 @Service
 class CanServiceImpl(private val canDao: CanDao,
-                     private val acDao: AcDao,
                      private val generationService: GenerationService) : CanService {
 
-    override fun createCAN(cpId: String, stage: String, owner: String, dto: CreateCanRQ): ResponseDto {
+    override fun createCAN(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): ResponseDto {
         val canEntities = createCANEntities(cpId, stage, owner, dto)
-        val cans = convertEntitiesToDtoList(canEntities)
+        val cans = convertEntitiesToDtoList(canEntities, dateTime)
         canDao.saveAll(canEntities)
         return ResponseDto(true, null, CreateCanRS(cans))
     }
@@ -39,15 +39,15 @@ class CanServiceImpl(private val canDao: CanDao,
                 .toList()
     }
 
-    private fun convertEntitiesToDtoList(canEntities: List<CanEntity>): List<Can> {
-        return canEntities.asSequence().map { convertEntityToCanDto(it) }.toList()
+    private fun convertEntitiesToDtoList(canEntities: List<CanEntity>, dateTime: LocalDateTime): List<Can> {
+        return canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
     }
 
-    private fun convertEntityToCanDto(entity: CanEntity): Can {
+    private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
         val contract = Contract(
                 token = entity.token.toString(),
-                id = entity.token.toString(),
-                date = localNowUTC(),
+                id = UUID.randomUUID().toString(),
+                date = dateTime,
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
                 statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),

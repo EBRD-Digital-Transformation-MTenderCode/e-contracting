@@ -87,8 +87,8 @@ class ACServiceImpl(private val acDao: AcDao,
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(
-                token = entity.token.toString(),
-                id = entity.token.toString(),
+                token = UUID.randomUUID().toString(),
+                id = UUID.randomUUID().toString(),
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
