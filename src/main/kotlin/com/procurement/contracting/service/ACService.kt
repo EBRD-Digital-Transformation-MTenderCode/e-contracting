@@ -10,16 +10,16 @@ import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.AcEntity
 import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocal
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 
 interface ACService {
 
-    fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto
+    fun createAC(cpId: String, stage: String, dateTime: LocalDateTime, dto: CreateContractRQ): ResponseDto
 
 //    fun updateAC(cpId: String, token: String, platformId: String, updateACRQ: UpdateACRQ): ResponseDto<*>
 //
@@ -33,7 +33,7 @@ class ACServiceImpl(private val acDao: AcDao,
                     private val canDao: CanDao,
                     private val generationService: GenerationService) : ACService {
 
-    override fun createAC(cpId: String, stage: String, dto: CreateContractRQ): ResponseDto {
+    override fun createAC(cpId: String, stage: String, dateTime: LocalDateTime, dto: CreateContractRQ): ResponseDto {
         val cans = ArrayList<Can>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
@@ -45,7 +45,7 @@ class ACServiceImpl(private val acDao: AcDao,
         for (award in activeAwards) {
             val lotComplete = getCompletedLot(dto.lots, award)
             val items = getItemsForRelatedLot(dto.items, award)
-            val contract = createContract(award, lotComplete, items)
+            val contract = createContract(award, lotComplete, items, dateTime)
             contracts.add(contract)
             val canEntity = canEntities.asSequence()
                     .filter { it.awardId == award.id }.firstOrNull()
@@ -54,7 +54,7 @@ class ACServiceImpl(private val acDao: AcDao,
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value()
             canEntity.acId = contract.id
             cans.add(convertEntityToCanDto(canEntity))
-            acEntities.add(convertContractToEntity(cpId, stage, contract, canEntity))
+            acEntities.add(convertContractToEntity(cpId, stage, contract, dateTime, canEntity))
         }
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
@@ -111,24 +111,28 @@ class ACServiceImpl(private val acDao: AcDao,
     private fun convertContractToEntity(cpId: String,
                                         stage: String,
                                         contract: Contract,
+                                        dateTime: LocalDateTime,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(
                 cpId = cpId,
                 stage = stage,
                 token = UUID.fromString(contract.token!!),
                 owner = canEntity.owner,
-                createdDate = localNowUTC().toDate(),
+                createdDate = dateTime.toDate(),
                 canId = canEntity.token.toString(),
                 status = contract.status.value(),
                 statusDetails = contract.statusDetails.value(),
                 jsonData = toJson(contract))
     }
 
-    private fun createContract(award: Award, lotComplete: Lot, items: List<Item>): Contract {
+    private fun createContract(award: Award,
+                               lotComplete: Lot,
+                               items: List<Item>,
+                               dateTime: LocalDateTime): Contract {
         return Contract(
                 id = generationService.generateTimeBasedUUID().toString(),
                 token = generationService.generateRandomUUID().toString(),
-                date = localNowUTC(),
+                date = dateTime,
                 awardId = award.id,
                 status = ContractStatus.PENDING,
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT,

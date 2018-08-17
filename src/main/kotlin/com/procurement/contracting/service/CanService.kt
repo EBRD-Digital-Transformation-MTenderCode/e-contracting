@@ -6,7 +6,6 @@ import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -26,16 +25,16 @@ class CanServiceImpl(private val canDao: CanDao,
                      private val generationService: GenerationService) : CanService {
 
     override fun createCAN(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): ResponseDto {
-        val canEntities = createCANEntities(cpId, stage, owner, dto)
+        val canEntities = createCANEntities(cpId, stage, owner, dateTime, dto)
         val cans = convertEntitiesToDtoList(canEntities, dateTime)
         canDao.saveAll(canEntities)
         return ResponseDto(true, null, CreateCanRS(cans))
     }
 
-    private fun createCANEntities(cpId: String, stage: String, owner: String, dto: CreateCanRQ): List<CanEntity> {
+    private fun createCANEntities(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): List<CanEntity> {
         return dto.awards.asSequence()
                 .filter { it.statusDetails == AwardStatus.ACTIVE }
-                .map { createCanEntity(cpId, stage, it.id, owner) }
+                .map { createCanEntity(cpId, stage, it.id, owner, dateTime) }
                 .toList()
     }
 
@@ -69,7 +68,8 @@ class CanServiceImpl(private val canDao: CanDao,
     private fun createCanEntity(cpId: String,
                                 stage: String,
                                 awardId: String,
-                                owner: String): CanEntity {
+                                owner: String,
+                                dateTime: LocalDateTime): CanEntity {
         return CanEntity(
                 cpId = cpId,
                 stage = stage,
@@ -79,7 +79,7 @@ class CanServiceImpl(private val canDao: CanDao,
                 owner = owner,
                 status = ContractStatus.PENDING.value(),
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value(),
-                createdDate = localNowUTC().toDate()
+                createdDate = dateTime.toDate()
         )
     }
 }

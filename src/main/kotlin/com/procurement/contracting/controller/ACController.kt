@@ -3,10 +3,12 @@ package com.procurement.contracting.controller
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.service.ACService
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 import javax.validation.Valid
 
 @Validated
@@ -17,10 +19,12 @@ class ACController(private val acService: ACService) {
     @PostMapping("createAC")
     fun createAC(@RequestParam(value = "identifier") cpid: String,
                  @RequestParam(value = "stage") stage: String,
+                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                 @RequestParam("date") dateTime: LocalDateTime,
                  @Valid @RequestBody data: CreateContractRQ): ResponseEntity<ResponseDto> {
 
         return ResponseEntity(
-                acService.createAC(cpId = cpid, stage = stage, dto = data),
+                acService.createAC(cpId = cpid, stage = stage, dateTime = dateTime, dto = data),
                 HttpStatus.OK)
     }
 
