@@ -93,7 +93,7 @@ class ACServiceImpl(private val acDao: AcDao,
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(
-                token = entity.token.toString(),
+                token = null,
                 id = entity.canId.toString(),
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
@@ -111,7 +111,7 @@ class ACServiceImpl(private val acDao: AcDao,
                 dateSigned = null,
                 extendsContractID = null,
                 period = null)
-        return Can(contract.token!!, contract)
+        return Can(contract)
     }
 
     private fun convertContractToEntity(cpId: String,
@@ -125,7 +125,7 @@ class ACServiceImpl(private val acDao: AcDao,
                 token = UUID.fromString(contract.token!!),
                 owner = canEntity.owner,
                 createdDate = dateTime.toDate(),
-                canId = canEntity.token.toString(),
+                canId = canEntity.canId.toString(),
                 status = contract.status.value(),
                 statusDetails = contract.statusDetails.value(),
                 jsonData = toJson(contract))

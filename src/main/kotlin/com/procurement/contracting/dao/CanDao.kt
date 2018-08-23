@@ -18,8 +18,6 @@ interface CanDao {
 
     fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity>
 
-    fun getByCpIdAndToken(cpId: String, token: UUID): CanEntity
-
 }
 
 @Service
@@ -30,7 +28,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
                 insertInto(NOTICE_TABLE)
                         .value(CP_ID, entity.cpId)
                         .value(STAGE, entity.stage)
-                        .value(TOKEN, entity.token)
                         .value(CAN_ID, entity.canId)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
@@ -48,7 +45,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
                     insertInto(NOTICE_TABLE)
                             .value(CP_ID, entity.cpId)
                             .value(STAGE, entity.stage)
-                            .value(TOKEN, entity.token)
                             .value(CAN_ID, entity.canId)
                             .value(OWNER, entity.owner)
                             .value(CREATED_DATE, entity.createdDate)
@@ -59,29 +55,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
         }
         val batch = QueryBuilder.batch(*operations.toTypedArray())
         session.execute(batch)
-    }
-
-    override fun getByCpIdAndToken(cpId: String, token: UUID): CanEntity {
-        val query = select()
-                .all()
-                .from(NOTICE_TABLE)
-                .where(eq(CP_ID, cpId))
-                .and(eq(TOKEN, token))
-                .limit(1)
-        val row = session.execute(query).one()
-        return if (row != null)
-            CanEntity(
-                    cpId = row.getString(CP_ID),
-                    stage = row.getString(STAGE),
-                    token = row.getUUID(TOKEN),
-                    canId = row.getUUID(CAN_ID),
-                    owner = row.getString(OWNER),
-                    createdDate = row.getTimestamp(CREATED_DATE),
-                    awardId = row.getString(AWARD_ID),
-                    acId = row.getString(AC_ID),
-                    status = row.getString(STATUS),
-                    statusDetails = row.getString(STATUS_DETAILS))
-        else throw ErrorException(ErrorType.CANS_NOT_FOUND)
     }
 
     override fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity> {
@@ -97,7 +70,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
                     CanEntity(
                             cpId = row.getString(CP_ID),
                             stage = row.getString(STAGE),
-                            token = row.getUUID(TOKEN),
                             canId = row.getUUID(CAN_ID),
                             owner = row.getString(OWNER),
                             createdDate = row.getTimestamp(CREATED_DATE),
@@ -114,7 +86,6 @@ class CanDaoImpl(private val session: Session) : CanDao {
         private const val NOTICE_TABLE = "contracting_notice"
         private const val CP_ID = "cp_id"
         private const val STAGE = "stage"
-        private const val TOKEN = "token_entity"
         private const val CAN_ID = "can_id"
         private const val OWNER = "owner"
         private const val CREATED_DATE = "created_date"

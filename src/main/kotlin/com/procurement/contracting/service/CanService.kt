@@ -43,7 +43,7 @@ class CanServiceImpl(private val canDao: CanDao,
 
     private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
         val contract = Contract(
-                token = entity.token.toString(),
+                token = null,
                 id = entity.canId.toString(),
                 date = dateTime,
                 awardId = entity.awardId,
@@ -61,7 +61,7 @@ class CanServiceImpl(private val canDao: CanDao,
                 value = null,
                 description = null,
                 title = null)
-        return Can(contract.token!!, contract)
+        return Can(contract)
     }
 
     private fun createCanEntity(cpId: String,
@@ -72,7 +72,6 @@ class CanServiceImpl(private val canDao: CanDao,
         return CanEntity(
                 cpId = cpId,
                 stage = stage,
-                token = generationService.generateRandomUUID(),
                 canId = generationService.generateRandomUUID(),
                 awardId = awardId,
                 acId = null,
