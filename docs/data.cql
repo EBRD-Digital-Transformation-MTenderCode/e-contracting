@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_notice (
     cp_id text,
     stage text,
     token_entity UUID,
+    can_id UUID,
     award_id text,
     ac_id text,
     created_date timestamp,

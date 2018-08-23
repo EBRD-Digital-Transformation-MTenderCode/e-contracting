@@ -9,7 +9,6 @@ import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
 
 interface CanService {
 
@@ -45,7 +44,7 @@ class CanServiceImpl(private val canDao: CanDao,
     private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
         val contract = Contract(
                 token = entity.token.toString(),
-                id = UUID.randomUUID().toString(),
+                id = entity.canId.toString(),
                 date = dateTime,
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
@@ -74,6 +73,7 @@ class CanServiceImpl(private val canDao: CanDao,
                 cpId = cpId,
                 stage = stage,
                 token = generationService.generateRandomUUID(),
+                canId = generationService.generateRandomUUID(),
                 awardId = awardId,
                 acId = null,
                 owner = owner,

@@ -10,6 +10,8 @@ data class CanEntity(
 
         val token: UUID,
 
+        val canId: UUID,
+
         val owner: String,
 
         val createdDate: Date,

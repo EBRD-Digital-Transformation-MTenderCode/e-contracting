@@ -31,6 +31,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
                         .value(CP_ID, entity.cpId)
                         .value(STAGE, entity.stage)
                         .value(TOKEN, entity.token)
+                        .value(CAN_ID, entity.canId)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
                         .value(AWARD_ID, entity.awardId)
@@ -48,6 +49,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
                             .value(CP_ID, entity.cpId)
                             .value(STAGE, entity.stage)
                             .value(TOKEN, entity.token)
+                            .value(CAN_ID, entity.canId)
                             .value(OWNER, entity.owner)
                             .value(CREATED_DATE, entity.createdDate)
                             .value(AWARD_ID, entity.awardId)
@@ -72,6 +74,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
                     cpId = row.getString(CP_ID),
                     stage = row.getString(STAGE),
                     token = row.getUUID(TOKEN),
+                    canId = row.getUUID(CAN_ID),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
                     awardId = row.getString(AWARD_ID),
@@ -95,6 +98,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
                             cpId = row.getString(CP_ID),
                             stage = row.getString(STAGE),
                             token = row.getUUID(TOKEN),
+                            canId = row.getUUID(CAN_ID),
                             owner = row.getString(OWNER),
                             createdDate = row.getTimestamp(CREATED_DATE),
                             awardId = row.getString(AWARD_ID),
@@ -107,15 +111,16 @@ class CanDaoImpl(private val session: Session) : CanDao {
     }
 
     companion object {
-        private val NOTICE_TABLE = "contracting_notice"
-        private val CP_ID = "cp_id"
-        private val STAGE = "stage"
-        private val TOKEN = "token_entity"
-        private val OWNER = "owner"
-        private val CREATED_DATE = "created_date"
-        private val AWARD_ID = "award_id"
-        private val AC_ID = "ac_id"
-        private val STATUS = "status"
-        private val STATUS_DETAILS = "status_details"
+        private const val NOTICE_TABLE = "contracting_notice"
+        private const val CP_ID = "cp_id"
+        private const val STAGE = "stage"
+        private const val TOKEN = "token_entity"
+        private const val CAN_ID = "can_id"
+        private const val OWNER = "owner"
+        private const val CREATED_DATE = "created_date"
+        private const val AWARD_ID = "award_id"
+        private const val AC_ID = "ac_id"
+        private const val STATUS = "status"
+        private const val STATUS_DETAILS = "status_details"
     }
 }

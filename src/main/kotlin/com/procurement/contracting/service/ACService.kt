@@ -45,7 +45,13 @@ class ACServiceImpl(private val acDao: AcDao,
         for (award in activeAwards) {
             val lotComplete = getCompletedLot(dto.lots, award)
             val items = getItemsForRelatedLot(dto.items, award)
-            val contract = createContract(award, lotComplete, items, dateTime)
+            val contract = createContract(
+                    cpId = cpId,
+                    stage = "AC",
+                    award = award,
+                    lotComplete = lotComplete,
+                    items = items,
+                    dateTime = dateTime)
             contracts.add(contract)
             val canEntity = canEntities.asSequence()
                     .filter { it.awardId == award.id }.firstOrNull()
@@ -87,8 +93,8 @@ class ACServiceImpl(private val acDao: AcDao,
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(
-                token = UUID.randomUUID().toString(),
-                id = UUID.randomUUID().toString(),
+                token = entity.token.toString(),
+                id = entity.canId.toString(),
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
@@ -125,12 +131,14 @@ class ACServiceImpl(private val acDao: AcDao,
                 jsonData = toJson(contract))
     }
 
-    private fun createContract(award: Award,
+    private fun createContract(cpId: String,
+                               stage: String,
+                               award: Award,
                                lotComplete: Lot,
                                items: List<Item>,
                                dateTime: LocalDateTime): Contract {
         return Contract(
-                id = generationService.generateTimeBasedUUID().toString(),
+                id = generationService.newOcId(cpId, stage),
                 token = generationService.generateRandomUUID().toString(),
                 date = dateTime,
                 awardId = award.id,

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.contracting.model.dto.databinding.*
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -39,6 +40,14 @@ fun LocalDateTime.toDate(): Date {
 
 fun Date.toLocal(): LocalDateTime {
     return LocalDateTime.ofInstant(this.toInstant(), ZoneOffset.UTC)
+}
+
+fun localNowUTC(): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
+}
+
+fun milliNowUTC(): Long {
+    return localNowUTC().toInstant(ZoneOffset.UTC).toEpochMilli()
 }
 
 /*Json utils*/
