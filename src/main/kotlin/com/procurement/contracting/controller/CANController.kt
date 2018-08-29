@@ -17,7 +17,7 @@ import javax.validation.Valid
 class CANController(private val canService: CanService) {
 
     @PostMapping("createCAN")
-    fun createCAN(@RequestParam(value = "identifier") cpid: String,
+    fun createCAN(@RequestParam(value = "cpid") cpid: String,
                   @RequestParam(value = "stage") stage: String,
                   @RequestParam(value = "owner") owner: String,
                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

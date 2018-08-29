@@ -17,7 +17,7 @@ import javax.validation.Valid
 class ACController(private val acService: ACService) {
 
     @PostMapping("createAC")
-    fun createAC(@RequestParam(value = "identifier") cpid: String,
+    fun createAC(@RequestParam(value = "cpid") cpid: String,
                  @RequestParam(value = "stage") stage: String,
                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                  @RequestParam("date") dateTime: LocalDateTime,
