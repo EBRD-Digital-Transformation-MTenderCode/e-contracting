@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_notice (
     owner text,
     status text,
     status_details text,
-    primary key(cp_id, stage)
+    primary key(cp_id, stage, can_id)
 );
 
 CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (

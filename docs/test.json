@@ -1,0 +1,421 @@
+{
+  "standstillPeriod": {
+    "startDate": "2018-08-29T12:51:12Z",
+    "endDate": "2018-08-29T12:51:18Z"
+  },
+  "awards": [
+    {
+      "id": "57eeb0d3-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:48:15Z",
+      "status": "pending",
+      "statusDetails": "active",
+      "value": {
+        "amount": 90.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc03-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "6d0e8450-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-j1uhy4",
+          "name": "ijyuhjj0",
+          "identifier": {
+            "id": "j1uhy4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    },
+    {
+      "id": "57eeb0d5-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:48:15Z",
+      "description": "",
+      "status": "pending",
+      "statusDetails": "empty",
+      "value": {
+        "amount": 90.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc03-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "87e93630-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-y4",
+          "name": "0",
+          "identifier": {
+            "id": "y4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    },
+    {
+      "id": "57eeb0d0-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:47:19Z",
+      "status": "pending",
+      "statusDetails": "unsuccessful",
+      "value": {
+        "amount": 80.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc02-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "4bb4c440-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-j1y4",
+          "name": "ijyjj0",
+          "identifier": {
+            "id": "j1y4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    },
+    {
+      "id": "57eeb0d1-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:49:09Z",
+      "status": "pending",
+      "statusDetails": "active",
+      "value": {
+        "amount": 90.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc02-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "57e24a30-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-j1hy4",
+          "name": "ijyhjj0",
+          "identifier": {
+            "id": "j1hy4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    },
+    {
+      "id": "57eeb0d4-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:45:00Z",
+      "description": "",
+      "status": "pending",
+      "statusDetails": "empty",
+      "value": {
+        "amount": 90.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc03-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "7d902220-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-j1uhkky4",
+          "name": "ijyukkhjj0",
+          "identifier": {
+            "id": "j1uhkky4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    },
+    {
+      "id": "57eeb0d2-ab89-11e8-81c5-8d7564ebb12d",
+      "date": "2018-08-29T12:45:00Z",
+      "description": "",
+      "status": "pending",
+      "statusDetails": "empty",
+      "value": {
+        "amount": 90.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ca0acc02-ab87-11e8-85e2-d5523ec8c1d4"
+      ],
+      "relatedBid": "63279300-ab88-11e8-a774-c56f31395882",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-j1uhy4",
+          "name": "ijyuhjj0",
+          "identifier": {
+            "id": "j1uhy4",
+            "scheme": "MD-IDNO",
+            "legalName": "441",
+            "uri": "pj1241kpoi"
+          },
+          "address": {
+            "streetAddress": "rrfhgsfrdg",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1700000",
+                "description": "Cahul",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "hfhfhf",
+                "id": "00",
+                "description": "hnhn"
+              }
+            }
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "chh",
+              "scheme": "r121g",
+              "legalName": "ch",
+              "uri": "hc"
+            }
+          ],
+          "contactPoint": {
+            "name": "nhnh",
+            "email": "nhnhn",
+            "telephone": "hnhn",
+            "url": "hnhn"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ]
+    }
+  ],
+  "cans": [
+    {
+      "contract": {
+        "id": "215040df-0a40-4f94-8959-0292cb6783b1",
+        "date": "2018-08-29T12:51:12Z",
+        "awardId": "57eeb0d3-ab89-11e8-81c5-8d7564ebb12d",
+        "status": "pending",
+        "statusDetails": "contractProject"
+      }
+    },
+    {
+      "contract": {
+        "id": "4fd81e32-dade-4f92-b3cc-5c8e8efcf084",
+        "date": "2018-08-29T12:51:12Z",
+        "awardId": "57eeb0d1-ab89-11e8-81c5-8d7564ebb12d",
+        "status": "pending",
+        "statusDetails": "contractProject"
+      }
+    }
+  ]
+}

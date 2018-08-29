@@ -2,10 +2,7 @@ package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.Insert
-import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
-import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.entity.CanEntity
 import org.springframework.stereotype.Service
 import java.util.*
@@ -41,19 +38,18 @@ class CanDaoImpl(private val session: Session) : CanDao {
     override fun saveAll(entities: List<CanEntity>) {
         val operations = ArrayList<Insert>()
         entities.forEach { entity ->
-            operations.add(
-                    insertInto(NOTICE_TABLE)
-                            .value(CP_ID, entity.cpId)
-                            .value(STAGE, entity.stage)
-                            .value(CAN_ID, entity.canId)
-                            .value(OWNER, entity.owner)
-                            .value(CREATED_DATE, entity.createdDate)
-                            .value(AWARD_ID, entity.awardId)
-                            .value(AC_ID, entity.acId)
-                            .value(STATUS, entity.status)
-                            .value(STATUS_DETAILS, entity.statusDetails))
+            operations.add(insertInto(NOTICE_TABLE)
+                    .value(CP_ID, entity.cpId)
+                    .value(STAGE, entity.stage)
+                    .value(CAN_ID, entity.canId)
+                    .value(OWNER, entity.owner)
+                    .value(CREATED_DATE, entity.createdDate)
+                    .value(AWARD_ID, entity.awardId)
+                    .value(AC_ID, entity.acId)
+                    .value(STATUS, entity.status)
+                    .value(STATUS_DETAILS, entity.statusDetails))
         }
-        val batch = QueryBuilder.batch(*operations.toTypedArray())
+        val batch = batch(*operations.toTypedArray())
         session.execute(batch)
     }
 
