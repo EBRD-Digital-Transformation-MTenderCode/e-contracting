@@ -1,4 +1,4 @@
-mvn clean package docker:build
+mvn clean package docker:build docker:push
 docker push docker-registry.eprocurement.systems/e-contracting:18.06.1
 
 
