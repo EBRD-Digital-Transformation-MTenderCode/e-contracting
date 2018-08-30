@@ -28,7 +28,6 @@ class GenerationServiceImpl : GenerationService {
     }
 
     override fun newOcId(cpId: String, stage: String): String {
-        val random = Random().nextInt()
-        return cpId + "-" + stage.toUpperCase() + "-" + milliNowUTC() + random
+        return cpId + "-" + stage.toUpperCase() + "-" + (milliNowUTC() + Random().nextInt())
     }
 }
