@@ -4,28 +4,23 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.CreateContractRS
+import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.AcEntity
 import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.toDate
-import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocal
+import com.procurement.contracting.utils.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
 interface ACService {
 
-    fun createAC(cpId: String, stage: String, dateTime: LocalDateTime, dto: CreateContractRQ): ResponseDto
+    fun createAC(cm: CommandMessage): ResponseDto
 
-//    fun updateAC(cpId: String, token: String, platformId: String, updateACRQ: UpdateACRQ): ResponseDto<*>
-//
-//    fun changeStatus(cpId: String, token: String, platformId: String, changeStatusRQ: ChangeStatusRQ): ResponseDto<*>
-//
-//    fun checkStatus(cpId: String, token: String): ResponseDto<*>
 }
 
 @Service
@@ -33,13 +28,18 @@ class ACServiceImpl(private val acDao: AcDao,
                     private val canDao: CanDao,
                     private val generationService: GenerationService) : ACService {
 
-    override fun createAC(cpId: String, stage: String, dateTime: LocalDateTime, dto: CreateContractRQ): ResponseDto {
+    override fun createAC(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val dateTime = cm.context.startDate?.toLocalDateTime()
+                ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val dto = toObject(CreateContractRQ::class.java, cm.data)
         val cans = ArrayList<Can>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
         if (canEntities.isEmpty()) {
-            return ResponseDto(true, null, CreateContractRS(listOf(), listOf()))
+            return ResponseDto(data = CreateContractRS(listOf(), listOf()))
         }
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
@@ -64,7 +64,7 @@ class ACServiceImpl(private val acDao: AcDao,
         }
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
-        return ResponseDto(true, null, CreateContractRS(cans, contracts))
+        return ResponseDto(data = CreateContractRS(cans, contracts))
     }
 
     private fun getActiveAwards(awards: List<Award>): List<Award> {

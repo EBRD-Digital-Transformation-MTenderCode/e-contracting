@@ -1,33 +1,40 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
+import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
+import com.procurement.contracting.utils.toLocalDateTime
+import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 interface CanService {
 
-    fun createCAN(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): ResponseDto
+    fun createCAN(cm: CommandMessage): ResponseDto
 
-//    fun checkCAN(cpId: String, token: String, idPlatform: String): ResponseDto<*>
-//
-//    fun changeStatus(cpId: String, awardId: String): ResponseDto<*>
 }
 
 @Service
 class CanServiceImpl(private val canDao: CanDao,
                      private val generationService: GenerationService) : CanService {
 
-    override fun createCAN(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): ResponseDto {
+    override fun createCAN(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val dto = toObject(CreateCanRQ::class.java, cm.data)
         val canEntities = createCANEntities(cpId, stage, owner, dateTime, dto)
         val cans = convertEntitiesToDtoList(canEntities, dateTime)
         canDao.saveAll(canEntities)
-        return ResponseDto(true, null, CreateCanRS(cans))
+        return ResponseDto(data = CreateCanRS(cans))
     }
 
     private fun createCANEntities(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): List<CanEntity> {
