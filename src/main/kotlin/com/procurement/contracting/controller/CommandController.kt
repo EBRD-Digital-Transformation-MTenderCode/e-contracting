@@ -4,7 +4,7 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.service.ACService
-import com.procurement.contracting.service.CanService
+import com.procurement.contracting.service.CANService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RestController
 @RequestMapping("/command")
-class CommandController(private val canService: CanService,
+class CommandController(private val canService: CANService,
                         private val acService: ACService) {
 
     @PostMapping

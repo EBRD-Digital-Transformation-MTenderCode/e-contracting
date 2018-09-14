@@ -15,7 +15,7 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
-interface CanService {
+interface CANService {
 
     fun createCAN(cm: CommandMessage): ResponseDto
 
@@ -23,7 +23,7 @@ interface CanService {
 
 @Service
 class CanServiceImpl(private val canDao: CanDao,
-                     private val generationService: GenerationService) : CanService {
+                     private val generationService: GenerationService) : CANService {
 
     override fun createCAN(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
