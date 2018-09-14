@@ -6,9 +6,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/e-evaluation.log</file>
+        <file>logs/e-contracting.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/e-evaluation%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/e-contracting%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -59,7 +59,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.procurement.evaluation" level="WARN" additivity="false">
+    <logger name="com.procurement.contracting" level="WARN" additivity="false">
         <appender-ref ref="FILE"/>
         <appender-ref ref="LOGSTASH"/>
     </logger>
