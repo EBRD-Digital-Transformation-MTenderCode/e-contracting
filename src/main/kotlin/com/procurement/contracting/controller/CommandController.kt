@@ -1,17 +1,14 @@
 package com.procurement.contracting.controller
 
-import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.CommandType
-import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.model.dto.bpe.*
 import com.procurement.contracting.service.ACService
 import com.procurement.contracting.service.CANService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
@@ -28,6 +25,17 @@ class CommandController(private val canService: CANService,
         return when (cm.command) {
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> acService.createAC(cm)
+        }
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(Exception::class)
+    fun exception(ex: Exception): ResponseDto {
+        return when (ex) {
+            is ErrorException -> getErrorExceptionResponseDto(ex)
+            is EnumException -> getEnumExceptionResponseDto(ex)
+            else -> getExceptionResponseDto(ex)
         }
     }
 }
