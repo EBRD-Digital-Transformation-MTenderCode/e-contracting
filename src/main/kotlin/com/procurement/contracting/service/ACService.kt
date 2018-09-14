@@ -3,8 +3,7 @@ package com.procurement.contracting.service
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.dto.CreateCanRQ
+import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.CreateContractRS
 import com.procurement.contracting.model.dto.bpe.CommandMessage
@@ -29,18 +28,17 @@ class ACServiceImpl(private val acDao: AcDao,
                     private val generationService: GenerationService) : ACService {
 
     override fun createAC(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
-        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
-        val dateTime = cm.context.startDate?.toLocalDateTime()
-                ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
+        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateContractRQ::class.java, cm.data)
+
         val cans = ArrayList<Can>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
-        if (canEntities.isEmpty()) {
-            return ResponseDto(data = CreateContractRS(listOf(), listOf()))
-        }
+        if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
+
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
             val lotComplete = getCompletedLot(dto.lots, award)
@@ -53,9 +51,8 @@ class ACServiceImpl(private val acDao: AcDao,
                     items = items,
                     dateTime = dateTime)
             contracts.add(contract)
-            val canEntity = canEntities.asSequence()
-                    .filter { it.awardId == award.id }.firstOrNull()
-                    ?: throw ErrorException(ErrorType.CANS_NOT_FOUND)
+            val canEntity = canEntities.asSequence().filter { it.awardId == award.id }.firstOrNull()
+                    ?: throw ErrorException(CANS_NOT_FOUND)
             canEntity.status = ContractStatus.ACTIVE.value()
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value()
             canEntity.acId = contract.id
@@ -68,26 +65,24 @@ class ACServiceImpl(private val acDao: AcDao,
     }
 
     private fun getActiveAwards(awards: List<Award>): List<Award> {
-        if (awards.isEmpty()) throw ErrorException(ErrorType.NO_ACTIVE_AWARDS)
+        if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
-        if (activeAwards.isEmpty()) throw ErrorException(ErrorType.NO_ACTIVE_AWARDS)
+        if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         return activeAwards
     }
 
     private fun getCompletedLot(lots: List<Lot>, award: Award): Lot {
-        if (lots.isEmpty()) throw ErrorException(ErrorType.NO_COMPLETED_LOT)
+        if (lots.isEmpty()) throw ErrorException(NO_COMPLETED_LOT)
         val awardRelatedLot = award.relatedLots?.get(0)
-        return lots.asSequence()
-                .filter { it.id == awardRelatedLot }
-                .firstOrNull()
-                ?: throw ErrorException(ErrorType.NO_COMPLETED_LOT)
+        return lots.asSequence().filter { it.id == awardRelatedLot }.firstOrNull()
+                ?: throw ErrorException(NO_COMPLETED_LOT)
     }
 
     private fun getItemsForRelatedLot(items: List<Item>, award: Award): List<Item> {
-        if (items.isEmpty()) throw ErrorException(ErrorType.NO_ITEMS)
+        if (items.isEmpty()) throw ErrorException(NO_ITEMS)
         val awardRelatedLot = award.relatedLots?.get(0)
         val filteredItems = items.asSequence().filter { it.relatedLot == awardRelatedLot }.toList()
-        if (filteredItems.isEmpty()) throw ErrorException(ErrorType.NO_ITEMS)
+        if (filteredItems.isEmpty()) throw ErrorException(NO_ITEMS)
         return filteredItems
     }
 

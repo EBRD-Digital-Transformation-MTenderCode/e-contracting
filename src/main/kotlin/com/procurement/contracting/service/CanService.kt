@@ -2,7 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.CommandMessage
@@ -26,26 +26,19 @@ class CanServiceImpl(private val canDao: CanDao,
                      private val generationService: GenerationService) : CanService {
 
     override fun createCAN(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
-        val stage = cm.context.stage ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
-        val owner = cm.context.owner ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(ErrorType.CONTEXT_PARAM_NOT_FOUND)
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateCanRQ::class.java, cm.data)
-        val canEntities = createCANEntities(cpId, stage, owner, dateTime, dto)
-        val cans = convertEntitiesToDtoList(canEntities, dateTime)
-        canDao.saveAll(canEntities)
-        return ResponseDto(data = CreateCanRS(cans))
-    }
 
-    private fun createCANEntities(cpId: String, stage: String, owner: String, dateTime: LocalDateTime, dto: CreateCanRQ): List<CanEntity> {
-        return dto.awards.asSequence()
+        val canEntities = dto.awards.asSequence()
                 .filter { it.statusDetails == AwardStatus.ACTIVE }
                 .map { createCanEntity(cpId, stage, it.id, owner, dateTime) }
                 .toList()
-    }
-
-    private fun convertEntitiesToDtoList(canEntities: List<CanEntity>, dateTime: LocalDateTime): List<Can> {
-        return canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
+        val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
+        canDao.saveAll(canEntities)
+        return ResponseDto(data = CreateCanRS(cans))
     }
 
     private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
