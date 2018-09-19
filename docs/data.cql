@@ -26,3 +26,11 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
     json_data text,
     primary key(cp_id, stage, token_entity)
 );
+
+CREATE TABLE IF NOT EXISTS  ocds.contracting_history (
+    operation_id text,
+    command text,
+    operation_date timestamp,
+    json_data text,
+    primary key(operation_id, command)
+);

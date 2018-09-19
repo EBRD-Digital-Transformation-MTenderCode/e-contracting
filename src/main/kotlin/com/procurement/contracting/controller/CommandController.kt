@@ -5,6 +5,7 @@ import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.model.dto.bpe.*
 import com.procurement.contracting.service.ACService
 import com.procurement.contracting.service.CANService
+import com.procurement.contracting.service.CommandService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -13,19 +14,11 @@ import org.springframework.web.bind.annotation.*
 @Validated
 @RestController
 @RequestMapping("/command")
-class CommandController(private val canService: CANService,
-                        private val acService: ACService) {
+class CommandController(private val commandService: CommandService) {
 
     @PostMapping
     fun command(@RequestBody commandMessage: CommandMessage): ResponseEntity<ResponseDto> {
-        return ResponseEntity(execute(commandMessage), HttpStatus.OK)
-    }
-
-    fun execute(cm: CommandMessage): ResponseDto {
-        return when (cm.command) {
-            CommandType.CREATE_CAN -> canService.createCAN(cm)
-            CommandType.CREATE_AC -> acService.createAC(cm)
-        }
+        return ResponseEntity(commandService.execute(commandMessage), HttpStatus.OK)
     }
 
     @ResponseBody
