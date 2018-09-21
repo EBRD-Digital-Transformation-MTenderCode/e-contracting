@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 data class Classification @JsonCreator constructor(
 
         @field:NotNull
-        val scheme: Scheme,
+        val scheme: String,
 
         @field:NotNull
         val id: String,
