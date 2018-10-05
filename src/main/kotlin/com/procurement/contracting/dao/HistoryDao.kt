@@ -5,8 +5,8 @@ import com.datastax.driver.core.querybuilder.QueryBuilder.*
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.entity.HistoryEntity
 import com.procurement.contracting.utils.localNowUTC
-import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toDate
+import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Service
 
 @Service
