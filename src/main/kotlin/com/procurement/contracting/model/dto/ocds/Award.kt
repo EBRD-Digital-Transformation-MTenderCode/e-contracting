@@ -17,7 +17,7 @@ data class Award @JsonCreator constructor(
 
         val status: AwardStatus?,
 
-        val statusDetails: AwardStatus,
+        val statusDetails: AwardStatus?,
 
         val value: Value?,
 
