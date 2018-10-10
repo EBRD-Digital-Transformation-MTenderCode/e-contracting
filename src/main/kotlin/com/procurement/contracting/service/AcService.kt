@@ -16,18 +16,12 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
-interface ACService {
-
-    fun createAC(cm: CommandMessage): ResponseDto
-
-}
-
 @Service
-class ACServiceImpl(private val acDao: AcDao,
-                    private val canDao: CanDao,
-                    private val generationService: GenerationService) : ACService {
+class AcService(private val acDao: AcDao,
+                private val canDao: CanDao,
+                private val generationService: GenerationService) {
 
-    override fun createAC(cm: CommandMessage): ResponseDto {
+    fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)

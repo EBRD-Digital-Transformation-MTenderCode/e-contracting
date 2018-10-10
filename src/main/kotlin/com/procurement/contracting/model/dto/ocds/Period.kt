@@ -8,9 +8,7 @@ import javax.validation.constraints.NotNull
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Period @JsonCreator constructor(
 
-        @field:NotNull
         val startDate: LocalDateTime,
 
-        @field:NotNull
         val endDate: LocalDateTime
 )

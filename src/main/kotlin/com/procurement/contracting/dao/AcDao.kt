@@ -10,20 +10,10 @@ import com.procurement.contracting.model.entity.AcEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
-interface AcDao {
-
-    fun save(entity: AcEntity)
-
-    fun saveAll(entities: List<AcEntity>)
-
-    fun getByCpIdAndToken(cpId: String, token: UUID): AcEntity
-
-}
-
 @Service
-class AcDaoImpl(private val session: Session) : AcDao {
+class AcDao(private val session: Session) {
 
-    override fun save(entity: AcEntity) {
+    fun save(entity: AcEntity) {
         val insert =
                 insertInto(CONTRACT_TABLE)
                         .value(CP_ID, entity.cpId)
@@ -38,7 +28,7 @@ class AcDaoImpl(private val session: Session) : AcDao {
         session.execute(insert)
     }
 
-    override fun saveAll(entities: List<AcEntity>) {
+    fun saveAll(entities: List<AcEntity>) {
         val operations = ArrayList<Insert>()
         entities.forEach { entity ->
             operations.add(
@@ -57,7 +47,7 @@ class AcDaoImpl(private val session: Session) : AcDao {
         session.execute(batch)
     }
 
-    override fun getByCpIdAndToken(cpId: String, token: UUID): AcEntity {
+    fun getByCpIdAndToken(cpId: String, token: UUID): AcEntity {
         val query = select()
                 .all()
                 .from(CONTRACT_TABLE)
@@ -80,15 +70,15 @@ class AcDaoImpl(private val session: Session) : AcDao {
     }
 
     companion object {
-        private val CONTRACT_TABLE = "contracting_contract"
-        private val CP_ID = "cp_id"
-        private val STAGE = "stage"
-        private val TOKEN = "token_entity"
-        private val OWNER = "owner"
-        private val CREATED_DATE = "created_date"
-        private val CAN_ID = "can_id"
-        private val STATUS = "status"
-        private val STATUS_DETAILS = "status_details"
-        private val JSON_DATA = "json_data"
+        private const val CONTRACT_TABLE = "contracting_contract"
+        private const val CP_ID = "cp_id"
+        private const val STAGE = "stage"
+        private const val TOKEN = "token_entity"
+        private const val OWNER = "owner"
+        private const val CREATED_DATE = "created_date"
+        private const val CAN_ID = "can_id"
+        private const val STATUS = "status"
+        private const val STATUS_DETAILS = "status_details"
+        private const val JSON_DATA = "json_data"
     }
 }

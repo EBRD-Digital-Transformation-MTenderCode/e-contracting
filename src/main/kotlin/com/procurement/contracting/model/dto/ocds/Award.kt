@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Award @JsonCreator constructor(
 
-        @field:NotNull
         val id: String,
 
         val date: LocalDateTime?,
@@ -18,7 +17,6 @@ data class Award @JsonCreator constructor(
 
         val status: AwardStatus?,
 
-        @field:NotNull
         val statusDetails: AwardStatus,
 
         val value: Value?,
@@ -27,9 +25,7 @@ data class Award @JsonCreator constructor(
 
         val relatedBid: String?,
 
-        @field:Valid
         val suppliers: List<OrganizationReference>?,
 
-        @field:Valid
         val documents: List<Document>?
 )

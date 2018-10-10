@@ -7,20 +7,10 @@ import com.procurement.contracting.model.entity.CanEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
-interface CanDao {
-
-    fun save(entity: CanEntity)
-
-    fun saveAll(entities: List<CanEntity>)
-
-    fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity>
-
-}
-
 @Service
-class CanDaoImpl(private val session: Session) : CanDao {
+class CanDao(private val session: Session) {
 
-    override fun save(entity: CanEntity) {
+    fun save(entity: CanEntity) {
         val insert =
                 insertInto(NOTICE_TABLE)
                         .value(CP_ID, entity.cpId)
@@ -35,7 +25,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
         session.execute(insert)
     }
 
-    override fun saveAll(entities: List<CanEntity>) {
+    fun saveAll(entities: List<CanEntity>) {
         val operations = ArrayList<Insert>()
         entities.forEach { entity ->
             operations.add(insertInto(NOTICE_TABLE)
@@ -53,7 +43,7 @@ class CanDaoImpl(private val session: Session) : CanDao {
         session.execute(batch)
     }
 
-    override fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity> {
+    fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity> {
         val query = select()
                 .all()
                 .from(NOTICE_TABLE)
