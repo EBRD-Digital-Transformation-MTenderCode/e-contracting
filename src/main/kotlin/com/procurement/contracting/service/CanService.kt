@@ -7,7 +7,10 @@ import com.procurement.contracting.model.dto.CreateCanRQ
 import com.procurement.contracting.model.dto.CreateCanRS
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.Can
+import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.ContractStatus
+import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toLocalDateTime
@@ -27,7 +30,6 @@ class CanService(private val canDao: CanDao,
         val dto = toObject(CreateCanRQ::class.java, cm.data)
 
         val canEntities = dto.awards.asSequence()
-                .filter { it.statusDetails == AwardStatus.ACTIVE }
                 .map { createCanEntity(cpId, stage, it.id, owner, dateTime) }
                 .toList()
         val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
