@@ -33,7 +33,8 @@ class AcService(private val acDao: AcDao,
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
 
-        for (award in dto.awards) {
+        val activeAwards = getActiveAwards(dto.awards)
+        for (award in activeAwards) {
             val lotComplete = getCompletedLot(dto.lots, award)
             val items = getItemsForRelatedLot(dto.items, award)
             val contract = createContract(
@@ -55,6 +56,13 @@ class AcService(private val acDao: AcDao,
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
         return ResponseDto(data = CreateContractRS(cans, contracts))
+    }
+
+    private fun getActiveAwards(awards: List<Award>): List<Award> {
+        if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
+        val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
+        if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
+        return activeAwards
     }
 
     private fun getCompletedLot(lots: List<Lot>, award: Award): Lot {
