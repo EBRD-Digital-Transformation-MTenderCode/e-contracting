@@ -7,7 +7,6 @@ import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 
-
 @Service
 class CommandService(private val historyDao: HistoryDao,
                      private val canService: CanService,
