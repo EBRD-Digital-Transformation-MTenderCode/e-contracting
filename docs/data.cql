@@ -23,6 +23,9 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
     created_date timestamp,
     status text,
     status_details text,
+    mainProcurementCategory: text,
+    language: text,
+    award text,
     json_data text,
     primary key(cp_id, stage, token_entity)
 );

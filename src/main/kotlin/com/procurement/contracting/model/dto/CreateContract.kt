@@ -2,15 +2,20 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.Award
+import com.procurement.contracting.model.dto.ocds.Can
+import com.procurement.contracting.model.dto.ocds.Contract
 
 data class CreateContractRQ @JsonCreator constructor(
 
-        val lots: List<Lot>,
+        val awards: List<Award>,
 
-        val items: List<Item>,
+        val tender: CreateContractTender
+)
 
-        val awards: List<Award>
+data class CreateContractTender @JsonCreator constructor(
+
+        val mainProcurementCategory: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

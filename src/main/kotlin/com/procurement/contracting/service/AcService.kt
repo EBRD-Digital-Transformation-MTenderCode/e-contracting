@@ -24,6 +24,7 @@ class AcService(private val acDao: AcDao,
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
+        val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateContractRQ::class.java, cm.data)
 
@@ -32,26 +33,48 @@ class AcService(private val acDao: AcDao,
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
-
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
-            val lotComplete = getCompletedLot(dto.lots, award)
-            val items = getItemsForRelatedLot(dto.items, award)
-            val contract = createContract(
-                    cpId = cpId,
-                    stage = "AC",
-                    award = award,
-                    lotComplete = lotComplete,
-                    items = items,
-                    dateTime = dateTime)
+            val contract = Contract(
+                    id = generationService.newOcId(cpId, stage),
+                    token = generationService.generateRandomUUID().toString(),
+                    date = dateTime,
+                    awardId = award.id,
+                    status = ContractStatus.PENDING,
+                    statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
+                    title = null,
+                    description = null,
+                    value = null,
+                    items = null,
+                    period = null,
+                    extendsContractID = null,
+                    dateSigned = null,
+                    budgetSource = null,
+                    amendments = null,
+                    relatedProcesses = null,
+                    classification = null,
+                    documents = null)
             contracts.add(contract)
+
             val canEntity = canEntities.asSequence().filter { it.awardId == award.id }.firstOrNull()
                     ?: throw ErrorException(CANS_NOT_FOUND)
             canEntity.status = ContractStatus.ACTIVE.value()
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value()
             canEntity.acId = contract.id
-            cans.add(convertEntityToCanDto(canEntity))
-            acEntities.add(convertContractToEntity(cpId, stage, contract, dateTime, canEntity))
+            val can = convertEntityToCanDto(canEntity)
+            cans.add(can)
+
+            val acEntity = convertContractToEntity(
+                    cpId,
+                    stage,
+                    dateTime,
+                    language,
+                    dto.tender.mainProcurementCategory,
+                    award,
+                    contract,
+                    canEntity)
+
+            acEntities.add(acEntity)
         }
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
@@ -63,21 +86,6 @@ class AcService(private val acDao: AcDao,
         val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
         if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         return activeAwards
-    }
-
-    private fun getCompletedLot(lots: List<Lot>, award: Award): Lot {
-        if (lots.isEmpty()) throw ErrorException(NO_COMPLETED_LOT)
-        val awardRelatedLot = award.relatedLots?.get(0)
-        return lots.asSequence().filter { it.id == awardRelatedLot }.firstOrNull()
-                ?: throw ErrorException(NO_COMPLETED_LOT)
-    }
-
-    private fun getItemsForRelatedLot(items: List<Item>, award: Award): List<Item> {
-        if (items.isEmpty()) throw ErrorException(NO_ITEMS)
-        val awardRelatedLot = award.relatedLots?.get(0)
-        val filteredItems = items.asSequence().filter { it.relatedLot == awardRelatedLot }.toList()
-        if (filteredItems.isEmpty()) throw ErrorException(NO_ITEMS)
-        return filteredItems
     }
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
@@ -103,10 +111,14 @@ class AcService(private val acDao: AcDao,
         return Can(contract)
     }
 
+
     private fun convertContractToEntity(cpId: String,
                                         stage: String,
-                                        contract: Contract,
                                         dateTime: LocalDateTime,
+                                        language: String,
+                                        mainProcurementCategory: String,
+                                        award: Award,
+                                        contract: Contract,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(
                 cpId = cpId,
@@ -117,33 +129,9 @@ class AcService(private val acDao: AcDao,
                 canId = canEntity.canId.toString(),
                 status = contract.status.value(),
                 statusDetails = contract.statusDetails.value(),
+                mainProcurementCategory = mainProcurementCategory,
+                language = language,
+                award = toJson(award),
                 jsonData = toJson(contract))
-    }
-
-    private fun createContract(cpId: String,
-                               stage: String,
-                               award: Award,
-                               lotComplete: Lot,
-                               items: List<Item>,
-                               dateTime: LocalDateTime): Contract {
-        return Contract(
-                id = generationService.newOcId(cpId, stage),
-                token = generationService.generateRandomUUID().toString(),
-                date = dateTime,
-                awardId = award.id,
-                status = ContractStatus.PENDING,
-                statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
-                title = lotComplete.title,
-                description = lotComplete.description,
-                value = award.value,
-                items = items,
-                period = null,
-                extendsContractID = null,
-                dateSigned = null,
-                budgetSource = null,
-                amendments = null,
-                relatedProcesses = null,
-                classification = null,
-                documents = null)
     }
 }

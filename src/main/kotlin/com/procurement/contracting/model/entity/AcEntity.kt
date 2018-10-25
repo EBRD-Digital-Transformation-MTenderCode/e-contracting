@@ -20,5 +20,11 @@ data class AcEntity(
 
         val statusDetails: String,
 
+        val mainProcurementCategory: String,
+
+        val language: String,
+
+        val award: String,
+
         val jsonData: String
 )
