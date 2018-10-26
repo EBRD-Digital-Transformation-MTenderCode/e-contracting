@@ -131,7 +131,7 @@ class AcService(private val acDao: AcDao,
                 statusDetails = contract.statusDetails.value(),
                 mainProcurementCategory = mainProcurementCategory,
                 language = language,
-                award = toJson(award),
-                jsonData = toJson(contract))
+                awardData = toJson(award),
+                contractData = toJson(contract))
     }
 }
