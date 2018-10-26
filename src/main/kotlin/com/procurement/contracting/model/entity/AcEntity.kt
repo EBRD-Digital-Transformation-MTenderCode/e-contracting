@@ -24,7 +24,5 @@ data class AcEntity(
 
         val language: String,
 
-        val awardData: String,
-
-        val contractData: String
+        val jsonData: String
 )
