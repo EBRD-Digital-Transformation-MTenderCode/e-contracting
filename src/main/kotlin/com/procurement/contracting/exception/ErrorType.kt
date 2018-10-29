@@ -15,5 +15,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     NO_ACTIVE_AWARDS("00.12", "No active awards."),
     NO_COMPLETED_LOT("00.13", "No completed lot found."),
     NO_ITEMS("00.14", "No items for related lot found."),
+    AWARDS_NOT_FOUND("00.15", "Awards not found."),
     CONTEXT("20.01", "Context parameter not found.");
 }

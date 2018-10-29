@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.dao.AwardDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.CreateContractRQ
@@ -10,6 +11,7 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.AcEntity
+import com.procurement.contracting.model.entity.AwardEntity
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.*
 import org.springframework.stereotype.Service
@@ -19,6 +21,7 @@ import java.util.*
 @Service
 class AcService(private val acDao: AcDao,
                 private val canDao: CanDao,
+                private val awardDao: AwardDao,
                 private val generationService: GenerationService) {
 
     fun createAC(cm: CommandMessage): ResponseDto {
@@ -33,6 +36,7 @@ class AcService(private val acDao: AcDao,
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
+        val awardEntities = ArrayList<AwardEntity>()
         if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
@@ -71,14 +75,22 @@ class AcService(private val acDao: AcDao,
                     dateTime,
                     language,
                     mainProcurementCategory,
-                    award,
                     contract,
                     canEntity)
 
             acEntities.add(acEntity)
+
+            awardEntities.add(AwardEntity(
+                    cpId = cpId,
+                    acId = contract.id,
+                    token = generationService.generateRandomUUID(),
+                    owner = canEntity.owner,
+                    jsonData = toJson(award))
+            )
         }
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
+        awardDao.saveAll(awardEntities)
         return ResponseDto(data = CreateContractRS(cans, contracts))
     }
 
@@ -118,7 +130,6 @@ class AcService(private val acDao: AcDao,
                                         dateTime: LocalDateTime,
                                         language: String,
                                         mainProcurementCategory: String,
-                                        award: Award,
                                         contract: Contract,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(

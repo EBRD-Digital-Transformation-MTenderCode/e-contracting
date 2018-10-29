@@ -24,6 +24,8 @@ class AcDao(private val session: Session) {
                         .value(CAN_ID, entity.canId)
                         .value(STATUS, entity.status)
                         .value(STATUS_DETAILS, entity.statusDetails)
+                        .value(MPC, entity.mainProcurementCategory)
+                        .value(LANGUAGE, entity.language)
                         .value(JSON_DATA, entity.jsonData)
         session.execute(insert)
     }
@@ -41,6 +43,8 @@ class AcDao(private val session: Session) {
                             .value(CAN_ID, entity.canId)
                             .value(STATUS, entity.status)
                             .value(STATUS_DETAILS, entity.statusDetails)
+                            .value(MPC, entity.mainProcurementCategory)
+                            .value(LANGUAGE, entity.language)
                             .value(JSON_DATA, entity.jsonData))
         }
         val batch = QueryBuilder.batch(*operations.toTypedArray())
@@ -65,6 +69,8 @@ class AcDao(private val session: Session) {
                     canId = row.getString(CAN_ID),
                     status = row.getString(STATUS),
                     statusDetails = row.getString(STATUS_DETAILS),
+                    mainProcurementCategory = row.getString(MPC),
+                    language = row.getString(LANGUAGE),
                     jsonData = row.getString(JSON_DATA))
         else throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
     }
@@ -79,6 +85,8 @@ class AcDao(private val session: Session) {
         private const val CAN_ID = "can_id"
         private const val STATUS = "status"
         private const val STATUS_DETAILS = "status_details"
+        private const val MPC = "mpc"
+        private const val LANGUAGE = "language"
         private const val JSON_DATA = "json_data"
     }
 }
