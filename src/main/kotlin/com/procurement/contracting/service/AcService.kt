@@ -26,6 +26,7 @@ class AcService(private val acDao: AcDao,
 
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val prevStage = cm.context.prevStage ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
@@ -35,7 +36,7 @@ class AcService(private val acDao: AcDao,
         val cans = ArrayList<Can>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
-        val canEntities = canDao.findAllByCpIdAndStage(cpId, stage)
+        val canEntities = canDao.findAllByCpIdAndStage(cpId, prevStage)
         val awardEntities = ArrayList<AwardEntity>()
         if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
         val activeAwards = getActiveAwards(dto.awards)
