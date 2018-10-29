@@ -37,7 +37,8 @@ data class Context @JsonCreator constructor(
         val token: String?,
         val startDate: String?,
         val endDate: String?,
-        val bidId: String?
+        val id: String?,
+        val mainProcurementCategory: String?
 )
 
 enum class CommandType(private val value: String) {

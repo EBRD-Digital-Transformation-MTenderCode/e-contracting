@@ -25,6 +25,7 @@ class AcService(private val acDao: AcDao,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
+        val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateContractRQ::class.java, cm.data)
 
@@ -69,7 +70,7 @@ class AcService(private val acDao: AcDao,
                     stage,
                     dateTime,
                     language,
-                    dto.tender.mainProcurementCategory,
+                    mainProcurementCategory,
                     award,
                     contract,
                     canEntity)

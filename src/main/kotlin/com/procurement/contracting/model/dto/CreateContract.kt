@@ -8,14 +8,7 @@ import com.procurement.contracting.model.dto.ocds.Contract
 
 data class CreateContractRQ @JsonCreator constructor(
 
-        val awards: List<Award>,
-
-        val tender: CreateContractTender
-)
-
-data class CreateContractTender @JsonCreator constructor(
-
-        val mainProcurementCategory: String
+        val awards: List<Award>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
