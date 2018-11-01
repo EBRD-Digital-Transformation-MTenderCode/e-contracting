@@ -72,8 +72,8 @@ class CanService(private val canDao: CanDao,
                 awardId = awardId,
                 acId = null,
                 owner = owner,
-                status = ContractStatus.PENDING.value(),
-                statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value(),
+                status = ContractStatus.PENDING.value,
+                statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value,
                 createdDate = dateTime.toDate()
         )
     }

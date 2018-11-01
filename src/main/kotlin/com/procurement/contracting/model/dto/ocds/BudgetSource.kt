@@ -13,5 +13,7 @@ data class BudgetSource @JsonCreator constructor(
         val id: String,
 
         @field: JsonDeserialize(using = MoneyDeserializer::class)
-        val amount: BigDecimal
+        val amount: BigDecimal,
+
+        val currency: String?
 )

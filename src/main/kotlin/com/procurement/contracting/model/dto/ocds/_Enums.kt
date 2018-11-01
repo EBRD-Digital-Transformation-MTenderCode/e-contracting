@@ -2,10 +2,8 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
-import java.util.*
 
-enum class AwardStatus constructor(private val value: String) {
+enum class AwardStatus(@JsonValue val value: String) {
     PENDING("pending"),
     ACTIVE("active"),
     UNSUCCESSFUL("unsuccessful"),
@@ -15,30 +13,9 @@ enum class AwardStatus constructor(private val value: String) {
     override fun toString(): String {
         return this.value
     }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-
-        private val CONSTANTS = HashMap<String, AwardStatus>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): AwardStatus {
-            return CONSTANTS[value] ?: throw IllegalArgumentException(value)
-        }
-    }
 }
 
-enum class ContractStatus constructor(private val value: String) {
+enum class ContractStatus(@JsonValue val value: String) {
     PENDING("pending"),
     ACTIVE("active"),
     CANCELLED("cancelled"),
@@ -47,11 +24,6 @@ enum class ContractStatus constructor(private val value: String) {
     UNSUCCESSFUL("unsuccessful");
 
     override fun toString(): String {
-        return this.value
-    }
-
-    @JsonValue
-    fun value(): String {
         return this.value
     }
 
@@ -71,7 +43,7 @@ enum class ContractStatus constructor(private val value: String) {
     }
 }
 
-enum class ContractStatusDetails constructor(private val value: String) {
+enum class ContractStatusDetails(@JsonValue val value: String) {
     CONTRACT_PROJECT("contractProject"),
     ACTIVE("active"),
     VERIFIED("verified"),
@@ -84,17 +56,11 @@ enum class ContractStatusDetails constructor(private val value: String) {
         return this.value
     }
 
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
     companion object {
-
         private val CONSTANTS = HashMap<String, ContractStatusDetails>()
 
         init {
-            for (c in values()) {
+            for (c in ContractStatusDetails.values()) {
                 CONSTANTS[c.value] = c
             }
         }
@@ -106,7 +72,7 @@ enum class ContractStatusDetails constructor(private val value: String) {
     }
 }
 
-enum class TenderStatus constructor(private val value: String) {
+enum class TenderStatus(@JsonValue val value: String) {
     PLANNING("planning"),
     PLANNED("planned"),
     ACTIVE("active"),
@@ -118,31 +84,9 @@ enum class TenderStatus constructor(private val value: String) {
     override fun toString(): String {
         return this.value
     }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-
-        private val CONSTANTS = HashMap<String, TenderStatus>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): TenderStatus {
-            return CONSTANTS[value]
-                    ?: throw EnumException(TenderStatus::class.java.name, value, Arrays.toString(values()))
-        }
-    }
 }
 
-enum class TenderStatusDetails constructor(private val value: String) {
+enum class TenderStatusDetails(@JsonValue val value: String) {
     PRESELECTION("preselection"),
     PRESELECTED("preselected"),
     PREQUALIFICATION("prequalification"),
@@ -166,31 +110,9 @@ enum class TenderStatusDetails constructor(private val value: String) {
     override fun toString(): String {
         return this.value
     }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-
-        private val CONSTANTS = HashMap<String, TenderStatusDetails>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): TenderStatusDetails {
-            return CONSTANTS[value]
-                    ?: throw EnumException(TenderStatusDetails::class.java.name, value, Arrays.toString(values()))
-        }
-    }
 }
 
-enum class DocumentType constructor(private val value: String) {
+enum class DocumentType(@JsonValue val value: String) {
 
     TENDER_NOTICE("tenderNotice"),
     AWARD_NOTICE("awardNotice"),
@@ -236,31 +158,9 @@ enum class DocumentType constructor(private val value: String) {
     override fun toString(): String {
         return this.value
     }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-
-        private val CONSTANTS = HashMap<String, DocumentType>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): DocumentType {
-            return CONSTANTS[value]
-                    ?: throw EnumException(DocumentType::class.java.name, value, Arrays.toString(values()))
-        }
-    }
 }
 
-enum class RelatedProcessType constructor(private val value: String) {
+enum class RelatedProcessType(@JsonValue val value: String) {
     FRAMEWORK("framework"),
     PLANNING("planning"),
     PARENT("parent"),
@@ -273,52 +173,12 @@ enum class RelatedProcessType constructor(private val value: String) {
     override fun toString(): String {
         return this.value
     }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-        private val CONSTANTS = HashMap<String, RelatedProcessType>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): RelatedProcessType {
-            return CONSTANTS[value] ?: throw IllegalArgumentException(value)
-        }
-    }
 }
 
-enum class RelatedProcessScheme constructor(private val value: String) {
+enum class RelatedProcessScheme(@JsonValue val value: String) {
     OCID("ocid");
 
     override fun toString(): String {
         return this.value
-    }
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    companion object {
-        private val CONSTANTS = HashMap<String, RelatedProcessScheme>()
-
-        init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
-        }
-
-        @JsonCreator
-        fun fromValue(value: String): RelatedProcessScheme {
-            return CONSTANTS[value] ?: throw IllegalArgumentException(value)
-        }
     }
 }

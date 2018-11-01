@@ -34,6 +34,7 @@ class AcService(private val acDao: AcDao,
         val dto = toObject(CreateContractRQ::class.java, cm.data)
 
         val cans = ArrayList<Can>()
+        val contractProcesses = ArrayList<ContractProcess>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, prevStage)
@@ -41,6 +42,7 @@ class AcService(private val acDao: AcDao,
         if (canEntities.isEmpty()) return ResponseDto(data = CreateContractRS(listOf(), listOf()))
         val activeAwards = getActiveAwards(dto.awards)
         for (award in activeAwards) {
+
             val contract = Contract(
                     id = generationService.newOcId(cpId, stage),
                     token = generationService.generateRandomUUID().toString(),
@@ -60,12 +62,15 @@ class AcService(private val acDao: AcDao,
                     relatedProcesses = null,
                     classification = null,
                     documents = null)
+
             contracts.add(contract)
+            val contractProcess = ContractProcess(planning = null, contracts = contract)
+            contractProcesses.add(contractProcess)
 
             val canEntity = canEntities.asSequence().filter { it.awardId == award.id }.firstOrNull()
                     ?: throw ErrorException(CANS_NOT_FOUND)
-            canEntity.status = ContractStatus.ACTIVE.value()
-            canEntity.statusDetails = ContractStatusDetails.EMPTY.value()
+            canEntity.status = ContractStatus.ACTIVE.value
+            canEntity.statusDetails = ContractStatusDetails.EMPTY.value
             canEntity.acId = contract.id
             val can = convertEntityToCanDto(canEntity)
             cans.add(can)
@@ -77,6 +82,7 @@ class AcService(private val acDao: AcDao,
                     language,
                     mainProcurementCategory,
                     contract,
+                    contractProcess,
                     canEntity)
 
             acEntities.add(acEntity)
@@ -132,6 +138,7 @@ class AcService(private val acDao: AcDao,
                                         language: String,
                                         mainProcurementCategory: String,
                                         contract: Contract,
+                                        contractProcess: ContractProcess,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(
                 cpId = cpId,
@@ -140,10 +147,10 @@ class AcService(private val acDao: AcDao,
                 owner = canEntity.owner,
                 createdDate = dateTime.toDate(),
                 canId = canEntity.canId.toString(),
-                status = contract.status.value(),
-                statusDetails = contract.statusDetails.value(),
+                status = contract.status.value,
+                statusDetails = contract.statusDetails.value,
                 mainProcurementCategory = mainProcurementCategory,
                 language = language,
-                jsonData = toJson(contract))
+                jsonData = toJson(contractProcess))
     }
 }
