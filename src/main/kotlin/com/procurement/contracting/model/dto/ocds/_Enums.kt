@@ -50,6 +50,7 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     CANCELLED("cancelled"),
     COMPLETE("complete"),
     UNSUCCESSFUL("unsuccessful"),
+    ISSUED("issued"),
     EMPTY("empty");
 
     override fun toString(): String {

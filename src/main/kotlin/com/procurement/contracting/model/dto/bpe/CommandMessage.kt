@@ -44,7 +44,8 @@ data class Context @JsonCreator constructor(
 enum class CommandType(private val value: String) {
 
     CREATE_CAN("createCAN"),
-    CREATE_AC("createAC");
+    CREATE_AC("createAC"),
+    GET_BUDGET_SOURCES("getActualBudgetSources");
 
     @JsonValue
     fun value(): String {

@@ -1,10 +1,11 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
-import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.dao.AwardDao
+import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.model.dto.ActualBsRS
 import com.procurement.contracting.model.dto.CreateContractRQ
 import com.procurement.contracting.model.dto.CreateContractRS
 import com.procurement.contracting.model.dto.bpe.CommandMessage
@@ -101,6 +102,26 @@ class AcService(private val acDao: AcDao,
         return ResponseDto(data = CreateContractRS(cans, contracts))
     }
 
+    fun getActualBudgetSources(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+
+        val entity = acDao.getByCpIdAndToken(cpId, UUID.fromString(token))
+        if (entity.owner != owner) throw ErrorException(OWNER)
+        val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
+        val contract = contractProcess.contracts
+        if (contract.id != ocId) throw ErrorException(CONTRACT_ID)
+        if (!(contract.status == ContractStatus.PENDING &&
+                        contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT ||
+                        contract.statusDetails == ContractStatusDetails.ISSUED)) {
+            throw ErrorException(CONTEXT)
+        }
+        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
+        return ResponseDto(data = ActualBsRS(language = entity.language, actualBudgetSource = actualBudgetSource))
+    }
+
     private fun getActiveAwards(awards: List<Award>): List<Award> {
         if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
@@ -131,7 +152,6 @@ class AcService(private val acDao: AcDao,
         return Can(contract)
     }
 
-
     private fun convertContractToEntity(cpId: String,
                                         stage: String,
                                         dateTime: LocalDateTime,
@@ -153,4 +173,5 @@ class AcService(private val acDao: AcDao,
                 language = language,
                 jsonData = toJson(contractProcess))
     }
+
 }

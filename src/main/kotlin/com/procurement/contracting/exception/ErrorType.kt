@@ -16,5 +16,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     NO_COMPLETED_LOT("00.13", "No completed lot found."),
     NO_ITEMS("00.14", "No items for related lot found."),
     AWARDS_NOT_FOUND("00.15", "Awards not found."),
+    CONTRACT_ID("00.16", "Invalid contract id."),
     CONTEXT("20.01", "Context parameter not found.");
 }
