@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Classification @JsonCreator constructor(
+data class ContactPoint @JsonCreator constructor(
 
-        val id: String,
+        val name: String,
 
-        var scheme: String,
+        val email: String,
 
-        val description: String,
+        val telephone: String,
 
-        val uri: String?
+        val faxNumber: String?,
+
+        val url: String?
 )
 

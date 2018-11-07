@@ -1,7 +1,7 @@
 package com.procurement.contracting.model.dto.ocds
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
+import com.procurement.contracting.exception.EnumException
 
 enum class AwardStatus(@JsonValue val value: String) {
     PENDING("pending"),
@@ -31,14 +31,11 @@ enum class ContractStatus(@JsonValue val value: String) {
         private val CONSTANTS = HashMap<String, ContractStatus>()
 
         init {
-            for (c in values()) {
-                CONSTANTS[c.value] = c
-            }
+            ContractStatus.values().forEach { CONSTANTS[it.value] = it }
         }
 
-        @JsonCreator
-        fun fromValue(value: String): ContractStatus {
-            return CONSTANTS[value] ?: throw IllegalArgumentException(value)
+        fun fromValue(v: String): ContractStatus {
+            return CONSTANTS[v] ?: throw EnumException(ContractStatus::class.java.name, v, values().toString())
         }
     }
 }
@@ -61,14 +58,11 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
         private val CONSTANTS = HashMap<String, ContractStatusDetails>()
 
         init {
-            for (c in ContractStatusDetails.values()) {
-                CONSTANTS[c.value] = c
-            }
+            ContractStatusDetails.values().forEach { CONSTANTS[it.value] = it }
         }
 
-        @JsonCreator
-        fun fromValue(value: String): ContractStatusDetails {
-            return CONSTANTS[value] ?: throw IllegalArgumentException(value)
+        fun fromValue(v: String): ContractStatusDetails {
+            return CONSTANTS[v] ?: throw EnumException(ContractStatusDetails::class.java.name, v, values().toString())
         }
     }
 }

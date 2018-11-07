@@ -11,7 +11,7 @@ data class UpdateAcRq @JsonCreator constructor(
 
         val contracts: Contract,
 
-        val awards: Award?,
+        val awards: Award,
 
         val buyer: OrganizationReference?
 
