@@ -5,7 +5,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CANS_NOT_FOUND("00.01", "CANs not found."),
     CONTRACT_NOT_FOUND("00.02", "Contract not found."),
     OWNER("00.03", "Invalid owner."),
-    ID("00.04", "Invalid CAN id."),
+    CAN_ID("00.04", "Invalid CAN id."),
     CONTRACT_ALREADY_CREATED("00.05", "Contract already created."),
     DOCUMENTS("00.06", "Documents is not valid"),
     NO_AMENDMENTS("00.07", "No amendments."),
@@ -17,5 +17,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     NO_ITEMS("00.14", "No items for related lot found."),
     AWARDS_NOT_FOUND("00.15", "Awards not found."),
     CONTRACT_ID("00.16", "Invalid contract id."),
+    AWARD_ID("00.17", "Invalid award id."),
+    AWARD_VALUE("00.18", "Invalid award value."),
+    ITEM_VALUE("00.19", "Invalid item value."),
     CONTEXT("20.01", "Context parameter not found.");
 }

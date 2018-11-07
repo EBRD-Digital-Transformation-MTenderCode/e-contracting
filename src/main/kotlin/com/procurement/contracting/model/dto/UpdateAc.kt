@@ -13,14 +13,8 @@ data class UpdateAcRq @JsonCreator constructor(
 
         val awards: Award,
 
-        val buyer: OrganizationReference?
+        val buyer: OrganizationReference?,
 
-)
+        val treasuryBudgetSources: List<PlanningBudgetSource>?
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class UpdateAcRs(
-
-        val cans: List<Can>?,
-
-        val contracts: List<Contract>?
 )

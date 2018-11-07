@@ -10,7 +10,12 @@ import java.math.BigDecimal
 data class Value @JsonCreator constructor(
 
         @JsonDeserialize(using = MoneyDeserializer::class)
-        val amount: BigDecimal,
+        val amount: BigDecimal?,
 
-        val currency: String
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amountNet: BigDecimal?,
+
+        val currency: String?,
+
+        val valueAddedTaxIncluded: Boolean?
 )

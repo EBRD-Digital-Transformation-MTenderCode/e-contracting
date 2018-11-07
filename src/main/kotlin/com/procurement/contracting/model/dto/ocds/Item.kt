@@ -9,9 +9,9 @@ data class Item @JsonCreator constructor(
 
         val id: String,
 
-        val description: String,
+        val description: String?,
 
-        val classification: Classification,
+        val classification: Classification?,
 
         val additionalClassifications: Set<Classification>?,
 
@@ -19,5 +19,5 @@ data class Item @JsonCreator constructor(
 
         val unit: Unit,
 
-        val relatedLot: String
+        val relatedLot: String?
 )

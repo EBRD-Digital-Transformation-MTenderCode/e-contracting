@@ -6,7 +6,5 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Unit @JsonCreator constructor(
 
-        val id: String,
-
-        val name: String
+        val value: Value
 )
