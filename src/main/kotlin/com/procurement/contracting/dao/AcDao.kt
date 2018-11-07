@@ -76,7 +76,7 @@ class AcDao(private val session: Session) {
     }
 
     companion object {
-        private const val CONTRACT_TABLE = "contracting_contract"
+        private const val CONTRACT_TABLE = "contracting_ac"
         private const val CP_ID = "cp_id"
         private const val STAGE = "stage"
         private const val TOKEN = "token_entity"

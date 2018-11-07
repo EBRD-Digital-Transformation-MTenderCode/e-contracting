@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.model.dto.ocds.PlanningBudgetSource
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class ActualBsRS(
+data class GetActualBsRs(
 
         val language: String?,
 

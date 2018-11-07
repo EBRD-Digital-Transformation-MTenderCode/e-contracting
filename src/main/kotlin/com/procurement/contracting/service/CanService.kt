@@ -3,8 +3,8 @@ package com.procurement.contracting.service
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.CONTEXT
-import com.procurement.contracting.model.dto.CreateCanRQ
-import com.procurement.contracting.model.dto.CreateCanRS
+import com.procurement.contracting.model.dto.CreateCanRq
+import com.procurement.contracting.model.dto.CreateCanRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
@@ -27,14 +27,14 @@ class CanService(private val canDao: CanDao,
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
-        val dto = toObject(CreateCanRQ::class.java, cm.data)
+        val dto = toObject(CreateCanRq::class.java, cm.data)
 
         val canEntities = dto.awards.asSequence()
                 .map { createCanEntity(cpId, stage, it.id, owner, dateTime) }
                 .toList()
         val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
         canDao.saveAll(canEntities)
-        return ResponseDto(data = CreateCanRS(cans))
+        return ResponseDto(data = CreateCanRs(cans))
     }
 
     private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {

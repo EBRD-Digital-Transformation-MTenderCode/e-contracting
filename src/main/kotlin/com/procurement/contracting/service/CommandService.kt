@@ -21,6 +21,7 @@ class CommandService(private val historyDao: HistoryDao,
         val response = when (cm.command) {
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> acService.createAC(cm)
+            CommandType.UPDATE_AC -> acService.updateAC(cm)
             CommandType.GET_BUDGET_SOURCES -> acService.getActualBudgetSources(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)

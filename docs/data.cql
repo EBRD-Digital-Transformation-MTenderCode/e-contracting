@@ -1,7 +1,7 @@
 CREATE KEYSPACE IF NOT EXISTS ocds WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
 
 
-CREATE TABLE IF NOT EXISTS  ocds.contracting_notice (
+CREATE TABLE IF NOT EXISTS  ocds.contracting_can (
     cp_id text,
     stage text,
     can_id UUID,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_notice (
     primary key(cp_id, stage, can_id)
 );
 
-CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
+CREATE TABLE IF NOT EXISTS  ocds.contracting_ac (
     cp_id text,
     stage text,
     token_entity UUID,
@@ -25,20 +25,9 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_contract (
     status_details text,
     mpc text,
     language text,
-    award text,
     json_data text,
     primary key(cp_id, stage, token_entity)
 );
-
-CREATE TABLE IF NOT EXISTS  ocds.contracting_award (
-    cp_id text,
-    ac_id text,
-    token_entity uuid,
-    owner text,
-    json_data text,
-    primary key(cp_id, ac_id, token_entity)
-);
-
 
 CREATE TABLE IF NOT EXISTS  ocds.contracting_history (
     operation_id text,

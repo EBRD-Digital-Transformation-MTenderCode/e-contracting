@@ -45,6 +45,7 @@ enum class CommandType(private val value: String) {
 
     CREATE_CAN("createCAN"),
     CREATE_AC("createAC"),
+    UPDATE_AC("updateAC"),
     GET_BUDGET_SOURCES("getActualBudgetSources");
 
     @JsonValue

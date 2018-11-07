@@ -69,7 +69,7 @@ class CanDao(private val session: Session) {
     }
 
     companion object {
-        private const val NOTICE_TABLE = "contracting_notice"
+        private const val NOTICE_TABLE = "contracting_can"
         private const val CP_ID = "cp_id"
         private const val STAGE = "stage"
         private const val CAN_ID = "can_id"
