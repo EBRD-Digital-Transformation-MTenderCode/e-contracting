@@ -19,11 +19,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class AcService(private val acDao: AcDao,
-                private val canDao: CanDao,
-                private val generationService: GenerationService) {
+class UpdateAcService(private val acDao: AcDao,
+                      private val canDao: CanDao,
+                      private val generationService: GenerationService) {
 
-    fun createAC(cm: CommandMessage): ResponseDto {
+    fun updateAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val prevStage = cm.context.prevStage ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
@@ -88,10 +88,6 @@ class AcService(private val acDao: AcDao,
         canDao.saveAll(canEntities)
         acDao.saveAll(acEntities)
         return ResponseDto(data = CreateAcRs(cans, contracts))
-    }
-
-    fun updateAC(cm: CommandMessage): ResponseDto {
-        TODO()
     }
 
     fun getActualBudgetSources(cm: CommandMessage): ResponseDto {

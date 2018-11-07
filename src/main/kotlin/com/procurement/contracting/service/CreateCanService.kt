@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
-class CanService(private val canDao: CanDao,
-                 private val generationService: GenerationService) {
+class CreateCanService(private val canDao: CanDao,
+                       private val generationService: GenerationService) {
 
     fun createCAN(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
