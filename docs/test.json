@@ -1,30 +1,94 @@
 {
-  "persones": [
-    {
-      "title": "",
-      "name": "",
-      "identifier": {
-        "scheme": "",
-        "id": "",
-        "uri": ""
-      },
-      "businessFunctions": [
-        {
-          "type": "authority",
-          "jobTitle": "Chief Executive Officer",
-          "period": {
-            "startDate": ""
+  "id": "06e76712-e2fa-11e8-8584-f73978303b72",
+  "command": "createCAN",
+  "context": {
+    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b7313",
+    "requestId": "06e76710-e2fa-11e8-8584-f73978303b72",
+    "cpid": "ocds-t1s2t3-MD-1541640297817",
+    "ocid": "ocds-t1s2t3-MD-1541640297817-EV-1541640574509",
+    "stage": "EV",
+    "prevStage": "EV",
+    "processType": "awardPeriodEnd",
+    "operationType": "standstillPeriodEv",
+    "phase": "awardedContractPreparation",
+    "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
+    "country": "MD",
+    "language": "ro",
+    "pmd": "TEST_SV",
+    "token": "ee1bb845-91fb-47d1-8eeb-7d76faa1f929",
+    "startDate": "2018-11-08T02:00:12Z",
+    "endDate": "2018-11-08T02:00:17Z",
+    "timeStamp": 1541642412033,
+    "isAuction": false
+  },
+  "data": {
+    "items": [
+      {
+        "id": "bf8d1800-e2f5-11e8-803e-4501c1f946db",
+        "description": "p",
+        "classification": {
+          "scheme": "CPV",
+          "id": "45100000-8",
+          "description": "Lucrări de pregătire a şantierului"
+        },
+        "additionalClassifications": [
+          {
+            "scheme": "CPVS",
+            "id": "AA25-3",
+            "description": "Hafniu"
           },
-          "documents": [
-            {
-              "id": "",
-              "documentType": "regulatoryDocument",
-              "-title": "",
-              "-description": ""
-            }
-          ]
-        }
-      ]
-    }
-  ]
+          {
+            "scheme": "CPVS",
+            "id": "AA28-2",
+            "description": "Iridiu"
+          }
+        ],
+        "quantity": 100.00,
+        "unit": {
+          "id": "120",
+          "name": "Milion decalitri"
+        },
+        "relatedLot": "bf8d1801-e2f5-11e8-803e-4501c1f946db"
+      }
+    ],
+    "standstillPeriod": {
+      "startDate": "2018-11-08T02:00:12Z",
+      "endDate": "2018-11-08T02:00:17Z"
+    },
+    "awards": [
+      {
+        "id": "eaa04961-e2f8-11e8-a1c0-1554d61ef3b6",
+        "items": [
+          {
+            "id": "bf8d1800-e2f5-11e8-803e-4501c1f946db",
+            "description": "p",
+            "classification": {
+              "scheme": "CPV",
+              "id": "45100000-8",
+              "description": "Lucrări de pregătire a şantierului"
+            },
+            "additionalClassifications": [
+              {
+                "scheme": "CPVS",
+                "id": "AA25-3",
+                "description": "Hafniu"
+              },
+              {
+                "scheme": "CPVS",
+                "id": "AA28-2",
+                "description": "Iridiu"
+              }
+            ],
+            "quantity": 100.00,
+            "unit": {
+              "id": "120",
+              "name": "Milion decalitri"
+            },
+            "relatedLot": "bf8d1801-e2f5-11e8-803e-4501c1f946db"
+          }
+        ]
+      }
+    ]
+  },
+  "version": "0.0.1"
 }

@@ -1,0 +1,108 @@
+{
+  "awards": [
+    {
+      "id": "",
+      "date": "",
+      "-description": "",
+      "status": "",
+      "statusDetails": "",
+      "value": {
+        "amount": "",
+        "currency": ""
+      },
+      "relatedLots": [
+        ""
+      ],
+      "relatedBid": "",
+      "suppliers": [
+        {
+          "id": "",
+          "name": "",
+          "identifier": {
+            "scheme": "",
+            "id": "",
+            "legalName": "",
+            "uri": ""
+          },
+          "-additionalIdentifiers": [
+            {
+              "scheme": "",
+              "id": "",
+              "legalName": "",
+              "uri": ""
+            }
+          ],
+          "address": {
+            "streetAddress": "",
+            "-postalCode": "",
+            "addressDetails": {
+              "country": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
+              },
+              "region": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
+              },
+              "locality": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "-uri": ""
+              }
+            }
+          },
+          "contactPoint": {
+            "name": "",
+            "email": "",
+            "telephone": "",
+            "-faxNumber": "",
+            "url": ""
+          }
+        }
+      ],
+      "items": [
+        {
+          "id": "",
+          "classification": {
+            "scheme": "CPV",
+            "description": "",
+            "id": ""
+          },
+          "-additionalClassifications": [
+            {
+              "scheme": "",
+              "description": "",
+              "id": ""
+            }
+          ],
+          "quantity": 0,
+          "unit": {
+            "id": "",
+            "name": ""
+          },
+          "-description": "",
+          "relatedLot": ""
+        }
+      ],
+      "documents": [
+        {
+          "documentType": "",
+          "id": "",
+          "title": "",
+          "description": "",
+          "relatedLots": [
+            ""
+          ]
+        }
+      ]
+    }
+  ],
+  "tender": {
+    "mainProcurementCategory": ""
+  }
+}
