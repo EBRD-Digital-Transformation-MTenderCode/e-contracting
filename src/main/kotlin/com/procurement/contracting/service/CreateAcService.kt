@@ -90,26 +90,6 @@ class CreateAcService(private val acDao: AcDao,
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
 
-    fun getActualBudgetSources(cm: CommandMessage): ResponseDto {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-
-        val entity = acDao.getByCpIdAndToken(cpId, UUID.fromString(token))
-        if (entity.owner != owner) throw ErrorException(OWNER)
-        val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        val contract = contractProcess.contracts
-        if (contract.id != ocId) throw ErrorException(CONTRACT_ID)
-        if (!(contract.status == ContractStatus.PENDING &&
-                        contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT ||
-                        contract.statusDetails == ContractStatusDetails.ISSUED)) {
-            throw ErrorException(CONTEXT)
-        }
-        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
-        return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
-    }
-
     private fun getActiveAwards(awards: List<Award>): List<Award> {
         if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
