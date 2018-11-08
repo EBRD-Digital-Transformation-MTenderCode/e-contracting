@@ -10,5 +10,5 @@ data class Unit @JsonCreator constructor(
 
         val name: String?,
 
-        val value: Value
+        val value: Value?
 )
