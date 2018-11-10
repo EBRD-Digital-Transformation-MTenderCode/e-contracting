@@ -19,7 +19,7 @@ data class Award @JsonCreator constructor(
 
         var statusDetails: AwardStatus,
 
-        var value: Value,
+        var value: Value?,
 
         val relatedLots: List<String>,
 
