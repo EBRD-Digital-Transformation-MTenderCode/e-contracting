@@ -10,14 +10,6 @@ import com.procurement.contracting.model.dto.ocds.Planning
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
 
-//        var planning: Planning?,
-//
-//        val contracts: Contract,
-//
-//        val awards: Award,
-//
-//        var buyer: OrganizationReferenceBuyer?
-
         val awards: Award,
 
         val contracts: Contract,

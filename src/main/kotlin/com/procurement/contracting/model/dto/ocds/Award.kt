@@ -32,5 +32,5 @@ data class Award @JsonCreator constructor(
 
         var items: List<Item>,
 
-        var documents: List<Document>
+        var documents: List<DocumentAward>
 )

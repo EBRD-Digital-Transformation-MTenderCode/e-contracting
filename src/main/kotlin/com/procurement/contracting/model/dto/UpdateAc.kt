@@ -32,7 +32,7 @@ data class ContractUpdate @JsonCreator constructor(
 
         val period: Period,
 
-        val documents: List<Document>,
+        val documents: List<DocumentContract>,
 
         val milestones: List<Milestone>,
 
@@ -44,30 +44,82 @@ data class ContractUpdate @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Milestone @JsonCreator constructor(
 
+        var id: String,
+
+        var title: String,
+
+        var description: String,
+
+        val type: MilestoneType,
+
+        var status: MilestoneStatus,
+
+        var relatedItems: Set<String>?,
+
+        var additionalInformation: String,
+
+        var dueDate: LocalDateTime,
+
+        var relatedParties: RelatedParty?
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class RelatedParty @JsonCreator constructor(
+
+        val id: String,
+
+        val name: String
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ConfirmationRequest @JsonCreator constructor(
+
+        var id: String,
+
+        var type: String?,
+
+        var title: String?,
+
+        var description: String?,
+
+        var relatesTo: String?,
+
+        val relatedItem: String,
+
+        val source: String,
+
+        var requestGroups: Set<RequestGroup>?
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class RequestGroup @JsonCreator constructor(
+
+        val id: String,
+
+        val requests: Set<Request>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class Request @JsonCreator constructor(
+
         val id: String,
 
         val title: String,
 
         val description: String,
 
-        val type: String,
-
-        val relatedItems: Set<String>?,
-
-        val additionalInformation: String,
-
-        val dueDate: LocalDateTime
+        val relatedPerson: RelatedPerson?
 )
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class ConfirmationRequest @JsonCreator constructor(
+data class RelatedPerson @JsonCreator constructor(
 
         val id: String,
 
-        val relatedItem: String,
-
-        val source: String
+        val name: String
 )
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AgreedMetric @JsonCreator constructor(
@@ -108,13 +160,13 @@ data class AwardUpdate @JsonCreator constructor(
 
         val id: String,
 
-        var value: ValueTax,
+        var value: ValueUpdate,
 
-        var suppliers: List<OrganizationReferenceSupplier>,
+        var suppliers: List<OrganizationReferenceSupplierUpdate>,
 
         var items: List<ItemUpdate>,
 
-        var documents: List<Document>?
+        var documents: List<DocumentAward>?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -133,7 +185,21 @@ data class ItemUpdate @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UnitUpdate @JsonCreator constructor(
 
-        val value: ValueTax
+        val value: ValueUpdate
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ValueUpdate @JsonCreator constructor(
+
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amount: BigDecimal,
+
+        val currency: String,
+
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amountNet: BigDecimal,
+
+        val valueAddedTaxIncluded: Boolean
 )
 
 

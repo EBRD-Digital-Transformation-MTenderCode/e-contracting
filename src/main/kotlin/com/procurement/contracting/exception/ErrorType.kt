@@ -27,5 +27,13 @@ enum class ErrorType constructor(val code: String, val message: String) {
     TRANSACTIONS("00.24", "Invalid transactions"),
     BA_ITEM_ID("00.25", "Invalid budget allocation related item."),
     CONTRACT_STATUS_DETAILS("00.26", "Invalid contract status details."),
+    CONTRACT_PERIOD("00.27", "Invalid contract period."),
+    DOCS_RELATED_LOTS("00.28", "Invalid documents related lots."),
+    MILESTONE_RELATED_ITEMS("00.29", "Invalid milestone related items."),
+    MILESTONE_TYPE("00.30", "Invalid milestone type."),
+    MILESTONE_DUE_DATE("00.31", "Invalid milestone due date."),
+    CONFIRMATION_SOURCE("00.32", "Invalid confirmation request source."),
+    CONFIRMATION_ITEM("00.33", "Invalid confirmation request related item."),
+    PERSON_NOT_FOUND("00.34", "Person not found."),
     CONTEXT("20.01", "Context parameter not found.");
 }
