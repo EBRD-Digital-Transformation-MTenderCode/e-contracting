@@ -54,8 +54,7 @@ class UpdateAcService(private val acDao: AcDao,
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-
-        return ResponseDto(data = contractProcess)
+        return ResponseDto(data = contractProcess.copy(buyer = null, treasuryBudgetSources = null) )
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
