@@ -15,6 +15,18 @@ enum class AwardStatus(@JsonValue val value: String) {
     }
 }
 
+enum class AwardStatusDetails(@JsonValue val value: String) {
+    PENDING("pending"),
+    ACTIVE("active"),
+    UNSUCCESSFUL("unsuccessful"),
+    CONSIDERATION("consideration"),
+    EMPTY("empty");
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 enum class ContractStatus(@JsonValue val value: String) {
     PENDING("pending"),
     ACTIVE("active"),

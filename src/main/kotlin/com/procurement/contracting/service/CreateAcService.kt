@@ -4,10 +4,7 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.ContractProcess
-import com.procurement.contracting.model.dto.CreateAcRq
-import com.procurement.contracting.model.dto.CreateAcRs
-import com.procurement.contracting.model.dto.GetActualBsRs
+import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
@@ -38,14 +35,13 @@ class CreateAcService(private val acDao: AcDao,
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpIdAndStage(cpId, prevStage)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateAcRs(listOf(), listOf()))
-        val activeAwards = getActiveAwards(dto.awards)
-        for (award in activeAwards) {
-
+        val activeAwardsDto = getActiveAwards(dto.awards)
+        for (awardDto in activeAwardsDto) {
             val contract = Contract(
                     id = generationService.newOcId(cpId, stage),
                     token = generationService.generateRandomUUID().toString(),
                     date = dateTime,
-                    awardId = award.id,
+                    awardId = awardDto.id,
                     status = ContractStatus.PENDING,
                     statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
                     title = null,
@@ -60,12 +56,16 @@ class CreateAcService(private val acDao: AcDao,
                     relatedProcesses = null,
                     classification = null,
                     documents = null)
-
             contracts.add(contract)
-            val contractProcess = ContractProcess(planning = null, contracts = contract, awards = award, buyer = null)
+
+            val contractProcess = ContractProcess(
+                    planning = null,
+                    contracts = contract,
+                    awards = convertAwardDtoToAward(awardDto),
+                    buyer = null)
             contractProcesses.add(contractProcess)
 
-            val canEntity = canEntities.asSequence().filter { it.awardId == award.id }.firstOrNull()
+            val canEntity = canEntities.asSequence().filter { it.awardId == awardDto.id }.firstOrNull()
                     ?: throw ErrorException(CANS_NOT_FOUND)
             canEntity.status = ContractStatus.ACTIVE.value
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value
@@ -82,7 +82,6 @@ class CreateAcService(private val acDao: AcDao,
                     contract,
                     contractProcess,
                     canEntity)
-
             acEntities.add(acEntity)
         }
         canDao.saveAll(canEntities)
@@ -90,12 +89,51 @@ class CreateAcService(private val acDao: AcDao,
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
 
-    private fun getActiveAwards(awards: List<Award>): List<Award> {
+
+    private fun getActiveAwards(awards: List<AwardCreate>): List<AwardCreate> {
         if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
         if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
         return activeAwards
     }
+
+    private fun convertAwardDtoToAward(awardDto: AwardCreate): Award {
+        return Award(
+                id = awardDto.id,
+                status = awardDto.status,
+                statusDetails = awardDto.statusDetails,
+                date = awardDto.date,
+                description = awardDto.description,
+                value = ValueAward(
+                        amount = awardDto.value.amount,
+                        currency = awardDto.value.currency,
+                        amountNet = null,
+                        valueAddedTaxIncluded = null),
+                documents = awardDto.documents,
+                items = getItems(awardDto.items),
+                suppliers = awardDto.suppliers,
+                relatedBid = awardDto.relatedBid,
+                relatedLots = awardDto.relatedLots
+        )
+    }
+
+    private fun getItems(items: List<ItemCreate>): List<Item> {
+        return items.asSequence().map { convertDtoItemToItem(it) }.toList()
+    }
+
+    private fun convertDtoItemToItem(itemDto: ItemCreate): Item {
+        return Item(
+                id = itemDto.id,
+                description = itemDto.description,
+                classification = itemDto.classification,
+                additionalClassifications = itemDto.additionalClassifications,
+                quantity = itemDto.quantity,
+                unit = itemDto.unit,
+                relatedLot = itemDto.relatedLot,
+                deliveryAddress = null
+        )
+    }
+
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(

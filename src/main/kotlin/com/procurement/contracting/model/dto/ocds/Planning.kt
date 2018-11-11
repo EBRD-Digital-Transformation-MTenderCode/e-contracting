@@ -9,58 +9,27 @@ import java.math.BigDecimal
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Planning @JsonCreator constructor(
 
-        var implementation: Implementation?,
+        var implementation: Implementation,
 
-        val budget: Budget?
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class Budget @JsonCreator constructor(
-
-        var description: String?,
-
-        val budgetAllocation: Set<BudgetAllocation>?,
-
-        val budgetSource: Set<PlanningBudgetSource>?
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class BudgetAllocation @JsonCreator constructor(
-
-        var budgetBreakdownID: String?,
-
-        val period: Period?,
-
-        val relatedItem: String?
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class PlanningBudgetSource @JsonCreator constructor(
-
-        var budgetBreakdownID: String?,
-
-        @field: JsonDeserialize(using = MoneyDeserializer::class)
-        val amount: BigDecimal?,
-
-        val currency: String?
+        val budget: Budget
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Implementation @JsonCreator constructor(
 
-        val transactions: Set<Transaction>?
+        val transactions: List<Transaction>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Transaction @JsonCreator constructor(
 
-        val id: String?,
+        val id: String,
 
-        val type: String?,
+        val type: String,
 
-        val value: Value?,
+        val value: Value,
 
-        val executionPeriod: ExecutionPeriod?,
+        val executionPeriod: ExecutionPeriod,
 
         val relatedContractMilestone: String?
 )
@@ -68,5 +37,36 @@ data class Transaction @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ExecutionPeriod @JsonCreator constructor(
 
-        val durationInDays: Long?
+        val durationInDays: Long
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class Budget @JsonCreator constructor(
+
+        var description: String,
+
+        val budgetAllocation: List<BudgetAllocation>,
+
+        val budgetSource: List<PlanningBudgetSource>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class BudgetAllocation @JsonCreator constructor(
+
+        var budgetBreakdownID: String,
+
+        val period: Period,
+
+        val relatedItem: String
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class PlanningBudgetSource @JsonCreator constructor(
+
+        var budgetBreakdownID: String,
+
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amount: BigDecimal,
+
+        val currency: String
 )

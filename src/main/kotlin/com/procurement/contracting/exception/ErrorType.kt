@@ -19,6 +19,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CONTRACT_ID("00.16", "Invalid contract id."),
     AWARD_ID("00.17", "Invalid award id."),
     AWARD_VALUE("00.18", "Invalid award value."),
-    ITEM_VALUE("00.19", "Invalid item value."),
+    ITEM_ID("00.19", "Invalid item id."),
+    ITEM_AMOUNT("00.20", "Invalid item amount."),
+    ITEM_CURRENCY("00.21", "Invalid item currency."),
     CONTEXT("20.01", "Context parameter not found.");
 }

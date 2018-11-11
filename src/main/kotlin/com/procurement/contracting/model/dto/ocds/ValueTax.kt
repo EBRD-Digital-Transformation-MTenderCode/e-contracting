@@ -7,10 +7,15 @@ import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import java.math.BigDecimal
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Value @JsonCreator constructor(
+data class ValueTax @JsonCreator constructor(
 
         @JsonDeserialize(using = MoneyDeserializer::class)
         val amount: BigDecimal,
 
-        val currency: String
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amountNet: BigDecimal,
+
+        val currency: String,
+
+        val valueAddedTaxIncluded: Boolean
 )

@@ -1,7 +1,384 @@
 {
+  "treasuryBudgetSources": [
+    {
+      "budgetBreakdownID": "",
+      "budgetIBAN": "",
+      "amount": 0
+    }
+  ],
+  "planning": {
+    "implementation": {
+      "transactions": [
+        {
+          "id": "",
+          "type": "advance",
+          "value": {
+            "amount": 20000,
+            "currency": "MDL"
+          },
+          "executionPeriod": {
+            "durationInDays": ""
+          },
+          "-relatedContractMilestone": "approval-3"
+        }
+      ]
+    },
+    "budget": {
+      "description": "",
+      "budgetAllocation": [
+        {
+          "budgetBreakdownID": "",
+          "period": {
+            "startDate": "",
+            "endDate": ""
+          },
+          "relatedItem": ""
+        }
+      ],
+      "budgetSource": [
+        {
+          "budgetBreakdownID": "",
+          "amount": 0,
+          "currency": ""
+        }
+      ]
+    }
+  },
+  "contracts": {
+    "title": "",
+    "description": "",
+    "period": {
+      "startDate": "",
+      "endDate": ""
+    },
+    "documents": [
+      {
+        "documentType": "",
+        "id": "",
+        "-title": "",
+        "-description": "",
+        "relatedLots": [
+          ""
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "approval-re1atedparties.id",
+        "type": "approval",
+        "-relatedItems": [],
+        "additionalInformation": "",
+        "dueDate": "",
+        "title": "",
+        "description": ""
+      }
+    ],
+    "confirmationRequests": [
+      {
+        "id": "cs-tenderer-confirmation-on-document.id",
+        "relatedItem": "document.id",
+        "source": "tenderer"
+      }
+    ],
+    "agreedMetrics": [
+      {
+        "id": "cc-general",
+        "title": "General Responsibilities",
+        "description": "Contract conditions governing the general responsibilities related to both: CA and EO",
+        "observations": [
+          {
+            "id": "cc-general-1-1",
+            "notes": "Maximum days to inform on invoking Force Majeure",
+            "measure": 5,
+            "unit": {
+              "name": "day",
+              "id": "359",
+              "scheme": "MD-CUMC"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "awards": [
     {
-      "id": ""
+      "id": "",
+      "suppliers": [
+        {
+          "id": "",
+          "additionalIdentifiers": [
+            {
+              "scheme": "MD-SRJE",
+              "id": "",
+              "legalName": "",
+              "uri": ""
+            }
+          ],
+          "persones": [
+            {
+              "title": "",
+              "name": "",
+              "identifier": {
+                "scheme": "",
+                "id": "",
+                "uri": ""
+              },
+              "businessFunctions": [
+                {
+                  "type": "authority",
+                  "jobTitle": "Chief Executive Officer",
+                  "period": {
+                    "startDate": ""
+                  },
+                  "documents": [
+                    {
+                      "id": "",
+                      "documentType": "regulatoryDocument",
+                      "-title": "",
+                      "-description": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "details": {
+            "typeOfSupplier": "",
+            "mainEconomicActivity": [
+              ""
+            ],
+            "scale": "sme",
+            "permits": [
+              {
+                "scheme": "SRLE",
+                "id": "",
+                "url": "",
+                "permit": {
+                  "issuedBy": {
+                    "id": "",
+                    "name": ""
+                  },
+                  "issuedThought": {
+                    "id": "",
+                    "name": ""
+                  },
+                  "validityPeriod": {}
+                }
+              }
+            ],
+            "bankAccounts": [
+              {
+                "description": "",
+                "bankName": "",
+                "address": {},
+                "identifier": {
+                  "scheme": "UA-MFO",
+                  "id": "300711"
+                },
+                "accountIdentification": {
+                  "scheme": "IBAN",
+                  "id": "2600000625637"
+                },
+                "additionalAccountIdentifiers": [
+                  {
+                    "scheme": "settlement",
+                    "id": ""
+                  }
+                ]
+              }
+            ],
+            "legalForm": {
+              "scheme": "",
+              "id": "",
+              "description": "",
+              "uri": ""
+            }
+          }
+        }
+      ],
+      "-documents": [
+        {
+          "documentType": "",
+          "id": "",
+          "-title": "",
+          "-description": "",
+          "relatedLots": [""]
+        }
+      ],
+      "value": {
+        "amount": "",
+        "currency": "",
+        "amountNet": "",
+        "valueAddedTaxIncluded": true
+      },
+      "items": [
+        {
+          "id": "",
+          "quantity": 0,
+          "unit": {
+            "value": {
+              "amount": "",
+              "amountNet": "",
+              "valueAddedTaxIncluded": true,
+              "currency": ""
+            }
+          },
+          "deliveryAddress": {
+            "streetAddress": "",
+            "postalCode": "",
+            "addressDetails": {
+              "country": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
+              },
+              "region": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
+              },
+              "locality": {
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "-uri": ""
+              }
+            }
+          }
+        }
+      ]
     }
-  ]
+  ],
+  "buyer": {
+    "id": "",
+    "name": "",
+    "identifier": {
+      "id": "string",
+      "scheme": "string",
+      "legalName": "string",
+      "uri": "string"
+    },
+    "address": {
+      "streetAddress": "",
+      "-postalCode": "",
+      "addressDetails": {
+        "country": {
+          "scheme": "",
+          "id": "",
+          "description": "",
+          "uri": ""
+        },
+        "region": {
+          "scheme": "",
+          "id": "",
+          "description": "",
+          "uri": ""
+        },
+        "locality": {
+          "scheme": "",
+          "id": "",
+          "description": "",
+          "-uri": ""
+        }
+      }
+    },
+    "contactPoint": {
+      "name": "string",
+      "email": "string",
+      "telephone": "string",
+      "-faxNumber": "string",
+      "url": "string"
+    },
+    "additionalIdentifiers": [
+      {
+        "scheme": "MD-SRJE",
+        "id": "",
+        "legalName": "",
+        "uri": ""
+      }
+    ],
+    "persones": [
+      {
+        "title": "",
+        "name": "",
+        "identifier": {
+          "scheme": "",
+          "id": "",
+          "uri": ""
+        },
+        "businessFunctions": [
+          {
+            "type": "authority",
+            "jobTitle": "Chief Executive Officer",
+            "period": {
+              "startDate": ""
+            },
+            "documents": [
+              {
+                "id": "",
+                "documentType": "regulatoryDocument",
+                "-title": "",
+                "-description": ""
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "details": {
+      "typeOfBuyer": "",
+      "mainGeneralActivity": "",
+      "mainSectoralActivity": "",
+      "gpaProfile": {
+        "gpaAnnex": {
+          "id": "",
+          "legalName": "",
+          "uri": "https://e-gpa.wto.org/en/Appendix/Details?Agreement=GPA113&amp;Party=Moldova"
+        },
+        "gpaOrganizationType": {
+          "id": "",
+          "legalName": "",
+          "uri": ""
+        },
+        "gpaThresholds": [
+          {
+            "mainProcurementCategory": "",
+            "value": {
+              "amount": "",
+              "currency": ""
+            }
+          }
+        ]
+      },
+      "bankAccounts": [
+        {
+          "description": "",
+          "bankName": "",
+          "address": {},
+          "identifier": {
+            "scheme": "MD-BANKS",
+            "id": "300711"
+          },
+          "accountIdentification": {
+            "scheme": "MD-IBAN",
+            "id": "2600000625637"
+          },
+          "additionalAccountIdentifiers": [
+            {
+              "scheme": "MD-SETTLEMENT",
+              "id": ""
+            }
+          ]
+        }
+      ],
+      "legalForm": {
+        "scheme": "",
+        "id": "",
+        "description": "",
+        "uri": ""
+      }
+    }
+  }
 }
