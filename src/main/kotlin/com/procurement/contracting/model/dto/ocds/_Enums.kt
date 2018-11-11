@@ -54,6 +54,7 @@ enum class ContractStatus(@JsonValue val value: String) {
 
 enum class ContractStatusDetails(@JsonValue val value: String) {
     CONTRACT_PROJECT("contractProject"),
+    CONTRACT_PREPARATION("contractPreparation"),
     ACTIVE("active"),
     VERIFIED("verified"),
     CANCELLED("cancelled"),
@@ -166,6 +167,16 @@ enum class DocumentType(@JsonValue val value: String) {
         return this.value
     }
 }
+
+enum class DocumentTypeBF(@JsonValue val value: String) {
+
+    REGULATORY_DOCUMENT("regulatoryDocument");
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 
 enum class RelatedProcessType(@JsonValue val value: String) {
     FRAMEWORK("framework"),

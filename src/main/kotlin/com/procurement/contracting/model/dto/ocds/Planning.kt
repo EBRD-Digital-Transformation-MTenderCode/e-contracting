@@ -17,13 +17,13 @@ data class Planning @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Implementation @JsonCreator constructor(
 
-        val transactions: List<Transaction>
+        var transactions: Set<Transaction>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Transaction @JsonCreator constructor(
 
-        val id: String,
+        var id: String,
 
         val type: String,
 

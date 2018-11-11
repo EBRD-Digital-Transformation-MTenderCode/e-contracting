@@ -1,21 +1,16 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
-import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.ContractProcess
-import com.procurement.contracting.model.dto.CreateAcRq
-import com.procurement.contracting.model.dto.CreateAcRs
 import com.procurement.contracting.model.dto.GetActualBsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.entity.AcEntity
-import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.*
+import com.procurement.contracting.model.dto.ocds.ContractStatus
+import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 
 @Service

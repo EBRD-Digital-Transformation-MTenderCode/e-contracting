@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Person @JsonCreator constructor(
 
-        val title: String,
+        var title: String,
 
-        val name: String,
+        var name: String,
 
         val identifier: Identifier,
 
-        val businessFunctions: List<BusinessFunction>
+        var businessFunctions: List<BusinessFunction>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,5 +24,17 @@ data class BusinessFunction @JsonCreator constructor(
 
         val period: Period,
 
-        val documents: List<Document>
+        val documents: List<DocumentBF>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class DocumentBF @JsonCreator constructor(
+
+        val id: String,
+
+        val documentType: DocumentTypeBF,
+
+        var title: String?,
+
+        var description: String?
 )

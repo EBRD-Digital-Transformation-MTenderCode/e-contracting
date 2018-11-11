@@ -3,7 +3,6 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.dto.ocds.Unit
@@ -34,7 +33,7 @@ data class AwardCreate @JsonCreator constructor(
 
         val relatedBid: String,
 
-        var suppliers: List<OrganizationReference>,
+        var suppliers: List<OrganizationReferenceSupplier>,
 
         var items: List<ItemCreate>,
 

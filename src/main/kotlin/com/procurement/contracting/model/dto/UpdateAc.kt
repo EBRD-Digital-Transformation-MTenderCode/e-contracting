@@ -12,15 +12,15 @@ import java.util.*
 
 data class UpdateAcRq @JsonCreator constructor(
 
-        val treasuryBudgetSources: List<TreasuryBudgetSource>,
-
-        val planning: Planning,
+        val awards: AwardUpdate,
 
         val contracts: ContractUpdate,
 
-        val awards: AwardUpdate,
+        val planning: Planning,
 
-        val buyer: OrganizationReferenceBuyer
+        val buyer: OrganizationReferenceBuyer,
+
+        val treasuryBudgetSources: List<TreasuryBudgetSource>?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -150,7 +150,7 @@ data class TreasuryBudgetSource @JsonCreator constructor(
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class OrganizationReferenceSupplier @JsonCreator constructor(
+data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         var id: String,
 
@@ -159,24 +159,4 @@ data class OrganizationReferenceSupplier @JsonCreator constructor(
         val persones: HashSet<Person>,
 
         val details: DetailsSupplier
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class OrganizationReferenceBuyer @JsonCreator constructor(
-
-        var id: String,
-
-        val name: String,
-
-        val identifier: Identifier,
-
-        val address: Address,
-
-        val contactPoint: ContactPoint,
-
-        val additionalIdentifiers: HashSet<Identifier>,
-
-        val persones: List<Person>,
-
-        val details: DetailsBuyer
 )

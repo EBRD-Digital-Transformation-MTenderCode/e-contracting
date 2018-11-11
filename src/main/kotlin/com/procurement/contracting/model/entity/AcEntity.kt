@@ -24,5 +24,5 @@ data class AcEntity(
 
         val language: String,
 
-        val jsonData: String
+        var jsonData: String
 )
