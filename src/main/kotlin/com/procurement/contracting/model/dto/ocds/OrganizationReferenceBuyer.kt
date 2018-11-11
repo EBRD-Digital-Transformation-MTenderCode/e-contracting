@@ -2,8 +2,6 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.util.*
-import kotlin.collections.HashSet
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OrganizationReferenceBuyer @JsonCreator constructor(

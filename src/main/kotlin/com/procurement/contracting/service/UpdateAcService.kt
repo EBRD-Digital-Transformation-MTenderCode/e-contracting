@@ -7,9 +7,10 @@ import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.entity.AcEntity
-import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.*
+import com.procurement.contracting.utils.milliNowUTC
+import com.procurement.contracting.utils.toJson
+import com.procurement.contracting.utils.toLocalDateTime
+import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
 import java.time.LocalDateTime
@@ -184,7 +185,7 @@ class UpdateAcService(private val acDao: AcDao,
                 }
                 "tenderer" -> {
                     val awardSupplier = dto.awards.suppliers[0]
-                    val authority = getPersonByBFType(awardSupplier.persones,"authority")
+                    val authority = getPersonByBFType(awardSupplier.persones, "authority")
                             ?: throw ErrorException(PERSON_NOT_FOUND)
                     confRequest.id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem
                     confRequest.description = "Supplier has to sign the transferred document"
@@ -206,8 +207,7 @@ class UpdateAcService(private val acDao: AcDao,
                 else -> throw ErrorException(CONFIRMATION_SOURCE)
             }
         }
-
-        TODO()
+        return confRequestDto
     }
 
     private fun getPersonByBFType(persones: HashSet<Person>, type: String): RelatedPerson? {
@@ -348,27 +348,5 @@ class UpdateAcService(private val acDao: AcDao,
                 .sumByDouble { it.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         if (award.value.amountNet != planningAmount) throw ErrorException(AWARD_VALUE)
-    }
-
-    private fun convertContractToEntity(cpId: String,
-                                        stage: String,
-                                        dateTime: LocalDateTime,
-                                        language: String,
-                                        mainProcurementCategory: String,
-                                        contract: Contract,
-                                        contractProcess: ContractProcess,
-                                        canEntity: CanEntity): AcEntity {
-        return AcEntity(
-                cpId = cpId,
-                stage = stage,
-                token = UUID.fromString(contract.token!!),
-                owner = canEntity.owner,
-                createdDate = dateTime.toDate(),
-                canId = canEntity.canId.toString(),
-                status = contract.status.value,
-                statusDetails = contract.statusDetails.value,
-                mainProcurementCategory = mainProcurementCategory,
-                language = language,
-                jsonData = toJson(contractProcess))
     }
 }
