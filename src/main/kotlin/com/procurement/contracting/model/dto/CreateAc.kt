@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.dto.ocds.Unit
@@ -27,7 +28,7 @@ data class AwardCreate @JsonCreator constructor(
 
         var statusDetails: AwardStatusDetails,
 
-        var value: Value,
+        var value: ValueCreate,
 
         val relatedLots: List<String>,
 
@@ -38,6 +39,15 @@ data class AwardCreate @JsonCreator constructor(
         var items: List<ItemCreate>,
 
         var documents: List<Document>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ValueCreate @JsonCreator constructor(
+
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amount: BigDecimal,
+
+        val currency: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

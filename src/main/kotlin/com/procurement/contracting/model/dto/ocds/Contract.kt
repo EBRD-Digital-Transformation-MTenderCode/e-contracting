@@ -35,7 +35,7 @@ data class Contract @JsonCreator constructor(
 
         var period: Period?,
 
-        var value: Value?,
+        var value: ValueTax?,
 
         val items: List<Item>?,
 

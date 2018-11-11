@@ -30,10 +30,10 @@ class UpdateAcService(private val acDao: AcDao,
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
         validateAwards(dto, contractProcess)
-        val awardValue = validateUpdateAwardValue(dto, contractProcess)
-        val awardItems = validateUpdateAwardItems(dto, contractProcess)//BR-9.2.3
-        val awardDocuments = validateUpdateAwardDocuments(dto, contractProcess)//BR-9.2.2
-        val awardSuppliers = validateUpdateAwardSuppliers(dto, contractProcess)// BR-9.2.21
+        val awardValue = updateAwardValue(dto, contractProcess)
+        val awardItems = updateAwardItems(dto, contractProcess)//BR-9.2.3
+        val awardDocuments = updateAwardDocuments(dto, contractProcess)//BR-9.2.2
+        val awardSuppliers = updateAwardSuppliers(dto, contractProcess)// BR-9.2.21
         contractProcess.awards.apply {
             value = awardValue
             items = awardItems
@@ -41,11 +41,11 @@ class UpdateAcService(private val acDao: AcDao,
             suppliers = awardSuppliers
         }
 
-        val contractValue = validateUpdateContractValue(dto, contractProcess)//BR-9.2.19
-        val contractPeriod = validateUpdateContractPeriod(dto, contractProcess) //VR-9.2.18
-        val contractDocuments = validateUpdateContractDocuments(dto, contractProcess)//BR-9.2.10
-        val contractMilestones = validateUpdateContractMilestones(dto, contractProcess)//BR-9.2.11
-        val contractConfirmationRequests = validateUpdateConfirmationRequests(dto, contractProcess)//BR-9.2.16
+        val contractValue = updateContractValue(dto, contractProcess)//BR-9.2.19
+        val contractPeriod = updateContractPeriod(dto, contractProcess) //VR-9.2.18
+        val contractDocuments = updateContractDocuments(dto, contractProcess)//BR-9.2.10
+        val contractMilestones = updateContractMilestones(dto, contractProcess)//BR-9.2.11
+        val contractConfirmationRequests = updateConfirmationRequests(dto, contractProcess)//BR-9.2.16
         contractProcess.contracts.apply {
             title = dto.contracts.title
             description = dto.contracts.description
@@ -69,24 +69,24 @@ class UpdateAcService(private val acDao: AcDao,
         return ResponseDto(data = contractProcess)
     }
 
-    private fun validateUpdateConfirmationRequests(dto: UpdateAcRq, contractProcess: ContractProcess): List<ConfirmationRequest>? {
+    private fun updateConfirmationRequests(dto: UpdateAcRq, contractProcess: ContractProcess): List<ConfirmationRequest>? {
         TODO()
     }
 
-    private fun validateUpdateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): List<Milestone>? {
+    private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): List<Milestone>? {
         TODO()
     }
 
-    private fun validateUpdateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<Document>? {
+    private fun updateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<Document>? {
         TODO()
     }
 
-    private fun validateUpdateContractPeriod(dto: UpdateAcRq, contractProcess: ContractProcess): Period? {
+    private fun updateContractPeriod(dto: UpdateAcRq, contractProcess: ContractProcess): Period? {
         TODO()
     }
 
-    private fun validateUpdateContractValue(dto: UpdateAcRq, contractProcess: ContractProcess): Value? {
-        TODO()
+    private fun updateContractValue(dto: UpdateAcRq): Value? {
+        return dto.awards.value
     }
 
 
@@ -112,13 +112,13 @@ class UpdateAcService(private val acDao: AcDao,
     }
 
 
-    private fun validateUpdateAwardValue(dto: UpdateAcRq, contractProcess: ContractProcess): ValueAward {
+    private fun updateAwardValue(dto: UpdateAcRq, contractProcess: ContractProcess): ValueAward {
         return contractProcess.awards.value.copy(
                 amountNet = dto.awards.value.amountNet,
                 valueAddedTaxIncluded = dto.awards.value.valueAddedTaxIncluded)
     }
 
-    private fun validateUpdateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier> {
+    private fun updateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier> {
         val suppliersDb = contractProcess.awards.suppliers
         val suppliersDto = dto.awards.suppliers
         //validation
@@ -156,7 +156,7 @@ class UpdateAcService(private val acDao: AcDao,
         this.businessFunctions = personDto.businessFunctions
     }
 
-    private fun validateUpdateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<Document> {
+    private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<Document> {
         val documentsDb = contractProcess.awards.documents
         val documentsDto = dto.awards.documents ?: return documentsDb
         //validation
@@ -177,7 +177,7 @@ class UpdateAcService(private val acDao: AcDao,
         this.relatedLots = documentDto.relatedLots
     }
 
-    private fun validateUpdateAwardItems(dto: UpdateAcRq, contractProcess: ContractProcess): List<Item> {
+    private fun updateAwardItems(dto: UpdateAcRq, contractProcess: ContractProcess): List<Item> {
         val itemsDb = contractProcess.awards.items
         val itemsDto = dto.awards.items
         //validation

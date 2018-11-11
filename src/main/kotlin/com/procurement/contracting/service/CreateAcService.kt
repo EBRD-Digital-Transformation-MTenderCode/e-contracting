@@ -55,14 +55,18 @@ class CreateAcService(private val acDao: AcDao,
                     amendments = null,
                     relatedProcesses = null,
                     classification = null,
-                    documents = null)
+                    documents = null,
+                    agreedMetrics = null,
+                    confirmationRequests = null,
+                    milestones = null)
             contracts.add(contract)
 
             val contractProcess = ContractProcess(
                     planning = null,
                     contracts = contract,
                     awards = convertAwardDtoToAward(awardDto),
-                    buyer = null)
+                    buyer = null,
+                    treasuryBudgetSources = null)
             contractProcesses.add(contractProcess)
 
             val canEntity = canEntities.asSequence().filter { it.awardId == awardDto.id }.firstOrNull()
@@ -104,7 +108,7 @@ class CreateAcService(private val acDao: AcDao,
                 statusDetails = awardDto.statusDetails,
                 date = awardDto.date,
                 description = awardDto.description,
-                value = ValueAward(
+                value = ValueTax(
                         amount = awardDto.value.amount,
                         currency = awardDto.value.currency,
                         amountNet = null,
@@ -137,24 +141,27 @@ class CreateAcService(private val acDao: AcDao,
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(
-                token = null,
                 id = entity.canId.toString(),
+                token = null,
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
                 statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null,
+                title = null,
                 description = null,
                 value = null,
-                title = null,
                 items = null,
-                classification = null,
-                relatedProcesses = null,
-                amendments = null,
-                budgetSource = null,
-                dateSigned = null,
+                period = null,
                 extendsContractID = null,
-                period = null)
+                dateSigned = null,
+                budgetSource = null,
+                amendments = null,
+                relatedProcesses = null,
+                classification = null,
+                documents = null,
+                agreedMetrics = null,
+                confirmationRequests = null,
+                milestones = null)
         return Can(contract)
     }
 

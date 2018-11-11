@@ -22,7 +22,7 @@ data class Award @JsonCreator constructor(
 
         var statusDetails: AwardStatusDetails,
 
-        var value: ValueAward,
+        var value: ValueTax,
 
         val relatedLots: List<String>,
 
@@ -33,18 +33,4 @@ data class Award @JsonCreator constructor(
         var items: List<Item>,
 
         var documents: List<Document>
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class ValueAward @JsonCreator constructor(
-
-        @JsonDeserialize(using = MoneyDeserializer::class)
-        val amount: BigDecimal,
-
-        val currency: String,
-
-        @JsonDeserialize(using = MoneyDeserializer::class)
-        val amountNet: BigDecimal?,
-
-        val valueAddedTaxIncluded: Boolean?
 )
