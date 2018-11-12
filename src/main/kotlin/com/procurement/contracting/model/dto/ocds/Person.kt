@@ -18,13 +18,15 @@ data class Person @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BusinessFunction @JsonCreator constructor(
 
-        val type: String,
+        val id: String,
 
-        val jobTitle: String,
+        var type: String,
 
-        val period: Period,
+        var jobTitle: String,
 
-        val documents: List<DocumentBF>
+        var period: Period,
+
+        var documents: List<DocumentBF>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

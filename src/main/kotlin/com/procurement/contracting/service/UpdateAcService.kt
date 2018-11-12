@@ -7,7 +7,6 @@ import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.utils.milliNowUTC
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -49,12 +48,14 @@ class UpdateAcService(private val acDao: AcDao,
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
             buyer = dto.buyer//BR-9.2.20
+            funder = dto.funder//BR-9.2.20
+            payer = dto.payer//BR-9.2.20
             treasuryBudgetSources = dto.treasuryBudgetSources//BR-9.2.24
         }
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = contractProcess.copy(buyer = null, treasuryBudgetSources = null) )
+        return ResponseDto(data = contractProcess.copy(buyer = null, treasuryBudgetSources = null))
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
@@ -98,7 +99,9 @@ class UpdateAcService(private val acDao: AcDao,
                                          dateTime: LocalDateTime): List<Milestone>? {
         val milestonesDto = dto.contracts.milestones
         //validation
-        val relatedItemIds = milestonesDto.asSequence().flatMap { it.relatedItems!!.asSequence() }.toSet()
+        val relatedItemIds = milestonesDto.asSequence()
+                .filter { it.type != MilestoneType.X_REPORTING }
+                .flatMap { it.relatedItems!!.asSequence() }.toSet()
         val awardItemIds = dto.awards.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
         milestonesDto.asSequence().forEach { milestone ->
@@ -111,46 +114,29 @@ class UpdateAcService(private val acDao: AcDao,
             }
             if (milestone.dueDate <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
         }
-        //update
-        val milestonesDb = contractProcess.contracts.milestones ?: return milestonesDto
-        val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toSet()
-        val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toSet()
-        milestonesDb.forEach { milestoneDb -> milestoneDb.update(milestonesDto.first { it.id == milestoneDb.id }) }
-        //new
-        val newMilestonesId = milestonesDtoIds - milestonesDbIds
-        val newMilestones = milestonesDto.asSequence().filter { it.id in newMilestonesId }.toList()
-        newMilestones.asSequence().forEach { milestone ->
+        milestonesDto.asSequence().forEach { milestone ->
             milestone.status = MilestoneStatus.SCHEDULED
             when (milestone.type) {
                 MilestoneType.X_REPORTING -> {
                     val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name)
                     milestone.relatedParties = party
-                    milestone.id = "approval-" + party.id + "-" + milliNowUTC()
+                    milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
                     val party = contractProcess.awards.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
-                    milestone.id = "delivery-" + party.id + "-" + milliNowUTC()
+                    milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
                     val party = contractProcess.awards.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
-                    milestone.id = "x_warranty-" + party.id + "-" + milliNowUTC()
+                    milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
             }
         }
-        return (milestonesDb + newMilestones)
-    }
-
-    private fun Milestone.update(milestoneDto: Milestone): Milestone {
-        this.title = milestoneDto.title
-        this.description = milestoneDto.description
-        this.additionalInformation = milestoneDto.additionalInformation
-        this.dueDate = milestoneDto.dueDate
-        this.relatedItems = milestoneDto.relatedItems
-        return this
+        return milestonesDto
     }
 
     private fun updateConfirmationRequests(dto: UpdateAcRq, documents: List<DocumentContract>): List<ConfirmationRequest>? {
@@ -282,7 +268,43 @@ class UpdateAcService(private val acDao: AcDao,
     private fun Person.update(personDto: Person) {
         this.title = personDto.title
         this.name = personDto.name
-        this.businessFunctions = personDto.businessFunctions
+        this.businessFunctions = updateBusinessFunctions(this.businessFunctions, personDto.businessFunctions)
+    }
+
+    private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {
+        if (bfDb == null || bfDb.isEmpty()) return bfDto
+        val bfDbIds = bfDb.asSequence().map { it.id }.toSet()
+        val bfDtoIds = bfDto.asSequence().map { it.id }.toSet()
+        if (bfDtoIds.size != bfDto.size) throw ErrorException(BF)
+        //update
+        bfDb.forEach { bfDb -> bfDb.update(bfDto.first { it.id == bfDb.id }) }
+        val newBfId = bfDtoIds - bfDbIds
+        val newBf = bfDto.asSequence().filter { it.id in newBfId }.toHashSet()
+        return bfDb + newBf
+    }
+
+    private fun BusinessFunction.update(bfDto: BusinessFunction) {
+        this.type = bfDto.type
+        this.jobTitle = bfDto.jobTitle
+        this.period = bfDto.period
+        this.documents = updateDocuments(this.documents, bfDto.documents)
+    }
+
+    private fun updateDocuments(documentsDb: List<DocumentBF>, documentsDto: List<DocumentBF>): List<DocumentBF> {
+        //validation
+        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
+        //update
+        documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+        val newDocumentsId = documentDtoIds - documentsDbIds
+        val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+        return (documentsDb + newDocuments)
+    }
+
+    private fun DocumentBF.update(documentDto: DocumentBF){
+        this.title = documentDto.title
+        this.description = documentDto.description
     }
 
     private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward> {

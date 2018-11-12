@@ -20,6 +20,10 @@ data class UpdateAcRq @JsonCreator constructor(
 
         val buyer: OrganizationReferenceBuyer,
 
+        val payer: OrganizationReference,
+
+        val funder: OrganizationReference?,
+
         val treasuryBudgetSources: List<TreasuryBudgetSource>?
 )
 
