@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.model.dto.ocds.*
+import java.util.HashSet
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
@@ -15,9 +16,9 @@ data class ContractProcess @JsonCreator constructor(
 
         var buyer: OrganizationReferenceBuyer?,
 
-        var payer: OrganizationReference?,
+        var funders: HashSet<OrganizationReference>?,
 
-        var funder: OrganizationReference?,
+        var payers: HashSet<OrganizationReference>?,
 
         var treasuryBudgetSources: List<TreasuryBudgetSource>?
 

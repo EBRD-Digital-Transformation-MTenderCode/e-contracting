@@ -48,8 +48,8 @@ class UpdateAcService(private val acDao: AcDao,
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
             buyer = dto.buyer//BR-9.2.20
-            funder = dto.funder//BR-9.2.20
-            payer = dto.payer//BR-9.2.20
+            funders = dto.funders//BR-9.2.20
+            payers = dto.payers//BR-9.2.20
             treasuryBudgetSources = dto.treasuryBudgetSources//BR-9.2.24
         }
 
