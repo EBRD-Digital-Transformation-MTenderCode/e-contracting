@@ -204,7 +204,6 @@ class UpdateAcService(private val acDao: AcDao,
         return null
     }
 
-
     private fun setStatusDetails(contractStatusDetails: ContractStatusDetails): ContractStatusDetails {
         return when (contractStatusDetails) {
             ContractStatusDetails.CONTRACT_PROJECT -> ContractStatusDetails.CONTRACT_PREPARATION
@@ -272,12 +271,11 @@ class UpdateAcService(private val acDao: AcDao,
     }
 
     private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {
-        if (bfDb == null || bfDb.isEmpty()) return bfDto
         val bfDbIds = bfDb.asSequence().map { it.id }.toSet()
         val bfDtoIds = bfDto.asSequence().map { it.id }.toSet()
         if (bfDtoIds.size != bfDto.size) throw ErrorException(BF)
         //update
-        bfDb.forEach { bfDb -> bfDb.update(bfDto.first { it.id == bfDb.id }) }
+        bfDb.forEach { businessFunction -> businessFunction.update(bfDto.first { it.id == businessFunction.id }) }
         val newBfId = bfDtoIds - bfDbIds
         val newBf = bfDto.asSequence().filter { it.id in newBfId }.toHashSet()
         return bfDb + newBf
