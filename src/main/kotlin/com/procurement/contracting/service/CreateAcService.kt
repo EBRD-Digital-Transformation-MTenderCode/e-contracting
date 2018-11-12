@@ -66,6 +66,8 @@ class CreateAcService(private val acDao: AcDao,
                     contracts = contract,
                     awards = convertAwardDtoToAward(awardDto),
                     buyer = null,
+                    funders = null,
+                    payers = null,
                     treasuryBudgetSources = null)
             contractProcesses.add(contractProcess)
 
