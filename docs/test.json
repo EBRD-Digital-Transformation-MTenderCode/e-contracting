@@ -1,62 +1,63 @@
 {
-  "id": "b2792b42-e359-11e8-8584-f73978303b72",
+  "id": "5fdf52e0-e73e-11e8-b2f0-338ad5cefeb6",
   "command": "createAC",
   "context": {
-    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b7331",
-    "requestId": "b2792b40-e359-11e8-8584-f73978303b72",
-    "cpid": "ocds-t1s2t3-MD-1541680493856",
-    "ocid": "ocds-t1s2t3-MD-1541680493856-EV-1541680494027",
+    "operationId": "a744ba8c-be76-4912-9587-4e921cb36f07",
+    "requestId": "5fdf52e0-e73e-11e8-b2f0-338ad5cefeb6",
+    "cpid": "ocds-t1s2t3-MD-1542111254786",
+    "ocid": "ocds-t1s2t3-MD-1542111254786-EV-1542111254959",
     "stage": "AC",
     "prevStage": "EV",
     "processType": "awardPeriodEnd",
     "operationType": "awardPeriodEndEv",
-    "phase": "contracting",
+    "phase": "contractProject",
     "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
     "country": "MD",
     "language": "ro",
-    "pmd": "TEST_SV",
-    "token": "2beb7a6d-2f1a-42c1-9ad7-e16264f26019",
+    "pmd": "TEST_OT",
+    "token": "ad0d69e1-fadf-426f-9333-215e6672f32b",
     "outcomes": [
       {
-        "id": "feeecbbb-161e-46c0-9503-119880a5a251",
+        "id": "e899cf09-1aa0-4f08-b2f4-dd0cc9ba3f2c",
         "type": "contracts"
       }
     ],
-    "startDate": "2018-11-08T13:25:01Z",
-    "endDate": "2018-11-08T13:25:06Z",
-    "timeStamp": 1541683501186,
-    "isAuction": true,
-    "mainProcurementCategory": "goods"
+    "startDate": "2018-11-13T12:19:30Z",
+    "endDate": "2018-11-13T12:19:35Z",
+    "timeStamp": 1542111570819,
+    "isAuction": false,
+    "mainProcurementCategory": "services"
   },
   "data": {
     "awards": [
       {
-        "token": "0e91a663-41c9-4f3d-bf8d-8763742fb9ce",
-        "id": "efaefd11-e358-11e8-a1c0-1554d61ef3b6",
-        "date": "2018-11-08T13:25:06Z",
-        "description": "",
+        "token": "2b67fb92-d166-4894-92b9-b034a3464511",
+        "id": "5bffcec2-e73e-11e8-a259-b72781a0d355",
+        "date": "2018-11-13T12:19:35Z",
+        "description": "Speak control range recent benefit others on quality course hope challenge seek sometimes ability grow adult sort simple million upon bag speech manager mean total benefit sometimes might.",
         "status": "unsuccessful",
         "statusDetails": "empty",
         "value": {
-          "amount": 240.00,
+          "amount": 3055518836.97,
           "currency": "MDL"
         },
         "relatedLots": [
-          "b1707201-e352-11e8-803e-4501c1f946db"
+          "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
         ],
-        "relatedBid": "be8a1030-e353-11e8-9f62-577ee7c7d4fa",
+        "relatedBid": "cb497390-e73d-11e8-a910-d513a213c6d8",
         "suppliers": [
           {
-            "id": "MD-IDNO-12abc45",
-            "name": "name of bidder8",
+            "id": "MD-IDNO-665-72-5150",
+            "name": "Anderson-Riley",
             "identifier": {
-              "id": "12abc45",
+              "id": "665-72-5150",
               "scheme": "MD-IDNO",
-              "legalName": "Legalname",
-              "uri": "233"
+              "legalName": "Anderson-Riley and Sons",
+              "uri": "https://www.burke.org/privacy.htm"
             },
             "address": {
-              "streetAddress": "dfhg",
+              "streetAddress": "7055 Amanda Branch",
+              "postalCode": "75469",
               "addressDetails": {
                 "country": {
                   "scheme": "iso-alpha2",
@@ -66,205 +67,348 @@
                 },
                 "region": {
                   "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
+                  "id": "3100000",
+                  "description": "Criuleni",
                   "uri": "http://statistica.md"
                 },
                 "locality": {
                   "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
+                  "id": "3119000",
+                  "description": "s.Dubăsarii Vechi",
                   "uri": "http://statistica.md"
                 }
               }
             },
-            "contactPoint": {
-              "name": "vdv",
-              "email": "dvdvdv",
-              "telephone": "45621",
-              "url": "dvdv"
-            },
-            "details": {
-              "scale": "micro"
-            }
-          }
-        ]
-      },
-      {
-        "token": "c575b86d-4096-4509-89bc-eb2e131ff02e",
-        "id": "efaefd10-e358-11e8-a1c0-1554d61ef3b6",
-        "date": "2018-11-08T13:25:06Z",
-        "status": "active",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 225.00,
-          "currency": "MDL"
-        },
-        "relatedLots": [
-          "b1707201-e352-11e8-803e-4501c1f946db"
-        ],
-        "relatedBid": "b7ed19c0-e353-11e8-9f62-577ee7c7d4fa",
-        "suppliers": [
-          {
-            "id": "MD-IDNO-12abc",
-            "name": "name of bidder8",
-            "identifier": {
-              "id": "12abc",
-              "scheme": "MD-IDNO",
-              "legalName": "Legalname",
-              "uri": "233"
-            },
-            "address": {
-              "streetAddress": "dfhg",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
+            "additionalIdentifiers": [
+              {
+                "id": "514-59-0599",
+                "scheme": "MD-IDNO",
+                "legalName": "Anderson-Riley PLC",
+                "uri": "http://www.bennett.com/category/explore/posts/login/"
               }
-            },
+            ],
             "contactPoint": {
-              "name": "vdv",
-              "email": "dvdvdv",
-              "telephone": "45621",
-              "url": "dvdv"
+              "name": "Tina Sullivan",
+              "email": "nicole78@gmail.com",
+              "telephone": "317-893-1206x974",
+              "faxNumber": "(517)751-3582",
+              "url": "https://www.horn.info/"
             },
             "details": {
-              "scale": "micro"
+              "scale": "large"
             }
           }
         ],
         "documents": [
           {
-            "id": "e80ea673-f606-47de-ada8-a94242b9c6b7-1541640451902",
-            "documentType": "complaints"
+            "id": "03237b35-7c2f-4fff-853c-cdf78632be34-1542111569663",
+            "documentType": "cancellationDetails",
+            "title": "Serve product use level particularly make.",
+            "description": "Image address hotel reason up political during alone fast trial participant hospital sometimes federal card sell camera short any window industry building dark red anyone."
+          }
+        ]
+      },
+      {
+        "token": "55977cc3-33f2-4bed-92e1-5a746d20307d",
+        "id": "5bffcec1-e73e-11e8-a259-b72781a0d355",
+        "date": "2018-11-13T12:19:35Z",
+        "description": "Base power high need once central check lead claim material state low consider involve speak near yes word visit response school and book deal character.",
+        "status": "active",
+        "statusDetails": "empty",
+        "value": {
+          "amount": 516769975.54,
+          "currency": "MDL"
+        },
+        "relatedLots": [
+          "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+        ],
+        "relatedBid": "c999c7c0-e73d-11e8-a910-d513a213c6d8",
+        "suppliers": [
+          {
+            "id": "MD-IDNO-620-38-6506",
+            "name": "Robinson LLC",
+            "identifier": {
+              "id": "620-38-6506",
+              "scheme": "MD-IDNO",
+              "legalName": "Robinson LLC Inc",
+              "uri": "https://www.brown-stafford.net/category.html"
+            },
+            "address": {
+              "streetAddress": "504 Aguirre Light Apt. 387",
+              "postalCode": "17533",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "9800000",
+                  "description": "UATSN",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "9819001",
+                  "description": "s.Cotovca (UATSN)",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "409-63-9263",
+                "scheme": "MD-IDNO",
+                "legalName": "Robinson LLC and Sons",
+                "uri": "http://hall.info/wp-content/about/"
+              }
+            ],
+            "contactPoint": {
+              "name": "Katherine Fox",
+              "email": "grantjohn@gmail.com",
+              "telephone": "+93(5)8563386023",
+              "faxNumber": "(628)446-2882x8356",
+              "url": "https://www.lopez-garcia.biz/"
+            },
+            "details": {
+              "scale": "large"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "176efb04-c967-4c96-822d-62d61f7f8490-1542111566342",
+            "documentType": "shortlistedFirms",
+            "title": "Contain these story bed discuss war.",
+            "description": "Such teacher fast idea fund manager exactly possible fish sense TV accept get include point family itself participant approach newspaper financial century catch speech rise president herself world purpose indeed including movie tree."
           }
         ],
         "items": [
           {
-            "id": "b1707200-e352-11e8-803e-4501c1f946db",
-            "description": "p",
+            "id": "a2f61e20-e73d-11e8-9363-3fbb2bac86b6",
+            "description": "Third last care get trip cup capital occur whom example customer least than throw purpose positive and discover suddenly air region available reduce guess lot including identify line chance down sign agent citizen value.",
             "classification": {
               "scheme": "CPV",
-              "id": "03100000-2",
-              "description": "Produse agricole şi horticole"
+              "id": "90721800-5",
+              "description": "Servicii de protecţie împotriva riscurilor sau a pericolelor naturale"
             },
             "additionalClassifications": [
               {
                 "scheme": "CPVS",
-                "id": "AA25-3",
-                "description": "Hafniu"
-              },
-              {
-                "scheme": "CPVS",
-                "id": "AA28-2",
-                "description": "Iridiu"
+                "id": "FF02-4",
+                "description": "Pentru centre de zi"
               }
             ],
-            "quantity": 100.00,
+            "quantity": 3911338.55,
             "unit": {
-              "id": "120",
-              "name": "Milion decalitri"
+              "id": "166",
+              "name": "Kilogram"
             },
-            "relatedLot": "b1707201-e352-11e8-803e-4501c1f946db"
+            "relatedLot": "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+          },
+          {
+            "id": "a2f61e21-e73d-11e8-9363-3fbb2bac86b6",
+            "description": "Artist fast myself prevent mother herself research subject sound cup race laugh floor firm five director wind themselves even today real understand affect wait me five professional message you prevent support street fund.",
+            "classification": {
+              "scheme": "CPV",
+              "id": "90721800-5",
+              "description": "Servicii de protecţie împotriva riscurilor sau a pericolelor naturale"
+            },
+            "additionalClassifications": [
+              {
+                "scheme": "CPVS",
+                "id": "KA04-1",
+                "description": "Pentru instalaţii electrice"
+              }
+            ],
+            "quantity": 8743791.67,
+            "unit": {
+              "id": "166",
+              "name": "Kilogram"
+            },
+            "relatedLot": "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+          }
+        ]
+      },
+      {
+        "token": "a8a447b6-aa7a-4ba2-a368-c5ec3c11bc9f",
+        "id": "5bffcec3-e73e-11e8-a259-b72781a0d355",
+        "date": "2018-11-13T12:19:35Z",
+        "description": "",
+        "status": "unsuccessful",
+        "statusDetails": "empty",
+        "value": {
+          "amount": 11882043986.37,
+          "currency": "MDL"
+        },
+        "relatedLots": [
+          "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+        ],
+        "relatedBid": "c8bc3900-e73d-11e8-a910-d513a213c6d8",
+        "suppliers": [
+          {
+            "id": "MD-IDNO-752-35-1323",
+            "name": "Gilmore Inc",
+            "identifier": {
+              "id": "752-35-1323",
+              "scheme": "MD-IDNO",
+              "legalName": "Gilmore Inc PLC",
+              "uri": "http://jimenez.info/login.asp"
+            },
+            "address": {
+              "streetAddress": "2967 Willis Heights",
+              "postalCode": "17296",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "3600000",
+                  "description": "Drochia",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "3633002",
+                  "description": "s.Iliciovca (r-l Drochia)",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "249-60-6018",
+                "scheme": "MD-IDNO",
+                "legalName": "Gilmore Inc Inc",
+                "uri": "https://stevens-rice.com/app/index.jsp"
+              }
+            ],
+            "contactPoint": {
+              "name": "Victor Montoya MD",
+              "email": "mary08@gmail.com",
+              "telephone": "354-558-9106",
+              "faxNumber": "1-414-692-8885x39082",
+              "url": "http://brown.net/main.html"
+            },
+            "details": {
+              "scale": "micro"
+            }
+          }
+        ]
+      },
+      {
+        "token": "df64a3db-1e85-48e5-a40a-07080b60590c",
+        "id": "5bffcec0-e73e-11e8-a259-b72781a0d355",
+        "date": "2018-11-13T12:19:35Z",
+        "description": "If responsibility official court newspaper brother relate become series Mrs young since benefit under forward expect fish with indicate option center effort address throw manage lose figure go he win.",
+        "status": "unsuccessful",
+        "statusDetails": "empty",
+        "value": {
+          "amount": 113347747.59,
+          "currency": "MDL"
+        },
+        "relatedLots": [
+          "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
+        ],
+        "relatedBid": "ca73fb20-e73d-11e8-a910-d513a213c6d8",
+        "suppliers": [
+          {
+            "id": "MD-IDNO-895-03-2865",
+            "name": "Morgan, Martin and Richmond",
+            "identifier": {
+              "id": "895-03-2865",
+              "scheme": "MD-IDNO",
+              "legalName": "Morgan, Martin and Richmond and Sons",
+              "uri": "http://www.mcpherson.com/"
+            },
+            "address": {
+              "streetAddress": "5665 Jill Valleys Suite 867",
+              "postalCode": "95235",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "5500000",
+                  "description": "Ialoveni",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "5525001",
+                  "description": "s.Mileştii Noi",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "803-76-7644",
+                "scheme": "MD-IDNO",
+                "legalName": "Morgan, Martin and Richmond LLC",
+                "uri": "https://www.cunningham.info/search/main.php"
+              }
+            ],
+            "contactPoint": {
+              "name": "Maureen Smith",
+              "email": "wallacemark@gmail.com",
+              "telephone": "1-784-595-2709x73184",
+              "faxNumber": "(799)482-0332x01109",
+              "url": "http://garcia.org/homepage/"
+            },
+            "details": {
+              "scale": "large"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "afa102d9-2d47-4fa0-a383-f0838f43a031-1542111568200",
+            "documentType": "bidders",
+            "title": "Despite traditional ask detail manager field yeah.",
+            "description": "Let actually example bill add ago impact standard cell single common whether outside plan design consumer color meeting want resource conference dog maybe between."
           }
         ]
       }
     ],
     "awardPeriod": {
-      "startDate": "2018-11-08T13:19:35Z",
-      "endDate": "2018-11-08T13:25:06Z"
+      "startDate": "2018-11-13T12:19:24Z",
+      "endDate": "2018-11-13T12:19:35Z"
     },
-    "unsuccessfulLots": [],
+    "unsuccessfulLots": [
+      {
+        "id": "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
+      }
+    ],
     "bids": [
       {
-        "id": "b7ed19c0-e353-11e8-9f62-577ee7c7d4fa",
-        "date": "2018-11-08T13:25:01Z",
-        "status": "valid",
-        "statusDetails": "empty",
-        "tenderers": [
-          {
-            "id": "MD-IDNO-12abc",
-            "name": "name of bidder8",
-            "identifier": {
-              "id": "12abc",
-              "scheme": "MD-IDNO",
-              "legalName": "Legalname",
-              "uri": "233"
-            },
-            "address": {
-              "streetAddress": "dfhg",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
-              }
-            },
-            "contactPoint": {
-              "name": "vdv",
-              "email": "dvdvdv",
-              "telephone": "45621",
-              "url": "dvdv"
-            },
-            "details": {
-              "scale": "micro"
-            }
-          }
-        ],
-        "value": {
-          "amount": 240.00,
-          "currency": "MDL"
-        },
-        "relatedLots": [
-          "b1707201-e352-11e8-803e-4501c1f946db"
-        ]
-      },
-      {
-        "id": "be8a1030-e353-11e8-9f62-577ee7c7d4fa",
-        "date": "2018-11-08T13:19:35Z",
+        "id": "c8bc3900-e73d-11e8-a910-d513a213c6d8",
+        "date": "2018-11-13T12:19:25Z",
         "status": "pending",
         "statusDetails": "empty",
         "tenderers": [
           {
-            "id": "MD-IDNO-12abc45",
-            "name": "name of bidder8",
+            "id": "MD-IDNO-752-35-1323",
+            "name": "Gilmore Inc",
             "identifier": {
-              "id": "12abc45",
+              "id": "752-35-1323",
               "scheme": "MD-IDNO",
-              "legalName": "Legalname",
-              "uri": "233"
+              "legalName": "Gilmore Inc PLC",
+              "uri": "http://jimenez.info/login.asp"
             },
             "address": {
-              "streetAddress": "dfhg",
+              "streetAddress": "2967 Willis Heights",
+              "postalCode": "17296",
               "addressDetails": {
                 "country": {
                   "scheme": "iso-alpha2",
@@ -274,23 +418,32 @@
                 },
                 "region": {
                   "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
+                  "id": "3600000",
+                  "description": "Drochia",
                   "uri": "http://statistica.md"
                 },
                 "locality": {
                   "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
+                  "id": "3633002",
+                  "description": "s.Iliciovca (r-l Drochia)",
                   "uri": "http://statistica.md"
                 }
               }
             },
+            "additionalIdentifiers": [
+              {
+                "id": "249-60-6018",
+                "scheme": "MD-IDNO",
+                "legalName": "Gilmore Inc Inc",
+                "uri": "https://stevens-rice.com/app/index.jsp"
+              }
+            ],
             "contactPoint": {
-              "name": "vdv",
-              "email": "dvdvdv",
-              "telephone": "45621",
-              "url": "dvdv"
+              "name": "Victor Montoya MD",
+              "email": "mary08@gmail.com",
+              "telephone": "354-558-9106",
+              "faxNumber": "1-414-692-8885x39082",
+              "url": "http://brown.net/main.html"
             },
             "details": {
               "scale": "micro"
@@ -298,23 +451,268 @@
           }
         ],
         "value": {
-          "amount": 240.00,
+          "amount": 11882043986.37,
           "currency": "MDL"
         },
+        "documents": [
+          {
+            "id": "3e567f19-ddb7-45f1-855d-36dbed8b3844-1542111317024",
+            "documentType": "submissionDocuments",
+            "title": "Perhaps floor current.",
+            "description": "Somebody put wait space claim quickly foreign debate medical itself store up mother worker ball its argue little finish staff behind be summer phone who shake shake news lead.",
+            "relatedLots": [
+              "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+            ]
+          }
+        ],
         "relatedLots": [
-          "b1707201-e352-11e8-803e-4501c1f946db"
+          "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+        ]
+      },
+      {
+        "id": "c999c7c0-e73d-11e8-a910-d513a213c6d8",
+        "date": "2018-11-13T12:19:30Z",
+        "status": "valid",
+        "statusDetails": "empty",
+        "tenderers": [
+          {
+            "id": "MD-IDNO-620-38-6506",
+            "name": "Robinson LLC",
+            "identifier": {
+              "id": "620-38-6506",
+              "scheme": "MD-IDNO",
+              "legalName": "Robinson LLC Inc",
+              "uri": "https://www.brown-stafford.net/category.html"
+            },
+            "address": {
+              "streetAddress": "504 Aguirre Light Apt. 387",
+              "postalCode": "17533",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "9800000",
+                  "description": "UATSN",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "9819001",
+                  "description": "s.Cotovca (UATSN)",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "409-63-9263",
+                "scheme": "MD-IDNO",
+                "legalName": "Robinson LLC and Sons",
+                "uri": "http://hall.info/wp-content/about/"
+              }
+            ],
+            "contactPoint": {
+              "name": "Katherine Fox",
+              "email": "grantjohn@gmail.com",
+              "telephone": "+93(5)8563386023",
+              "faxNumber": "(628)446-2882x8356",
+              "url": "https://www.lopez-garcia.biz/"
+            },
+            "details": {
+              "scale": "large"
+            }
+          }
+        ],
+        "value": {
+          "amount": 516769975.54,
+          "currency": "MDL"
+        },
+        "documents": [
+          {
+            "id": "b1fdcabe-8c77-4afc-9a19-70bbcff7f17f-1542111318606",
+            "documentType": "submissionDocuments",
+            "title": "Who may health reveal difficult.",
+            "description": "President ago arrive indicate notice certain run believe toward successful beautiful thus peace everyone son hope size.",
+            "relatedLots": [
+              "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+            ]
+          }
+        ],
+        "relatedLots": [
+          "a2f61e25-e73d-11e8-9363-3fbb2bac86b6"
+        ]
+      },
+      {
+        "id": "ca73fb20-e73d-11e8-a910-d513a213c6d8",
+        "date": "2018-11-13T12:19:30Z",
+        "status": "disqualified",
+        "statusDetails": "empty",
+        "tenderers": [
+          {
+            "id": "MD-IDNO-895-03-2865",
+            "name": "Morgan, Martin and Richmond",
+            "identifier": {
+              "id": "895-03-2865",
+              "scheme": "MD-IDNO",
+              "legalName": "Morgan, Martin and Richmond and Sons",
+              "uri": "http://www.mcpherson.com/"
+            },
+            "address": {
+              "streetAddress": "5665 Jill Valleys Suite 867",
+              "postalCode": "95235",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "5500000",
+                  "description": "Ialoveni",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "5525001",
+                  "description": "s.Mileştii Noi",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "803-76-7644",
+                "scheme": "MD-IDNO",
+                "legalName": "Morgan, Martin and Richmond LLC",
+                "uri": "https://www.cunningham.info/search/main.php"
+              }
+            ],
+            "contactPoint": {
+              "name": "Maureen Smith",
+              "email": "wallacemark@gmail.com",
+              "telephone": "1-784-595-2709x73184",
+              "faxNumber": "(799)482-0332x01109",
+              "url": "http://garcia.org/homepage/"
+            },
+            "details": {
+              "scale": "large"
+            }
+          }
+        ],
+        "value": {
+          "amount": 113347747.59,
+          "currency": "MDL"
+        },
+        "documents": [
+          {
+            "id": "a104cc5d-3ccf-4ac5-853e-d5116e5c918d-1542111320016",
+            "documentType": "submissionDocuments",
+            "title": "Which agreement support paper challenge exist discuss.",
+            "description": "Sport design scene ask remember treat huge staff pressure piece those hospital successful various hundred something black stand computer daughter sure quite door suffer talk know interesting generation future once base her house.",
+            "relatedLots": [
+              "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
+            ]
+          }
+        ],
+        "relatedLots": [
+          "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
+        ]
+      },
+      {
+        "id": "cb497390-e73d-11e8-a910-d513a213c6d8",
+        "date": "2018-11-13T12:19:30Z",
+        "status": "disqualified",
+        "statusDetails": "empty",
+        "tenderers": [
+          {
+            "id": "MD-IDNO-665-72-5150",
+            "name": "Anderson-Riley",
+            "identifier": {
+              "id": "665-72-5150",
+              "scheme": "MD-IDNO",
+              "legalName": "Anderson-Riley and Sons",
+              "uri": "https://www.burke.org/privacy.htm"
+            },
+            "address": {
+              "streetAddress": "7055 Amanda Branch",
+              "postalCode": "75469",
+              "addressDetails": {
+                "country": {
+                  "scheme": "iso-alpha2",
+                  "id": "MD",
+                  "description": "MOLDOVA",
+                  "uri": "http://reference.iatistandard.org"
+                },
+                "region": {
+                  "scheme": "CUATM",
+                  "id": "3100000",
+                  "description": "Criuleni",
+                  "uri": "http://statistica.md"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "3119000",
+                  "description": "s.Dubăsarii Vechi",
+                  "uri": "http://statistica.md"
+                }
+              }
+            },
+            "additionalIdentifiers": [
+              {
+                "id": "514-59-0599",
+                "scheme": "MD-IDNO",
+                "legalName": "Anderson-Riley PLC",
+                "uri": "http://www.bennett.com/category/explore/posts/login/"
+              }
+            ],
+            "contactPoint": {
+              "name": "Tina Sullivan",
+              "email": "nicole78@gmail.com",
+              "telephone": "317-893-1206x974",
+              "faxNumber": "(517)751-3582",
+              "url": "https://www.horn.info/"
+            },
+            "details": {
+              "scale": "large"
+            }
+          }
+        ],
+        "value": {
+          "amount": 3055518836.97,
+          "currency": "MDL"
+        },
+        "documents": [
+          {
+            "id": "73973e79-4370-4c1a-957b-a12423ce138d-1542111321447",
+            "documentType": "submissionDocuments",
+            "title": "One kid behind compare road.",
+            "description": "Interview dark summer health themselves interesting into fight down such condition clear task huge magazine across accept attack gas support yes easy collection someone section unit.",
+            "relatedLots": [
+              "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
+            ]
+          }
+        ],
+        "relatedLots": [
+          "a2f61e24-e73d-11e8-9363-3fbb2bac86b6"
         ]
       }
     ],
     "lots": [
       {
-        "id": "b1707201-e352-11e8-803e-4501c1f946db",
-        "title": "lot2",
-        "description": "2",
-        "status": "complete",
+        "id": "a2f61e24-e73d-11e8-9363-3fbb2bac86b6",
+        "title": "Position night value discover.",
+        "description": "Cost majority when section alone end ago wind remember laugh when never wide today surface my respond order manager night third coach probably almost everyone that easy trip religious.",
+        "status": "unsuccessful",
         "statusDetails": "empty",
         "value": {
-          "amount": 200.00,
+          "amount": 5102537969.68,
           "currency": "MDL"
         },
         "options": [
@@ -338,13 +736,13 @@
           }
         ],
         "contractPeriod": {
-          "startDate": "2018-11-09T00:01:01Z",
-          "endDate": "2019-01-01T00:00:00Z"
+          "startDate": "2018-11-13T12:19:25Z",
+          "endDate": "2019-01-18T13:41:05Z"
         },
         "placeOfPerformance": {
           "address": {
-            "streetAddress": "Steet",
-            "postalCode": "5",
+            "streetAddress": "1530 Katie Drive",
+            "postalCode": "95292",
             "addressDetails": {
               "country": {
                 "scheme": "iso-alpha2",
@@ -354,19 +752,81 @@
               },
               "region": {
                 "scheme": "CUATM",
-                "id": "0301000",
-                "description": "mun.Bălţi",
+                "id": "2500000",
+                "description": "Călăraşi",
                 "uri": "http://statistica.md"
               },
               "locality": {
                 "scheme": "CUATM",
-                "id": "0301000",
-                "description": "mun.Bălţi",
+                "id": "2512001",
+                "description": "s.Ursari",
                 "uri": "http://statistica.md"
               }
             }
           },
-          "description": "decr"
+          "description": "Consumer Mr want movie peace worry professor maintain full next beat young tend when become major it series morning health per young second often like happy newspaper."
+        }
+      },
+      {
+        "id": "a2f61e25-e73d-11e8-9363-3fbb2bac86b6",
+        "title": "Democratic community set stock effect value stuff.",
+        "description": "Particular billion natural onto tax reflect rich position make hot project great task ground nothing six apply maybe someone similar scientist sport consumer us plan agent.",
+        "status": "complete",
+        "statusDetails": "empty",
+        "value": {
+          "amount": 15481818289.47,
+          "currency": "MDL"
+        },
+        "options": [
+          {
+            "hasOptions": false
+          }
+        ],
+        "recurrentProcurement": [
+          {
+            "isRecurrent": false
+          }
+        ],
+        "renewals": [
+          {
+            "hasRenewals": false
+          }
+        ],
+        "variants": [
+          {
+            "hasVariants": false
+          }
+        ],
+        "contractPeriod": {
+          "startDate": "2018-11-13T12:19:25Z",
+          "endDate": "2018-12-22T17:41:20Z"
+        },
+        "placeOfPerformance": {
+          "address": {
+            "streetAddress": "241 Michael Shore Apt. 113",
+            "postalCode": "20278",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "8500000",
+                "description": "Ştefan Vodă",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "CUATM",
+                "id": "8526000",
+                "description": "s.Semionovca (r-l Ştefan Vodă)",
+                "uri": "http://statistica.md"
+              }
+            }
+          },
+          "description": "Check rock experience memory leg young traditional threat character training chance reveal president sometimes plant century artist material."
         }
       }
     ],

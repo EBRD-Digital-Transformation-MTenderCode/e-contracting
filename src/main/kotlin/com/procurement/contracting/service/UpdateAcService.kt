@@ -7,6 +7,7 @@ import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.Unit
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -253,7 +254,18 @@ class UpdateAcService(private val acDao: AcDao,
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate) {
         this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
         this.additionalIdentifiers = supplierDto.additionalIdentifiers
-        this.details = supplierDto.details
+        this.details = updateDetails(supplierDto.details)
+    }
+
+    private fun updateDetails(details: DetailsSupplierUpdate): DetailsSupplier {
+        return DetailsSupplier(
+                typeOfSupplier = details.typeOfSupplier,
+                mainEconomicActivity = details.mainEconomicActivity,
+                bankAccounts = details.bankAccounts,
+                legalForm = details.legalForm,
+                permits = details.permits,
+                scale = details.scale
+        )
     }
 
     private fun updatePersones(personesDb: HashSet<Person>?, personesDto: HashSet<Person>): HashSet<Person> {
@@ -304,23 +316,31 @@ class UpdateAcService(private val acDao: AcDao,
         return (documentsDb + newDocuments)
     }
 
-    private fun DocumentBF.update(documentDto: DocumentBF){
+    private fun DocumentBF.update(documentDto: DocumentBF) {
         this.title = documentDto.title
         this.description = documentDto.description
     }
 
-    private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward> {
+    private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward>? {
         val documentsDb = contractProcess.awards.documents
-        val documentsDto = dto.awards.documents ?: return documentsDb
-        //validation
-        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
-        if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
-        //update
-        documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
-        val newDocumentsId = documentDtoIds - documentsDbIds
-        val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
-        return (documentsDb + newDocuments)
+        val documentsDto = dto.awards.documents
+        if (documentsDto != null) {
+            //validation
+            val documentsDbIds = documentsDb?.asSequence()?.map { it.id }?.toSet() ?: listOf<String>()
+            val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+            if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
+            //update
+            return if (documentsDb != null) {
+                documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+                val newDocumentsId = documentDtoIds - documentsDbIds
+                val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+                (documentsDb + newDocuments)
+            } else {
+                documentsDto
+            }
+        } else {
+            return documentsDb
+        }
     }
 
     private fun DocumentAward.update(documentDto: DocumentAward) {
@@ -331,6 +351,9 @@ class UpdateAcService(private val acDao: AcDao,
     private fun updateAwardItems(dto: UpdateAcRq, contractProcess: ContractProcess): List<Item> {
         val itemsDb = contractProcess.awards.items
         val itemsDto = dto.awards.items
+        if (itemsDb == null || itemsDb.isEmpty()) {
+            return itemsDto.asSequence().map { convertItemDtoToItem(it) }.toList()
+        }
         //validation
         val itemDbIds = itemsDb.asSequence().map { it.id }.toSet()
         val itemDtoIds = itemsDto.asSequence().map { it.id }.toSet()
@@ -347,6 +370,26 @@ class UpdateAcService(private val acDao: AcDao,
         return itemsDb
     }
 
+    private fun convertItemDtoToItem(itemDto: ItemUpdate): Item {
+        return Item(
+                id = itemDto.id,
+                description = itemDto.description,
+                deliveryAddress = itemDto.deliveryAddress,
+                additionalClassifications = itemDto.additionalClassifications,
+                classification = itemDto.classification,
+                quantity = itemDto.quantity,
+                unit = Unit(id = itemDto.unit.id,
+                        name = itemDto.unit.name,
+                        value = ValueTax(
+                                amount = itemDto.unit.value.amount,
+                                currency = itemDto.unit.value.currency,
+                                amountNet = itemDto.unit.value.amountNet,
+                                valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
+                ),
+                relatedLot = itemDto.relatedLot
+        )
+    }
+
     private fun Item.update(itemDto: ItemUpdate) {
         this.quantity = itemDto.quantity
         this.unit.value = ValueTax(
@@ -356,6 +399,7 @@ class UpdateAcService(private val acDao: AcDao,
                 valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
         this.deliveryAddress = itemDto.deliveryAddress
     }
+
 
     private fun validateAwards(dto: UpdateAcRq, contractProcess: ContractProcess) {
         val award = dto.awards

@@ -202,7 +202,6 @@ enum class DocumentTypeAward(@JsonValue val value: String) {
     EVALUATION_REPORTS("evaluationReports"),
     AWARD_NOTICE("awardNotice"),
     WINNING_BID("winningBid");
-
     override fun toString(): String {
         return this.value
     }

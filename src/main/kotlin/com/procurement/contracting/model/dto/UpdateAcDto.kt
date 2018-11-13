@@ -178,16 +178,28 @@ data class ItemUpdate @JsonCreator constructor(
 
         val id: String,
 
+        val description: String?,
+
+        val classification: Classification,
+
+        val additionalClassifications: Set<Classification>?,
+
         @JsonDeserialize(using = QuantityDeserializer::class)
         val quantity: BigDecimal,
 
         val unit: UnitUpdate,
+
+        val relatedLot: String,
 
         val deliveryAddress: Address
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UnitUpdate @JsonCreator constructor(
+
+        val id: String,
+
+        val name: String,
 
         val value: ValueUpdate
 )
@@ -228,5 +240,21 @@ data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         val persones: HashSet<Person>,
 
-        val details: DetailsSupplier
+        val details: DetailsSupplierUpdate
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class DetailsSupplierUpdate @JsonCreator constructor(
+
+        val typeOfSupplier: String,
+
+        val mainEconomicActivity: Set<String>,
+
+        val scale: String,
+
+        val permits: List<Permits>,
+
+        val bankAccounts: List<BankAccount>,
+
+        val legalForm: LegalForm
 )

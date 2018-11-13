@@ -6,17 +6,17 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class DetailsSupplier @JsonCreator constructor(
 
-        val typeOfSupplier: String,
+        val typeOfSupplier: String?,
 
-        val mainEconomicActivity: Set<String>,
+        val mainEconomicActivity: Set<String>?,
 
         val scale: String,
 
-        val permits: List<Permits>,
+        val permits: List<Permits>?,
 
-        val bankAccounts: List<BankAccount>,
+        val bankAccounts: List<BankAccount>?,
 
-        val legalForm: LegalForm
+        val legalForm: LegalForm?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -27,7 +27,7 @@ data class Award @JsonCreator constructor(
 
         var suppliers: List<OrganizationReferenceSupplier>,
 
-        var items: List<Item>,
+        var items: List<Item>?,
 
-        var documents: List<DocumentAward>
+        var documents: List<DocumentAward>?
 )

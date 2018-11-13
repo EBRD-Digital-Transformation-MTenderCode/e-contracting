@@ -36,9 +36,9 @@ data class AwardCreate @JsonCreator constructor(
 
         var suppliers: List<OrganizationReferenceSupplier>,
 
-        var items: List<ItemCreate>,
+        var documents: List<DocumentAward>?,
 
-        var documents: List<DocumentAward>
+        var items: List<ItemCreate>?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

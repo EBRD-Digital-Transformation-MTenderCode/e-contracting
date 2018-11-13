@@ -114,15 +114,15 @@ class CreateAcService(private val acDao: AcDao,
                         amountNet = null,
                         valueAddedTaxIncluded = null),
                 documents = awardDto.documents,
-                items = getItems(awardDto.items),
                 suppliers = awardDto.suppliers,
                 relatedBid = awardDto.relatedBid,
-                relatedLots = awardDto.relatedLots
+                relatedLots = awardDto.relatedLots,
+                items = getItems(awardDto.items)
         )
     }
 
-    private fun getItems(items: List<ItemCreate>): List<Item> {
-        return items.asSequence().map { convertDtoItemToItem(it) }.toList()
+    private fun getItems(items: List<ItemCreate>?): List<Item>? {
+        return items?.asSequence()?.map { convertDtoItemToItem(it) }?.toList()
     }
 
     private fun convertDtoItemToItem(itemDto: ItemCreate): Item {
