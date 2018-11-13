@@ -24,13 +24,12 @@ class CreateCanService(private val canDao: CanDao,
 
     fun createCAN(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CanCreate::class.java, cm.data)
 
         val canEntities = dto.awards.asSequence()
-                .map { createCanEntity(cpId, stage, it.id, owner, dateTime) }
+                .map { createCanEntity(cpId, it.id, owner, dateTime) }
                 .toList()
         val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
         canDao.saveAll(canEntities)
@@ -64,13 +63,11 @@ class CreateCanService(private val canDao: CanDao,
     }
 
     private fun createCanEntity(cpId: String,
-                                stage: String,
                                 awardId: String,
                                 owner: String,
                                 dateTime: LocalDateTime): CanEntity {
         return CanEntity(
                 cpId = cpId,
-                stage = stage,
                 canId = generationService.generateRandomUUID(),
                 awardId = awardId,
                 acId = null,

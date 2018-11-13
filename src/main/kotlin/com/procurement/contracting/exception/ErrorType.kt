@@ -36,5 +36,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CONFIRMATION_ITEM("00.33", "Invalid confirmation request related item."),
     PERSON_NOT_FOUND("00.34", "Person not found."),
     BF("00.35", "Invalid business functions of person."),
-    CONTEXT("20.01", "Context parameter not found.");
+    CONTEXT("20.01", "Context parameter not found."),
+    INVALID_TOKEN("20.02", "Invalid access token.");
 }

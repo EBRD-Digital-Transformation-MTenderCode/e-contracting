@@ -14,7 +14,6 @@ class CanDao(private val session: Session) {
         val insert =
                 insertInto(NOTICE_TABLE)
                         .value(CP_ID, entity.cpId)
-                        .value(STAGE, entity.stage)
                         .value(CAN_ID, entity.canId)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
@@ -30,7 +29,6 @@ class CanDao(private val session: Session) {
         entities.forEach { entity ->
             operations.add(insertInto(NOTICE_TABLE)
                     .value(CP_ID, entity.cpId)
-                    .value(STAGE, entity.stage)
                     .value(CAN_ID, entity.canId)
                     .value(OWNER, entity.owner)
                     .value(CREATED_DATE, entity.createdDate)
@@ -43,19 +41,17 @@ class CanDao(private val session: Session) {
         session.execute(batch)
     }
 
-    fun findAllByCpIdAndStage(cpId: String, stage: String): List<CanEntity> {
+    fun findAllByCpId(cpId: String): List<CanEntity> {
         val query = select()
                 .all()
                 .from(NOTICE_TABLE)
                 .where(eq(CP_ID, cpId))
-                .and(eq(STAGE, stage))
         val resultSet = session.execute(query)
         val entities = ArrayList<CanEntity>()
         resultSet.forEach { row ->
             entities.add(
                     CanEntity(
                             cpId = row.getString(CP_ID),
-                            stage = row.getString(STAGE),
                             canId = row.getUUID(CAN_ID),
                             owner = row.getString(OWNER),
                             createdDate = row.getTimestamp(CREATED_DATE),
@@ -71,12 +67,11 @@ class CanDao(private val session: Session) {
     companion object {
         private const val NOTICE_TABLE = "contracting_can"
         private const val CP_ID = "cp_id"
-        private const val STAGE = "stage"
         private const val CAN_ID = "can_id"
+        private const val AC_ID = "ac_id"
+        private const val AWARD_ID = "award_id"
         private const val OWNER = "owner"
         private const val CREATED_DATE = "created_date"
-        private const val AWARD_ID = "award_id"
-        private const val AC_ID = "ac_id"
         private const val STATUS = "status"
         private const val STATUS_DETAILS = "status_details"
     }

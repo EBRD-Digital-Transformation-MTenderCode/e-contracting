@@ -21,12 +21,16 @@ class UpdateAcService(private val acDao: AcDao,
 
     fun updateAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
-        val entity = acDao.getByCpIdAndToken(cpId, UUID.fromString(token))
+        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        if (entity.owner != owner) throw ErrorException(OWNER)
+        if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
         contractProcess.awards.apply {

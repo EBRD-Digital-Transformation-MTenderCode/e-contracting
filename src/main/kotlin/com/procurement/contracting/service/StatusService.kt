@@ -11,7 +11,6 @@ import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class StatusService(private val acDao: AcDao) {
@@ -22,8 +21,9 @@ class StatusService(private val acDao: AcDao) {
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
 
-        val entity = acDao.getByCpIdAndToken(cpId, UUID.fromString(token))
+        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         if (entity.owner != owner) throw ErrorException(OWNER)
+        if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         val contract = contractProcess.contracts
         if (contract.id != ocId) throw ErrorException(CONTRACT_ID)
@@ -34,5 +34,9 @@ class StatusService(private val acDao: AcDao) {
         }
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
         return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
+    }
+
+    fun contractingCheckStatusDetails(cm: CommandMessage): ResponseDto {
+        TODO()
     }
 }

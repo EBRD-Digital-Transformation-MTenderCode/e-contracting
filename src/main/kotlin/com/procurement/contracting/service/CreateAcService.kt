@@ -22,7 +22,6 @@ class CreateAcService(private val acDao: AcDao,
 
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val prevStage = cm.context.prevStage ?: throw ErrorException(CONTEXT)
         val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
@@ -33,7 +32,7 @@ class CreateAcService(private val acDao: AcDao,
         val contractProcesses = ArrayList<ContractProcess>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
-        val canEntities = canDao.findAllByCpIdAndStage(cpId, prevStage)
+        val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateAcRs(listOf(), listOf()))
         val activeAwardsDto = getActiveAwards(dto.awards)
         for (awardDto in activeAwardsDto) {
@@ -81,7 +80,6 @@ class CreateAcService(private val acDao: AcDao,
 
             val acEntity = convertContractToEntity(
                     cpId,
-                    stage,
                     dateTime,
                     language,
                     mainProcurementCategory,
@@ -168,7 +166,6 @@ class CreateAcService(private val acDao: AcDao,
     }
 
     private fun convertContractToEntity(cpId: String,
-                                        stage: String,
                                         dateTime: LocalDateTime,
                                         language: String,
                                         mainProcurementCategory: String,
@@ -177,7 +174,7 @@ class CreateAcService(private val acDao: AcDao,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(
                 cpId = cpId,
-                stage = stage,
+                acId = contract.id,
                 token = UUID.fromString(contract.token!!),
                 owner = canEntity.owner,
                 createdDate = dateTime.toDate(),
