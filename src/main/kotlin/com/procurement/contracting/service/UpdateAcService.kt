@@ -128,13 +128,13 @@ class UpdateAcService(private val acDao: AcDao,
                     milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
-                    val party = contractProcess.awards.suppliers.asSequence()
+                    val party = contractProcess.awards.suppliers!!.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
                     milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
-                    val party = contractProcess.awards.suppliers.asSequence()
+                    val party = contractProcess.awards.suppliers!!.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
                     milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
@@ -237,19 +237,44 @@ class UpdateAcService(private val acDao: AcDao,
                 valueAddedTaxIncluded = dto.awards.value.valueAddedTaxIncluded)
     }
 
-    private fun updateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier> {
+    private fun updateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier>? {
         val suppliersDb = contractProcess.awards.suppliers
         val suppliersDto = dto.awards.suppliers
         //validation
-        val suppliersDbIds = suppliersDb.asSequence().map { it.id }.toSet()
         val suppliersDtoIds = suppliersDto.asSequence().map { it.id }.toSet()
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
-        if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
-        if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(TRANSACTIONS)
         //update
-        suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.first { it.id == supplierDb.id }) }
-        return suppliersDb
+        if (suppliersDb != null) {
+            val suppliersDbIds = suppliersDb?.asSequence()?.map { it.id }?.toSet()
+            if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
+            if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
+            suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.first { it.id == supplierDb.id }) }
+            return suppliersDb
+        } else {
+            return suppliersDto.asSequence().map { convertSupplierDtoToSupplier(it) }.toList()
+        }
     }
+
+    private fun convertSupplierDtoToSupplier(supplierDto: OrganizationReferenceSupplierUpdate): OrganizationReferenceSupplier {
+        return OrganizationReferenceSupplier(
+                id = supplierDto.id,
+                name = supplierDto.id,
+                identifier = supplierDto.identifier,
+                address = supplierDto.address,
+                contactPoint = supplierDto.contactPoint,
+                additionalIdentifiers = supplierDto.additionalIdentifiers,
+                persones = supplierDto.persones,
+                details = DetailsSupplier(
+                        typeOfSupplier = supplierDto.details.typeOfSupplier,
+                        mainEconomicActivity = supplierDto.details.mainEconomicActivity,
+                        scale = supplierDto.details.scale,
+                        permits = supplierDto.details.permits,
+                        bankAccounts = supplierDto.details.bankAccounts,
+                        legalForm = supplierDto.details.legalForm
+                )
+        )
+    }
+
 
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate) {
         this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3

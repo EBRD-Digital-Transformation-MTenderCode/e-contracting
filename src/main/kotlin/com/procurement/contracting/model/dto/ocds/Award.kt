@@ -23,9 +23,9 @@ data class Award @JsonCreator constructor(
 
         val relatedLots: List<String>,
 
-        val relatedBid: String,
+        val relatedBid: String?,
 
-        var suppliers: List<OrganizationReferenceSupplier>,
+        var suppliers: List<OrganizationReferenceSupplier>?,
 
         var items: List<Item>?,
 
