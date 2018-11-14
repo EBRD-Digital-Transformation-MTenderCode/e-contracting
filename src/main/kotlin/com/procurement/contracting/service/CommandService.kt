@@ -25,7 +25,6 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
-            CommandType.CHECK_STATUS_DETAILS -> statusService.contractingCheckStatusDetails(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

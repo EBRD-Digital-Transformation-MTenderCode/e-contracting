@@ -27,15 +27,13 @@ class CreateAcService(private val acDao: AcDao,
         val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateAcRq::class.java, cm.data)
-
         val cans = ArrayList<Can>()
         val contractProcesses = ArrayList<ContractProcess>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateAcRs(listOf(), listOf()))
-        val activeAwardsDto = getActiveAwards(dto.awards)
-        for (awardDto in activeAwardsDto) {
+        for (awardDto in dto.activeAwards) {
             val contract = Contract(
                     id = generationService.newOcId(cpId, stage),
                     token = generationService.generateRandomUUID().toString(),
@@ -93,14 +91,6 @@ class CreateAcService(private val acDao: AcDao,
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
 
-
-    private fun getActiveAwards(awards: List<AwardCreate>): List<AwardCreate> {
-        if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
-        val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
-        if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
-        return activeAwards
-    }
-
     private fun convertAwardDtoToAward(awardDto: AwardCreate): Award {
         return Award(
                 id = awardDto.id,
@@ -121,8 +111,8 @@ class CreateAcService(private val acDao: AcDao,
         )
     }
 
-    private fun getItems(items: List<ItemCreate>?): List<Item>? {
-        return items?.asSequence()?.map { convertDtoItemToItem(it) }?.toList()
+    private fun getItems(items: List<ItemCreate>): List<Item> {
+        return items.asSequence().map { convertDtoItemToItem(it) }.toList()
     }
 
     private fun convertDtoItemToItem(itemDto: ItemCreate): Item {
@@ -137,7 +127,6 @@ class CreateAcService(private val acDao: AcDao,
                 deliveryAddress = null
         )
     }
-
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
         val contract = Contract(

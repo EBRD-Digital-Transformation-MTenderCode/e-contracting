@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 data class CreateAcRq @JsonCreator constructor(
 
-        val awards: List<AwardCreate>
+        val activeAwards: List<AwardCreate>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,13 +32,14 @@ data class AwardCreate @JsonCreator constructor(
 
         val relatedBid: String,
 
-        var suppliers: List<OrganizationReferenceSupplier>,
-
-        var documents: List<DocumentAward>?,
+        var value: ValueCreate,
 
         var items: List<ItemCreate>,
 
-        var value: ValueCreate
+        var suppliers: List<OrganizationReferenceSupplier>,
+
+        var documents: List<DocumentAward>
+
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

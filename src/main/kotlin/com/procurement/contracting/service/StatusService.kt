@@ -35,8 +35,4 @@ class StatusService(private val acDao: AcDao) {
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
         return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
     }
-
-    fun contractingCheckStatusDetails(cm: CommandMessage): ResponseDto {
-        TODO()
-    }
 }
