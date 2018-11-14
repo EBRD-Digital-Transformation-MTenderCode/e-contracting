@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Lot @JsonCreator constructor(
+data class DocumentContract @JsonCreator constructor(
 
         val id: String,
 
-        val title: String,
+        var documentType: DocumentTypeContract,
 
-        val description: String,
+        var title: String?,
 
-        val status: TenderStatus?,
+        var description: String?,
 
-        val statusDetails: TenderStatusDetails?
+        var relatedLots: List<String>?
 )

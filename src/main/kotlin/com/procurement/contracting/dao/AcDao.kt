@@ -17,7 +17,7 @@ class AcDao(private val session: Session) {
         val insert =
                 insertInto(CONTRACT_TABLE)
                         .value(CP_ID, entity.cpId)
-                        .value(STAGE, entity.stage)
+                        .value(AC_ID, entity.acId)
                         .value(TOKEN, entity.token)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
@@ -36,7 +36,7 @@ class AcDao(private val session: Session) {
             operations.add(
                     insertInto(CONTRACT_TABLE)
                             .value(CP_ID, entity.cpId)
-                            .value(STAGE, entity.stage)
+                            .value(AC_ID, entity.acId)
                             .value(TOKEN, entity.token)
                             .value(OWNER, entity.owner)
                             .value(CREATED_DATE, entity.createdDate)
@@ -51,18 +51,18 @@ class AcDao(private val session: Session) {
         session.execute(batch)
     }
 
-    fun getByCpIdAndToken(cpId: String, token: UUID): AcEntity {
+    fun getByCpIdAndAcId(cpId: String, acId: String): AcEntity {
         val query = select()
                 .all()
                 .from(CONTRACT_TABLE)
                 .where(eq(CP_ID, cpId))
-                .and(eq(TOKEN, token))
+                .and(eq(AC_ID, acId))
                 .limit(1)
         val row = session.execute(query).one()
         return if (row != null)
             AcEntity(
                     cpId = row.getString(CP_ID),
-                    stage = row.getString(STAGE),
+                    acId = row.getString(AC_ID),
                     token = row.getUUID(TOKEN),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
@@ -78,11 +78,11 @@ class AcDao(private val session: Session) {
     companion object {
         private const val CONTRACT_TABLE = "contracting_ac"
         private const val CP_ID = "cp_id"
-        private const val STAGE = "stage"
+        private const val AC_ID = "ac_id"
+        private const val CAN_ID = "can_id"
         private const val TOKEN = "token_entity"
         private const val OWNER = "owner"
         private const val CREATED_DATE = "created_date"
-        private const val CAN_ID = "can_id"
         private const val STATUS = "status"
         private const val STATUS_DETAILS = "status_details"
         private const val MPC = "mpc"

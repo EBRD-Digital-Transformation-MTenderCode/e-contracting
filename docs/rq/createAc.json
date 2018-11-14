@@ -1,273 +1,108 @@
 {
   "awards": [
     {
-      "token": "156a1d58-5d2b-4d0e-b20e-2e0d76dea773",
-      "id": "915dbed3-e37c-11e8-a1c0-1554d61ef3b6",
-      "date": "2018-11-08T17:34:38Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "8c520905-e377-11e8-803e-4501c1f946db"
-      ]
-    },
-    {
-      "token": "30cbece7-a0c6-4bd3-9ed7-94250fadac0f",
-      "id": "915dbed1-e37c-11e8-a1c0-1554d61ef3b6",
-      "date": "2018-11-08T17:59:58Z",
+      "id": "",
+      "date": "",
       "description": "",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
+      "status": "",
+      "statusDetails": "",
       "value": {
-        "amount": 240.00,
-        "currency": "MDL"
+        "amount": "",
+        "currency": ""
       },
       "relatedLots": [
-        "8c520903-e377-11e8-803e-4501c1f946db"
+        ""
       ],
-      "relatedBid": "1dc9e2a0-e37c-11e8-9f62-577ee7c7d4fa",
+      "relatedBid": "",
       "suppliers": [
         {
-          "id": "MD-IDNO-12abc",
-          "name": "name of bidder8",
+          "id": "",
+          "name": "",
           "identifier": {
-            "id": "12abc",
-            "scheme": "MD-IDNO",
-            "legalName": "Legalname",
-            "uri": "233"
+            "scheme": "",
+            "id": "",
+            "legalName": "",
+            "uri": ""
           },
+          "-additionalIdentifiers": [
+            {
+              "scheme": "",
+              "id": "",
+              "legalName": "",
+              "uri": ""
+            }
+          ],
           "address": {
-            "streetAddress": "dfhg",
+            "streetAddress": "",
+            "-postalCode": "",
             "addressDetails": {
               "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
               },
               "region": {
-                "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
-                "uri": "http://statistica.md"
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "uri": ""
               },
               "locality": {
-                "scheme": "CUATM",
-                "id": "1001000",
-                "description": "or.Anenii Noi",
-                "uri": "http://statistica.md"
+                "scheme": "",
+                "id": "",
+                "description": "",
+                "-uri": ""
               }
             }
           },
           "contactPoint": {
-            "name": "vdv",
-            "email": "dvdvdv",
-            "telephone": "45621",
-            "url": "dvdv"
-          },
-          "details": {
-            "scale": "micro"
+            "name": "",
+            "email": "",
+            "telephone": "",
+            "-faxNumber": "",
+            "url": ""
           }
-        }
-      ]
-    },
-    {
-      "token": "3be293da-4d5d-43d8-b2f7-a2de3ee9254d",
-      "id": "915dbed2-e37c-11e8-a1c0-1554d61ef3b6",
-      "date": "2018-11-08T17:59:58Z",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 240.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "8c520904-e377-11e8-803e-4501c1f946db"
-      ],
-      "relatedBid": "2aea2d00-e37c-11e8-9f62-577ee7c7d4fa",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-12ab",
-          "name": "name of bidder8",
-          "identifier": {
-            "id": "12ab",
-            "scheme": "MD-IDNO",
-            "legalName": "Legalname",
-            "uri": "233"
-          },
-          "address": {
-            "streetAddress": "dfhg",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "CUATM",
-                "id": "1001000",
-                "description": "or.Anenii Noi",
-                "uri": "http://statistica.md"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "vdv",
-            "email": "dvdvdv",
-            "telephone": "45621",
-            "url": "dvdv"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "documents": [
-        {
-          "id": "e80ea673-f606-47de-ada8-a94242b9c6b7-1541640451902",
-          "documentType": "contractArrangements"
         }
       ],
       "items": [
         {
-          "id": "8c520902-e377-11e8-803e-4501c1f946db",
-          "description": "p",
+          "id": "",
           "classification": {
             "scheme": "CPV",
-            "id": "45400000-1",
-            "description": "Lucrări de finisare a construcţiilor"
+            "description": "",
+            "id": ""
           },
-          "additionalClassifications": [
+          "-additionalClassifications": [
             {
-              "scheme": "CPVS",
-              "id": "AA25-3",
-              "description": "Hafniu"
-            },
-            {
-              "scheme": "CPVS",
-              "id": "AA28-2",
-              "description": "Iridiu"
+              "scheme": "",
+              "description": "",
+              "id": ""
             }
           ],
-          "quantity": 100.00,
+          "quantity": 0,
           "unit": {
-            "id": "120",
-            "name": "Milion decalitri"
+            "id": "",
+            "name": ""
           },
-          "relatedLot": "8c520904-e377-11e8-803e-4501c1f946db"
-        }
-      ]
-    },
-    {
-      "token": "855fbb43-a058-40d3-b478-76c12107251a",
-      "id": "915dbed0-e37c-11e8-a1c0-1554d61ef3b6",
-      "date": "2018-11-08T17:59:58Z",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 240.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "8c520903-e377-11e8-803e-4501c1f946db"
-      ],
-      "relatedBid": "15df3680-e37c-11e8-9f62-577ee7c7d4fa",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-12abc456",
-          "name": "name of bidder8",
-          "identifier": {
-            "id": "12abc456",
-            "scheme": "MD-IDNO",
-            "legalName": "Legalname",
-            "uri": "233"
-          },
-          "address": {
-            "streetAddress": "dfhg",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "CUATM",
-                "id": "1001000",
-                "description": "or.Anenii Noi",
-                "uri": "http://statistica.md"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "vdv",
-            "email": "dvdvdv",
-            "telephone": "45621",
-            "url": "dvdv"
-          },
-          "details": {
-            "scale": "micro"
-          }
+          "-description": "",
+          "relatedLot": ""
         }
       ],
       "documents": [
         {
-          "id": "e80ea673-f606-47de-ada8-a94242b9c6b7-1541640451902",
-          "documentType": "contractArrangements"
-        }
-      ],
-      "items": [
-        {
-          "id": "8c520900-e377-11e8-803e-4501c1f946db",
-          "description": "p",
-          "classification": {
-            "scheme": "CPV",
-            "id": "45400000-1",
-            "description": "Lucrări de finisare a construcţiilor"
-          },
-          "additionalClassifications": [
-            {
-              "scheme": "CPVS",
-              "id": "AA25-3",
-              "description": "Hafniu"
-            },
-            {
-              "scheme": "CPVS",
-              "id": "AA28-2",
-              "description": "Iridiu"
-            }
-          ],
-          "quantity": 100.00,
-          "unit": {
-            "id": "120",
-            "name": "Milion decalitri"
-          },
-          "relatedLot": "8c520903-e377-11e8-803e-4501c1f946db"
+          "documentType": "",
+          "id": "",
+          "title": "",
+          "description": "",
+          "relatedLots": [
+            ""
+          ]
         }
       ]
     }
   ],
-  "awardPeriod": {
-    "startDate": "2018-11-08T17:34:38Z",
-    "endDate": "2018-11-08T17:59:58Z"
-  },
-  "unsuccessfulLots": [
-    {
-      "id": "8c520905-e377-11e8-803e-4501c1f946db"
-    }
-  ]
+  "tender": {
+    "mainProcurementCategory": ""
+  }
 }

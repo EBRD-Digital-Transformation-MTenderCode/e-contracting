@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class OrganizationReference @JsonCreator constructor(
+data class OrganizationReferenceSupplier @JsonCreator constructor(
 
-        var id: String?,
+        var id: String,
 
         val name: String,
 
@@ -14,7 +14,12 @@ data class OrganizationReference @JsonCreator constructor(
 
         val address: Address,
 
-        val additionalIdentifiers: HashSet<Identifier>?,
+        val contactPoint: ContactPoint,
 
-        val contactPoint: ContactPoint?
+        var additionalIdentifiers: HashSet<Identifier>?,
+
+        var persones: HashSet<Person>?,
+
+        var details: DetailsSupplier?
 )
+

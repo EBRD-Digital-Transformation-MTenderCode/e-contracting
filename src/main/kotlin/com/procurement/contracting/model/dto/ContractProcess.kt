@@ -2,19 +2,24 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.model.dto.ocds.Award
-import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.OrganizationReference
-import com.procurement.contracting.model.dto.ocds.Planning
+import com.procurement.contracting.model.dto.ocds.*
+import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
 
-        val planning: Planning?,
+        val awards: Award,
 
         val contracts: Contract,
 
-        val awards: Award,
+        var planning: Planning?,
 
-        val buyer: OrganizationReference?
+        var buyer: OrganizationReferenceBuyer?,
+
+        var funders: HashSet<OrganizationReference>?,
+
+        var payers: HashSet<OrganizationReference>?,
+
+        var treasuryBudgetSources: List<TreasuryBudgetSource>?
+
 )

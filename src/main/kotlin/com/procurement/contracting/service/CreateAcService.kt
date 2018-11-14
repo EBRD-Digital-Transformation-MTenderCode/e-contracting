@@ -3,11 +3,9 @@ package com.procurement.contracting.service
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.ContractProcess
-import com.procurement.contracting.model.dto.CreateAcRq
-import com.procurement.contracting.model.dto.CreateAcRs
-import com.procurement.contracting.model.dto.GetActualBsRs
+import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
@@ -25,8 +23,6 @@ class CreateAcService(private val acDao: AcDao,
 
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val prevStage = cm.context.prevStage ?: throw ErrorException(CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
@@ -36,16 +32,14 @@ class CreateAcService(private val acDao: AcDao,
         val contractProcesses = ArrayList<ContractProcess>()
         val contracts = ArrayList<Contract>()
         val acEntities = ArrayList<AcEntity>()
-        val canEntities = canDao.findAllByCpIdAndStage(cpId, prevStage)
+        val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.isEmpty()) return ResponseDto(data = CreateAcRs(listOf(), listOf()))
-        val activeAwards = getActiveAwards(dto.awards)
-        for (award in activeAwards) {
-
+        for (awardDto in dto.activeAwards) {
             val contract = Contract(
-                    id = generationService.newOcId(cpId, stage),
+                    id = generationService.newOcId(cpId),
                     token = generationService.generateRandomUUID().toString(),
                     date = dateTime,
-                    awardId = award.id,
+                    awardId = awardDto.id,
                     status = ContractStatus.PENDING,
                     statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
                     title = null,
@@ -59,13 +53,23 @@ class CreateAcService(private val acDao: AcDao,
                     amendments = null,
                     relatedProcesses = null,
                     classification = null,
-                    documents = null)
-
+                    documents = null,
+                    agreedMetrics = null,
+                    confirmationRequests = null,
+                    milestones = null)
             contracts.add(contract)
-            val contractProcess = ContractProcess(planning = null, contracts = contract, awards = award, buyer = null)
+
+            val contractProcess = ContractProcess(
+                    planning = null,
+                    contracts = contract,
+                    awards = convertAwardDtoToAward(awardDto),
+                    buyer = null,
+                    funders = null,
+                    payers = null,
+                    treasuryBudgetSources = null)
             contractProcesses.add(contractProcess)
 
-            val canEntity = canEntities.asSequence().filter { it.awardId == award.id }.firstOrNull()
+            val canEntity = canEntities.asSequence().filter { it.awardId == awardDto.id }.firstOrNull()
                     ?: throw ErrorException(CANS_NOT_FOUND)
             canEntity.status = ContractStatus.ACTIVE.value
             canEntity.statusDetails = ContractStatusDetails.EMPTY.value
@@ -75,14 +79,12 @@ class CreateAcService(private val acDao: AcDao,
 
             val acEntity = convertContractToEntity(
                     cpId,
-                    stage,
                     dateTime,
                     language,
                     mainProcurementCategory,
                     contract,
                     contractProcess,
                     canEntity)
-
             acEntities.add(acEntity)
         }
         canDao.saveAll(canEntities)
@@ -90,38 +92,70 @@ class CreateAcService(private val acDao: AcDao,
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
 
-    private fun getActiveAwards(awards: List<Award>): List<Award> {
-        if (awards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
-        val activeAwards = awards.asSequence().filter { it.status == AwardStatus.ACTIVE }.toList()
-        if (activeAwards.isEmpty()) throw ErrorException(NO_ACTIVE_AWARDS)
-        return activeAwards
+    private fun convertAwardDtoToAward(awardDto: AwardCreate): Award {
+        return Award(
+                id = awardDto.id,
+                status = awardDto.status,
+                statusDetails = awardDto.statusDetails,
+                date = awardDto.date,
+                description = awardDto.description,
+                relatedBid = awardDto.relatedBid,
+                relatedLots = awardDto.relatedLots,
+                value = ValueTax(
+                        amount = awardDto.value.amount,
+                        currency = awardDto.value.currency,
+                        amountNet = null,
+                        valueAddedTaxIncluded = null),
+                items = getItems(awardDto.items),
+                documents = awardDto.documents,
+                suppliers = awardDto.suppliers
+        )
+    }
+
+    private fun getItems(items: List<ItemCreate>): List<Item> {
+        return items.asSequence().map { convertDtoItemToItem(it) }.toList()
+    }
+
+    private fun convertDtoItemToItem(itemDto: ItemCreate): Item {
+        return Item(
+                id = itemDto.id,
+                description = itemDto.description,
+                classification = itemDto.classification,
+                additionalClassifications = itemDto.additionalClassifications,
+                quantity = itemDto.quantity,
+                unit = itemDto.unit,
+                relatedLot = itemDto.relatedLot,
+                deliveryAddress = null
+        )
     }
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
-        val contract = Contract(
-                token = null,
+        return Can(contract = Contract(
                 id = entity.canId.toString(),
+                token = null,
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
                 statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null,
+                title = null,
                 description = null,
                 value = null,
-                title = null,
                 items = null,
-                classification = null,
-                relatedProcesses = null,
-                amendments = null,
-                budgetSource = null,
-                dateSigned = null,
+                period = null,
                 extendsContractID = null,
-                period = null)
-        return Can(contract)
+                dateSigned = null,
+                budgetSource = null,
+                amendments = null,
+                relatedProcesses = null,
+                classification = null,
+                documents = null,
+                agreedMetrics = null,
+                confirmationRequests = null,
+                milestones = null)
+        )
     }
 
     private fun convertContractToEntity(cpId: String,
-                                        stage: String,
                                         dateTime: LocalDateTime,
                                         language: String,
                                         mainProcurementCategory: String,
@@ -130,7 +164,7 @@ class CreateAcService(private val acDao: AcDao,
                                         canEntity: CanEntity): AcEntity {
         return AcEntity(
                 cpId = cpId,
-                stage = stage,
+                acId = contract.id,
                 token = UUID.fromString(contract.token!!),
                 owner = canEntity.owner,
                 createdDate = dateTime.toDate(),

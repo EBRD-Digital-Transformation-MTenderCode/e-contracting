@@ -9,25 +9,25 @@ data class Award @JsonCreator constructor(
 
         val id: String,
 
-        var date: LocalDateTime?,
+        var date: LocalDateTime,
 
         var description: String?,
 
-        var title: String?,
+        var title: String? = null,
 
         var status: AwardStatus,
 
-        var statusDetails: AwardStatus,
-
-        var value: Value?,
+        var statusDetails: AwardStatusDetails,
 
         val relatedLots: List<String>,
 
-        val relatedBid: String?,
+        val relatedBid: String,
 
-        var suppliers: List<OrganizationReference>?,
+        var value: ValueTax,
 
-        var documents: List<Document>?,
+        var items: List<Item>,
 
-        var items: List<Item>?
+        var documents: List<DocumentAward>?,
+
+        var suppliers: List<OrganizationReferenceSupplier>
 )

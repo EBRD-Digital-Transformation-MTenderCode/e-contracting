@@ -6,7 +6,7 @@ data class AcEntity(
 
         val cpId: String,
 
-        val stage: String,
+        var acId: String,
 
         val token: UUID,
 
@@ -24,5 +24,5 @@ data class AcEntity(
 
         val language: String,
 
-        val jsonData: String
+        var jsonData: String
 )

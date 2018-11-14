@@ -6,8 +6,6 @@ data class CanEntity(
 
         val cpId: String,
 
-        val stage: String,
-
         val canId: UUID,
 
         val owner: String,
