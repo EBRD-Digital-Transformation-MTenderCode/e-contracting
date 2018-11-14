@@ -19,15 +19,15 @@ data class Award @JsonCreator constructor(
 
         var statusDetails: AwardStatusDetails,
 
-        var value: ValueTax,
-
         val relatedLots: List<String>,
 
         val relatedBid: String,
 
-        var suppliers: List<OrganizationReferenceSupplier>,
+        var value: ValueTax,
 
         var items: List<Item>,
 
-        var documents: List<DocumentAward>?
+        var documents: List<DocumentAward>,
+
+        var suppliers: List<OrganizationReferenceSupplier>
 )

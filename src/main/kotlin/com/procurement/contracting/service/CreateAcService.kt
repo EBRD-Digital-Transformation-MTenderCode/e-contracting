@@ -3,7 +3,8 @@ package com.procurement.contracting.service
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
+import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
@@ -98,16 +99,16 @@ class CreateAcService(private val acDao: AcDao,
                 statusDetails = awardDto.statusDetails,
                 date = awardDto.date,
                 description = awardDto.description,
+                relatedBid = awardDto.relatedBid,
+                relatedLots = awardDto.relatedLots,
                 value = ValueTax(
                         amount = awardDto.value.amount,
                         currency = awardDto.value.currency,
                         amountNet = null,
                         valueAddedTaxIncluded = null),
+                items = getItems(awardDto.items),
                 documents = awardDto.documents,
-                suppliers = awardDto.suppliers,
-                relatedBid = awardDto.relatedBid,
-                relatedLots = awardDto.relatedLots,
-                items = getItems(awardDto.items)
+                suppliers = awardDto.suppliers
         )
     }
 
@@ -129,7 +130,7 @@ class CreateAcService(private val acDao: AcDao,
     }
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
-        val contract = Contract(
+        return Can(contract = Contract(
                 id = entity.canId.toString(),
                 token = null,
                 date = entity.createdDate.toLocal(),
@@ -151,7 +152,7 @@ class CreateAcService(private val acDao: AcDao,
                 agreedMetrics = null,
                 confirmationRequests = null,
                 milestones = null)
-        return Can(contract)
+        )
     }
 
     private fun convertContractToEntity(cpId: String,

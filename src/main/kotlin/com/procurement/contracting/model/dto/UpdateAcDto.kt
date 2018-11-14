@@ -166,11 +166,11 @@ data class AwardUpdate @JsonCreator constructor(
 
         var value: ValueUpdate,
 
-        var suppliers: List<OrganizationReferenceSupplierUpdate>,
-
         var items: List<ItemUpdate>,
 
-        var documents: List<DocumentAward>?
+        var documents: List<DocumentAward>?,
+
+        var suppliers: List<OrganizationReferenceSupplierUpdate>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
