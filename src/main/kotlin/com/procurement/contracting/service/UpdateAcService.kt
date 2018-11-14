@@ -325,11 +325,11 @@ class UpdateAcService(private val acDao: AcDao,
         val documentsDto = dto.awards.documents
         if (documentsDto != null) {
             //validation
-            val documentsDbIds = documentsDb?.asSequence()?.map { it.id }?.toSet() ?: listOf<String>()
             val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
             if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
             //update
             return if (documentsDb != null) {
+                val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
                 documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
                 val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
