@@ -30,15 +30,15 @@ data class AwardCreate @JsonCreator constructor(
 
         val relatedLots: List<String>,
 
-        val relatedBid: String?,
+        val relatedBid: String,
 
-        var suppliers: List<OrganizationReferenceSupplier>?,
+        var suppliers: List<OrganizationReferenceSupplier>,
 
         var documents: List<DocumentAward>?,
 
-        var items: List<ItemCreate>?,
+        var items: List<ItemCreate>,
 
-        var value: ValueCreate?
+        var value: ValueCreate
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

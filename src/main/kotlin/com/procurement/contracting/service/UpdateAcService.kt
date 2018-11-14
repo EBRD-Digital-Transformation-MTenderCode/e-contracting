@@ -7,7 +7,6 @@ import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.dto.ocds.Unit
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -128,13 +127,13 @@ class UpdateAcService(private val acDao: AcDao,
                     milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
-                    val party = contractProcess.awards.suppliers!!.asSequence()
+                    val party = contractProcess.awards.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
                     milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
-                    val party = contractProcess.awards.suppliers!!.asSequence()
+                    val party = contractProcess.awards.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = party
                     milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
@@ -237,44 +236,19 @@ class UpdateAcService(private val acDao: AcDao,
                 valueAddedTaxIncluded = dto.awards.value.valueAddedTaxIncluded)
     }
 
-    private fun updateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier>? {
+    private fun updateAwardSuppliers(dto: UpdateAcRq, contractProcess: ContractProcess): List<OrganizationReferenceSupplier> {
         val suppliersDb = contractProcess.awards.suppliers
         val suppliersDto = dto.awards.suppliers
         //validation
+        val suppliersDbIds = suppliersDb.asSequence().map { it.id }.toSet()
         val suppliersDtoIds = suppliersDto.asSequence().map { it.id }.toSet()
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
+        if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
+        if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(TRANSACTIONS)
         //update
-        if (suppliersDb != null) {
-            val suppliersDbIds = suppliersDb?.asSequence()?.map { it.id }?.toSet()
-            if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
-            if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
-            suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.first { it.id == supplierDb.id }) }
-            return suppliersDb
-        } else {
-            return suppliersDto.asSequence().map { convertSupplierDtoToSupplier(it) }.toList()
-        }
+        suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.first { it.id == supplierDb.id }) }
+        return suppliersDb
     }
-
-    private fun convertSupplierDtoToSupplier(supplierDto: OrganizationReferenceSupplierUpdate): OrganizationReferenceSupplier {
-        return OrganizationReferenceSupplier(
-                id = supplierDto.id,
-                name = supplierDto.id,
-                identifier = supplierDto.identifier,
-                address = supplierDto.address,
-                contactPoint = supplierDto.contactPoint,
-                additionalIdentifiers = supplierDto.additionalIdentifiers,
-                persones = supplierDto.persones,
-                details = DetailsSupplier(
-                        typeOfSupplier = supplierDto.details.typeOfSupplier,
-                        mainEconomicActivity = supplierDto.details.mainEconomicActivity,
-                        scale = supplierDto.details.scale,
-                        permits = supplierDto.details.permits,
-                        bankAccounts = supplierDto.details.bankAccounts,
-                        legalForm = supplierDto.details.legalForm
-                )
-        )
-    }
-
 
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate) {
         this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
@@ -376,9 +350,6 @@ class UpdateAcService(private val acDao: AcDao,
     private fun updateAwardItems(dto: UpdateAcRq, contractProcess: ContractProcess): List<Item> {
         val itemsDb = contractProcess.awards.items
         val itemsDto = dto.awards.items
-        if (itemsDb == null || itemsDb.isEmpty()) {
-            return itemsDto.asSequence().map { convertItemDtoToItem(it) }.toList()
-        }
         //validation
         val itemDbIds = itemsDb.asSequence().map { it.id }.toSet()
         val itemDtoIds = itemsDto.asSequence().map { it.id }.toSet()
@@ -393,26 +364,6 @@ class UpdateAcService(private val acDao: AcDao,
         //update
         itemsDb.forEach { itemDb -> itemDb.update(itemsDto.first { it.id == itemDb.id }) }
         return itemsDb
-    }
-
-    private fun convertItemDtoToItem(itemDto: ItemUpdate): Item {
-        return Item(
-                id = itemDto.id,
-                description = itemDto.description,
-                deliveryAddress = itemDto.deliveryAddress,
-                additionalClassifications = itemDto.additionalClassifications,
-                classification = itemDto.classification,
-                quantity = itemDto.quantity,
-                unit = Unit(id = itemDto.unit.id,
-                        name = itemDto.unit.name,
-                        value = ValueTax(
-                                amount = itemDto.unit.value.amount,
-                                currency = itemDto.unit.value.currency,
-                                amountNet = itemDto.unit.value.amountNet,
-                                valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
-                ),
-                relatedLot = itemDto.relatedLot
-        )
     }
 
     private fun Item.update(itemDto: ItemUpdate) {
