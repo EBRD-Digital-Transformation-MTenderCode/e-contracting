@@ -24,7 +24,7 @@ class GenerationService {
         return generateTimeBasedUUID().toString()
     }
 
-    fun newOcId(cpId: String, stage: String): String {
-        return cpId + "-" + stage.toUpperCase() + "-" + (milliNowUTC() + Random().nextInt())
+    fun newOcId(cpId: String): String {
+        return cpId + "-AC-" + (milliNowUTC() + Random().nextInt())
     }
 }

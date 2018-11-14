@@ -23,11 +23,11 @@ class CreateAcService(private val acDao: AcDao,
 
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val stage = cm.context.stage ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateAcRq::class.java, cm.data)
+
         val cans = ArrayList<Can>()
         val contractProcesses = ArrayList<ContractProcess>()
         val contracts = ArrayList<Contract>()
@@ -36,7 +36,7 @@ class CreateAcService(private val acDao: AcDao,
         if (canEntities.isEmpty()) return ResponseDto(data = CreateAcRs(listOf(), listOf()))
         for (awardDto in dto.activeAwards) {
             val contract = Contract(
-                    id = generationService.newOcId(cpId, stage),
+                    id = generationService.newOcId(cpId),
                     token = generationService.generateRandomUUID().toString(),
                     date = dateTime,
                     awardId = awardDto.id,
