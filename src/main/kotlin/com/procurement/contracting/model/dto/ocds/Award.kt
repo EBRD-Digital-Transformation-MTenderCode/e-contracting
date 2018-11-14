@@ -11,7 +11,7 @@ data class Award @JsonCreator constructor(
 
         var date: LocalDateTime,
 
-        var description: String,
+        var description: String?,
 
         var title: String? = null,
 
@@ -27,7 +27,7 @@ data class Award @JsonCreator constructor(
 
         var items: List<Item>,
 
-        var documents: List<DocumentAward>,
+        var documents: List<DocumentAward>?,
 
         var suppliers: List<OrganizationReferenceSupplier>
 )

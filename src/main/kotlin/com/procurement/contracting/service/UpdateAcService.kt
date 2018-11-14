@@ -320,22 +320,28 @@ class UpdateAcService(private val acDao: AcDao,
         this.description = documentDto.description
     }
 
-    private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward> {
+    private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward>? {
         val documentsDb = contractProcess.awards.documents
         val documentsDto = dto.awards.documents
-        return if (documentsDto != null) {
+        if (documentsDto != null) {
             //validation
-            val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+            val documentsDbIds = documentsDb?.asSequence()?.map { it.id }?.toSet() ?: listOf<String>()
             val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
             if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
             //update
-            documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
-            val newDocumentsId = documentDtoIds - documentsDbIds
-            val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
-            (documentsDb + newDocuments)
-        } else
-            documentsDb
+            return if (documentsDb != null) {
+                documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+                val newDocumentsId = documentDtoIds - documentsDbIds
+                val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+                (documentsDb + newDocuments)
+            } else {
+                documentsDto
+            }
+        } else {
+            return documentsDb
+        }
     }
+
 
     private fun DocumentAward.update(documentDto: DocumentAward) {
         this.title = documentDto.title
