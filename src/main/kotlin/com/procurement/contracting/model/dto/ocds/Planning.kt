@@ -55,6 +55,9 @@ data class BudgetAllocation @JsonCreator constructor(
 
         var budgetBreakdownID: String,
 
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amount: BigDecimal,
+
         val period: Period,
 
         val relatedItem: String

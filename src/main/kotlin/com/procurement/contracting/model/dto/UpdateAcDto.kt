@@ -28,6 +28,20 @@ data class UpdateAcRq @JsonCreator constructor(
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+data class AwardUpdate @JsonCreator constructor(
+
+        val id: String,
+
+        var value: ValueUpdate,
+
+        var items: List<ItemUpdate>,
+
+        var documents: List<DocumentAward>?,
+
+        var suppliers: List<OrganizationReferenceSupplierUpdate>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractUpdate @JsonCreator constructor(
 
         val title: String,
@@ -43,6 +57,27 @@ data class ContractUpdate @JsonCreator constructor(
         val confirmationRequests: List<ConfirmationRequest>,
 
         val agreedMetrics: LinkedList<AgreedMetric>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ItemUpdate @JsonCreator constructor(
+
+        val id: String,
+
+        val description: String?,
+
+        val classification: Classification,
+
+        val additionalClassifications: Set<Classification>?,
+
+        @JsonDeserialize(using = QuantityDeserializer::class)
+        val quantity: BigDecimal,
+
+        val unit: UnitUpdate,
+
+        val relatedLot: String,
+
+        val deliveryAddress: Address
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -157,41 +192,6 @@ data class ObservationUnit @JsonCreator constructor(
         val name: String,
 
         val scheme: String
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class AwardUpdate @JsonCreator constructor(
-
-        val id: String,
-
-        var value: ValueUpdate,
-
-        var items: List<ItemUpdate>,
-
-        var documents: List<DocumentAward>?,
-
-        var suppliers: List<OrganizationReferenceSupplierUpdate>
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class ItemUpdate @JsonCreator constructor(
-
-        val id: String,
-
-        val description: String?,
-
-        val classification: Classification,
-
-        val additionalClassifications: Set<Classification>?,
-
-        @JsonDeserialize(using = QuantityDeserializer::class)
-        val quantity: BigDecimal,
-
-        val unit: UnitUpdate,
-
-        val relatedLot: String,
-
-        val deliveryAddress: Address
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
