@@ -1,400 +1,86 @@
 {
-  "id": "aad4da00-e756-11e8-96bc-5f3d4bb0f61a",
-  "command": "createAC",
-  "context": {
-    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9628",
-    "requestId": "aad4da00-e756-11e8-96bc-5f3d4bb0f61a",
-    "cpid": "ocds-t1s2t3-MD-1542121271549",
-    "ocid": "ocds-t1s2t3-MD-1542121271549-EV-1542121271654",
-    "stage": "AC",
-    "prevStage": "EV",
-    "processType": "awardPeriodEnd",
-    "operationType": "awardPeriodEndEv",
-    "phase": "contractProject",
-    "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
-    "country": "MD",
-    "language": "ro",
-    "pmd": "TEST_OT",
-    "token": "11804b25-98f8-4749-a8a8-bba91eed4ce6",
-    "outcomes": [
-      {
-        "id": "09851ba6-bf16-4f95-bcdc-8c466c872c49",
-        "type": "contracts"
-      }
-    ],
-    "startDate": "2018-11-13T15:13:25Z",
-    "endDate": "2018-11-13T15:13:30Z",
-    "timeStamp": 1542122005239,
-    "isAuction": false,
-    "mainProcurementCategory": "goods"
-  },
-  "data": {
-    "awards": [
-      {
-        "token": "62a00fcc-ddf0-4df5-ac86-d6b611b268f4",
-        "id": "7dd9eaf3-e755-11e8-a259-b72781a0d355",
-        "date": "2018-11-13T15:05:00Z",
-        "description": "Other reasons (discontinuation of procedure)",
-        "title": "The contract/lot is not awarded",
-        "status": "unsuccessful",
-        "statusDetails": "empty",
-        "relatedLots": [
-          "f56adad5-e754-11e8-9363-3fbb2bac86b6"
-        ]
+  "awards": [
+    {
+      "id": "776970a2-e9a3-11e8-a690-2d2d3c4cd5dc",
+      "date": "2018-11-16T13:28:22Z",
+      "description": "Issue buy certainly attention senior popular particular apply during box employee question while economy white physical peace measure.",
+      "status": "active",
+      "statusDetails": "empty",
+      "relatedLots": [
+        "bdf3b7c5-e9a2-11e8-9363-3fbb2bac86b6"
+      ],
+      "relatedBid": "e992b5c0-e9a2-11e8-a0b8-516ba9c66e7e",
+      "value": {
+        "amount": 2330010356.20,
+        "currency": "MDL"
       },
-      {
-        "token": "89bd1b24-604c-4a97-981e-e9aaec9162fd",
-        "id": "7dd9eaf1-e755-11e8-a259-b72781a0d355",
-        "date": "2018-11-13T15:13:30Z",
-        "description": "",
-        "status": "unsuccessful",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 12345678912345678912345678900.00,
-          "currency": "MDL"
-        },
-        "relatedLots": [
-          "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-        ],
-        "relatedBid": "3d4a0e20-e755-11e8-a910-d513a213c6d8",
-        "suppliers": [
-          {
-            "id": "MD-IDNO-1-2255555",
-            "name": "Googleh555fhfgh55g12",
-            "identifier": {
-              "id": "1-2255555",
-              "scheme": "MD-IDNO",
-              "legalName": "Google Big Brother",
-              "uri": null
-            },
-            "address": {
-              "streetAddress": "",
-              "postalCode": "",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
-              }
-            },
-            "contactPoint": {
-              "name": "111",
-              "email": "222",
-              "telephone": "333",
-              "url": "444"
-            },
-            "details": {
-              "scale": "sme"
+      "items": [
+        {
+          "id": "bdf3b7c2-e9a2-11e8-9363-3fbb2bac86b6",
+          "description": "Claim let energy common tough since important study animal rule guy for change news success available degree indicate doctor husband even.",
+          "classification": {
+            "id": "15400000-2",
+            "scheme": "CPV",
+            "description": "Uleiuri şi grăsimi animale sau vegetale"
+          },
+          "additionalClassifications": [
+            {
+              "id": "LA48-4",
+              "scheme": "CPVS",
+              "description": "Pentru tratament urologic"
             }
-          }
-        ]
-      },
-      {
-        "token": "ad488edb-bdab-4e04-a5f3-56e0851c46d9",
-        "id": "7dd9eaf0-e755-11e8-a259-b72781a0d355",
-        "date": "2018-11-13T15:13:30Z",
-        "description": "Good2",
-        "status": "active",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 12345678912345678912345678900.00,
-          "currency": "MDL"
+          ],
+          "quantity": 3539973916520.00,
+          "unit": {
+            "id": "166",
+            "name": "Kilogram"
+          },
+          "relatedLot": "bdf3b7c5-e9a2-11e8-9363-3fbb2bac86b6"
         },
-        "relatedLots": [
-          "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-        ],
-        "relatedBid": "4456b650-e755-11e8-a910-d513a213c6d8",
-        "suppliers": [
-          {
-            "id": "MD-IDNO-1-55",
-            "name": "Googleh555fhfgh55g12",
-            "identifier": {
-              "id": "1-55",
-              "scheme": "MD-IDNO",
-              "legalName": "Google Big Brother",
-              "uri": null
-            },
-            "address": {
-              "streetAddress": "",
-              "postalCode": "",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
-              }
-            },
-            "contactPoint": {
-              "name": "111",
-              "email": "222",
-              "telephone": "333",
-              "url": "444"
-            },
-            "details": {
-              "scale": "sme"
+        {
+          "id": "bdf3b7c3-e9a2-11e8-9363-3fbb2bac86b6",
+          "description": "Institution during enough line scene player own financial successful defense pay friend see approach use always me loss break think career better tell society.",
+          "classification": {
+            "id": "15411200-4",
+            "scheme": "CPV",
+            "description": "Ulei pentru gătit"
+          },
+          "additionalClassifications": [
+            {
+              "id": "ME01-8",
+              "scheme": "CPVS",
+              "description": "De mărfuri uscate în vrac"
             }
-          }
-        ],
-        "documents": [
-          {
-            "id": "60c3705e-49f0-431c-b92b-c7776aa2ac77-1542027227102",
-            "documentType": "awardNotice",
-            "description": "TEST"
-          }
-        ],
-        "items": [
-          {
-            "id": "f56adad0-e754-11e8-9363-3fbb2bac86b6",
-            "description": "666-2",
-            "classification": {
-              "scheme": "CPV",
-              "id": "30199220-8",
-              "description": "Cărţi poştale neilustrate"
-            },
-            "additionalClassifications": [
-              {
-                "scheme": "CPVS",
-                "id": "AB06-7",
-                "description": "Plastic"
-              }
-            ],
-            "quantity": 3.00,
-            "unit": {
-              "id": "8",
-              "name": "Kilometru; mie metri"
-            },
-            "relatedLot": "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-          }
-        ]
-      },
-      {
-        "token": "f38a638b-12e5-4ef9-9d24-e423bb07b338",
-        "id": "7dd9eaf2-e755-11e8-a259-b72781a0d355",
-        "date": "2018-11-13T15:05:00Z",
-        "description": "Other reasons (discontinuation of procedure)",
-        "title": "The contract/lot is not awarded",
-        "status": "unsuccessful",
-        "statusDetails": "empty",
-        "relatedLots": [
-          "f56adad3-e754-11e8-9363-3fbb2bac86b6"
-        ]
-      }
-    ],
-    "awardPeriod": {
-      "startDate": "2018-11-13T15:05:00Z",
-      "endDate": "2018-11-13T15:13:30Z"
-    },
-    "unsuccessfulLots": [
-      {
-        "id": "f56adad3-e754-11e8-9363-3fbb2bac86b6"
-      },
-      {
-        "id": "f56adad5-e754-11e8-9363-3fbb2bac86b6"
-      }
-    ],
-    "bids": [
-      {
-        "id": "3d4a0e20-e755-11e8-a910-d513a213c6d8",
-        "date": "2018-11-13T15:05:00Z",
-        "status": "pending",
-        "statusDetails": "empty",
-        "tenderers": [
-          {
-            "id": "MD-IDNO-1-2255555",
-            "name": "Googleh555fhfgh55g12",
-            "identifier": {
-              "id": "1-2255555",
-              "scheme": "MD-IDNO",
-              "legalName": "Google Big Brother"
-            },
-            "address": {
-              "streetAddress": "",
-              "postalCode": "",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
-              }
-            },
-            "contactPoint": {
-              "name": "111",
-              "email": "222",
-              "telephone": "333",
-              "url": "444"
-            },
-            "details": {
-              "scale": "sme"
-            }
-          }
-        ],
-        "value": {
-          "amount": 12345678912345678912345678900.00,
-          "currency": "MDL"
-        },
-        "documents": [
-          {
-            "id": "60c3705e-49f0-431c-b92b-c7776aa2ac77-1542027227102",
-            "documentType": "submissionDocuments",
-            "title": "doc1",
-            "relatedLots": [
-              "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-            ]
-          }
-        ],
-        "relatedLots": [
-          "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-        ]
-      },
-      {
-        "id": "4456b650-e755-11e8-a910-d513a213c6d8",
-        "date": "2018-11-13T15:13:25Z",
-        "status": "valid",
-        "statusDetails": "empty",
-        "tenderers": [
-          {
-            "id": "MD-IDNO-1-55",
-            "name": "Googleh555fhfgh55g12",
-            "identifier": {
-              "id": "1-55",
-              "scheme": "MD-IDNO",
-              "legalName": "Google Big Brother"
-            },
-            "address": {
-              "streetAddress": "",
-              "postalCode": "",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "MOLDOVA",
-                  "uri": "http://reference.iatistandard.org"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "1000000",
-                  "description": "Anenii Noi",
-                  "uri": "http://statistica.md"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "1001000",
-                  "description": "or.Anenii Noi",
-                  "uri": "http://statistica.md"
-                }
-              }
-            },
-            "contactPoint": {
-              "name": "111",
-              "email": "222",
-              "telephone": "333",
-              "url": "444"
-            },
-            "details": {
-              "scale": "sme"
-            }
-          }
-        ],
-        "value": {
-          "amount": 12345678912345678912345678900.00,
-          "currency": "MDL"
-        },
-        "documents": [
-          {
-            "id": "60c3705e-49f0-431c-b92b-c7776aa2ac77-1542027227102",
-            "documentType": "submissionDocuments",
-            "title": "doc1",
-            "relatedLots": [
-              "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-            ]
-          }
-        ],
-        "relatedLots": [
-          "f56adad4-e754-11e8-9363-3fbb2bac86b6"
-        ]
-      }
-    ],
-    "lots": [
-      {
-        "id": "f56adad3-e754-11e8-9363-3fbb2bac86b6",
-        "title": "lot2",
-        "description": "looot",
-        "status": "unsuccessful",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 400.00,
-          "currency": "MDL"
-        },
-        "options": [
-          {
-            "hasOptions": false
-          }
-        ],
-        "recurrentProcurement": [
-          {
-            "isRecurrent": false
-          }
-        ],
-        "renewals": [
-          {
-            "hasRenewals": false
-          }
-        ],
-        "variants": [
-          {
-            "hasVariants": false
-          }
-        ],
-        "contractPeriod": {
-          "startDate": "2019-12-25T14:45:00Z",
-          "endDate": "2020-12-25T14:50:00Z"
-        },
-        "placeOfPerformance": {
+          ],
+          "quantity": 18496549394943.00,
+          "unit": {
+            "id": "166",
+            "name": "Kilogram"
+          },
+          "relatedLot": "bdf3b7c5-e9a2-11e8-9363-3fbb2bac86b6"
+        }
+      ],
+      "documents": [
+        {
+          "id": "1237b1f2-52df-4768-818e-026723b026a5-1542374893824",
+          "documentType": "cancellationDetails",
+          "title": "Few watch sound thousand affect book.",
+          "description": "Able religious society seven table remain arm modern apply nature state significant during staff positive image above move second order there paper growth candidate painting five defense staff."
+        }
+      ],
+      "suppliers": [
+        {
+          "id": "MD-IDNO-321-98-8102",
+          "name": "Jones-Dixon",
+          "identifier": {
+            "id": "321-98-8102",
+            "scheme": "MD-IDNO",
+            "legalName": "Jones-Dixon and Sons",
+            "uri": "https://www.bean-hernandez.com/home/"
+          },
           "address": {
-            "streetAddress": "6666",
-            "postalCode": "666",
+            "streetAddress": "4050 Kaitlyn Square Apt. 275",
+            "postalCode": "37213",
             "addressDetails": {
               "country": {
                 "scheme": "iso-alpha2",
@@ -404,142 +90,48 @@
               },
               "region": {
                 "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
+                "id": "9600000",
+                "description": "UTA Găgăuzia",
                 "uri": "http://statistica.md"
               },
               "locality": {
-                "scheme": "666",
-                "id": "666",
-                "description": "666"
-              }
-            }
-          }
-        }
-      },
-      {
-        "id": "f56adad4-e754-11e8-9363-3fbb2bac86b6",
-        "title": "lot3",
-        "description": "looot",
-        "status": "complete",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 300.00,
-          "currency": "MDL"
-        },
-        "options": [
-          {
-            "hasOptions": false
-          }
-        ],
-        "recurrentProcurement": [
-          {
-            "isRecurrent": false
-          }
-        ],
-        "renewals": [
-          {
-            "hasRenewals": false
-          }
-        ],
-        "variants": [
-          {
-            "hasVariants": false
-          }
-        ],
-        "contractPeriod": {
-          "startDate": "2019-12-25T15:45:00Z",
-          "endDate": "2020-12-25T15:45:00Z"
-        },
-        "placeOfPerformance": {
-          "address": {
-            "streetAddress": "6666",
-            "postalCode": "666",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
                 "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
+                "id": "9603000",
+                "description": "or.Vulcăneşti (UTA Găgăuzia)",
                 "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "666",
-                "id": "666",
-                "description": "666"
               }
             }
-          }
-        }
-      },
-      {
-        "id": "f56adad5-e754-11e8-9363-3fbb2bac86b6",
-        "title": "lot1",
-        "description": "looot",
-        "status": "unsuccessful",
-        "statusDetails": "empty",
-        "value": {
-          "amount": 500.00,
-          "currency": "MDL"
-        },
-        "options": [
-          {
-            "hasOptions": false
-          }
-        ],
-        "recurrentProcurement": [
-          {
-            "isRecurrent": false
-          }
-        ],
-        "renewals": [
-          {
-            "hasRenewals": false
-          }
-        ],
-        "variants": [
-          {
-            "hasVariants": false
-          }
-        ],
-        "contractPeriod": {
-          "startDate": "2019-12-25T15:45:00Z",
-          "endDate": "2020-12-25T15:45:00Z"
-        },
-        "placeOfPerformance": {
-          "address": {
-            "streetAddress": "6666",
-            "postalCode": "666",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "1000000",
-                "description": "Anenii Noi",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "666",
-                "id": "666",
-                "description": "666"
-              }
+          },
+          "contactPoint": {
+            "name": "Clayton Sanchez",
+            "email": "robinsonjuan@hotmail.com",
+            "telephone": "147.805.2904x484",
+            "faxNumber": "(024)582-2406",
+            "url": "https://www.mason.com/wp-content/list/app/home.htm"
+          },
+          "additionalIdentifiers": [
+            {
+              "id": "536-84-6036",
+              "scheme": "MD-IDNO",
+              "legalName": "Jones-Dixon LLC",
+              "uri": "https://www.hill-jackson.com/"
             }
+          ],
+          "details": {
+            "scale": "large"
           }
         }
-      }
-    ],
-    "tenderStatus": "active",
-    "tenderStatusDetails": "awardedContractPreparation"
-  },
-  "version": "0.0.1"
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "token": "6488fc6d-8c9e-4d8f-b6ba-9c0372370aa1",
+      "id": "ocds-t1s2t3-MD-1542374581564-AC-1540861354100",
+      "date": "2018-11-16T13:28:17Z",
+      "awardId": "776970a2-e9a3-11e8-a690-2d2d3c4cd5dc",
+      "status": "pending",
+      "statusDetails": "contractProject"
+    }
+  ]
 }

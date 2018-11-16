@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service
 @Service
 class CommandService(private val historyDao: HistoryDao,
                      private val canService: CreateCanService,
-                     private val createAcService: CreateAcService,
-                     private val updateAcService: UpdateAcService,
-                     private val statusService: StatusService) {
+                     private val createAcService: CreateAcService) {
+//                     private val updateAcService: UpdateAcService,
+//                     private val statusService: StatusService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -23,8 +23,14 @@ class CommandService(private val historyDao: HistoryDao,
         val response = when (cm.command) {
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
-            CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
-            CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
+            CommandType.UPDATE_AC -> {
+                TODO()
+            }
+            CommandType.GET_BUDGET_SOURCES -> {
+                TODO()
+            }
+//            CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
+//            CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
