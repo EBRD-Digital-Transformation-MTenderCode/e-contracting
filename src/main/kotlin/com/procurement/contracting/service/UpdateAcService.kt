@@ -85,16 +85,18 @@ class UpdateAcService(private val acDao: AcDao,
         //update
         val documentsDb = contractProcess.contract.documents ?: return documentsDto
         val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
-        documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+        documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
         val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
         return (documentsDb + newDocuments)
     }
 
-    private fun DocumentContract.update(documentDto: DocumentContract) {
-        this.title = documentDto.title
-        this.description = documentDto.description
-        this.documentType = documentDto.documentType
+    private fun DocumentContract.update(documentDto: DocumentContract?) {
+        if (documentDto != null) {
+            this.title = documentDto.title
+            this.description = documentDto.description
+            this.documentType = documentDto.documentType
+        }
     }
 
     private fun updateContractMilestones(dto: UpdateAcRq,
@@ -246,14 +248,16 @@ class UpdateAcService(private val acDao: AcDao,
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
         if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(TRANSACTIONS)
         //update
-        suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.first { it.id == supplierDb.id }) }
+        suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.firstOrNull { it.id == supplierDb.id }) }
         return suppliersDb
     }
 
-    private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate) {
-        this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
-        this.additionalIdentifiers = supplierDto.additionalIdentifiers
-        this.details = updateDetails(supplierDto.details)
+    private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
+        if (supplierDto != null) {
+            this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
+            this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            this.details = updateDetails(supplierDto.details)
+        }
     }
 
     private fun updateDetails(details: DetailsSupplierUpdate): DetailsSupplier {
@@ -273,16 +277,18 @@ class UpdateAcService(private val acDao: AcDao,
         val personesDtoIds = personesDto.asSequence().map { it.identifier.id }.toSet()
         if (personesDtoIds.size != personesDto.size) throw ErrorException(PERSONES)
         //update
-        personesDb.forEach { personDb -> personDb.update(personesDto.first { it.identifier.id == personDb.identifier.id }) }
+        personesDb.forEach { personDb -> personDb.update(personesDto.firstOrNull { it.identifier.id == personDb.identifier.id }) }
         val newPersonesId = personesDtoIds - personesDbIds
         val newPersones = personesDto.asSequence().filter { it.identifier.id in newPersonesId }.toHashSet()
         return (personesDb + newPersones).toHashSet()
     }
 
-    private fun Person.update(personDto: Person) {
-        this.title = personDto.title
-        this.name = personDto.name
-        this.businessFunctions = updateBusinessFunctions(this.businessFunctions, personDto.businessFunctions)
+    private fun Person.update(personDto: Person?) {
+        if (personDto != null) {
+            this.title = personDto.title
+            this.name = personDto.name
+            this.businessFunctions = updateBusinessFunctions(this.businessFunctions, personDto.businessFunctions)
+        }
     }
 
     private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {
@@ -290,17 +296,19 @@ class UpdateAcService(private val acDao: AcDao,
         val bfDtoIds = bfDto.asSequence().map { it.id }.toSet()
         if (bfDtoIds.size != bfDto.size) throw ErrorException(BF)
         //update
-        bfDb.forEach { businessFunction -> businessFunction.update(bfDto.first { it.id == businessFunction.id }) }
+        bfDb.forEach { businessFunction -> businessFunction.update(bfDto.firstOrNull { it.id == businessFunction.id }) }
         val newBfId = bfDtoIds - bfDbIds
         val newBf = bfDto.asSequence().filter { it.id in newBfId }.toHashSet()
         return bfDb + newBf
     }
 
-    private fun BusinessFunction.update(bfDto: BusinessFunction) {
-        this.type = bfDto.type
-        this.jobTitle = bfDto.jobTitle
-        this.period = bfDto.period
-        this.documents = updateDocuments(this.documents, bfDto.documents)
+    private fun BusinessFunction.update(bfDto: BusinessFunction?) {
+        if (bfDto != null) {
+            this.type = bfDto.type
+            this.jobTitle = bfDto.jobTitle
+            this.period = bfDto.period
+            this.documents = updateDocuments(this.documents, bfDto.documents)
+        }
     }
 
     private fun updateDocuments(documentsDb: List<DocumentBF>, documentsDto: List<DocumentBF>): List<DocumentBF> {
@@ -309,15 +317,17 @@ class UpdateAcService(private val acDao: AcDao,
         val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
-        documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+        documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
         val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
         return (documentsDb + newDocuments)
     }
 
-    private fun DocumentBF.update(documentDto: DocumentBF) {
-        this.title = documentDto.title
-        this.description = documentDto.description
+    private fun DocumentBF.update(documentDto: DocumentBF?) {
+        if (documentDto != null) {
+            this.title = documentDto.title
+            this.description = documentDto.description
+        }
     }
 
     private fun updateAwardDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentAward>? {
@@ -330,7 +340,7 @@ class UpdateAcService(private val acDao: AcDao,
             //update
             return if (documentsDb != null) {
                 val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
-                documentsDb.forEach { docDb -> docDb.update(documentsDto.first { it.id == docDb.id }) }
+                documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
                 val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
                 (documentsDb + newDocuments)
@@ -343,9 +353,11 @@ class UpdateAcService(private val acDao: AcDao,
     }
 
 
-    private fun DocumentAward.update(documentDto: DocumentAward) {
-        this.title = documentDto.title
-        this.description = documentDto.description
+    private fun DocumentAward.update(documentDto: DocumentAward?) {
+        if (documentDto != null) {
+            this.title = documentDto.title
+            this.description = documentDto.description
+        }
     }
 
     private fun updateAwardItems(dto: UpdateAcRq, contractProcess: ContractProcess): List<Item> {
@@ -363,18 +375,20 @@ class UpdateAcService(private val acDao: AcDao,
             if (value.currency != contractProcess.award.value.currency) throw ErrorException(ITEM_CURRENCY)
         }
         //update
-        itemsDb.forEach { itemDb -> itemDb.update(itemsDto.first { it.id == itemDb.id }) }
+        itemsDb.forEach { itemDb -> itemDb.update(itemsDto.firstOrNull { it.id == itemDb.id }) }
         return itemsDb
     }
 
-    private fun Item.update(itemDto: ItemUpdate) {
-        this.quantity = itemDto.quantity
-        this.unit.value = ValueTax(
-                amount = itemDto.unit.value.amount,
-                currency = itemDto.unit.value.currency,
-                amountNet = itemDto.unit.value.amountNet,
-                valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
-        this.deliveryAddress = itemDto.deliveryAddress
+    private fun Item.update(itemDto: ItemUpdate?) {
+        if (itemDto != null) {
+            this.quantity = itemDto.quantity
+            this.unit.value = ValueTax(
+                    amount = itemDto.unit.value.amount,
+                    currency = itemDto.unit.value.currency,
+                    amountNet = itemDto.unit.value.amountNet,
+                    valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
+            this.deliveryAddress = itemDto.deliveryAddress
+        }
     }
 
     private fun validateAwards(dto: UpdateAcRq, contractProcess: ContractProcess) {
