@@ -8,9 +8,9 @@ import java.util.*
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
 
-        val awards: Award,
+        val awards: HashSet<Award>,
 
-        val contracts: Contract,
+        val contracts: HashSet<Contract>,
 
         var planning: Planning?,
 
