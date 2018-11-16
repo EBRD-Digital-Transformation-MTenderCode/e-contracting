@@ -61,8 +61,8 @@ class CreateAcService(private val acDao: AcDao,
 
             val contractProcess = ContractProcess(
                     planning = null,
-                    contracts = hashSetOf(contract),
-                    awards = hashSetOf(convertAwardDtoToAward(awardDto)),
+                    contract = contract,
+                    award = convertAwardDtoToAward(awardDto),
                     buyer = null,
                     funders = null,
                     payers = null,
