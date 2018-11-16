@@ -12,9 +12,9 @@ import java.util.*
 
 data class UpdateAcRq @JsonCreator constructor(
 
-        val awards: AwardUpdate,
+        val award: AwardUpdate,
 
-        val contracts: ContractUpdate,
+        val contract: ContractUpdate,
 
         val planning: Planning,
 
