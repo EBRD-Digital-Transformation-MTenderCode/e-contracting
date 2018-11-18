@@ -2,9 +2,6 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.model.dto.AgreedMetric
-import com.procurement.contracting.model.dto.ConfirmationRequest
-import com.procurement.contracting.model.dto.Milestone
 import java.time.LocalDateTime
 import java.util.*
 

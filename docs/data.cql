@@ -35,3 +35,13 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_history (
     json_data text,
     primary key(operation_id, command)
 );
+
+CREATE TABLE IF NOT EXISTS  ocds.contracting_templates (
+    country text,
+    pmd text,
+    language text,
+    template_id text,
+    template text,
+    primary key(country, pmd, language, template_id)
+);
+

@@ -17,13 +17,17 @@ import java.util.*
 
 @Service
 class UpdateAcService(private val acDao: AcDao,
-                      private val generationService: GenerationService) {
+                      private val generationService: GenerationService,
+                      private val templateService: TemplateService) {
 
     fun updateAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val country = cm.context.country ?: throw ErrorException(CONTEXT)
+        val language = cm.context.language ?: throw ErrorException(CONTEXT)
+        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
@@ -47,7 +51,7 @@ class UpdateAcService(private val acDao: AcDao,
             period = updateContractPeriod(dto, dateTime) //VR-9.2.18
             documents = updateContractDocuments(dto, contractProcess)//BR-9.2.10
             milestones = updateContractMilestones(dto, contractProcess, mpc, dateTime)//BR-9.2.11
-            confirmationRequests = updateConfirmationRequests(dto, documents!!)//BR-9.2.16
+            confirmationRequests = updateConfirmationRequests(dto, documents!!, country, language, pmd)//BR-9.2.16
         }
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
@@ -145,52 +149,63 @@ class UpdateAcService(private val acDao: AcDao,
         return milestonesDto
     }
 
-    private fun updateConfirmationRequests(dto: UpdateAcRq, documents: List<DocumentContract>): List<ConfirmationRequest>? {
+    private fun updateConfirmationRequests(dto: UpdateAcRq,
+                                           documents: List<DocumentContract>,
+                                           country: String,
+                                           pmd: String,
+                                           language: String): List<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         //validation
         val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
         val documentIds = documents.asSequence().map { it.id }.toSet()
         if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
+
+
+        val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
+                ?: throw ErrorException(PERSON_NOT_FOUND)
+        val buyerTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
+                templateId = "cs-buyer-confirmation-on")
+
+        val awardSupplier =  dto.award.suppliers[0]
+        val tendererAuthority = getPersonByBFType(awardSupplier.persones, "authority")
+                ?: throw ErrorException(PERSON_NOT_FOUND)
+        val tendererTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
+                templateId = "cs-tenderer-confirmation-on")
         //set
         for (confRequest in confRequestDto) {
             when (confRequest.source) {
                 "buyer" -> {
-                    val authority = getPersonByBFType(dto.buyer.persones, "authority")
-                            ?: throw ErrorException(PERSON_NOT_FOUND)
-                    confRequest.id = "cs-buyer-confirmation-on-" + confRequest.relatedItem
-                    confRequest.description = "Buyer has to sign the transferred document"
-                    confRequest.title = "Document signing"
-                    confRequest.type = "digitalSignature"
-                    confRequest.relatesTo = "document"
+                    confRequest.id = buyerTemplate.id + confRequest.relatedItem
+                    confRequest.description = buyerTemplate.description
+                    confRequest.title = buyerTemplate.title
+                    confRequest.type = buyerTemplate.type
+                    confRequest.relatesTo = buyerTemplate.relatesTo
                     confRequest.requestGroups = setOf(
                             RequestGroup(
-                                    id = "cs-buyer-confirmation-on-" + confRequest.relatedItem + "-" + dto.buyer.id,
+                                    id = buyerTemplate.id + confRequest.relatedItem + "-" + dto.buyer.id,
                                     requests = setOf(Request(
-                                            relatedPerson = authority,
-                                            id = "cs-buyer-confirmation-on-" + confRequest.relatedItem + "-" + authority.id,
-                                            title = "parties[role:buyer].persones[role:authority]." + authority.name,
-                                            description = "Defined person has to sign the transferred document"
+                                            id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
+                                            title = buyerTemplate.requestTitle + buyerAuthority.name,
+                                            description = buyerTemplate.requestDescription,
+                                            relatedPerson = buyerAuthority
                                     ))
                             )
                     )
                 }
                 "tenderer" -> {
-                    val awardSupplier = dto.award.suppliers[0]
-                    val authority = getPersonByBFType(awardSupplier.persones, "authority")
-                            ?: throw ErrorException(PERSON_NOT_FOUND)
-                    confRequest.id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem
-                    confRequest.description = "Supplier has to sign the transferred document"
-                    confRequest.title = "Document signing"
-                    confRequest.type = "digitalSignature"
-                    confRequest.relatesTo = "document"
+                    confRequest.id = tendererTemplate.id + confRequest.relatedItem
+                    confRequest.description = tendererTemplate.description
+                    confRequest.title = tendererTemplate.title
+                    confRequest.type = tendererTemplate.type
+                    confRequest.relatesTo = tendererTemplate.relatesTo
                     confRequest.requestGroups = setOf(
                             RequestGroup(
-                                    id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem + "-" + awardSupplier.id,
+                                    id = tendererTemplate.id + confRequest.relatedItem + "-" + awardSupplier.id,
                                     requests = setOf(Request(
-                                            relatedPerson = authority,
-                                            id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem + "-" + authority.id,
-                                            title = "parties[role:supplier].persones[role:authority]." + authority.name,
-                                            description = "Defined person has to sign the transferred document"
+                                            relatedPerson = tendererAuthority,
+                                            id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
+                                            title = tendererTemplate.requestTitle + tendererAuthority.name,
+                                            description = tendererTemplate.requestDescription
                                     ))
                             )
                     )
