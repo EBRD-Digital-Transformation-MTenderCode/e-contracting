@@ -45,3 +45,5 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_templates (
     primary key(country, pmd, language, template_id)
 );
 
+INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,template) VALUES ('MD','OT','en','cs-buyer-confirmation-on','{"id": "cs-buyer-confirmation-on-", "description": "Buyer has to sign the transferred document", "title": "Document signing", "type": "digitalSignature", "relatesTo": "document", "requestTitle": "parties[role:buyer].persones[role:authority].", "requestDescription": "Defined person has to sign the transferred document"}');
+INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,template) VALUES ('MD','OT','en','cs-tenderer-confirmation-on','{"id": "cs-tenderer-confirmation-on-", "description": "Supplier has to sign the transferred document", "title": "Document signing", "type": "digitalSignature", "relatesTo": "document", "requestTitle": "parties[role:supplier].persones[role:authority].", "requestDescription": "Defined person has to sign the transferred document"}')
