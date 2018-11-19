@@ -129,19 +129,19 @@ class UpdateAcService(private val acDao: AcDao,
             when (milestone.type) {
                 MilestoneType.X_REPORTING -> {
                     val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name ?: "")
-                    milestone.relatedParties = party
+                    milestone.relatedParties = listOf(party)
                     milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
-                    milestone.relatedParties = party
+                    milestone.relatedParties = listOf(party)
                     milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
-                    milestone.relatedParties = party
+                    milestone.relatedParties = listOf(party)
                     milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
             }
