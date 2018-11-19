@@ -15,7 +15,7 @@ data class Milestone @JsonCreator constructor(
 
         val type: MilestoneType,
 
-        var status: MilestoneStatus,
+        var status: MilestoneStatus?,
 
         var relatedItems: Set<String>?,
 
