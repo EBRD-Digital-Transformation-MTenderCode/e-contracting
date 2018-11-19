@@ -12,7 +12,7 @@ class TemplateService(private val templateDao: TemplateDao) {
                                        pmd: String,
                                        language: String,
                                        templateId: String): ConfirmationRequestTemplate {
-        val template = templateDao.getTemplate(country, pmd, language, templateId)
+        val template = templateDao.getTemplate(country = country, pmd = pmd, language = language, templateId = templateId)
         return toObject(ConfirmationRequestTemplate::class.java, template)
     }
 

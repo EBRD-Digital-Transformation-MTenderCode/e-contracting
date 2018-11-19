@@ -51,7 +51,7 @@ class UpdateAcService(private val acDao: AcDao,
             period = updateContractPeriod(dto, dateTime) //VR-9.2.18
             documents = updateContractDocuments(dto, contractProcess)//BR-9.2.10
             milestones = updateContractMilestones(dto, contractProcess, mpc, dateTime)//BR-9.2.11
-            confirmationRequests = updateConfirmationRequests(dto, documents!!, country, language, pmd)//BR-9.2.16
+            confirmationRequests = updateConfirmationRequests(dto = dto, documents = documents, country = country, pmd = pmd, language = language)//BR-9.2.16
         }
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
@@ -150,20 +150,24 @@ class UpdateAcService(private val acDao: AcDao,
     }
 
     private fun updateConfirmationRequests(dto: UpdateAcRq,
-                                           documents: List<DocumentContract>,
+                                           documents: List<DocumentContract>?,
                                            country: String,
                                            pmd: String,
                                            language: String): List<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         //validation
-        val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-        val documentIds = documents.asSequence().map { it.id }.toSet()
-        if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
-
+        if (documents != null) {
+//            val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
+//            val documentIds = documents?.asSequence()?.map { it.id }?.toSet()
+//            if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
+        }
 
         val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
                 ?: throw ErrorException(PERSON_NOT_FOUND)
-        val buyerTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
+        val buyerTemplate = templateService.getConfirmationRequestTemplate(
+                country = country,
+                pmd = pmd,
+                language = language,
                 templateId = "cs-buyer-confirmation-on")
 
         val awardSupplier = dto.award.suppliers[0]
