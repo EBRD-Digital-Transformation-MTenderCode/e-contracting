@@ -31,7 +31,7 @@ class StatusService(private val acDao: AcDao) {
         if (contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT
                 && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
             throw ErrorException(CONTRACT_STATUS_DETAILS)
-        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
+        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet() ?: setOf()
         return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
     }
 }
