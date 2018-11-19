@@ -63,18 +63,10 @@ data class ItemUpdate @JsonCreator constructor(
 
         val id: String,
 
-        val description: String?,
-
-        val classification: Classification,
-
-        val additionalClassifications: Set<Classification>?,
-
         @JsonDeserialize(using = QuantityDeserializer::class)
         val quantity: BigDecimal,
 
         val unit: UnitUpdate,
-
-        val relatedLot: String,
 
         val deliveryAddress: Address
 )
