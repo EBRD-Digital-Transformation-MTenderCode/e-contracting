@@ -128,7 +128,7 @@ class UpdateAcService(private val acDao: AcDao,
             milestone.status = MilestoneStatus.SCHEDULED
             when (milestone.type) {
                 MilestoneType.X_REPORTING -> {
-                    val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name)
+                    val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name ?: "")
                     milestone.relatedParties = party
                     milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
@@ -166,7 +166,7 @@ class UpdateAcService(private val acDao: AcDao,
         val buyerTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
                 templateId = "cs-buyer-confirmation-on")
 
-        val awardSupplier =  dto.award.suppliers[0]
+        val awardSupplier = dto.award.suppliers[0]
         val tendererAuthority = getPersonByBFType(awardSupplier.persones, "authority")
                 ?: throw ErrorException(PERSON_NOT_FOUND)
         val tendererTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
