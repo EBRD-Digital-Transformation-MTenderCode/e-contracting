@@ -23,7 +23,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     ITEM_AMOUNT("00.20", "Invalid item amount."),
     ITEM_CURRENCY("00.21", "Invalid item currency."),
     SUPPLIERS("00.22", "Invalid suppliers"),
-    PERSONES("00.23", "Invalid persones"),
+    PERSONES("00.23", "Invalid persones identifier id."),
     TRANSACTIONS("00.24", "Invalid transactions"),
     BA_ITEM_ID("00.25", "Invalid budget allocation related item."),
     CONTRACT_STATUS_DETAILS("00.26", "Invalid contract status details."),

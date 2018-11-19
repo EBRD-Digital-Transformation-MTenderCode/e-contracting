@@ -1,9 +1,9 @@
 {
-  "id": "513def51-ec37-11e8-b438-e977632ae5b4",
+  "id": "2de49c70-ec3c-11e8-b438-e977632ae5b4",
   "command": "updateAC",
   "context": {
-    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9803",
-    "requestId": "513def50-ec37-11e8-b438-e977632ae5b4",
+    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9811",
+    "requestId": "2de49c70-ec3c-11e8-b438-e977632ae5b4",
     "cpid": "ocds-t1s2t3-MD-1542649756688",
     "ocid": "ocds-t1s2t3-MD-1542649756688-AC-1543656767420",
     "stage": "AC",
@@ -16,8 +16,8 @@
     "language": "ro",
     "pmd": "TEST_OT",
     "token": "3343a87d-fb8b-4360-8a65-fe87f8b8640f",
-    "startDate": "2018-11-19T20:11:36Z",
-    "timeStamp": 1542658296517,
+    "startDate": "2018-11-19T20:46:24Z",
+    "timeStamp": 1542660384695,
     "isAuction": false,
     "mainProcurementCategory": "goods"
   },
@@ -33,7 +33,7 @@
               "currency": "MDL"
             },
             "executionPeriod": {
-              "durationInDays": "10"
+              "durationInDays": 10
             }
           }
         ]
@@ -72,7 +72,7 @@
           "id": "MD-IDNO-212-45-0215",
           "type": "delivery",
           "additionalInformation": "TEST_ENOTIS",
-          "dueDate": "2018-11-21T15:45:10Z",
+          "dueDate": "2018-11-29T15:45:10Z",
           "title": "123",
           "description": "321"
         }
@@ -642,7 +642,13 @@
       "buyerProfile": "http://ray.com/"
     },
     "language": "ro",
-    "actualBudgetSource": [],
+    "actualBudgetSource": [
+      {
+        "budgetBreakdownID": "ocds-t1s2t3-MD-1542645311548-FS-1542649498398",
+        "amount": 100.00,
+        "currency": "MDL"
+      }
+    ],
     "treasuryBudgetSources": [
       {
         "budgetBreakdownID": "ocds-t1s2t3-MD-1542645311548-FS-1542649498398",
@@ -737,10 +743,10 @@
         }
       }
     ],
-    "addedEI": null,
-    "excludedEI": null,
-    "addedFS": null,
-    "excludedFS": null
+    "addedEI": [],
+    "excludedEI": [],
+    "addedFS": [],
+    "excludedFS": []
   },
   "version": "0.0.1"
 }
