@@ -10,9 +10,15 @@ data class OrganizationReferenceBuyer @JsonCreator constructor(
 
         val name: String,
 
-        val additionalIdentifiers: java.util.HashSet<Identifier>,
+        val identifier: Identifier?,
 
-        val persones: java.util.HashSet<Person>,
+        val address: Address?,
+
+        val contactPoint: ContactPoint?,
+
+        val additionalIdentifiers: HashSet<Identifier>,
+
+        val persones: HashSet<Person>,
 
         val details: DetailsBuyer
 )
