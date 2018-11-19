@@ -121,11 +121,11 @@ data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         val name: String?,
 
-        val identifier: Identifier,
+        val identifier: Identifier?,
 
-        val address: Address,
+        val address: Address?,
 
-        val contactPoint: ContactPoint,
+        val contactPoint: ContactPoint?,
 
         val additionalIdentifiers: HashSet<Identifier>,
 
