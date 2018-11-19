@@ -1,1 +1,9 @@
-{"id": "cs-buyer-confirmation-on-", "description": "Buyer has to sign the transferred document", "title": "Document signing", "type": "digitalSignature", "relatesTo": "document", "requestTitle": "parties[role:buyer].persones[role:authority].", "requestDescription": "Defined person has to sign the transferred document"}
+{
+  "id": "cs-buyer-confirmation-on-",
+  "description": "Buyer has to sign the transferred document",
+  "title": "Document signing",
+  "type": "digitalSignature",
+  "relatesTo": "document",
+  "requestTitle": "parties[role:buyer].persones[role:authority].",
+  "requestDescription": "Defined person has to sign the transferred document"
+}
