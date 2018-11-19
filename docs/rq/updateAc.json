@@ -1,9 +1,9 @@
 {
-  "id": "c91ecd90-ec2e-11e8-9eff-0fc982aa1c6d",
+  "id": "74137390-ec2f-11e8-9eff-0fc982aa1c6d",
   "command": "updateAC",
   "context": {
-    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9779",
-    "requestId": "c91ecd90-ec2e-11e8-9eff-0fc982aa1c6d",
+    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9781",
+    "requestId": "74137390-ec2f-11e8-9eff-0fc982aa1c6d",
     "cpid": "ocds-t1s2t3-MD-1542649756688",
     "ocid": "ocds-t1s2t3-MD-1542649756688-AC-1543656767420",
     "stage": "AC",
@@ -16,8 +16,8 @@
     "language": "ro",
     "pmd": "TEST_OT",
     "token": "3343a87d-fb8b-4360-8a65-fe87f8b8640f",
-    "startDate": "2018-11-19T19:10:32Z",
-    "timeStamp": 1542654632169,
+    "startDate": "2018-11-19T19:15:18Z",
+    "timeStamp": 1542654918986,
     "isAuction": false,
     "mainProcurementCategory": "goods"
   },
