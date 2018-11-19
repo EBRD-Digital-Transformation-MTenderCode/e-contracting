@@ -110,7 +110,7 @@ class UpdateAcService(private val acDao: AcDao,
         val milestonesDto = dto.contract.milestones
         //validation
         val relatedItemIds = milestonesDto.asSequence()
-                .filter { it.type != MilestoneType.X_REPORTING }
+                .filter { it.type != MilestoneType.X_REPORTING && it.relatedItems != null }
                 .flatMap { it.relatedItems!!.asSequence() }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)

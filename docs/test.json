@@ -1,9 +1,9 @@
 {
-  "id": "f1aa93f0-ec35-11e8-b438-e977632ae5b4",
+  "id": "513def50-ec37-11e8-b438-e977632ae5b4",
   "command": "updateAC",
   "context": {
-    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9795",
-    "requestId": "f1aa93f0-ec35-11e8-b438-e977632ae5b4",
+    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9803",
+    "requestId": "513def50-ec37-11e8-b438-e977632ae5b4",
     "cpid": "ocds-t1s2t3-MD-1542649756688",
     "ocid": "ocds-t1s2t3-MD-1542649756688-AC-1543656767420",
     "stage": "AC",
@@ -16,8 +16,8 @@
     "language": "ro",
     "pmd": "TEST_OT",
     "token": "3343a87d-fb8b-4360-8a65-fe87f8b8640f",
-    "startDate": "2018-11-19T20:01:46Z",
-    "timeStamp": 1542657706672,
+    "startDate": "2018-11-19T20:11:36Z",
+    "timeStamp": 1542658296517,
     "isAuction": false,
     "mainProcurementCategory": "goods"
   },
@@ -54,7 +54,7 @@
         "budgetSource": [
           {
             "budgetBreakdownID": "ocds-t1s2t3-MD-1542645311548-FS-1542649498398",
-            "amount": 1200,
+            "amount": 100,
             "currency": "MDL"
           }
         ]
@@ -64,7 +64,7 @@
       "title": "Hello_WORLD",
       "description": "LOL_KEK_AZAZA",
       "period": {
-        "startDate": "2018-11-13T15:45:05Z",
+        "startDate": "2018-11-25T15:45:05Z",
         "endDate": "2019-03-28T22:44:32Z"
       },
       "milestones": [
@@ -454,7 +454,7 @@
       "value": {
         "amount": 127.22,
         "currency": "MDL",
-        "amountNet": 127.22,
+        "amountNet": 100,
         "valueAddedTaxIncluded": true
       },
       "items": [
@@ -465,7 +465,7 @@
             "value": {
               "amount": 127.22,
               "currency": "MDL",
-              "amountNet": 127.22,
+              "amountNet": 100.00,
               "valueAddedTaxIncluded": true
             }
           },
@@ -646,7 +646,7 @@
     "treasuryBudgetSources": [
       {
         "budgetBreakdownID": "ocds-t1s2t3-MD-1542645311548-FS-1542649498398",
-        "amount": 1200.00,
+        "amount": 100.00,
         "currency": "MDL"
       }
     ],
