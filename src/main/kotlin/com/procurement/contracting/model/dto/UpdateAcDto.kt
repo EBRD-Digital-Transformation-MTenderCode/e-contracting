@@ -119,7 +119,7 @@ data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         var id: String,
 
-        val name: String,
+        val name: String?,
 
         val identifier: Identifier,
 

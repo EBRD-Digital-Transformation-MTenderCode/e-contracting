@@ -127,7 +127,6 @@ data class AccountIdentifier @JsonCreator constructor(
         val scheme: String
 )
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class LegalForm @JsonCreator constructor(
 
