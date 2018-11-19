@@ -1,9 +1,9 @@
 {
-  "id": "bb74ac00-ec29-11e8-a567-1d667d66d027",
+  "id": "c91ecd90-ec2e-11e8-9eff-0fc982aa1c6d",
   "command": "updateAC",
   "context": {
-    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9771",
-    "requestId": "bb74ac00-ec29-11e8-a567-1d667d66d027",
+    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf9779",
+    "requestId": "c91ecd90-ec2e-11e8-9eff-0fc982aa1c6d",
     "cpid": "ocds-t1s2t3-MD-1542649756688",
     "ocid": "ocds-t1s2t3-MD-1542649756688-AC-1543656767420",
     "stage": "AC",
@@ -16,10 +16,10 @@
     "language": "ro",
     "pmd": "TEST_OT",
     "token": "3343a87d-fb8b-4360-8a65-fe87f8b8640f",
-    "startDate": "2018-11-19T18:34:21Z",
-    "timeStamp": 1542652461760,
-    "mainProcurementCategory": "goods",
-    "isAuction": false
+    "startDate": "2018-11-19T19:10:32Z",
+    "timeStamp": 1542654632169,
+    "isAuction": false,
+    "mainProcurementCategory": "goods"
   },
   "data": {
     "planning": {
@@ -93,55 +93,31 @@
             {
               "id": "cc-general-1-1",
               "notes": "Nr. max. de zile pentru informarea prinvind invocarea forței majore",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-general-1-1",
-                  "notes": "Nr. max. de zile pentru informarea prinvind invocarea forței majore",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-general-1-2",
               "notes": "Nr. max. de pentru notificarea despre intenția de reziliere",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-general-1-2",
-                  "notes": "Nr. max. de pentru notificarea despre intenția de reziliere",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-general-1-3",
               "notes": "Nr. max. de zile pentru răspunsul la notificarea despre intenția de reziliere",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-general-1-3",
-                  "notes": "Nr. max. de zile pentru răspunsul la notificarea despre intenția de reziliere",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             }
           ]
@@ -154,24 +130,17 @@
             {
               "id": "cc-tenderer-1-1",
               "notes": "Cuantumul garanției",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-1-1",
-                  "notes": "Cuantumul garanției",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-1-2",
-              "notes": "Forma de garanţie de bună executare a contractului"
+              "notes": "Forma de garanţie de bună executare a contractului",
+              "measure": 5
             }
           ]
         },
@@ -183,73 +152,41 @@
             {
               "id": "cc-tenderer-2-1",
               "notes": "Nr. max. de zile de la semnarea contractului pentru anunțarea Cumpărătorului despre disponibilitatea livrării Bunurilor şi/sau prestării Serviciilor",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-2-1",
-                  "notes": "Nr. max. de zile de la semnarea contractului pentru anunțarea Cumpărătorului despre disponibilitatea livrării Bunurilor şi/sau prestării Serviciilor",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-2-2",
               "notes": "Nr. max. de zile pentru examinarea pretenţiilor înaintate privind calitatea bunurilor şi/sau serviciilor livrate",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-2-2",
-                  "notes": "Nr. max. de zile pentru examinarea pretenţiilor înaintate privind calitatea bunurilor şi/sau serviciilor livrate",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-2-3",
               "notes": "Nr. max. de zile pentru livrarea suplimentară în baza pretențiilor privind calitatea",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-2-3",
-                  "notes": "Nr. max. de zile pentru livrarea suplimentară în baza pretențiilor privind calitatea",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-2-4",
               "notes": "Nr. de zile după care se consideră refuz de a vinde Bunurile/Serviciile/Lucrările contractate",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-2-4",
-                  "notes": "Nr. de zile după care se consideră refuz de a vinde Bunurile/Serviciile/Lucrările contractate",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             }
           ]
@@ -262,55 +199,31 @@
             {
               "id": "cc-tenderer-3-1",
               "notes": "% de răspundere materială pentru livrarea cu întărziere",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-3-1",
-                  "notes": "% de răspundere materială pentru livrarea cu întărziere",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-3-2",
               "notes": "% maxim de răspundere materială a Vânzătorului în cazul livrării cu întârziere",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-3-2",
-                  "notes": "% maxim de răspundere materială a Vânzătorului în cazul livrării cu întârziere",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-tenderer-3-3",
               "notes": "% max. a penalității pentru refuzul executării contractului",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-tenderer-3-3",
-                  "notes": "% max. a penalității pentru refuzul executării contractului",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             }
           ]
@@ -323,19 +236,11 @@
             {
               "id": "cc-buyer-1-1",
               "notes": "Nr. max. de zile pentru depunerea pretențiilor privind calitatea bunurilor şi/sau serviciilor livrate",
+              "measure": 5,
               "unit": {
                 "id": "359",
                 "name": "ziua",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-buyer-1-1",
-                  "notes": "Nr. max. de zile pentru depunerea pretențiilor privind calitatea bunurilor şi/sau serviciilor livrate",
-                  "unit": {
-                    "id": "359",
-                    "name": "ziua",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             }
           ]
@@ -348,37 +253,21 @@
             {
               "id": "cc-buyer-2-1",
               "notes": "% de răspundere materială a Beneficiarului in caz de achitare cu întârziere",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-buyer-2-1",
-                  "notes": "% de răspundere materială a Beneficiarului in caz de achitare cu întârziere",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             },
             {
               "id": "cc-buyer-2-2",
               "notes": "% răspundere materială maximă a Beneficiarului in caz de achitare cu întârziere",
+              "measure": 5,
               "unit": {
                 "id": "743",
                 "name": "procent",
-                "scheme": "MD-CUMC",
-                "measure": {
-                  "id": "cc-buyer-2-2",
-                  "notes": "% răspundere materială maximă a Beneficiarului in caz de achitare cu întârziere",
-                  "unit": {
-                    "id": "743",
-                    "name": "procent",
-                    "scheme": "MD-CUMC"
-                  }
-                }
+                "scheme": "MD-CUMC"
               }
             }
           ]
@@ -390,23 +279,28 @@
           "observations": [
             {
               "id": "cc-subject-1",
-              "notes": "Modelul articolului"
+              "notes": "Modelul articolului",
+              "measure": 5
             },
             {
               "id": "cc-subject-2",
-              "notes": "Tara de origine"
+              "notes": "Tara de origine",
+              "measure": 5
             },
             {
               "id": "cc-subject-3",
-              "notes": "Producător"
+              "notes": "Producător",
+              "measure": 5
             },
             {
               "id": "cc-subject-4",
-              "notes": "Specificația tehnică propusă de Furnizor"
+              "notes": "Specificația tehnică propusă de Furnizor",
+              "measure": 5
             },
             {
               "id": "cc-subject-5",
-              "notes": "Standarde de referință"
+              "notes": "Standarde de referință",
+              "measure": 5
             }
           ]
         }

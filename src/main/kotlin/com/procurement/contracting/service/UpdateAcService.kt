@@ -83,7 +83,7 @@ class UpdateAcService(private val acDao: AcDao,
 
     private fun updateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentContract>? {
         //validation
-        val documentsDto = dto.contract.documents
+        val documentsDto = dto.contract.documents ?: return contractProcess.contract.documents
         val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update

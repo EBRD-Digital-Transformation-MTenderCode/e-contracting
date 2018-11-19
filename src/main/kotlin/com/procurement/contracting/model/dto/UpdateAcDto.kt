@@ -49,7 +49,7 @@ data class ContractUpdate @JsonCreator constructor(
 
         val period: Period,
 
-        val documents: List<DocumentContract>,
+        val documents: List<DocumentContract>?,
 
         val milestones: List<Milestone>,
 
