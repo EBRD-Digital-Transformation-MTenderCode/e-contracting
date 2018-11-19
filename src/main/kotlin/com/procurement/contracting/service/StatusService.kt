@@ -27,8 +27,9 @@ class StatusService(private val acDao: AcDao) {
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         val contract = contractProcess.contract
         if (contract.id != ocId) throw ErrorException(CONTRACT_ID)
-        if (contract.status != ContractStatus.PENDING) throw ErrorException(CONTEXT)
-        if (contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
+        if (contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
+        if (contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT
+                && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
             throw ErrorException(CONTRACT_STATUS_DETAILS)
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet()
         return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
