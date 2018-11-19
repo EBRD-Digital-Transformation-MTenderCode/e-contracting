@@ -119,13 +119,13 @@ data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         var id: String,
 
-        val name: String?,
-
-        val identifier: Identifier?,
-
-        val address: Address?,
-
-        val contactPoint: ContactPoint?,
+//        val name: String?,
+//
+//        val identifier: Identifier?,
+//
+//        val address: Address?,
+//
+//        val contactPoint: ContactPoint?,
 
         val additionalIdentifiers: HashSet<Identifier>,
 
