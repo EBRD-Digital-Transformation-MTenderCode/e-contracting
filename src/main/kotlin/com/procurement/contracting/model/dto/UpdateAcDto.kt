@@ -133,7 +133,7 @@ data class DetailsSupplierUpdate @JsonCreator constructor(
 
 data class UpdateAcRs @JsonCreator constructor(
 
-        var planning: Planning?,
+        var planning: Planning,
 
         val contract: Contract,
 
