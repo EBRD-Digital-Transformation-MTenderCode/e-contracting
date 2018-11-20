@@ -129,3 +129,13 @@ data class DetailsSupplierUpdate @JsonCreator constructor(
 
         val legalForm: LegalForm
 )
+
+
+data class UpdateAcRs @JsonCreator constructor(
+
+        var planning: Planning?,
+
+        val contract: Contract,
+
+        val award: Award
+)

@@ -52,6 +52,7 @@ class UpdateAcService(private val acDao: AcDao,
             documents = updateContractDocuments(dto, contractProcess)//BR-9.2.10
             milestones = updateContractMilestones(dto, contractProcess, mpc, dateTime)//BR-9.2.11
             confirmationRequests = updateConfirmationRequests(dto = dto, documents = documents, country = country, pmd = pmd, language = language)//BR-9.2.16
+            agreedMetrics = dto.contract.agreedMetrics
         }
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
@@ -63,7 +64,7 @@ class UpdateAcService(private val acDao: AcDao,
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = contractProcess.copy(buyer = null, treasuryBudgetSources = null))
+        return ResponseDto(data = UpdateAcRs(contractProcess.planning, contractProcess.contract, contractProcess.award))
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
