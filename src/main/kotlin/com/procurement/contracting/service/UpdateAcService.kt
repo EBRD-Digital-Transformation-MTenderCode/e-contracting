@@ -64,7 +64,10 @@ class UpdateAcService(private val acDao: AcDao,
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = UpdateAcRs(contractProcess.planning!!, contractProcess.contract, contractProcess.award))
+        return ResponseDto(data = UpdateAcRs(
+                planning = contractProcess.planning!!,
+                contract = contractProcess.contract,
+                award = contractProcess.award))
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
