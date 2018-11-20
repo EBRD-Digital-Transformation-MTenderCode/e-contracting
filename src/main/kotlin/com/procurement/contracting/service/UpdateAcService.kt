@@ -370,7 +370,6 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-
     private fun DocumentAward.update(documentDto: DocumentAward?) {
         if (documentDto != null) {
             this.title = documentDto.title

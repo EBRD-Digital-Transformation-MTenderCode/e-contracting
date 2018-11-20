@@ -7,7 +7,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     OWNER("00.03", "Invalid owner."),
     CAN_ID("00.04", "Invalid CAN id."),
     CONTRACT_ALREADY_CREATED("00.05", "Contract already created."),
-    DOCUMENTS("00.06", "Documents is not valid"),
+    DOCUMENTS("00.06", "Documents are not valid"),
     NO_AMENDMENTS("00.07", "No amendments."),
     BUDGET_SUM("00.09", "Budget sum is invalid"),
     PLATFORM("00.10", "Invalid platform"),
