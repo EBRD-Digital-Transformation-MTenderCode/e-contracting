@@ -161,9 +161,9 @@ class UpdateAcService(private val acDao: AcDao,
         val confRequestDto = dto.contract.confirmationRequests
         //validation
         if (documents != null) {
-//            val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-//            val documentIds = documents?.asSequence()?.map { it.id }?.toSet()
-//            if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
+            val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
+            val documentIds = documents.asSequence().map { it.id }.toSet()
+            if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
         }
 
         val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
