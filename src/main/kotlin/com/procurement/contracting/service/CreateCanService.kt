@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.model.dto.CanCreate
 import com.procurement.contracting.model.dto.CreateCanRs
@@ -28,6 +29,7 @@ class CreateCanService(private val canDao: CanDao,
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CanCreate::class.java, cm.data)
 
+        if (dto.awards.isEmpty()) throw ErrorException(ErrorType.NO_ACTIVE_AWARDS)
         val canEntities = dto.awards.asSequence()
                 .map { createCanEntity(cpId, it.id, owner, dateTime) }
                 .toList()
