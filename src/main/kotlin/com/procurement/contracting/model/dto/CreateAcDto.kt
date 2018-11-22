@@ -24,10 +24,6 @@ data class AwardCreate @JsonCreator constructor(
 
         var description: String?,
 
-        var status: AwardStatus,
-
-        var statusDetails: AwardStatusDetails,
-
         val relatedLots: List<String>,
 
         val relatedBid: String,

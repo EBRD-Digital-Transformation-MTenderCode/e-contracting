@@ -42,7 +42,7 @@ data class Permits @JsonCreator constructor(
 
         val scheme: String,
 
-        val url: String,
+        val url: String?,
 
         val permit: Permit
 )
@@ -82,7 +82,7 @@ data class GpaAnnex @JsonCreator constructor(
 
         val legalName: String,
 
-        val uri: String
+        val uri: String?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -92,7 +92,7 @@ data class GpaOrganizationType @JsonCreator constructor(
 
         val legalName: String,
 
-        val uri: String
+        val uri: String?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

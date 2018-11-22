@@ -95,8 +95,6 @@ class CreateAcService(private val acDao: AcDao,
     private fun convertAwardDtoToAward(awardDto: AwardCreate): Award {
         return Award(
                 id = awardDto.id,
-                status = awardDto.status,
-                statusDetails = awardDto.statusDetails,
                 date = awardDto.date,
                 description = awardDto.description,
                 relatedBid = awardDto.relatedBid,
