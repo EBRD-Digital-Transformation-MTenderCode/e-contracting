@@ -107,7 +107,7 @@ data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
         var id: String,
 
-        val additionalIdentifiers: HashSet<Identifier>,
+        val additionalIdentifiers: HashSet<Identifier>?,
 
         val persones: HashSet<Person>,
 

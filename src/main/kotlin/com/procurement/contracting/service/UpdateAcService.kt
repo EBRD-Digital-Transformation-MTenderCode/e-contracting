@@ -104,6 +104,7 @@ class UpdateAcService(private val acDao: AcDao,
             this.title = documentDto.title
             this.description = documentDto.description
             this.documentType = documentDto.documentType
+            this.relatedLots = documentDto.relatedLots
         }
     }
 
@@ -277,7 +278,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
             this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
-            this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            supplierDto.additionalIdentifiers?.let { this.additionalIdentifiers = supplierDto.additionalIdentifiers }
             this.details = updateDetails(supplierDto.details)
         }
     }
@@ -378,6 +379,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
+            this.documentType = documentDto.documentType
             this.relatedLots = documentDto.relatedLots
         }
     }
