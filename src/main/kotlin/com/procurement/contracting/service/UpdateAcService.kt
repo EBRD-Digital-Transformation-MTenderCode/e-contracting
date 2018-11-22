@@ -280,7 +280,9 @@ class UpdateAcService(private val acDao: AcDao,
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
             this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
-            this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            if (supplierDto.additionalIdentifiers.isNotEmpty()) {
+                this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            }
             this.details = updateDetails(supplierDto.details)
         }
     }
