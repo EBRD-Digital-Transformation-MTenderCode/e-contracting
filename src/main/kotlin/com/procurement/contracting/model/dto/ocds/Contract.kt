@@ -46,7 +46,5 @@ data class Contract @JsonCreator constructor(
 
         var milestones: List<Milestone>?,
 
-        var confirmationRequests: List<ConfirmationRequest>?,
-
-        var agreedMetrics: LinkedList<AgreedMetric>?
+        var confirmationRequests: List<ConfirmationRequest>?
 )

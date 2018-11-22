@@ -52,7 +52,6 @@ class UpdateAcService(private val acDao: AcDao,
             documents = updateContractDocuments(dto, contractProcess)//BR-9.2.10
             milestones = updateContractMilestones(dto, contractProcess, mpc, dateTime)//BR-9.2.11
             confirmationRequests = updateConfirmationRequests(dto = dto, documents = documents, country = country, pmd = pmd, language = language)//BR-9.2.16
-            agreedMetrics = dto.contract.agreedMetrics
         }
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)

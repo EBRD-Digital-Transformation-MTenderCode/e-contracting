@@ -53,9 +53,7 @@ data class ContractUpdate @JsonCreator constructor(
 
         val milestones: List<Milestone>,
 
-        val confirmationRequests: List<ConfirmationRequest>,
-
-        val agreedMetrics: LinkedList<AgreedMetric>
+        val confirmationRequests: List<ConfirmationRequest>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
