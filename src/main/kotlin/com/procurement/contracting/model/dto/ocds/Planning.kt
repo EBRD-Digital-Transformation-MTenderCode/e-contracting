@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import java.math.BigDecimal
@@ -73,3 +74,13 @@ data class PlanningBudgetSource @JsonCreator constructor(
 
         val currency: String
 )
+
+enum class AwardDocumentType(@JsonValue private val value: String) {
+        AWARD_NOTICE("awardNotice"),
+        EVALUATION_REPORTS("evaluationReports"),
+        WINNING_BID("winningBid");
+
+        override fun toString(): String {
+                return this.value
+        }
+}

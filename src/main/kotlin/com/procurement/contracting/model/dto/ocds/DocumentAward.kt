@@ -8,7 +8,7 @@ data class DocumentAward @JsonCreator constructor(
 
         val id: String,
 
-        val documentType: String?,
+        val documentType: AwardDocumentType,
 
         var title: String?,
 
