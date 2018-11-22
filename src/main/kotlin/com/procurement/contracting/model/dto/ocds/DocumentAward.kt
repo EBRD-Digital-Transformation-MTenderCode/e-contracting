@@ -14,5 +14,5 @@ data class DocumentAward @JsonCreator constructor(
 
         var description: String?,
 
-        var relatedLots: List<String>
+        var relatedLots: List<String>?
 )
