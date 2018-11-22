@@ -25,7 +25,7 @@ data class Transaction @JsonCreator constructor(
 
         var id: String,
 
-        val type: String,
+        val type: TransactionType,
 
         val value: Value,
 

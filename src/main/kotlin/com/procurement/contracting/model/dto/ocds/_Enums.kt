@@ -26,6 +26,16 @@ enum class MainProcurementCategory(@JsonValue val value: String) {
     }
 }
 
+enum class TransactionType(@JsonValue val value: String) {
+    ADVANCE("advance"),
+    PAYMENT("payment");
+
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 enum class MilestoneStatus(@JsonValue val value: String) {
     SCHEDULED("scheduled");
 
