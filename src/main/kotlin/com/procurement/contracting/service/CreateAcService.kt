@@ -54,7 +54,6 @@ class CreateAcService(private val acDao: AcDao,
                     relatedProcesses = null,
                     classification = null,
                     documents = null,
-                    agreedMetrics = null,
                     confirmationRequests = null,
                     milestones = null)
             contracts.add(contract)
@@ -147,7 +146,6 @@ class CreateAcService(private val acDao: AcDao,
                 relatedProcesses = null,
                 classification = null,
                 documents = null,
-                agreedMetrics = null,
                 confirmationRequests = null,
                 milestones = null)
         )

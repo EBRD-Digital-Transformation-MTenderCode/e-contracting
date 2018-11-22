@@ -59,8 +59,7 @@ class CreateCanService(private val canDao: CanDao,
                 description = null,
                 title = null,
                 milestones = null,
-                confirmationRequests = null,
-                agreedMetrics = null)
+                confirmationRequests = null)
         return Can(contract)
     }
 
