@@ -245,6 +245,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun validateUpdatePlanning(dto: UpdateAcRq): Planning {
         //BR-9.2.6
         val transactions = dto.planning.implementation.transactions
+        if (transactions.isEmpty()) throw ErrorException(TRANSACTIONS)
         val transactionsId = transactions.asSequence().map { it.id }.toHashSet()
         if (transactionsId.size != transactions.size) throw ErrorException(TRANSACTIONS)
         transactions.forEach { it.id = generationService.getTimeBasedUUID() }
