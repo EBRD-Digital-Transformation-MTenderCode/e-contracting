@@ -378,6 +378,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
+            this.relatedLots = documentDto.relatedLots
         }
     }
 
