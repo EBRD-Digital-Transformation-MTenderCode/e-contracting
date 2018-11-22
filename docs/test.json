@@ -1,9 +1,9 @@
 {
-  "id": "f99e3d50-ecd0-11e8-b4f8-4f20a9ab176f",
-  "command": "updateAC",
+  "id": "e5b13050-ed88-11e8-b4f8-4f20a9ab176f",
+  "command": "createRelease",
   "context": {
-    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b1380",
-    "requestId": "f99e3d50-ecd0-11e8-b4f8-4f20a9ab176f",
+    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b1407",
+    "requestId": "e5b13050-ed88-11e8-b4f8-4f20a9ab176f",
     "cpid": "ocds-t1s2t3-MD-1542645678020",
     "ocid": "ocds-t1s2t3-MD-1542645678020-AC-1544745832237",
     "stage": "AC",
@@ -16,8 +16,8 @@
     "language": "ro",
     "pmd": "TEST_OT",
     "token": "63bd38a5-948b-4f0b-acab-f101b6183f17",
-    "startDate": "2018-11-20T14:31:32Z",
-    "timeStamp": 1542724292005,
+    "startDate": "2018-11-21T12:28:05Z",
+    "timeStamp": 1542803285973,
     "isAuction": false,
     "mainProcurementCategory": "works"
   },
@@ -26,10 +26,10 @@
       "implementation": {
         "transactions": [
           {
-            "id": "144",
-            "type": "advance",
+            "id": "e5df6c40-ed88-11e8-a7a9-495cabe85e0c",
+            "type": "blabla",
             "value": {
-              "amount": 5000,
+              "amount": 5000.00,
               "currency": "MDL"
             },
             "executionPeriod": {
@@ -43,48 +43,87 @@
         "budgetAllocation": [
           {
             "budgetBreakdownID": "ocds-t1s2t3-MD-1542644139588-FS-1542645577348",
+            "amount": 102.00,
             "period": {
               "startDate": "2018-11-30T00:00:00Z",
               "endDate": "2018-11-30T23:00:00Z"
             },
-            "amount": 102,
             "relatedItem": "f0081842-ec19-11e8-9cb9-6bf876bfa65b"
           }
         ],
         "budgetSource": [
           {
             "budgetBreakdownID": "ocds-t1s2t3-MD-1542644139588-FS-1542645577348",
-            "amount": 92,
+            "amount": 102.00,
             "currency": "MDL"
           }
         ]
       }
     },
     "contract": {
+      "token": "63bd38a5-948b-4f0b-acab-f101b6183f17",
+      "id": "ocds-t1s2t3-MD-1542645678020-AC-1544745832237",
+      "date": "2018-11-19T16:49:35Z",
+      "awardId": "74c43281-ec1a-11e8-928f-a9a0efcf4c9e",
+      "status": "pending",
+      "statusDetails": "contractPreparation",
       "title": "title",
       "description": "description",
       "period": {
         "startDate": "2018-11-25T00:00:00Z",
         "endDate": "2018-11-26T00:00:00Z"
       },
+      "value": {
+        "amount": 102.00,
+        "currency": "MDL",
+        "amountNet": 102.00,
+        "valueAddedTaxIncluded": false
+      },
       "milestones": [
         {
-          "id": "approval-re1atedparties.id",
+          "id": "x_warranty-MD-IDNO-f13-e5def710-ed88-11e8-a7a9-495cabe85e0c",
+          "title": "title",
+          "description": "description",
           "type": "x_warranty",
+          "status": "scheduled",
           "relatedItems": [
             "f0081842-ec19-11e8-9cb9-6bf876bfa65b"
           ],
           "additionalInformation": "дополнительная ифнормация",
-          "dueDate": "2018-11-15T00:00:00Z",
-          "title": "title",
-          "description": "description"
+          "dueDate": "2018-11-25T00:00:00Z",
+          "relatedParties": [
+            {
+              "id": "MD-IDNO-f13",
+              "name": "name"
+            }
+          ]
         }
       ],
       "confirmationRequests": [
         {
-          "id": "cs-tenderer-confirmation-on-document.id",
+          "id": "cs-tenderer-confirmation-on-a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
+          "type": "digitalSignature",
+          "title": "Document signing",
+          "description": "Supplier has to sign the transferred document",
+          "relatesTo": "document",
           "relatedItem": "a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
-          "source": "tenderer"
+          "source": "tenderer",
+          "requestGroups": [
+            {
+              "id": "cs-tenderer-confirmation-on-a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613-MD-IDNO-f13",
+              "requests": [
+                {
+                  "id": "cs-tenderer-confirmation-on-a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613-95-78-52",
+                  "title": "parties[role:supplier].persones[role:authority].qwerty",
+                  "description": "Defined person has to sign the transferred document",
+                  "relatedPerson": {
+                    "id": "95-78-52",
+                    "name": "qwerty"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "agreedMetrics": [
@@ -282,13 +321,155 @@
     },
     "award": {
       "id": "74c43281-ec1a-11e8-928f-a9a0efcf4c9e",
+      "date": "2018-11-19T16:49:40Z",
+      "status": "active",
+      "statusDetails": "empty",
+      "relatedLots": [
+        "f0081843-ec19-11e8-9cb9-6bf876bfa65b"
+      ],
+      "relatedBid": "43650980-ec1a-11e8-a0b8-516ba9c66e7e",
+      "value": {
+        "amount": 102.00,
+        "currency": "MDL",
+        "amountNet": 102.00,
+        "valueAddedTaxIncluded": false
+      },
+      "items": [
+        {
+          "id": "f0081842-ec19-11e8-9cb9-6bf876bfa65b",
+          "description": "p",
+          "classification": {
+            "id": "45400000-1",
+            "scheme": "CPV",
+            "description": "Lucrări de finisare a construcţiilor"
+          },
+          "additionalClassifications": [
+            {
+              "id": "AA28-2",
+              "scheme": "CPVS",
+              "description": "Iridiu"
+            },
+            {
+              "id": "AA25-3",
+              "scheme": "CPVS",
+              "description": "Hafniu"
+            }
+          ],
+          "quantity": 10.00,
+          "unit": {
+            "id": "120",
+            "name": "Milion decalitri",
+            "value": {
+              "amount": 102.00,
+              "currency": "MDL",
+              "amountNet": 102.00,
+              "valueAddedTaxIncluded": false
+            }
+          },
+          "relatedLot": "f0081843-ec19-11e8-9cb9-6bf876bfa65b",
+          "deliveryAddress": {
+            "streetAddress": "street",
+            "postalCode": "45900",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "0301000",
+                "description": "mun.Bălţi",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "UN/LOCDE",
+                "id": "450020",
+                "description": "Dnipro"
+              }
+            }
+          }
+        }
+      ],
+      "documents": [
+        {
+          "id": "1a0c5a0a-b362-4a2c-a6cd-fd043fa68b1d-1542627998652",
+          "documentType": "awardNotice",
+          "title": null,
+          "description": null,
+          "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/1a0c5a0a-b362-4a2c-a6cd-fd043fa68b1d-1542627998652",
+          "datePublished": "2018-11-19T11:47:35Z",
+          "dateModified": null,
+          "format": null,
+          "language": null,
+          "relatedLots": null
+        },
+        {
+          "id": "379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786",
+          "documentType": "contractDraft",
+          "title": null,
+          "description": null,
+          "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786",
+          "datePublished": null,
+          "dateModified": null,
+          "format": null,
+          "language": null,
+          "relatedLots": null
+        },
+        {
+          "id": "4205f671-1be6-4cad-931f-cb133c0dd2d8-1542801925324",
+          "documentType": "contractDraft",
+          "title": null,
+          "description": null,
+          "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/4205f671-1be6-4cad-931f-cb133c0dd2d8-1542801925324",
+          "datePublished": "2018-11-21T12:08:46Z",
+          "dateModified": null,
+          "format": null,
+          "language": null,
+          "relatedLots": null
+        }
+      ],
       "suppliers": [
         {
-          "id": "MD-IDNO-550-14-6378",
+          "id": "MD-IDNO-f13",
+          "name": "name",
+          "identifier": {
+            "id": "f13",
+            "scheme": "MD-IDNO",
+            "legalName": "jj"
+          },
+          "address": {
+            "streetAddress": "hjk",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "0101000",
+                "description": "mun.Chişinău",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "uu",
+                "id": "321",
+                "description": "u"
+              }
+            }
+          },
+          "contactPoint": {
+            "name": "u",
+            "email": "u",
+            "telephone": "u"
+          },
           "additionalIdentifiers": [
             {
-              "scheme": "MD-SRJE",
-              "id": "123",
+              "id": "f13",
+              "scheme": "MD-IDNO",
               "legalName": "987",
               "uri": "456"
             }
@@ -298,8 +479,8 @@
               "title": "sss",
               "name": "qwerty",
               "identifier": {
-                "scheme": "MD-IDNO",
                 "id": "95-78-52",
+                "scheme": "MD-IDNO",
                 "uri": "URL*"
               },
               "businessFunctions": [
@@ -325,27 +506,27 @@
             }
           ],
           "details": {
-            "typeOfSupplier": "supplier",
+            "typeOfSupplier": "type changed",
             "mainEconomicActivity": [
-              "456-95"
+              "456-00-changed"
             ],
-            "scale": "sme",
+            "scale": "large",
             "permits": [
               {
-                "scheme": "SRLE",
-                "id": "45621",
+                "id": "4569512354785220000",
+                "scheme": "MD-MD",
                 "url": "4",
                 "permit": {
                   "issuedBy": {
-                    "id": "popopo",
-                    "name": "vasia pupkin"
+                    "id": "changed",
+                    "name": "vasia changed pupkin"
                   },
                   "issuedThought": {
-                    "id": "95874",
-                    "name": "name"
+                    "id": "fgfgfgfg",
+                    "name": "changed"
                   },
                   "validityPeriod": {
-                    "startDate": "2018-12-02T00:00:00Z",
+                    "startDate": "2018-12-05T00:00:00Z",
                     "endDate": "2018-12-04T00:00:00Z"
                   }
                 }
@@ -373,75 +554,26 @@
                   }
                 },
                 "identifier": {
-                  "scheme": "UA-MFO",
-                  "id": "300711"
+                  "id": "300711",
+                  "scheme": "UA-MFO"
                 },
                 "accountIdentification": {
-                  "scheme": "IBAN",
-                  "id": "2600000625637"
+                  "id": "2600000625637",
+                  "scheme": "IBAN"
                 },
                 "additionalAccountIdentifiers": [
                   {
-                    "scheme": "settlement",
-                    "id": "458-9652"
+                    "id": "458-9652",
+                    "scheme": "settlement"
                   }
                 ]
               }
             ],
             "legalForm": {
-              "scheme": "MD-IDNO",
               "id": "4592",
+              "scheme": "MD-IDNO",
               "description": "description",
               "uri": "uri"
-            }
-          }
-        }
-      ],
-      "documents": [
-        {
-          "documentType": "contractDraft",
-          "id": "379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786"
-        }
-      ],
-      "value": {
-        "amount": 102,
-        "currency": "MDL",
-        "amountNet": 92,
-        "valueAddedTaxIncluded": true
-      },
-      "items": [
-        {
-          "id": "f0081842-ec19-11e8-9cb9-6bf876bfa65b",
-          "quantity": 10.00,
-          "unit": {
-            "value": {
-              "amount": 102.00,
-              "currency": "MDL",
-              "amountNet": 92.00,
-              "valueAddedTaxIncluded": true
-            }
-          },
-          "deliveryAddress": {
-            "streetAddress": "street",
-            "postalCode": "45900",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0301000",
-                "description": "mun.Bălţi",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "UN/LOCDE",
-                "id": "450020",
-                "description": "Dnipro"
-              }
             }
           }
         }
@@ -588,11 +720,17 @@
       }
     },
     "language": "ro",
-    "actualBudgetSource": [],
+    "actualBudgetSource": [
+      {
+        "budgetBreakdownID": "ocds-t1s2t3-MD-1542644139588-FS-1542645577348",
+        "amount": 102.00,
+        "currency": "MDL"
+      }
+    ],
     "treasuryBudgetSources": [
       {
         "budgetBreakdownID": "ocds-t1s2t3-MD-1542644139588-FS-1542645577348",
-        "amount": 92.00,
+        "amount": 102.00,
         "currency": "MDL"
       }
     ],
@@ -670,10 +808,48 @@
         }
       }
     ],
-    "addedEI": null,
-    "excludedEI": null,
-    "addedFS": null,
-    "excludedFS": null
+    "addedEI": [],
+    "excludedEI": [],
+    "addedFS": [],
+    "excludedFS": [],
+    "documentsOfContractPersones": [
+      {
+        "id": "164f1129-4be3-4bce-9647-d7a1b1e6c11b-1542622196101",
+        "documentType": "regulatoryDocument",
+        "title": null,
+        "description": null,
+        "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/164f1129-4be3-4bce-9647-d7a1b1e6c11b-1542622196101",
+        "datePublished": "2018-11-19T10:20:00Z",
+        "dateModified": null,
+        "format": null,
+        "language": null,
+        "relatedLots": null
+      },
+      {
+        "id": "164f1129-4be3-4bce-9647-d7a1b1e6c11b-1542622196101",
+        "documentType": "regulatoryDocument",
+        "title": null,
+        "description": null,
+        "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/164f1129-4be3-4bce-9647-d7a1b1e6c11b-1542622196101",
+        "datePublished": "2018-11-19T10:20:00Z",
+        "dateModified": null,
+        "format": null,
+        "language": null,
+        "relatedLots": null
+      },
+      {
+        "id": "379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786",
+        "documentType": "regulatoryDocument",
+        "title": null,
+        "description": null,
+        "url": "http://dev.bpe.eprocurement.systems/api/v1/storage/get/379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786",
+        "datePublished": null,
+        "dateModified": null,
+        "format": null,
+        "language": null,
+        "relatedLots": null
+      }
+    ]
   },
   "version": "0.0.1"
 }
