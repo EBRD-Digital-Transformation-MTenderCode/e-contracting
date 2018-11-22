@@ -287,7 +287,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun updateDetails(details: DetailsSupplierUpdate): DetailsSupplier {
         return DetailsSupplier(
                 typeOfSupplier = details.typeOfSupplier,
-                mainEconomicActivity = details.mainEconomicActivity,
+                mainEconomicActivities = details.mainEconomicActivities,
                 bankAccounts = details.bankAccounts,
                 legalForm = details.legalForm,
                 permits = details.permits,

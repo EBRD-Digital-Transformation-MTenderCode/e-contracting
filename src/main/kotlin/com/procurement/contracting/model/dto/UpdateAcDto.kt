@@ -119,7 +119,7 @@ data class DetailsSupplierUpdate @JsonCreator constructor(
 
         val typeOfSupplier: String,
 
-        val mainEconomicActivity: Set<String>,
+        val mainEconomicActivities: Set<String>,
 
         val scale: String,
 
