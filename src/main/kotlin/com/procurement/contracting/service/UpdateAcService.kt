@@ -253,6 +253,7 @@ class UpdateAcService(private val acDao: AcDao,
         val relatedItemIds = dto.planning.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
+        dto.planning.budget.budgetSource.any { it.currency != dto.award.value.currency }.run { throw ErrorException(BS_CURRENCY) }
         return dto.planning
     }
 

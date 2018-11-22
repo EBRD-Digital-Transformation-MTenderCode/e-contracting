@@ -38,6 +38,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     BF("00.35", "Invalid business functions of person."),
     TEMPLATE_NOT_FOUND("00.36", "Template not found."),
     CONTRACT_STATUS("00.37", "Invalid contract status."),
+    BS_CURRENCY("00.21", "Invalid budget source currency."),
     CONTEXT("20.01", "Context parameter not found."),
     INVALID_TOKEN("20.02", "Invalid access token.");
 }
