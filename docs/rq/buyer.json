@@ -1,0 +1,9 @@
+{
+  "id": "cs-buyer-approval-on-",
+  "description": "Buyer has to sign the contract",
+  "title": "Signature by the Buyer",
+  "type": "approval",
+  "relatesTo": "document",
+  "requestTitle": "parties[role:buyer].persones[role:authority].",
+  "requestDescription": "Defined person has to sign the transferred document"
+}

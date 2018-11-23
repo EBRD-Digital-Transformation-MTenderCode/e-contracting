@@ -39,5 +39,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     TEMPLATE_NOT_FOUND("00.36", "Template not found."),
     CONTRACT_STATUS("00.37", "Invalid contract status."),
     CONTEXT("20.01", "Context parameter not found."),
-    INVALID_TOKEN("20.02", "Invalid access token.");
+    INVALID_TOKEN("20.02", "Invalid access token."),
+    BUYER_NAME_IS_EMPTY("20.03", "Buyer name must be not null"),
+    BUYER_IS_EMPTY("20.04", "Buyer must be not null"),
+    ORGANIZATION_AUTHORITY_PERSON_INVALID("20.05","person authority not found");
 }
