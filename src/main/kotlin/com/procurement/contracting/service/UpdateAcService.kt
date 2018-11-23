@@ -114,7 +114,7 @@ class UpdateAcService(private val acDao: AcDao,
                                          dateTime: LocalDateTime): List<Milestone>? {
         val milestonesDto = dto.contract.milestones
         //validation
-        if (milestonesDto.size == 0) throw ErrorException(MILESTONE_RELATED_ITEMS)
+        if (milestonesDto.isEmpty()) throw ErrorException(MILESTONE_RELATED_ITEMS)
         val relatedItemIds = milestonesDto.asSequence()
                 .filter { it.type != MilestoneType.X_REPORTING && it.relatedItems != null }
                 .flatMap { it.relatedItems!!.asSequence() }.toSet()
