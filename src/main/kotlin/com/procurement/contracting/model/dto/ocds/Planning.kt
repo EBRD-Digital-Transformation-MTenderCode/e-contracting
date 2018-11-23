@@ -74,13 +74,3 @@ data class PlanningBudgetSource @JsonCreator constructor(
 
         val currency: String
 )
-
-enum class AwardDocumentType(@JsonValue private val value: String) {
-        AWARD_NOTICE("awardNotice"),
-        EVALUATION_REPORTS("evaluationReports"),
-        WINNING_BID("winningBid");
-
-        override fun toString(): String {
-                return this.value
-        }
-}
