@@ -4,14 +4,14 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
-import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.Document
+import com.procurement.contracting.model.dto.FinalUpdateAcRq
+import com.procurement.contracting.model.dto.FinalUpdateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.entity.AcEntity
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -34,14 +34,8 @@ class FinalUpdateService(private val acDao: AcDao,
 //        if (!(contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.ISSUED))
 //            throw ErrorException(CONTRACT_STATUS_DETAILS)//BR-9.5.1
 
-        //    Proceeds Documents object from Request by rule BR-9.5.2;
-        dto.documents.forEach { document ->
-            contractProcess.contract.documents?.plus(element = DocumentContract(
-                id = document.id,
-                documentType = DocumentTypeContract.CONTRACT_SIGNED,
-                title = null,
-                description = null,
-                relatedLots = null))
+        contractProcess.contract.apply {
+            documents = addContractDocuments(dto.documents, documents)
         }
 
         val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
@@ -51,7 +45,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
 
         val milestones: List<Milestone> = contractProcess.contract.milestones
-            ?: mutableListOf()
+                ?: mutableListOf()
         milestones.plus(buyerMilestone)
         milestones.plus(supplierMilestone)
         milestones.plus(activationMilestone)
@@ -69,27 +63,43 @@ class FinalUpdateService(private val acDao: AcDao,
         return ResponseDto(data = FinalUpdateAcRs(contractProcess.contract))
     }
 
+    private fun addContractDocuments(documentsDto: List<Document>, documentsDb: List<DocumentContract>?): List<DocumentContract>? {
+        //update
+        val newDocuments = documentsDto.asSequence()
+                .map {
+                    DocumentContract(
+                            id = it.id,
+                            documentType = DocumentTypeContract.CONTRACT_SIGNED,
+                            title = null,
+                            description = null,
+                            relatedLots = null)
+                }
+                .toList()
+        return if (documentsDb != null && documentsDb.isNotEmpty()) (documentsDb + newDocuments)
+        else newDocuments
+    }
+
     private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-buyer-approval-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-buyer-approval-on")
 
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = buyer.id, name = buyer.name
-            ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
+                ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         val milestone = Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-            title = template.title,
-            description = template.description,
-            status = MilestoneStatus.SCHEDULED,
-            type = MilestoneType.APPROVAL,
-            relatedItems = null,
-            additionalInformation = "",
-            dueDate = LocalDateTime.now(),
-            relatedParties = relatedParties
+                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+                title = template.title,
+                description = template.description,
+                status = MilestoneStatus.SCHEDULED,
+                type = MilestoneType.APPROVAL,
+                relatedItems = null,
+                additionalInformation = "",
+                dueDate = LocalDateTime.now(),
+                relatedParties = relatedParties
         )
         return milestone
 
@@ -98,23 +108,23 @@ class FinalUpdateService(private val acDao: AcDao,
     private fun generateSupplierMilestone(supplier: OrganizationReferenceSupplier, country: String, pmd: String, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-supplier-approval-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-supplier-approval-on")
 
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = supplier.id, name = supplier.name))
 
         val milestone = Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-            title = template.title,
-            description = template.description,
-            status = MilestoneStatus.SCHEDULED,
-            type = MilestoneType.APPROVAL,
-            relatedItems = null,
-            additionalInformation = "",
-            dueDate = LocalDateTime.now(),
-            relatedParties = relatedParties
+                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+                title = template.title,
+                description = template.description,
+                status = MilestoneStatus.SCHEDULED,
+                type = MilestoneType.APPROVAL,
+                relatedItems = null,
+                additionalInformation = "",
+                dueDate = LocalDateTime.now(),
+                relatedParties = relatedParties
         )
         return milestone
 
@@ -123,24 +133,24 @@ class FinalUpdateService(private val acDao: AcDao,
     private fun generateContractActivationMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-buyer-activate-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-buyer-activate-on")
 
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = buyer.id, name = buyer.name
-            ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
+                ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         val milestone = Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-            title = template.title,
-            description = template.description,
-            status = MilestoneStatus.SCHEDULED,
-            type = MilestoneType.APPROVAL,
-            relatedItems = null,
-            additionalInformation = "",
-            dueDate = LocalDateTime.now(),
-            relatedParties = relatedParties
+                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+                title = template.title,
+                description = template.description,
+                status = MilestoneStatus.SCHEDULED,
+                type = MilestoneType.APPROVAL,
+                relatedItems = null,
+                additionalInformation = "",
+                dueDate = LocalDateTime.now(),
+                relatedParties = relatedParties
         )
         return milestone
 
@@ -149,23 +159,23 @@ class FinalUpdateService(private val acDao: AcDao,
     private fun generateValidationMilestone(country: String, pmd: String, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-treasury-validate-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-treasury-validate-on")
 
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = "hardcodeID!", name = "hardcodeNAME!"))
 
         val milestone = Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-            title = template.title,
-            description = template.description,
-            status = MilestoneStatus.SCHEDULED,
-            type = MilestoneType.APPROVAL,
-            relatedItems = null,
-            additionalInformation = "",
-            dueDate = LocalDateTime.now(),
-            relatedParties = relatedParties
+                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+                title = template.title,
+                description = template.description,
+                status = MilestoneStatus.SCHEDULED,
+                type = MilestoneType.APPROVAL,
+                relatedItems = null,
+                additionalInformation = "",
+                dueDate = LocalDateTime.now(),
+                relatedParties = relatedParties
         )
         return milestone
 
@@ -173,10 +183,10 @@ class FinalUpdateService(private val acDao: AcDao,
 
     private fun generateBuyerConfirmationRequest(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String, documentId: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-buyer-confirmation-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-buyer-confirmation-on")
 
         var requestDescription = ""
         if (language == "EN") {
@@ -186,25 +196,25 @@ class FinalUpdateService(private val acDao: AcDao,
 
         val relatedPerson = getAuthorityOrganizationPersonBuyer(buyer)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
-            title = template.requestTitle + relatedPerson.name,
-            description = requestDescription,
-            relatedPerson = relatedPerson
+                title = template.requestTitle + relatedPerson.name,
+                description = requestDescription,
+                relatedPerson = relatedPerson
         )
 
         val requestGroup = RequestGroup(
-            id = template.id + documentId + "-" + buyer.identifier?.id,
-            requests = hashSetOf(request)
+                id = template.id + documentId + "-" + buyer.identifier?.id,
+                requests = hashSetOf(request)
         )
 
         var confirmationRequest = ConfirmationRequest(
-            id = template.id + documentId,
-            relatedItem = documentId,
-            source = "buyer",
-            type = null,
-            title = null,
-            description = null,
-            relatesTo = template.relatesTo,
-            requestGroups = hashSetOf(requestGroup))
+                id = template.id + documentId,
+                relatedItem = documentId,
+                source = "buyer",
+                type = null,
+                title = null,
+                description = null,
+                relatesTo = template.relatesTo,
+                requestGroups = hashSetOf(requestGroup))
 
         if (language == "EN") {
             confirmationRequest.description = template.description
@@ -216,10 +226,10 @@ class FinalUpdateService(private val acDao: AcDao,
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier, country: String, pmd: String, language: String, documentId: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(
-            country = country,
-            pmd = pmd,
-            language = language,
-            templateId = "cs-tenderer-confirmation-on")
+                country = country,
+                pmd = pmd,
+                language = language,
+                templateId = "cs-tenderer-confirmation-on")
 
         var requestDescription = ""
         if (language == "EN") {
@@ -229,25 +239,25 @@ class FinalUpdateService(private val acDao: AcDao,
 
         val relatedPerson = getAuthorityOrganizationPersonSupplier(supplier)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
-            title = template.requestTitle + relatedPerson.name,
-            description = requestDescription,
-            relatedPerson = relatedPerson
+                title = template.requestTitle + relatedPerson.name,
+                description = requestDescription,
+                relatedPerson = relatedPerson
         )
 
         val requestGroup = RequestGroup(
-            id = template.id + documentId + "-" + supplier.identifier.id,
-            requests = hashSetOf(request)
+                id = template.id + documentId + "-" + supplier.identifier.id,
+                requests = hashSetOf(request)
         )
 
         var confirmationRequest = ConfirmationRequest(
-            id = template.id + documentId,
-            relatedItem = documentId,
-            source = "tenderer",
-            type = null,
-            title = null,
-            description = null,
-            relatesTo = template.relatesTo,
-            requestGroups = hashSetOf(requestGroup))
+                id = template.id + documentId,
+                relatedItem = documentId,
+                source = "tenderer",
+                type = null,
+                title = null,
+                description = null,
+                relatesTo = template.relatesTo,
+                requestGroups = hashSetOf(requestGroup))
 
         if (language == "EN") {
             confirmationRequest.description = template.description
