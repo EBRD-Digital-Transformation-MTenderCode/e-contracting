@@ -27,7 +27,6 @@ class FinalUpdateService(private val acDao: AcDao,
         val country = cm.context.country ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(FinalUpdateAcRq::class.java, cm.data)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
@@ -236,7 +235,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
 
         val requestGroup = RequestGroup(
-            id = template.id + documentId + "-" + supplier.identifier?.id,
+            id = template.id + documentId + "-" + supplier.identifier.id,
             requests = hashSetOf(request)
         )
 

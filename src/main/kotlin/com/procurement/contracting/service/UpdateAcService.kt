@@ -162,11 +162,11 @@ class UpdateAcService(private val acDao: AcDao,
                 MilestoneType.APPROVAL -> {
                 }
             }
-            milestonesDto.forEach { milestone ->
+            milestonesDto.forEach { mlst ->
                 transactions.asSequence()
                         .filter { it.type != TransactionType.ADVANCE && it.relatedContractMilestone == milestone.id }
                         .forEach { it.relatedContractMilestone = id }
-                milestone.id = id
+                mlst.id = id
             }
         }
         return milestonesDto
