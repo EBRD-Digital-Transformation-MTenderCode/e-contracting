@@ -170,6 +170,7 @@ class UpdateAcService(private val acDao: AcDao,
                     milestone.relatedParties = listOf(party)
                     milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
+                MilestoneType.APPROVAL->{}
             }
         }
         return milestonesDto

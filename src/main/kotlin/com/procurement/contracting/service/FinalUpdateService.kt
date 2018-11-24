@@ -248,7 +248,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
 
         val requestGroup = RequestGroup(
-            id = template.id + documentId + "-" + supplier.identifier?.id,
+            id = template.id + documentId + "-" + supplier.identifier.id,
             requests = hashSetOf(request)
         )
 
