@@ -17,7 +17,7 @@ data class Document @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class FinalUpdateAcRs @JsonCreator constructor(
 
-        val contracts: Contract
+        val contract: Contract
 
 )
 

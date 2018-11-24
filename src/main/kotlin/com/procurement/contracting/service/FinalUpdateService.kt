@@ -61,25 +61,13 @@ class FinalUpdateService(private val acDao: AcDao,
             val validationMilestone = generateValidationMilestone(country, pmd, language)
             milestones.plus(validationMilestone)
         }
-
         val confirmationRequest = contractProcess.contract.confirmationRequests ?: mutableListOf()
         val confirmationRequestBuyer = generateBuyerConfirmationRequest(buyer, country, pmd, language, dto.documents.first().id)
-
-
         confirmationRequest.plus(confirmationRequestBuyer)
-
-
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
-
-
-
-
-
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        val responseDto = convertEntityToFinalUpdateDto(entity, dateTime)
-        return ResponseDto(data = responseDto)
-
+        return ResponseDto(data = FinalUpdateAcRs(contractProcess.contract))
     }
 
     private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String): Milestone {
@@ -298,36 +286,6 @@ class FinalUpdateService(private val acDao: AcDao,
 
         throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
 
-    }
-
-    private fun convertEntityToFinalUpdateDto(entity: AcEntity, dateTime: LocalDateTime): FinalUpdateAcRs {
-        val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        val contract = contractProcess.contract
-        val contracts = Contract(
-            id = contract.id,
-            date = dateTime,
-            awardId = contract.awardId,
-            status = contract.status,
-            statusDetails = contract.statusDetails,
-            title = contract.title,
-            description = contract.description,
-            period = contract.period,
-            documents = contract.documents,
-            milestones = contract.milestones,
-            confirmationRequests = contract.confirmationRequests,
-            value = contract.value,
-            token = contract.token,
-            extendsContractID = contract.extendsContractID,
-            budgetSource = contract.budgetSource,
-            classification = contract.classification,
-            items = contract.items,
-            dateSigned = contract.dateSigned,
-            relatedProcesses = contract.relatedProcesses,
-            amendments = contract.amendments,
-            agreedMetrics = contract.agreedMetrics
-
-        )
-        return FinalUpdateAcRs(contracts = contracts)
     }
 
 
