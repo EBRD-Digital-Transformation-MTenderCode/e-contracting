@@ -78,6 +78,7 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     COMPLETE("complete"),
     UNSUCCESSFUL("unsuccessful"),
     ISSUED("issued"),
+    APPROVEMENT("approvement"),
     EMPTY("empty");
 
     override fun toString(): String {
@@ -167,6 +168,7 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     CONTRACT_GUARANTEES("contractGuarantees"),
     SUB_CONTRACT("subContract"),
     ILLUSTRATION("illustration"),
+    CONTRACT_SIGNED("contractSigned"),
     CONTRACT_SUMMARY("contractSummary");
 
     override fun toString(): String {
@@ -188,7 +190,8 @@ enum class MilestoneType(@JsonValue val value: String) {
 
     DELIVERY("delivery"),
     X_WARRANTY("x_warranty"),
-    X_REPORTING("x_reporting");
+    X_REPORTING("x_reporting"),
+    APPROVAL("approval");
 
 
     override fun toString(): String {

@@ -47,7 +47,8 @@ enum class CommandType(private val value: String) {
     CREATE_AC("createAC"),
     UPDATE_AC("updateAC"),
     SET_ISSUED_STATUS_DETAILS("setIssuedStatusDetails"),
-    GET_BUDGET_SOURCES("getActualBudgetSources");
+    GET_BUDGET_SOURCES("getActualBudgetSources"),
+    FINAL_UPDATE("ACFinalUpdate");
 
     @JsonValue
     fun value(): String {
