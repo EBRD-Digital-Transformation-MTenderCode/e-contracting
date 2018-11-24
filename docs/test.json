@@ -1,33 +1,10 @@
 {
-  "id": "e4415300-f001-11e8-af9e-1198c8f7bb26",
-  "command": "updateAC",
-  "context": {
-    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b1560",
-    "requestId": "e4415300-f001-11e8-af9e-1198c8f7bb26",
-    "cpid": "ocds-t1s2t3-MD-1542981234151",
-    "ocid": "ocds-t1s2t3-MD-1542981234151-AC-1542036270645",
-    "stage": "AC",
-    "prevStage": "AC",
-    "processType": "updateAC",
-    "operationType": "updateAC",
-    "phase": "contractPreparation",
-    "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
-    "country": "MD",
-    "language": "ro",
-    "pmd": "TEST_OT",
-    "token": "4343ab9f-3394-4dd8-8785-7ed4ca97b748",
-    "startDate": "2018-11-24T15:59:14Z",
-    "timeStamp": 1543075154993,
-    "isAuction": false,
-    "mainProcurementCategory": "services",
-    "awardCriteria": "priceOnly"
-  },
   "data": {
     "planning": {
       "implementation": {
         "transactions": [
           {
-            "id": "луп-луп-луп",
+            "id": "3f13bf60-f00d-11e8-8fea-e3e2a70bd22d",
             "type": "payment",
             "value": {
               "amount": 1000,
@@ -36,7 +13,7 @@
             "executionPeriod": {
               "durationInDays": 10
             },
-            "relatedContractMilestone": "1"
+            "relatedContractMilestone": "30611530-f00d-11e8-8fea-e3e2a70bd22d"
           }
         ]
       },
@@ -45,12 +22,12 @@
         "budgetAllocation": [
           {
             "budgetBreakdownID": "ocds-t1s2t3-MD-1542966739115-FS-1542966755379",
+            "amount": 100,
             "period": {
               "startDate": "2018-11-30T00:00:00Z",
               "endDate": "2018-11-30T23:00:00Z"
             },
-            "amount": 100,
-            "relatedItem": "37124f70-ef27-11e8-8b4b-c53fea45a7b0"
+            "relatedItem": "ff11a7d0-f005-11e8-8b4b-c53fea45a7b0"
           }
         ],
         "budgetSource": [
@@ -63,45 +40,82 @@
       }
     },
     "contract": {
+      "token": "fd7d22c3-d6b7-43c4-9020-52036242827c",
+      "id": "ocds-t1s2t3-MD-1543076917965-AC-1541460211233",
+      "date": "2018-11-24T16:46:42Z",
+      "awardId": "77b12c10-f006-11e8-8498-a736525a2642",
+      "status": "pending",
+      "statusDetails": "contractPreparation",
       "title": "title",
       "description": "description",
       "period": {
         "startDate": "2018-11-25T20:48:20Z",
         "endDate": "2018-11-26T00:00:00Z"
       },
+      "value": {
+        "amount": 100,
+        "currency": "MDL",
+        "amountNet": 100,
+        "valueAddedTaxIncluded": false
+      },
       "documents": [
         {
-          "id": "3bea0b43-9294-4a11-a03b-227e6a7a0224-1542981050915",
+          "id": "828e7aee-62c2-468f-b855-7bf23bd11bfa-1543064051561",
           "documentType": "contractSummary",
           "relatedLots": [
-            "37124f71-ef27-11e8-8b4b-c53fea45a7b0"
+            "ff11a7d1-f005-11e8-8b4b-c53fea45a7b0"
           ]
         },
         {
           "id": "a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
           "documentType": "contractSummary",
           "relatedLots": [
-            "37124f71-ef27-11e8-8b4b-c53fea45a7b0"
+            "ff11a7d1-f005-11e8-8b4b-c53fea45a7b0"
           ]
         }
       ],
       "milestones": [
         {
-          "id": "1",
+          "id": "approval-MD-IDNO-MD_00_DM-3f00fab0-f00d-11e8-8fea-e3e2a70bd22d",
+          "title": "title_000",
+          "description": "description_000",
           "type": "x_reporting",
+          "status": "scheduled",
           "additionalInformation": "дополнительная ифнормация должнаа изменяться",
           "dueDate": "2018-11-29T00:00:00Z",
-          "title": "title_000",
-          "description": "description_000"
+          "relatedParties": [
+            {
+              "id": "MD-IDNO-MD_00_DM",
+              "name": "BUYER"
+            }
+          ]
         }
       ],
       "confirmationRequests": [
         {
-          "id": "cs-tenderer-confirmation-on-document.id",
-          "relatedItem": "3bea0b43-9294-4a11-a03b-227e6a7a0224-1542981050915",
+          "id": "cs-tenderer-confirmation-on-828e7aee-62c2-468f-b855-7bf23bd11bfa-1543064051561",
+          "type": "digitalSignature",
+          "title": "Document signing",
+          "description": "Supplier has to sign the transferred document",
+          "relatesTo": "document",
+          "relatedItem": "828e7aee-62c2-468f-b855-7bf23bd11bfa-1543064051561",
           "source": "tenderer",
-          "title": "title_of_doc",
-          "description": "descr"
+          "requestGroups": [
+            {
+              "id": "cs-tenderer-confirmation-on-828e7aee-62c2-468f-b855-7bf23bd11bfa-1543064051561-MD-IDNO-f456-iioo",
+              "requests": [
+                {
+                  "id": "cs-tenderer-confirmation-on-828e7aee-62c2-468f-b855-7bf23bd11bfa-1543064051561-95-78-52",
+                  "title": "parties[role:supplier].persones[role:authority].qwerty",
+                  "description": "Defined person has to sign the transferred document",
+                  "relatedPerson": {
+                    "id": "95-78-52",
+                    "name": "qwerty"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "agreedMetrics": [
@@ -293,7 +307,7 @@
           ]
         },
         {
-          "id": "cc-subject-118b1ce0-ef28-11e8-8498-a736525a2642-37124f70-ef27-11e8-8b4b-c53fea45a7b0",
+          "id": "cc-subject-77b12c10-f006-11e8-8498-a736525a2642-ff11a7d0-f005-11e8-8b4b-c53fea45a7b0",
           "title": "Specificație pentru p",
           "description": "Informații detaliate privind obiectul achiziției",
           "observations": [
@@ -305,7 +319,7 @@
             {
               "id": "cc-subject-2",
               "notes": "Tara de origine",
-              "measure": 15
+              "measure": "15"
             },
             {
               "id": "cc-subject-3",
@@ -327,15 +341,116 @@
       ]
     },
     "award": {
-      "id": "118b1ce0-ef28-11e8-8498-a736525a2642",
-      "description": "description of award",
+      "id": "77b12c10-f006-11e8-8498-a736525a2642",
+      "date": "2018-11-24T16:46:47Z",
+      "relatedLots": [
+        "ff11a7d1-f005-11e8-8b4b-c53fea45a7b0"
+      ],
+      "relatedBid": "3cbdc5a0-f006-11e8-bed4-33557e04dd94",
+      "value": {
+        "amount": 110,
+        "currency": "MDL",
+        "amountNet": 100,
+        "valueAddedTaxIncluded": false
+      },
+      "items": [
+        {
+          "id": "ff11a7d0-f005-11e8-8b4b-c53fea45a7b0",
+          "description": "p",
+          "classification": {
+            "id": "77600000-6",
+            "scheme": "CPV",
+            "description": "Servicii privind vânătoarea"
+          },
+          "additionalClassifications": [
+            {
+              "id": "AA28-2",
+              "scheme": "CPVS",
+              "description": "Iridiu"
+            },
+            {
+              "id": "AA25-3",
+              "scheme": "CPVS",
+              "description": "Hafniu"
+            }
+          ],
+          "quantity": 10,
+          "unit": {
+            "id": "120",
+            "name": "Milion decalitri",
+            "value": {
+              "amount": 100,
+              "currency": "MDL",
+              "amountNet": 100,
+              "valueAddedTaxIncluded": false
+            }
+          },
+          "relatedLot": "ff11a7d1-f005-11e8-8b4b-c53fea45a7b0",
+          "deliveryAddress": {
+            "streetAddress": "street",
+            "postalCode": "45900",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "0301000",
+                "description": "mun.Bălţi",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "UN/LOCDE",
+                "id": "450020",
+                "description": "Dnipro"
+              }
+            }
+          }
+        }
+      ],
       "suppliers": [
         {
           "id": "MD-IDNO-f456-iioo",
+          "name": "name",
+          "identifier": {
+            "id": "f456-iioo",
+            "scheme": "MD-IDNO",
+            "legalName": "jj"
+          },
+          "address": {
+            "streetAddress": "hjk",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "0101000",
+                "description": "mun.Chişinău",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "uu",
+                "id": "321",
+                "description": "u"
+              }
+            }
+          },
+          "contactPoint": {
+            "name": "u",
+            "email": "u",
+            "telephone": "u"
+          },
           "additionalIdentifiers": [
             {
-              "scheme": "MD-IDNO",
               "id": "f456-iioo",
+              "scheme": "MD-IDNO",
               "legalName": "Legal dvdvdvName",
               "uri": "URddvdvI"
             }
@@ -345,8 +460,8 @@
               "title": "sss",
               "name": "qwerty",
               "identifier": {
-                "scheme": "MD-IDNO",
                 "id": "95-78-52",
+                "scheme": "MD-IDNO",
                 "uri": "URL*"
               },
               "businessFunctions": [
@@ -403,8 +518,8 @@
             "scale": "large",
             "permits": [
               {
-                "scheme": "MD-MD",
                 "id": "4569512354785220000",
+                "scheme": "MD-MD",
                 "url": "4",
                 "permit": {
                   "issuedBy": {
@@ -450,258 +565,30 @@
                   }
                 },
                 "identifier": {
-                  "scheme": "UA-MFO",
-                  "id": "300711"
+                  "id": "300711",
+                  "scheme": "UA-MFO"
                 },
                 "accountIdentification": {
-                  "scheme": "IBAN",
-                  "id": "2600000625637"
+                  "id": "2600000625637",
+                  "scheme": "IBAN"
                 },
                 "additionalAccountIdentifiers": [
                   {
-                    "scheme": "settlement",
-                    "id": "458-9652"
+                    "id": "458-9652",
+                    "scheme": "settlement"
                   }
                 ]
               }
             ],
             "legalForm": {
-              "scheme": "MD-IDNO",
               "id": "4592",
+              "scheme": "MD-IDNO",
               "description": "description",
               "uri": "uri"
             }
           }
         }
-      ],
-      "value": {
-        "amount": 100,
-        "currency": "MDL",
-        "amountNet": 100,
-        "valueAddedTaxIncluded": false
-      },
-      "items": [
-        {
-          "id": "37124f70-ef27-11e8-8b4b-c53fea45a7b0",
-          "quantity": 10.00,
-          "unit": {
-            "value": {
-              "amount": 100.00,
-              "currency": "MDL",
-              "amountNet": 100.00,
-              "valueAddedTaxIncluded": false
-            }
-          },
-          "deliveryAddress": {
-            "streetAddress": "street",
-            "postalCode": "45900",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0301000",
-                "description": "mun.Bălţi",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "UN/LOCDE",
-                "id": "450020",
-                "description": "Dnipro"
-              }
-            }
-          }
-        }
       ]
-    },
-    "buyer": {
-      "id": "MD-IDNO-MD_00_DM",
-      "name": "BUYER",
-      "identifier": {
-        "id": "MD_00_DM",
-        "scheme": "MD-IDNO",
-        "legalName": "string"
-      },
-      "address": {
-        "streetAddress": "ukukyo777uk",
-        "addressDetails": {
-          "country": {
-            "scheme": "iso-alpha2",
-            "id": "MD",
-            "description": "MOLDOVA",
-            "uri": "http://reference.iatistandard.org"
-          },
-          "region": {
-            "scheme": "CUATM",
-            "id": "1700000",
-            "description": "Cahul",
-            "uri": "http://statistica.md"
-          },
-          "locality": {
-            "scheme": "CUATM",
-            "id": "1701000",
-            "description": "mun.Cahul",
-            "uri": "http://statistica.md"
-          }
-        }
-      },
-      "contactPoint": {
-        "name": "CPName",
-        "email": "string@mail.ru",
-        "telephone": "string"
-      },
-      "additionalIdentifiers": [
-        {
-          "id": "MD_00_DM",
-          "scheme": "MD-IDNO",
-          "legalName": "LN",
-          "uri": "uri"
-        }
-      ],
-      "persones": [
-        {
-          "title": "title",
-          "name": "name",
-          "identifier": {
-            "id": "4569123",
-            "scheme": "MD-IDNO",
-            "uri": "uri"
-          },
-          "businessFunctions": [
-            {
-              "id": "456921",
-              "type": "authority",
-              "jobTitle": "Chief Executive Officer",
-              "period": {
-                "startDate": "2018-11-20T00:00:00Z"
-              },
-              "documents": [
-                {
-                  "id": "379e4907-5ab9-4db7-a669-9ffb6c12d781-1542640870786",
-                  "documentType": "regulatoryDocument"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "details": {
-        "typeOfBuyer": "BODY_PUBLIC",
-        "mainGeneralActivity": "HOUSING_AND_COMMUNITY_AMENITIES",
-        "mainSectoralActivity": "RAILWAY_SERVICES",
-        "bankAccounts": [
-          {
-            "description": "32dfgv",
-            "bankName": "MBank",
-            "address": {
-              "streetAddress": "address of pe",
-              "addressDetails": {
-                "country": {
-                  "scheme": "iso-alpha2",
-                  "id": "MD",
-                  "description": "asasdasdasdasd",
-                  "uri": "uri"
-                },
-                "region": {
-                  "scheme": "CUATM",
-                  "id": "0101000",
-                  "description": "sadfsdaf",
-                  "uri": "tratata"
-                },
-                "locality": {
-                  "scheme": "CUATM",
-                  "id": "0101000",
-                  "description": "DESCRIPTION"
-                }
-              }
-            },
-            "identifier": {
-              "id": "300711",
-              "scheme": "MD-BANKS"
-            },
-            "accountIdentification": {
-              "id": "2600000625637",
-              "scheme": "MD-IBAN"
-            },
-            "additionalAccountIdentifiers": [
-              {
-                "id": "456654",
-                "scheme": "MD-SETTLEMENT"
-              }
-            ]
-          }
-        ],
-        "legalForm": {
-          "id": "654",
-          "scheme": "MD-IDNO",
-          "description": "ddd",
-          "uri": "ddd"
-        }
-      }
-    },
-    "language": "ro",
-    "actualBudgetSource": [
-      {
-        "budgetBreakdownID": "ocds-t1s2t3-MD-1542966739115-FS-1542966755379",
-        "amount": 100.00,
-        "currency": "MDL"
-      }
-    ],
-    "treasuryBudgetSources": [
-      {
-        "budgetBreakdownID": "ocds-t1s2t3-MD-1542966739115-FS-1542966755379",
-        "amount": 100.00,
-        "currency": "MDL"
-      }
-    ],
-    "funders": [],
-    "payers": [
-      {
-        "id": "MD-IDNO-7787-9898-88-aeuyi",
-        "name": "NAMEP000E2 (edited)",
-        "identifier": {
-          "id": "7787-9898-88-aeuyi",
-          "scheme": "MD-IDNO",
-          "legalName": "LN"
-        },
-        "address": {
-          "streetAddress": "street",
-          "addressDetails": {
-            "country": {
-              "scheme": "iso-alpha2",
-              "id": "MD",
-              "description": "MOLDOVA",
-              "uri": "http://reference.iatistandard.org"
-            },
-            "region": {
-              "scheme": "CUATM",
-              "id": "3400000",
-              "description": "Donduşeni",
-              "uri": "http://statistica.md"
-            },
-            "locality": {
-              "scheme": "CUATM",
-              "id": "3401000",
-              "description": "or.Donduşeni (r-l Donduşeni)",
-              "uri": "http://statistica.md"
-            }
-          }
-        },
-        "contactPoint": {
-          "name": "NAME of contact person (EDITED)",
-          "email": "string@mail.ccc",
-          "telephone": "987987"
-        }
-      }
-    ],
-    "addedEI": [],
-    "excludedEI": [],
-    "addedFS": [],
-    "excludedFS": []
-  },
-  "version": "0.0.1"
+    }
+  }
 }

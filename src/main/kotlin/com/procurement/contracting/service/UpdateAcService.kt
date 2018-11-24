@@ -43,7 +43,6 @@ class UpdateAcService(private val acDao: AcDao,
             documents = updateAwardDocuments(dto, contractProcess)//BR-9.2.2
             suppliers = updateAwardSuppliers(dto, contractProcess)// BR-9.2.21
         }
-        setMilestonesId(dto)
         contractProcess.contract.apply {
             title = dto.contract.title
             description = dto.contract.description
@@ -109,31 +108,20 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-    private fun setMilestonesId(dto: UpdateAcRq) {
-        val milestones = dto.contract.milestones
+    private fun updateContractMilestones(dto: UpdateAcRq,
+                                         contractProcess: ContractProcess,
+                                         mpc: MainProcurementCategory,
+                                         dateTime: LocalDateTime): List<Milestone>? {
+        //validation
+        val milestonesDto = dto.contract.milestones
         val transactions = dto.planning.implementation.transactions
-        val milestonesIdSet = milestones.asSequence().map { it.id }.toHashSet()
-        if (milestonesIdSet.size != milestones.size) throw ErrorException(MILESTONE_ID)
+        val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
+        if (milestonesIdSet.size != milestonesDto.size) throw ErrorException(MILESTONE_ID)
         val milestonesFromTrSet = transactions.asSequence()
                 .filter { it.type != TransactionType.ADVANCE }
                 .map { it.relatedContractMilestone!! }.toHashSet()
         if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
-        milestones.forEach { milestone ->
-            val id = generationService.getTimeBasedUUID()
-            transactions.asSequence()
-                    .filter { it.relatedContractMilestone == milestone.id }
-                    .forEach { it.relatedContractMilestone = id }
-            milestone.id = id
-        }
-    }
-
-    private fun updateContractMilestones(dto: UpdateAcRq,
-                                         contractProcess: ContractProcess,
-                                         mpc: MainProcurementCategory,
-                                         dateTime: LocalDateTime): List<Milestone>? {
-        val milestonesDto = dto.contract.milestones
-        //validation
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
         val relatedItemIds = milestonesDto.asSequence()
                 .filter { it.type != MilestoneType.X_REPORTING && it.relatedItems != null }
@@ -152,26 +140,33 @@ class UpdateAcService(private val acDao: AcDao,
         }
         milestonesDto.asSequence().forEach { milestone ->
             milestone.status = MilestoneStatus.SCHEDULED
+            var id = ""
             when (milestone.type) {
                 MilestoneType.X_REPORTING -> {
                     val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name ?: "")
                     milestone.relatedParties = listOf(party)
-                    milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = listOf(party)
-                    milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
                     milestone.relatedParties = listOf(party)
-                    milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.APPROVAL -> {
                 }
+            }
+            milestonesDto.forEach { milestone ->
+                transactions.asSequence()
+                        .filter { it.type != TransactionType.ADVANCE && it.relatedContractMilestone == milestone.id }
+                        .forEach { it.relatedContractMilestone = id }
+                milestone.id = id
             }
         }
         return milestonesDto
