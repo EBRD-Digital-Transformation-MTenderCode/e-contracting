@@ -115,7 +115,7 @@ class UpdateAcService(private val acDao: AcDao,
         val milestonesIdSet = milestones.asSequence().map { it.id }.toHashSet()
         if (milestonesIdSet.size != milestones.size) throw ErrorException(MILESTONE_ID)
         val milestonesFromTrSet = transactions.asSequence()
-                .filter{it.type != TransactionType.ADVANCE}
+                .filter { it.type != TransactionType.ADVANCE }
                 .map { it.relatedContractMilestone!! }.toHashSet()
         if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
@@ -170,7 +170,8 @@ class UpdateAcService(private val acDao: AcDao,
                     milestone.relatedParties = listOf(party)
                     milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
-                MilestoneType.APPROVAL->{}
+                MilestoneType.APPROVAL -> {
+                }
             }
         }
         return milestonesDto
@@ -182,66 +183,68 @@ class UpdateAcService(private val acDao: AcDao,
                                            pmd: String,
                                            language: String): List<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
-        //validation
-        if (documents != null) {
-            val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-            val documentIds = documents.asSequence().map { it.id }.toSet()
-            if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
-        }
+        if (confRequestDto != null) {
+            //validation
+            if (documents != null) {
+                val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
+                val documentIds = documents.asSequence().map { it.id }.toSet()
+                if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
+            }
 
-        val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
-                ?: throw ErrorException(PERSON_NOT_FOUND)
-        val buyerTemplate = templateService.getConfirmationRequestTemplate(
-                country = country,
-                pmd = pmd,
-                language = language,
-                templateId = "cs-buyer-confirmation-on")
+            val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
+                    ?: throw ErrorException(PERSON_NOT_FOUND)
+            val buyerTemplate = templateService.getConfirmationRequestTemplate(
+                    country = country,
+                    pmd = pmd,
+                    language = language,
+                    templateId = "cs-buyer-confirmation-on")
 
-        val awardSupplier = dto.award.suppliers[0]
-        val tendererAuthority = getPersonByBFType(awardSupplier.persones, "authority")
-                ?: throw ErrorException(PERSON_NOT_FOUND)
-        val tendererTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
-                templateId = "cs-tenderer-confirmation-on")
-        //set
-        for (confRequest in confRequestDto) {
-            when (confRequest.source) {
-                "buyer" -> {
-                    confRequest.id = buyerTemplate.id + confRequest.relatedItem
-                    confRequest.description = buyerTemplate.description
-                    confRequest.title = buyerTemplate.title
-                    confRequest.type = buyerTemplate.type
-                    confRequest.relatesTo = buyerTemplate.relatesTo
-                    confRequest.requestGroups = setOf(
-                            RequestGroup(
-                                    id = buyerTemplate.id + confRequest.relatedItem + "-" + dto.buyer.id,
-                                    requests = setOf(Request(
-                                            id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
-                                            title = buyerTemplate.requestTitle + buyerAuthority.name,
-                                            description = buyerTemplate.requestDescription,
-                                            relatedPerson = buyerAuthority
-                                    ))
-                            )
-                    )
+            val awardSupplier = dto.award.suppliers[0]
+            val tendererAuthority = getPersonByBFType(awardSupplier.persones, "authority")
+                    ?: throw ErrorException(PERSON_NOT_FOUND)
+            val tendererTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
+                    templateId = "cs-tenderer-confirmation-on")
+            //set
+            for (confRequest in confRequestDto) {
+                when (confRequest.source) {
+                    "buyer" -> {
+                        confRequest.id = buyerTemplate.id + confRequest.relatedItem
+                        confRequest.description = buyerTemplate.description
+                        confRequest.title = buyerTemplate.title
+                        confRequest.type = buyerTemplate.type
+                        confRequest.relatesTo = buyerTemplate.relatesTo
+                        confRequest.requestGroups = setOf(
+                                RequestGroup(
+                                        id = buyerTemplate.id + confRequest.relatedItem + "-" + dto.buyer.id,
+                                        requests = setOf(Request(
+                                                id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
+                                                title = buyerTemplate.requestTitle + buyerAuthority.name,
+                                                description = buyerTemplate.requestDescription,
+                                                relatedPerson = buyerAuthority
+                                        ))
+                                )
+                        )
+                    }
+                    "tenderer" -> {
+                        confRequest.id = tendererTemplate.id + confRequest.relatedItem
+                        confRequest.description = tendererTemplate.description
+                        confRequest.title = tendererTemplate.title
+                        confRequest.type = tendererTemplate.type
+                        confRequest.relatesTo = tendererTemplate.relatesTo
+                        confRequest.requestGroups = setOf(
+                                RequestGroup(
+                                        id = tendererTemplate.id + confRequest.relatedItem + "-" + awardSupplier.id,
+                                        requests = setOf(Request(
+                                                relatedPerson = tendererAuthority,
+                                                id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
+                                                title = tendererTemplate.requestTitle + tendererAuthority.name,
+                                                description = tendererTemplate.requestDescription
+                                        ))
+                                )
+                        )
+                    }
+                    else -> throw ErrorException(CONFIRMATION_SOURCE)
                 }
-                "tenderer" -> {
-                    confRequest.id = tendererTemplate.id + confRequest.relatedItem
-                    confRequest.description = tendererTemplate.description
-                    confRequest.title = tendererTemplate.title
-                    confRequest.type = tendererTemplate.type
-                    confRequest.relatesTo = tendererTemplate.relatesTo
-                    confRequest.requestGroups = setOf(
-                            RequestGroup(
-                                    id = tendererTemplate.id + confRequest.relatedItem + "-" + awardSupplier.id,
-                                    requests = setOf(Request(
-                                            relatedPerson = tendererAuthority,
-                                            id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
-                                            title = tendererTemplate.requestTitle + tendererAuthority.name,
-                                            description = tendererTemplate.requestDescription
-                                    ))
-                            )
-                    )
-                }
-                else -> throw ErrorException(CONFIRMATION_SOURCE)
             }
         }
         return confRequestDto
