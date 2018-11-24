@@ -31,8 +31,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        if (!(contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.ISSUED))
-            throw ErrorException(CONTRACT_STATUS_DETAILS)//BR-9.5.1
+//        if (!(contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.ISSUED))
+//            throw ErrorException(CONTRACT_STATUS_DETAILS)//BR-9.5.1
 
         //    Proceeds Documents object from Request by rule BR-9.5.2;
         dto.documents.forEach { document ->
