@@ -73,7 +73,7 @@ class FinalUpdateService(private val acDao: AcDao,
                             documentType = DocumentTypeContract.CONTRACT_SIGNED,
                             title = null,
                             description = null,
-                            relatedLots = null)
+                            relatedLots = listOf(""))
                 }
                 .toList()
         return if (documentsDb != null && documentsDb.isNotEmpty()) (documentsDb + newDocuments)
