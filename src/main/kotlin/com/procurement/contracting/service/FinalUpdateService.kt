@@ -75,10 +75,6 @@ class FinalUpdateService(private val acDao: AcDao,
 
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
 
-
-
-
-
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         val responseDto = convertEntityToFinalUpdateDto(entity, dateTime, null)
