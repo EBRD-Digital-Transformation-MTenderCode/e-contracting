@@ -44,19 +44,23 @@ class FinalUpdateService(private val acDao: AcDao,
         val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)
         val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
 
-        val milestones: List<Milestone> = contractProcess.contract.milestones
-                ?: mutableListOf()
-        milestones.plus(buyerMilestone)
-        milestones.plus(supplierMilestone)
-        milestones.plus(activationMilestone)
+        val milestones = contractProcess.contract.milestones?.toMutableList() ?: mutableListOf()
+        milestones.add(buyerMilestone)
+        milestones.add(buyerMilestone)
+        milestones.add(supplierMilestone)
+        milestones.add(activationMilestone)
 
         if (contractProcess.treasuryBudgetSources != null) {
             val validationMilestone = generateValidationMilestone(country, pmd, language)
-            milestones.plus(validationMilestone)
+           milestones.add(validationMilestone)
         }
-        val confirmationRequest = contractProcess.contract.confirmationRequests ?: mutableListOf()
+        contractProcess.contract.milestones = milestones
+
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
         val confirmationRequestBuyer = generateBuyerConfirmationRequest(buyer, country, pmd, language, dto.documents.first().id)
-        confirmationRequest.plus(confirmationRequestBuyer)
+        confirmationRequests.add(confirmationRequestBuyer)
+        contractProcess.contract.confirmationRequests = confirmationRequests
+
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
