@@ -98,7 +98,7 @@ class FinalUpdateService(private val acDao: AcDao,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
-                additionalInformation = "",
+                additionalInformation = null,
                 dueDate = LocalDateTime.now(),
                 relatedParties = relatedParties
         )
@@ -121,7 +121,7 @@ class FinalUpdateService(private val acDao: AcDao,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
-                additionalInformation = "",
+                additionalInformation = null,
                 dueDate = LocalDateTime.now(),
                 relatedParties = relatedParties
         )
@@ -145,7 +145,7 @@ class FinalUpdateService(private val acDao: AcDao,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
-                additionalInformation = "",
+                additionalInformation = null,
                 dueDate = LocalDateTime.now(),
                 relatedParties = relatedParties
         )
@@ -168,7 +168,7 @@ class FinalUpdateService(private val acDao: AcDao,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
-                additionalInformation = "",
+                additionalInformation = null,
                 dueDate = LocalDateTime.now(),
                 relatedParties = relatedParties
         )
