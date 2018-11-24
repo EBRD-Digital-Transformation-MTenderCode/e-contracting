@@ -114,7 +114,9 @@ class UpdateAcService(private val acDao: AcDao,
         val transactions = dto.planning.implementation.transactions
         val milestonesIdSet = milestones.asSequence().map { it.id }.toHashSet()
         if (milestonesIdSet.size != milestones.size) throw ErrorException(MILESTONE_ID)
-        val milestonesFromTrSet = transactions.asSequence().map { it.relatedContractMilestone }.toHashSet()
+        val milestonesFromTrSet = transactions.asSequence()
+                .filter{it.type != TransactionType.ADVANCE}
+                .map { it.relatedContractMilestone!! }.toHashSet()
         if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         milestones.forEach { milestone ->

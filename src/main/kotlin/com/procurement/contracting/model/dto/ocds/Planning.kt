@@ -32,7 +32,7 @@ data class Transaction @JsonCreator constructor(
 
         val executionPeriod: ExecutionPeriod,
 
-        var relatedContractMilestone: String
+        var relatedContractMilestone: String?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

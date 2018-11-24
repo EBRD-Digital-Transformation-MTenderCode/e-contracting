@@ -1,11 +1,11 @@
 {
-  "id": "ef6644d0-ef4c-11e8-8d6a-71058db8a22b",
+  "id": "e4415300-f001-11e8-af9e-1198c8f7bb26",
   "command": "updateAC",
   "context": {
-    "operationId": "a2bcd000-b00d-4644-b0e6-4b75020b1002",
-    "requestId": "ef6644d0-ef4c-11e8-8d6a-71058db8a22b",
-    "cpid": "ocds-t1s2t3-MD-1542975938168",
-    "ocid": "ocds-t1s2t3-MD-1542975938168-AC-1541082877321",
+    "operationId": "a1bcd000-b00d-4644-b0e6-4b75020b1560",
+    "requestId": "e4415300-f001-11e8-af9e-1198c8f7bb26",
+    "cpid": "ocds-t1s2t3-MD-1542981234151",
+    "ocid": "ocds-t1s2t3-MD-1542981234151-AC-1542036270645",
     "stage": "AC",
     "prevStage": "AC",
     "processType": "updateAC",
@@ -15,9 +15,9 @@
     "country": "MD",
     "language": "ro",
     "pmd": "TEST_OT",
-    "token": "6f1c5bb3-9c4b-4178-9148-5d4a60d34629",
-    "startDate": "2018-11-23T18:23:54Z",
-    "timeStamp": 1542997434781,
+    "token": "4343ab9f-3394-4dd8-8785-7ed4ca97b748",
+    "startDate": "2018-11-24T15:59:14Z",
+    "timeStamp": 1543075154993,
     "isAuction": false,
     "mainProcurementCategory": "services",
     "awardCriteria": "priceOnly"
@@ -28,14 +28,15 @@
         "transactions": [
           {
             "id": "луп-луп-луп",
-            "type": "advance",
+            "type": "payment",
             "value": {
               "amount": 1000,
               "currency": "MDL"
             },
             "executionPeriod": {
               "durationInDays": 10
-            }
+            },
+            "relatedContractMilestone": "1"
           }
         ]
       },
@@ -49,7 +50,7 @@
               "endDate": "2018-11-30T23:00:00Z"
             },
             "amount": 100,
-            "relatedItem": "e26b6f80-ef1a-11e8-8b4b-c53fea45a7b0"
+            "relatedItem": "37124f70-ef27-11e8-8b4b-c53fea45a7b0"
           }
         ],
         "budgetSource": [
@@ -70,32 +71,37 @@
       },
       "documents": [
         {
-          "id": "196a3d73-f052-4dab-abbe-d575eb51875d-1542906812456",
+          "id": "3bea0b43-9294-4a11-a03b-227e6a7a0224-1542981050915",
           "documentType": "contractSummary",
           "relatedLots": [
-            "e26b6f81-ef1a-11e8-8b4b-c53fea45a7b0"
+            "37124f71-ef27-11e8-8b4b-c53fea45a7b0"
           ]
         },
         {
           "id": "a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
           "documentType": "contractSummary",
           "relatedLots": [
-            "e26b6f81-ef1a-11e8-8b4b-c53fea45a7b0"
+            "37124f71-ef27-11e8-8b4b-c53fea45a7b0"
           ]
         }
       ],
       "milestones": [
         {
-          "relatedItems": [
-            "e26b6f80-ef1a-11e8-8b4b-c53fea45a7b0"
-          ]
+          "id": "1",
+          "type": "x_reporting",
+          "additionalInformation": "дополнительная ифнормация должнаа изменяться",
+          "dueDate": "2018-11-29T00:00:00Z",
+          "title": "title_000",
+          "description": "description_000"
         }
       ],
       "confirmationRequests": [
         {
           "id": "cs-tenderer-confirmation-on-document.id",
-          "relatedItem": "a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
-          "source": "tenderer"
+          "relatedItem": "3bea0b43-9294-4a11-a03b-227e6a7a0224-1542981050915",
+          "source": "tenderer",
+          "title": "title_of_doc",
+          "description": "descr"
         }
       ],
       "agreedMetrics": [
@@ -287,7 +293,7 @@
           ]
         },
         {
-          "id": "cc-subject-31e00d90-ef1c-11e8-8498-a736525a2642-e26b6f80-ef1a-11e8-8b4b-c53fea45a7b0",
+          "id": "cc-subject-118b1ce0-ef28-11e8-8498-a736525a2642-37124f70-ef27-11e8-8b4b-c53fea45a7b0",
           "title": "Specificație pentru p",
           "description": "Informații detaliate privind obiectul achiziției",
           "observations": [
@@ -321,7 +327,7 @@
       ]
     },
     "award": {
-      "id": "31e00d90-ef1c-11e8-8498-a736525a2642",
+      "id": "118b1ce0-ef28-11e8-8498-a736525a2642",
       "description": "description of award",
       "suppliers": [
         {
@@ -468,15 +474,6 @@
           }
         }
       ],
-      "documents": [
-        {
-          "id": "316980b8-7c67-40c0-ac6d-9886996d39f2-1542818989778",
-          "documentType": "awardNotice",
-          "relatedLots": [
-            "e26b6f81-ef1a-11e8-8b4b-c53fea45a7b0"
-          ]
-        }
-      ],
       "value": {
         "amount": 100,
         "currency": "MDL",
@@ -485,7 +482,7 @@
       },
       "items": [
         {
-          "id": "e26b6f80-ef1a-11e8-8b4b-c53fea45a7b0",
+          "id": "37124f70-ef27-11e8-8b4b-c53fea45a7b0",
           "quantity": 10.00,
           "unit": {
             "value": {
