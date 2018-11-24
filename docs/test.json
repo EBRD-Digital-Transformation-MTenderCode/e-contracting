@@ -3,7 +3,7 @@
   "ocid": "ocds-t1s2t3-MD-1543076917965-AC-1541460211233",
   "documents": [
     {
-      "id": "129a97e5-2595-4cb2-bcfd-2fbec9db1546-1543087464922"
+      "id": "a3068ce0-f894-4212-a738-19ea89be3ca6-1543088477614"
     }
   ],
   "contract": {
@@ -39,6 +39,10 @@
         "relatedLots": [
           "ff11a7d1-f005-11e8-8b4b-c53fea45a7b0"
         ]
+      },
+      {
+        "id": "a3068ce0-f894-4212-a738-19ea89be3ca6-1543088477614",
+        "documentType": "contractSigned"
       }
     ],
     "milestones": [
