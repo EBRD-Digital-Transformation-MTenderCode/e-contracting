@@ -180,34 +180,25 @@ class FinalUpdateService(private val acDao: AcDao,
                 pmd = pmd,
                 language = language,
                 templateId = "cs-buyer-confirmation-on")
-        var requestDescription = ""
-        if (language == "EN") {
-            requestDescription = template.description
-        }
         val relatedPerson = getAuthorityOrganizationPersonBuyer(buyer)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = requestDescription,
+                description = template.description,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
                 id = template.id + documentId + "-" + buyer.identifier?.id,
                 requests = hashSetOf(request)
         )
-        var confirmationRequest = ConfirmationRequest(
+        return ConfirmationRequest(
                 id = template.id + documentId,
                 relatedItem = documentId,
-                source = "buyer",
-                type = "digitalSignature",
-                title = null,
-                description = null,
+                source = template.source!!,
+                type = template.type,
+                title = template.title,
+                description = template.description,
                 relatesTo = template.relatesTo,
                 requestGroups = hashSetOf(requestGroup))
-        if (language == "EN") {
-            confirmationRequest.description = template.description
-            confirmationRequest.title = template.title
-        }
-        return confirmationRequest
     }
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier, country: String, pmd: String, language: String, documentId: String): ConfirmationRequest {
@@ -216,34 +207,25 @@ class FinalUpdateService(private val acDao: AcDao,
                 pmd = pmd,
                 language = language,
                 templateId = "cs-tenderer-confirmation-on")
-        var requestDescription = ""
-        if (language == "EN") {
-            requestDescription = template.description
-        }
         val relatedPerson = getAuthorityOrganizationPersonSupplier(supplier)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = requestDescription,
+                description = template.description,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
                 id = template.id + documentId + "-" + supplier.identifier.id,
                 requests = hashSetOf(request)
         )
-        val confirmationRequest = ConfirmationRequest(
+        return ConfirmationRequest(
                 id = template.id + documentId,
                 relatedItem = documentId,
-                source = "tenderer",
-                type = null,
-                title = null,
-                description = null,
+                source = template.source!!,
+                type = template.type,
+                title = template.title,
+                description = template.description,
                 relatesTo = template.relatesTo,
                 requestGroups = hashSetOf(requestGroup))
-        if (language == "EN") {
-            confirmationRequest.description = template.description
-            confirmationRequest.title = template.title
-        }
-        return confirmationRequest
     }
 
     private fun getAuthorityOrganizationPersonBuyer(buyer: OrganizationReferenceBuyer): RelatedPerson {
