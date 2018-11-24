@@ -43,6 +43,7 @@ class UpdateAcService(private val acDao: AcDao,
             documents = updateAwardDocuments(dto, contractProcess)//BR-9.2.2
             suppliers = updateAwardSuppliers(dto, contractProcess)// BR-9.2.21
         }
+        setMilestonesId(dto)
         contractProcess.contract.apply {
             title = dto.contract.title
             description = dto.contract.description
@@ -105,6 +106,23 @@ class UpdateAcService(private val acDao: AcDao,
             this.description = documentDto.description
             this.documentType = documentDto.documentType
             this.relatedLots = documentDto.relatedLots
+        }
+    }
+
+    private fun setMilestonesId(dto: UpdateAcRq) {
+        val milestones = dto.contract.milestones
+        val transactions = dto.planning.implementation.transactions
+        val milestonesIdSet = milestones.asSequence().map { it.id }.toHashSet()
+        if (milestonesIdSet.size != milestones.size) throw ErrorException(MILESTONE_ID)
+        val milestonesFromTrSet = transactions.asSequence().map { it.relatedContractMilestone }.toHashSet()
+        if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
+        if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
+        milestones.forEach { milestone ->
+            val id = generationService.getTimeBasedUUID()
+            transactions.asSequence()
+                    .filter { it.relatedContractMilestone == milestone.id }
+                    .forEach { it.relatedContractMilestone = id }
+            milestone.id = id
         }
     }
 
@@ -255,7 +273,6 @@ class UpdateAcService(private val acDao: AcDao,
         val relatedItemIds = dto.planning.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
-
         return dto.planning
     }
 

@@ -40,6 +40,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CONTRACT_STATUS("00.37", "Invalid contract status."),
     BS_CURRENCY("00.38", "Invalid budget source currency."),
     MILESTONES_EMPTY("00.39", "Milestones must not be empty."),
+    MILESTONE_ID("00.40", "Invalid milestone id."),
+    INVALID_TR_RELATED_MILESTONES("00.41", "Invalid transaction related milestone id"),
     CONTEXT("20.01", "Context parameter not found."),
     INVALID_TOKEN("20.02", "Invalid access token.");
 }
