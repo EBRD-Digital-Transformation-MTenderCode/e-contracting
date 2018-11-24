@@ -7,55 +7,62 @@ import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class FinalUpdateAcRq @JsonCreator constructor(
-    val documents: List<Document>
+
+        val documents: List<Document>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Document @JsonCreator constructor(
-    val id: String
+
+        val id: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class FinalUpdateAcRs @JsonCreator constructor(
 
-    val contract: ContractFinalUpdate,
-    val approveBody: ApproveBody?
+        val contract: ContractFinalUpdate,
+
+        val approveBody: ApproveBody?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractFinalUpdate @JsonCreator constructor(
 
-    val id: String,
+        val id: String,
 
-    var date: LocalDateTime,
+        var date: LocalDateTime,
 
-    val awardId: String,
+        val awardId: String,
 
-    val status: ContractStatus,
+        val status: ContractStatus,
 
-    var statusDetails: ContractStatusDetails,
+        var statusDetails: ContractStatusDetails,
 
-    var title: String?,
+        var title: String?,
 
-    var description: String?,
+        var description: String?,
 
-    var period: Period?,
+        var period: Period?,
 
-    var documents: List<DocumentContract>?,
+        var documents: List<DocumentContract>?,
 
-    var milestones: List<Milestone>?,
+        var milestones: List<Milestone>?,
 
-    var confirmationRequests: List<ConfirmationRequest>?,
+        var confirmationRequests: List<ConfirmationRequest>?,
 
-    var value: ValueTax?
+        var value: ValueTax?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ApproveBody @JsonCreator constructor(
-    val name: String,
-    val id: String,
-    val identifier: Identifier,
-    val contactPoint: ContactPoint
+
+        val name: String,
+
+        val id: String,
+
+        val identifier: Identifier,
+
+        val contactPoint: ContactPoint
 )
 
 
