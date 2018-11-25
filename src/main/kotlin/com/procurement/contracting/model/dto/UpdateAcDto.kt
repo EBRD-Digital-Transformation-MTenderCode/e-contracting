@@ -31,6 +31,8 @@ data class AwardUpdate @JsonCreator constructor(
 
         val id: String,
 
+        var description: String?,
+
         var value: ValueUpdate,
 
         var items: List<ItemUpdate>,

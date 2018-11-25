@@ -39,6 +39,7 @@ class UpdateAcService(private val acDao: AcDao,
         validateAwards(dto, contractProcess)
         validateDocsRelatedLots(dto, contractProcess)
         contractProcess.award.apply {
+            dto.award.description?.let { description = it }
             value = updateAwardValue(dto, contractProcess)
             items = updateAwardItems(dto, contractProcess)//BR-9.2.3
             documents = updateAwardDocuments(dto, contractProcess)//BR-9.2.2
