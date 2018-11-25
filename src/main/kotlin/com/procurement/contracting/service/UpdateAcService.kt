@@ -37,6 +37,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
+        validateDocsRelatedLots(dto, contractProcess)
         contractProcess.award.apply {
             value = updateAwardValue(dto, contractProcess)
             items = updateAwardItems(dto, contractProcess)//BR-9.2.3
@@ -453,5 +454,29 @@ class UpdateAcService(private val acDao: AcDao,
                 .sumByDouble { it.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         if (award.value.amountNet != planningAmount) throw ErrorException(AWARD_VALUE)
+    }
+
+    private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
+        val awardRelatedLotsDb = contractProcess.award.relatedLots.toHashSet()
+        val awardDocumentsDto = dto.award.documents
+        if (awardDocumentsDto != null) {
+            val lotsFromAwardDocuments = awardDocumentsDto.asSequence()
+                    .filter { it.relatedLots != null }
+                    .flatMap { it.relatedLots!!.asSequence() }
+                    .toHashSet()
+            if (awardRelatedLotsDb.isNotEmpty()) {
+                if (!awardRelatedLotsDb.containsAll(lotsFromAwardDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
+            }
+        }
+        val contractDocumentsDto = dto.contract.documents
+        if (contractDocumentsDto != null) {
+            val lotsFromContractDocuments = contractDocumentsDto.asSequence()
+                    .filter { it.relatedLots != null }
+                    .flatMap { it.relatedLots!!.asSequence() }
+                    .toHashSet()
+            if (lotsFromContractDocuments.isNotEmpty()) {
+                if (!awardRelatedLotsDb.containsAll(lotsFromContractDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
+            }
+        }
     }
 }
