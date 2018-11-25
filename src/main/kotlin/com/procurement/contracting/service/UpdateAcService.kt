@@ -17,13 +17,17 @@ import java.util.*
 
 @Service
 class UpdateAcService(private val acDao: AcDao,
-                      private val generationService: GenerationService) {
+                      private val generationService: GenerationService,
+                      private val templateService: TemplateService) {
 
     fun updateAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val country = cm.context.country ?: throw ErrorException(CONTEXT)
+        val language = cm.context.language ?: throw ErrorException(CONTEXT)
+        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
@@ -33,7 +37,9 @@ class UpdateAcService(private val acDao: AcDao,
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
+        validateDocsRelatedLots(dto, contractProcess)
         contractProcess.award.apply {
+            dto.award.description?.let { description = it }
             value = updateAwardValue(dto, contractProcess)
             items = updateAwardItems(dto, contractProcess)//BR-9.2.3
             documents = updateAwardDocuments(dto, contractProcess)//BR-9.2.2
@@ -47,7 +53,8 @@ class UpdateAcService(private val acDao: AcDao,
             period = updateContractPeriod(dto, dateTime) //VR-9.2.18
             documents = updateContractDocuments(dto, contractProcess)//BR-9.2.10
             milestones = updateContractMilestones(dto, contractProcess, mpc, dateTime)//BR-9.2.11
-            confirmationRequests = updateConfirmationRequests(dto, documents!!)//BR-9.2.16
+            confirmationRequests = updateConfirmationRequests(dto = dto, documents = documents, country = country, pmd = pmd, language = language)//BR-9.2.16
+            agreedMetrics = dto.contract.agreedMetrics
         }
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
@@ -59,7 +66,10 @@ class UpdateAcService(private val acDao: AcDao,
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = contractProcess.copy(buyer = null, treasuryBudgetSources = null))
+        return ResponseDto(data = UpdateAcRs(
+                planning = contractProcess.planning!!,
+                contract = contractProcess.contract,
+                award = contractProcess.award))
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
@@ -79,7 +89,7 @@ class UpdateAcService(private val acDao: AcDao,
 
     private fun updateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentContract>? {
         //validation
-        val documentsDto = dto.contract.documents
+        val documentsDto = dto.contract.documents ?: return contractProcess.contract.documents
         val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
@@ -96,6 +106,7 @@ class UpdateAcService(private val acDao: AcDao,
             this.title = documentDto.title
             this.description = documentDto.description
             this.documentType = documentDto.documentType
+            this.relatedLots = documentDto.relatedLots
         }
     }
 
@@ -103,10 +114,19 @@ class UpdateAcService(private val acDao: AcDao,
                                          contractProcess: ContractProcess,
                                          mpc: MainProcurementCategory,
                                          dateTime: LocalDateTime): List<Milestone>? {
-        val milestonesDto = dto.contract.milestones
         //validation
+        val milestonesDto = dto.contract.milestones
+        val transactions = dto.planning.implementation.transactions
+        val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
+        if (milestonesIdSet.size != milestonesDto.size) throw ErrorException(MILESTONE_ID)
+        val milestonesFromTrSet = transactions.asSequence()
+                .filter { it.type != TransactionType.ADVANCE }
+                .map { it.relatedContractMilestone!! }.toHashSet()
+        if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
+        if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
+        if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
         val relatedItemIds = milestonesDto.asSequence()
-                .filter { it.type != MilestoneType.X_REPORTING }
+                .filter { it.type != MilestoneType.X_REPORTING && it.relatedItems != null }
                 .flatMap { it.relatedItems!!.asSequence() }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
@@ -122,80 +142,106 @@ class UpdateAcService(private val acDao: AcDao,
         }
         milestonesDto.asSequence().forEach { milestone ->
             milestone.status = MilestoneStatus.SCHEDULED
+            var id = ""
             when (milestone.type) {
                 MilestoneType.X_REPORTING -> {
-                    val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name)
-                    milestone.relatedParties = party
-                    milestone.id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    val party = RelatedParty(id = dto.buyer.id, name = dto.buyer.name ?: "")
+                    milestone.relatedParties = listOf(party)
+                    id = "approval-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.DELIVERY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
-                    milestone.relatedParties = party
-                    milestone.id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    milestone.relatedParties = listOf(party)
+                    id = "delivery-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
                 MilestoneType.X_WARRANTY -> {
                     val party = contractProcess.award.suppliers.asSequence()
                             .map { RelatedParty(id = it.id, name = it.name) }.first()
-                    milestone.relatedParties = party
-                    milestone.id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
+                    milestone.relatedParties = listOf(party)
+                    id = "x_warranty-" + party.id + "-" + generationService.getTimeBasedUUID()
                 }
+                MilestoneType.APPROVAL -> {
+                }
+            }
+            milestonesDto.forEach { mlst ->
+                transactions.asSequence()
+                        .filter { it.type != TransactionType.ADVANCE && it.relatedContractMilestone == milestone.id }
+                        .forEach { it.relatedContractMilestone = id }
+                mlst.id = id
             }
         }
         return milestonesDto
     }
 
-    private fun updateConfirmationRequests(dto: UpdateAcRq, documents: List<DocumentContract>): List<ConfirmationRequest>? {
+    private fun updateConfirmationRequests(dto: UpdateAcRq,
+                                           documents: List<DocumentContract>?,
+                                           country: String,
+                                           pmd: String,
+                                           language: String): List<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
-        //validation
-        val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-        val documentIds = documents.asSequence().map { it.id }.toSet()
-        if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
-        //set
-        for (confRequest in confRequestDto) {
-            when (confRequest.source) {
-                "buyer" -> {
-                    val authority = getPersonByBFType(dto.buyer.persones, "authority")
-                            ?: throw ErrorException(PERSON_NOT_FOUND)
-                    confRequest.id = "cs-buyer-confirmation-on-" + confRequest.relatedItem
-                    confRequest.description = "Buyer has to sign the transferred document"
-                    confRequest.title = "Document signing"
-                    confRequest.type = "digitalSignature"
-                    confRequest.relatesTo = "document"
-                    confRequest.requestGroups = setOf(
-                            RequestGroup(
-                                    id = "cs-buyer-confirmation-on-" + confRequest.relatedItem + "-" + dto.buyer.id,
-                                    requests = setOf(Request(
-                                            relatedPerson = authority,
-                                            id = "cs-buyer-confirmation-on-" + confRequest.relatedItem + "-" + authority.id,
-                                            title = "parties[role:buyer].persones[role:authority]." + authority.name,
-                                            description = "Defined person has to sign the transferred document"
-                                    ))
-                            )
-                    )
+        if (confRequestDto != null) {
+            //validation
+            if (documents != null) {
+                val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
+                val documentIds = documents.asSequence().map { it.id }.toSet()
+                if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
+            }
+
+            val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
+                    ?: throw ErrorException(PERSON_NOT_FOUND)
+            val buyerTemplate = templateService.getConfirmationRequestTemplate(
+                    country = country,
+                    pmd = pmd,
+                    language = language,
+                    templateId = "cs-buyer-confirmation-on")
+
+            val awardSupplier = dto.award.suppliers[0]
+            val tendererAuthority = getPersonByBFType(awardSupplier.persones, "authority")
+                    ?: throw ErrorException(PERSON_NOT_FOUND)
+            val tendererTemplate = templateService.getConfirmationRequestTemplate(country = country, pmd = pmd, language = language,
+                    templateId = "cs-tenderer-confirmation-on")
+            //set
+            for (confRequest in confRequestDto) {
+                when (confRequest.source) {
+                    "buyer" -> {
+                        confRequest.id = buyerTemplate.id + confRequest.relatedItem
+                        confRequest.description = buyerTemplate.description
+                        confRequest.title = buyerTemplate.title
+                        confRequest.type = buyerTemplate.type
+                        confRequest.relatesTo = buyerTemplate.relatesTo
+                        confRequest.requestGroups = setOf(
+                                RequestGroup(
+                                        id = buyerTemplate.id + confRequest.relatedItem + "-" + dto.buyer.id,
+                                        requests = setOf(Request(
+                                                id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
+                                                title = buyerTemplate.requestTitle + buyerAuthority.name,
+                                                description = buyerTemplate.requestDescription,
+                                                relatedPerson = buyerAuthority
+                                        ))
+                                )
+                        )
+                    }
+                    "tenderer" -> {
+                        confRequest.id = tendererTemplate.id + confRequest.relatedItem
+                        confRequest.description = tendererTemplate.description
+                        confRequest.title = tendererTemplate.title
+                        confRequest.type = tendererTemplate.type
+                        confRequest.relatesTo = tendererTemplate.relatesTo
+                        confRequest.requestGroups = setOf(
+                                RequestGroup(
+                                        id = tendererTemplate.id + confRequest.relatedItem + "-" + awardSupplier.id,
+                                        requests = setOf(Request(
+                                                relatedPerson = tendererAuthority,
+                                                id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
+                                                title = tendererTemplate.requestTitle + tendererAuthority.name,
+                                                description = tendererTemplate.requestDescription
+                                        ))
+                                )
+                        )
+                    }
+                    else -> throw ErrorException(CONFIRMATION_SOURCE)
                 }
-                "tenderer" -> {
-                    val awardSupplier = dto.award.suppliers[0]
-                    val authority = getPersonByBFType(awardSupplier.persones, "authority")
-                            ?: throw ErrorException(PERSON_NOT_FOUND)
-                    confRequest.id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem
-                    confRequest.description = "Supplier has to sign the transferred document"
-                    confRequest.title = "Document signing"
-                    confRequest.type = "digitalSignature"
-                    confRequest.relatesTo = "document"
-                    confRequest.requestGroups = setOf(
-                            RequestGroup(
-                                    id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem + "-" + awardSupplier.id,
-                                    requests = setOf(Request(
-                                            relatedPerson = authority,
-                                            id = "cs-tenderer-confirmation-on-" + confRequest.relatedItem + "-" + authority.id,
-                                            title = "parties[role:supplier].persones[role:authority]." + authority.name,
-                                            description = "Defined person has to sign the transferred document"
-                                    ))
-                            )
-                    )
-                }
-                else -> throw ErrorException(CONFIRMATION_SOURCE)
             }
         }
         return confRequestDto
@@ -220,7 +266,9 @@ class UpdateAcService(private val acDao: AcDao,
 
     private fun validateUpdatePlanning(dto: UpdateAcRq): Planning {
         //BR-9.2.6
+        if (dto.planning.budget.budgetSource.any { it.currency != dto.award.value.currency }) throw ErrorException(BS_CURRENCY)
         val transactions = dto.planning.implementation.transactions
+        if (transactions.isEmpty()) throw ErrorException(TRANSACTIONS)
         val transactionsId = transactions.asSequence().map { it.id }.toHashSet()
         if (transactionsId.size != transactions.size) throw ErrorException(TRANSACTIONS)
         transactions.forEach { it.id = generationService.getTimeBasedUUID() }
@@ -230,7 +278,6 @@ class UpdateAcService(private val acDao: AcDao,
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
         return dto.planning
     }
-
 
     private fun updateAwardValue(dto: UpdateAcRq, contractProcess: ContractProcess): ValueTax {
         return contractProcess.award.value.copy(
@@ -246,7 +293,7 @@ class UpdateAcService(private val acDao: AcDao,
         val suppliersDtoIds = suppliersDto.asSequence().map { it.id }.toSet()
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
-        if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(TRANSACTIONS)
+        if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
         //update
         suppliersDb.forEach { supplierDb -> supplierDb.update(suppliersDto.firstOrNull { it.id == supplierDb.id }) }
         return suppliersDb
@@ -255,7 +302,9 @@ class UpdateAcService(private val acDao: AcDao,
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
             this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
-            this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            if (supplierDto.additionalIdentifiers.isNotEmpty()) {
+                this.additionalIdentifiers = supplierDto.additionalIdentifiers
+            }
             this.details = updateDetails(supplierDto.details)
         }
     }
@@ -263,7 +312,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun updateDetails(details: DetailsSupplierUpdate): DetailsSupplier {
         return DetailsSupplier(
                 typeOfSupplier = details.typeOfSupplier,
-                mainEconomicActivity = details.mainEconomicActivity,
+                mainEconomicActivities = details.mainEconomicActivities,
                 bankAccounts = details.bankAccounts,
                 legalForm = details.legalForm,
                 permits = details.permits,
@@ -352,11 +401,12 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-
     private fun DocumentAward.update(documentDto: DocumentAward?) {
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
+            this.documentType = documentDto.documentType
+            this.relatedLots = documentDto.relatedLots
         }
     }
 
@@ -405,5 +455,29 @@ class UpdateAcService(private val acDao: AcDao,
                 .sumByDouble { it.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         if (award.value.amountNet != planningAmount) throw ErrorException(AWARD_VALUE)
+    }
+
+    private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
+        val awardRelatedLotsDb = contractProcess.award.relatedLots.toHashSet()
+        val awardDocumentsDto = dto.award.documents
+        if (awardDocumentsDto != null) {
+            val lotsFromAwardDocuments = awardDocumentsDto.asSequence()
+                    .filter { it.relatedLots != null }
+                    .flatMap { it.relatedLots!!.asSequence() }
+                    .toHashSet()
+            if (awardRelatedLotsDb.isNotEmpty()) {
+                if (!awardRelatedLotsDb.containsAll(lotsFromAwardDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
+            }
+        }
+        val contractDocumentsDto = dto.contract.documents
+        if (contractDocumentsDto != null) {
+            val lotsFromContractDocuments = contractDocumentsDto.asSequence()
+                    .filter { it.relatedLots != null }
+                    .flatMap { it.relatedLots!!.asSequence() }
+                    .toHashSet()
+            if (lotsFromContractDocuments.isNotEmpty()) {
+                if (!awardRelatedLotsDb.containsAll(lotsFromContractDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
+            }
+        }
     }
 }

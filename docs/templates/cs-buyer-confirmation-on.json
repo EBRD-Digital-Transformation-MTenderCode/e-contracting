@@ -3,7 +3,6 @@
   "description": "Buyer has to sign the transferred document",
   "title": "Document signing",
   "type": "digitalSignature",
-  "source": "buyer",
   "relatesTo": "document",
   "requestTitle": "parties[role:buyer].persones[role:authority].",
   "requestDescription": "Defined person has to sign the transferred document"

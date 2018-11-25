@@ -26,32 +26,18 @@ enum class MainProcurementCategory(@JsonValue val value: String) {
     }
 }
 
+enum class TransactionType(@JsonValue val value: String) {
+    ADVANCE("advance"),
+    PAYMENT("payment");
+
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 enum class MilestoneStatus(@JsonValue val value: String) {
     SCHEDULED("scheduled");
-
-    override fun toString(): String {
-        return this.value
-    }
-}
-
-enum class AwardStatus(@JsonValue val value: String) {
-    PENDING("pending"),
-    ACTIVE("active"),
-    UNSUCCESSFUL("unsuccessful"),
-    CONSIDERATION("consideration"),
-    EMPTY("empty");
-
-    override fun toString(): String {
-        return this.value
-    }
-}
-
-enum class AwardStatusDetails(@JsonValue val value: String) {
-    PENDING("pending"),
-    ACTIVE("active"),
-    UNSUCCESSFUL("unsuccessful"),
-    CONSIDERATION("consideration"),
-    EMPTY("empty");
 
     override fun toString(): String {
         return this.value
@@ -92,6 +78,7 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     COMPLETE("complete"),
     UNSUCCESSFUL("unsuccessful"),
     ISSUED("issued"),
+    APPROVEMENT("approvement"),
     EMPTY("empty");
 
     override fun toString(): String {
@@ -151,57 +138,18 @@ enum class TenderStatusDetails(@JsonValue val value: String) {
     }
 }
 
-//enum class DocumentType(@JsonValue val value: String) {
-//    TENDER_NOTICE("tenderNotice"),
-//    AWARD_NOTICE("awardNotice"),
-//    CONTRACT_NOTICE("contractNotice"),
-//    COMPLETION_CERTIFICATE("completionCertificate"),
-//    PROCUREMENT_PLAN("procurementPlan"),
-//    BIDDING_DOCUMENTS("biddingDocuments"),
-//    TECHNICAL_SPECIFICATIONS("technicalSpecifications"),
-//    EVALUATION_CRITERIA("evaluationCriteria"),
-//    EVALUATION_REPORTS("evaluationReports"),
-//    CONTRACT_DRAFT("contractDraft"),
-//    CONTRACT_SIGNED("contractSigned"),
-//    CONTRACT_ARRANGEMENTS("contractArrangements"),
-//    CONTRACT_SCHEDULE("contractSchedule"),
-//    PHYSICAL_PROGRESS_REPORT("physicalProgressReport"),
-//    FINANCIAL_PROGRESS_REPORT("financialProgressReport"),
-//    FINAL_AUDIT("finalAudit"),
-//    HEARING_NOTICE("hearingNotice"),
-//    MARKET_STUDIES("marketStudies"),
-//    ELIGIBILITY_CRITERIA("eligibilityCriteria"),
-//    CLARIFICATIONS("clarifications"),
-//    SHORTLISTED_FIRMS("shortlistedFirms"),
-//    ENVIRONMENTAL_IMPACT("environmentalImpact"),
-//    ASSET_AND_LIABILITY_ASSESSMENT("assetAndLiabilityAssessment"),
-//    RISK_PROVISIONS("riskProvisions"),
-//    WINNING_BID("winningBid"),
-//    COMPLAINTS("complaints"),
-//    CONTRACT_ANNEXE("contractAnnexe"),
-//    CONTRACT_GUARANTEES("contractGuarantees"),
-//    SUB_CONTRACT("subContract"),
-//    NEEDS_ASSESSMENT("needsAssessment"),
-//    FEASIBILITY_STUDY("feasibilityStudy"),
-//    PROJECT_PLAN("projectPlan"),
-//    BILL_OF_QUANTITY("billOfQuantity"),
-//    BIDDERS("bidders"),
-//    CONFLICT_OF_INTEREST("conflictOfInterest"),
-//    DEBARMENTS("debarments"),
-//    ILLUSTRATION("illustration"),
-//    SUBMISSION_DOCUMENTS("submissionDocuments"),
-//    CONTRACT_SUMMARY("contractSummary"),
-//    CANCELLATION_DETAILS("cancellationDetails");
-//
-//    override fun toString(): String {
-//        return this.value
-//    }
-//}
-
 enum class DocumentTypeAward(@JsonValue val value: String) {
-    EVALUATION_REPORTS("evaluationReports"),
     AWARD_NOTICE("awardNotice"),
-    WINNING_BID("winningBid");
+    EVALUATION_REPORTS("evaluationReports"),
+    SHORTLISTED_FIRMS("shortlistedFirms"),
+    WINNING_BID("winningBid"),
+    COMPLAINTS("complaints"),
+    BIDDERS("bidders"),
+    CONFLICT_OF_INTEREST("conflictOfInterest"),
+    CANCELLATION_DETAILS("cancellationDetails"),
+    CONTRACT_DRAFT("contractDraft"),
+    CONTRACT_ARRANGEMENTS("contractArrangements"),
+    CONTRACT_SCHEDULE("contractSchedule");
 
     override fun toString(): String {
         return this.value
@@ -220,6 +168,7 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     CONTRACT_GUARANTEES("contractGuarantees"),
     SUB_CONTRACT("subContract"),
     ILLUSTRATION("illustration"),
+    CONTRACT_SIGNED("contractSigned"),
     CONTRACT_SUMMARY("contractSummary");
 
     override fun toString(): String {
@@ -241,7 +190,8 @@ enum class MilestoneType(@JsonValue val value: String) {
 
     DELIVERY("delivery"),
     X_WARRANTY("x_warranty"),
-    X_REPORTING("x_reporting");
+    X_REPORTING("x_reporting"),
+    APPROVAL("approval");
 
 
     override fun toString(): String {

@@ -2,9 +2,6 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.model.dto.AgreedMetric
-import com.procurement.contracting.model.dto.ConfirmationRequest
-import com.procurement.contracting.model.dto.Milestone
 import java.time.LocalDateTime
 import java.util.*
 
@@ -15,7 +12,7 @@ data class Contract @JsonCreator constructor(
 
         val id: String,
 
-        val date: LocalDateTime?,
+        var date: LocalDateTime?,
 
         val awardId: String,
 
@@ -51,5 +48,5 @@ data class Contract @JsonCreator constructor(
 
         var confirmationRequests: List<ConfirmationRequest>?,
 
-        val agreedMetrics: LinkedList<AgreedMetric>?
+        var agreedMetrics: LinkedList<AgreedMetric>? = null
 )

@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import java.math.BigDecimal
@@ -25,13 +26,13 @@ data class Transaction @JsonCreator constructor(
 
         var id: String,
 
-        val type: String,
+        val type: TransactionType,
 
         val value: Value,
 
         val executionPeriod: ExecutionPeriod,
 
-        val relatedContractMilestone: String?
+        var relatedContractMilestone: String?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

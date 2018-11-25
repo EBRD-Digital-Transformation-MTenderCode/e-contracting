@@ -1,0 +1,9 @@
+{
+  "id": "cs-supplier-approval-on-",
+  "description": "Supplier has to sign the contract",
+  "title": "Signature by the Supplier",
+  "type": "approval",
+  "relatesTo": "document",
+  "requestTitle": "parties[role:supplier].persones[role:authority].",
+  "requestDescription": "Defined person has to sign the transferred document"
+}

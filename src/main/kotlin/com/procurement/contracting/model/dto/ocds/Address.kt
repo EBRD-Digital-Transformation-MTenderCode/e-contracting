@@ -26,25 +26,25 @@ data class AddressDetails(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CountryDetails(
 
-        var scheme: String?,
+        var scheme: String,
 
         val id: String,
 
-        var description: String?,
+        var description: String,
 
-        var uri: String?
+        var uri: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class RegionDetails(
 
-        var scheme: String?,
+        var scheme: String,
 
         val id: String,
 
-        var description: String?,
+        var description: String,
 
-        var uri: String?
+        var uri: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

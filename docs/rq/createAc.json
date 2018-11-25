@@ -1,108 +1,92 @@
 {
-  "awards": [
-    {
-      "id": "",
-      "date": "",
-      "description": "",
-      "status": "",
-      "statusDetails": "",
-      "value": {
-        "amount": "",
-        "currency": ""
-      },
-      "relatedLots": [
-        ""
-      ],
-      "relatedBid": "",
-      "suppliers": [
-        {
-          "id": "",
-          "name": "",
-          "identifier": {
-            "scheme": "",
-            "id": "",
-            "legalName": "",
-            "uri": ""
-          },
-          "-additionalIdentifiers": [
-            {
-              "scheme": "",
-              "id": "",
-              "legalName": "",
-              "uri": ""
-            }
-          ],
-          "address": {
-            "streetAddress": "",
-            "-postalCode": "",
-            "addressDetails": {
-              "country": {
-                "scheme": "",
-                "id": "",
-                "description": "",
-                "uri": ""
-              },
-              "region": {
-                "scheme": "",
-                "id": "",
-                "description": "",
-                "uri": ""
-              },
-              "locality": {
-                "scheme": "",
-                "id": "",
-                "description": "",
-                "-uri": ""
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "",
-            "email": "",
-            "telephone": "",
-            "-faxNumber": "",
-            "url": ""
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "",
-          "classification": {
-            "scheme": "CPV",
-            "description": "",
-            "id": ""
-          },
-          "-additionalClassifications": [
-            {
-              "scheme": "",
-              "description": "",
-              "id": ""
-            }
-          ],
-          "quantity": 0,
-          "unit": {
+  "Contracts": {
+    "id": "",
+    "date": "",
+    "awardID": "",
+    "status": "",
+    "statusDetails":"",
+    "title": "",
+    "description": "",
+    "period": {
+      "startDate": "",
+      "endDate": ""
+    },
+    "documents": [
+      {
+        "documentType": "",
+        "id": "",
+        --"title": "",
+        --"description": "",
+        --"relatedLots": [""]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "approval-relatedparties.id",
+        --"relatedItems": [],
+        "status": "",
+        --"additionalInformation": "",
+        --"dueDate": "",
+        "title": "Signature by the Buyer",
+        "type": "approval",
+        "description": "",
+        "relatedParties": [
+          {
             "id": "",
             "name": ""
-          },
-          "-description": "",
-          "relatedLot": ""
-        }
-      ],
-      "documents": [
-        {
-          "documentType": "",
-          "id": "",
-          "title": "",
-          "description": "",
-          "relatedLots": [
-            ""
-          ]
-        }
-      ]
+          }
+        ]
+      }
+    ],
+    "confirmationRequests": [
+      {
+        "id": "cs-tenderer-confirmation-on-document.id",
+        "type": "digitalSignature",
+        "title": "",
+        "description": "",
+        "relatesTo": "document",
+        "relatedItem": "document.id",
+        "source": "tenderer",
+        "requestGroups": [
+          {
+            "id": "cs-tenderer-confirmation-on-document.id-tenderer.identifier.id",
+            "requests": [
+              {
+                "id": "cs-tenderer-confirmation-on-document.id-tenderer.identifier.id-relatedPerson.id",
+                "title": "parties[role:supplier].persones[role:authority].name",
+                "description": "",
+                --"relatedPerson": {
+                "id": "",
+                "name": ""
+              }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "value": {
+      "amount": "",
+      "currency": "",
+      "amountNet": "",
+      "valueAddedTaxincluded": true
     }
-  ],
-  "tender": {
-    "mainProcurementCategory": ""
+  },
+  --"approveBody":{
+  "name": "State Treasury of Republic of Moldova",
+  "id": "",
+  "identifier": {
+    "scheme": "",
+    "id": "",
+    "legalName": "",
+    "uri": ""
+  },
+  "contactPoint": {
+    "name": "",
+    "email": "",
+    "telephone": "",
+    "faxNumber": "",
+    "url": ""
   }
+}
 }

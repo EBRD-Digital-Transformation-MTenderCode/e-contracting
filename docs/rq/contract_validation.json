@@ -1,0 +1,9 @@
+{
+  "id": "cs-treasury-validate-on-",
+  "description": "Treasury has to approve the contract",
+  "title": "Contract validation",
+  "type": "approval",
+  "relatesTo": "document",
+  "requestTitle": "parties[role:treasury].persones[role:authority].",
+  "requestDescription": "Defined person has to sign the transferred document"
+}

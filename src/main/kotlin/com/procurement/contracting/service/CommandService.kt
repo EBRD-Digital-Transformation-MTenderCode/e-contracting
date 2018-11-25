@@ -12,7 +12,9 @@ class CommandService(private val historyDao: HistoryDao,
                      private val canService: CreateCanService,
                      private val createAcService: CreateAcService,
                      private val updateAcService: UpdateAcService,
-                     private val statusService: StatusService) {
+                     private val issuingAcService: IssuingAcService,
+                     private val statusService: StatusService,
+                     private val finalUpdateService: FinalUpdateService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -24,7 +26,9 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
+            CommandType.SET_ISSUED_STATUS_DETAILS-> issuingAcService.setIssuesStatusDetails(cm)
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
+            CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
