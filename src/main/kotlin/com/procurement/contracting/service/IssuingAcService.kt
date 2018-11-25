@@ -33,8 +33,8 @@ class IssuingAcService(private val acDao: AcDao) {
         if (contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION) {
             contractProcess.contract.statusDetails = ContractStatusDetails.ISSUED
             contractProcess.contract.date = dateTime
-//        } else {
-//            throw ErrorException(CONTRACT_STATUS_DETAILS)
+        } else {
+            throw ErrorException(CONTRACT_STATUS_DETAILS)
         }
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
