@@ -5,6 +5,7 @@ import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.GetActualBsRs
+import com.procurement.contracting.model.dto.GetBidIdRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.ContractStatus
@@ -32,6 +33,31 @@ class StatusService(private val acDao: AcDao) {
                 && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
             throw ErrorException(CONTRACT_STATUS_DETAILS)
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet() ?: setOf()
-        return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
+        val itemsCPVs = contractProcess.award.items.asSequence().map { it.classification.id }.toHashSet()
+        return ResponseDto(data = GetActualBsRs(
+                language = entity.language,
+                actualBudgetSource = actualBudgetSource,
+                itemsCPVs = itemsCPVs))
+    }
+
+    fun getRelatedBidId(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+
+        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        if (entity.owner != owner) throw ErrorException(OWNER)
+        if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
+        val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
+        return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBid))
+    }
+
+    fun contractVerification(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun proceedTreasuryResponse(cm: CommandMessage): ResponseDto {
+        TODO()
     }
 }
