@@ -52,4 +52,12 @@ class StatusService(private val acDao: AcDao) {
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBid))
     }
+
+    fun contractVerification(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun proceedTreasuryResponse(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
 }

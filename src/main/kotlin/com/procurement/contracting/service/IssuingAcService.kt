@@ -30,12 +30,12 @@ class IssuingAcService(private val acDao: AcDao) {
 
         if (entity.owner != owner) throw ErrorException(OWNER)
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
-        if (contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION) {
+//        if (contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION) {
             contractProcess.contract.statusDetails = ContractStatusDetails.ISSUED
             contractProcess.contract.date = dateTime
-        } else {
-            throw ErrorException(CONTRACT_STATUS_DETAILS)
-        }
+//        } else {
+//            throw ErrorException(CONTRACT_STATUS_DETAILS)
+//        }
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = IssuingAcRs(ContractIssuingAcRs(date = contractProcess.contract.date, statusDetails = contractProcess.contract.statusDetails)))

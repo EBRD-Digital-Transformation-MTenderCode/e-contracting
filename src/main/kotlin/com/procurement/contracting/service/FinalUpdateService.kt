@@ -31,8 +31,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        if (!(contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.ISSUED))
-            throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)//BR-9.5.1
+//        if (!(contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.ISSUED))
+//            throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)//BR-9.5.1
         contractProcess.contract.apply {
             documents = addContractDocuments(dto.documents, documents)
         }

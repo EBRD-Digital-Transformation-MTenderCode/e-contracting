@@ -49,7 +49,9 @@ enum class CommandType(private val value: String) {
     SET_ISSUED_STATUS_DETAILS("setIssuedStatusDetails"),
     GET_BUDGET_SOURCES("getActualBudgetSources"),
     FINAL_UPDATE("finalUpdateAC"),
-    GET_RELATED_BID_ID("getRelatedBidId");
+    GET_RELATED_BID_ID("getRelatedBidId"),
+    CONTRACT_VERIFICATION("contractVerification"),
+    PROCEED_TREASURY_RESPONSE("proceedTreasuryResponse");
 
     @JsonValue
     fun value(): String {
