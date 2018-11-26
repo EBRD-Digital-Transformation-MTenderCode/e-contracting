@@ -120,27 +120,24 @@ class UpdateAcService(private val acDao: AcDao,
         val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
         val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
-        val oldMilestonesIds = milestonesDbIds - newMilestonesIds
-        val oldMilestonesDb = milestonesDb.asSequence()
-                .filter { it.id in oldMilestonesIds }
-                .map { milestoneDb -> milestoneDb.update(milestonesDto.firstOrNull { it.id == milestoneDb.id }) }
+        val updatedMilestonesDb = milestonesDb.asSequence()
+                .filter { it.id in milestonesDtoIds }
+                .map { milestoneDb -> milestoneDb.update(milestonesDto.first { it.id == milestoneDb.id }) }
                 .toList()
         val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
-        return if (oldMilestonesDb.isNotEmpty()) {
-            oldMilestonesDb + newMilestones
+        return if (updatedMilestonesDb.isNotEmpty()) {
+            updatedMilestonesDb + newMilestones
         } else {
             newMilestones
         }
     }
 
-    private fun Milestone.update(milestoneDto: Milestone?): Milestone {
-        if (milestoneDto != null) {
-            milestoneDto.additionalInformation?.let { this.additionalInformation = it }
-            milestoneDto.relatedItems?.let { this.relatedItems = it }
-            this.dueDate = milestoneDto.dueDate
-            this.title = milestoneDto.title
-            this.description = milestoneDto.description
-        }
+    private fun Milestone.update(milestoneDto: Milestone): Milestone {
+        milestoneDto.additionalInformation?.let { this.additionalInformation = it }
+        milestoneDto.relatedItems?.let { this.relatedItems = it }
+        this.dueDate = milestoneDto.dueDate
+        this.title = milestoneDto.title
+        this.description = milestoneDto.description
         return this
     }
 
