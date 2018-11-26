@@ -29,7 +29,7 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.SET_ISSUED_STATUS_DETAILS-> issuingAcService.setIssuesStatusDetails(cm)
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
             CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
-            CommandType.GET_BID_ID -> statusService.getBidId(cm)
+            CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

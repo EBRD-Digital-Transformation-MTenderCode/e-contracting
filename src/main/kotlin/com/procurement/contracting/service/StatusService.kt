@@ -40,7 +40,7 @@ class StatusService(private val acDao: AcDao) {
                 itemsCPVs = itemsCPVs))
     }
 
-    fun getBidId(cm: CommandMessage): ResponseDto {
+    fun getRelatedBidId(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
