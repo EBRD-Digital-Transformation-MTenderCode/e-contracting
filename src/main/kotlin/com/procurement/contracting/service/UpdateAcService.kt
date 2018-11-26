@@ -126,10 +126,14 @@ class UpdateAcService(private val acDao: AcDao,
                 .filter { it.id in oldMilestonesIds }
                 .toList()
         val oldMilestonesDb = milestonesDb.asSequence()
-                .filter{ it.id in newMilestonesIds }
+                .filter { it.id in newMilestonesIds }
                 .map { milestoneDb -> milestoneDb.updateMilestone(milestonesDto.first { it.id == milestoneDb.id }) }
                 .toList()
-        return oldMilestonesDb + newMilestones
+        return if (oldMilestonesDb.isNotEmpty()) {
+            oldMilestonesDb + newMilestones
+        } else {
+            newMilestones
+        }
     }
 
     private fun Milestone.updateMilestone(milestoneDto: Milestone): Milestone {
