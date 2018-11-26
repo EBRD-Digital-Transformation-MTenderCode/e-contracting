@@ -119,8 +119,8 @@ class UpdateAcService(private val acDao: AcDao,
         val milestonesDb = contractProcess.contract.milestones ?: listOf()
         val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
         val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
-        var newMilestonesIds = milestonesDtoIds - milestonesDbIds
-        var oldMilestonesIds = milestonesDbIds - newMilestonesIds
+        val newMilestonesIds = milestonesDtoIds - milestonesDbIds
+        val oldMilestonesIds = milestonesDbIds - newMilestonesIds
         processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         val newMilestones = milestonesDto.asSequence()
                 .filter { it.id in oldMilestonesIds }
