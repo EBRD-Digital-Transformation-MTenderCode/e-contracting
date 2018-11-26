@@ -8,5 +8,7 @@ data class GetActualBsRs(
 
         val language: String?,
 
-        val actualBudgetSource: Set<PlanningBudgetSource>?
+        val actualBudgetSource: Set<PlanningBudgetSource>?,
+
+        val itemsCPVs: Set<String>
 )

@@ -32,6 +32,10 @@ class StatusService(private val acDao: AcDao) {
                 && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
             throw ErrorException(CONTRACT_STATUS_DETAILS)
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet() ?: setOf()
-        return ResponseDto(data = GetActualBsRs(language = entity.language, actualBudgetSource = actualBudgetSource))
+        val itemsCPVs = contractProcess.award.items.asSequence().map { it.classification.id }.toHashSet()
+        return ResponseDto(data = GetActualBsRs(
+                language = entity.language,
+                actualBudgetSource = actualBudgetSource,
+                itemsCPVs = itemsCPVs))
     }
 }
