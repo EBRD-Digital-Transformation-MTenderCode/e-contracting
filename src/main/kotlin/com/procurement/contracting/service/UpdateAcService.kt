@@ -322,6 +322,7 @@ class UpdateAcService(private val acDao: AcDao,
 
     private fun updateAwardValue(dto: UpdateAcRq, contractProcess: ContractProcess): ValueTax {
         return contractProcess.award.value.copy(
+                amount = dto.award.value.amount,
                 amountNet = dto.award.value.amountNet,
                 valueAddedTaxIncluded = dto.award.value.valueAddedTaxIncluded)
     }
