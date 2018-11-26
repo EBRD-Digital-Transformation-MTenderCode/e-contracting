@@ -121,12 +121,9 @@ class UpdateAcService(private val acDao: AcDao,
         val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
         val oldMilestonesIds = milestonesDbIds - newMilestonesIds
-        processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
-        val newMilestones = milestonesDto.asSequence()
-                .filter { it.id in oldMilestonesIds }
-                .toList()
+        val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         val oldMilestonesDb = milestonesDb.asSequence()
-                .filter { it.id in newMilestonesIds }
+                .filter { it.id in oldMilestonesIds }
                 .map { milestoneDb -> milestoneDb.updateMilestone(milestonesDto.first { it.id == milestoneDb.id }) }
                 .toList()
         return if (oldMilestonesDb.isNotEmpty()) {
@@ -145,9 +142,10 @@ class UpdateAcService(private val acDao: AcDao,
         return this
     }
 
-    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>) {
+    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>): List<Milestone> {
         val milestonesDto = dto.contract.milestones
         val transactions = dto.planning.implementation.transactions
+        val newMilestones = ArrayList<Milestone>()
         milestonesDto.asSequence()
                 .filter { it.id in newMilestonesIds }
                 .forEach { milestone ->
@@ -178,7 +176,9 @@ class UpdateAcService(private val acDao: AcDao,
                             .filter { it.type != TransactionType.ADVANCE && it.relatedContractMilestone == milestone.id }
                             .forEach { it.relatedContractMilestone = id }
                     milestone.id = id
+                    newMilestones.add(milestone)
                 }
+        return newMilestones
     }
 
     private fun validateContractMilestones(dto: UpdateAcRq, mpc: MainProcurementCategory, dateTime: LocalDateTime) {
