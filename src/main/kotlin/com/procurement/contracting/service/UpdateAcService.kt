@@ -123,7 +123,7 @@ class UpdateAcService(private val acDao: AcDao,
         val oldMilestonesIds = milestonesDbIds - newMilestonesIds
         val oldMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in oldMilestonesIds }
-                .map { milestoneDb -> milestoneDb.updateMilestone(milestonesDto.firstOrNull { it.id == milestoneDb.id }) }
+                .map { milestoneDb -> milestoneDb.update(milestonesDto.firstOrNull { it.id == milestoneDb.id }) }
                 .toList()
         val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         return if (oldMilestonesDb.isNotEmpty()) {
@@ -133,7 +133,7 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-    private fun Milestone.updateMilestone(milestoneDto: Milestone?): Milestone {
+    private fun Milestone.update(milestoneDto: Milestone?): Milestone {
         if (milestoneDto != null) {
             milestoneDto.additionalInformation?.let { this.additionalInformation = it }
             milestoneDto.relatedItems?.let { this.relatedItems = it }
