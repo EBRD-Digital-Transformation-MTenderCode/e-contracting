@@ -31,17 +31,16 @@ class IssuingAcService(private val acDao: AcDao) {
         if (entity.owner != owner) throw ErrorException(OWNER)
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
 
+//        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
+//        if (contractProcess.contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION) throw ErrorException(CONTRACT_STATUS_DETAILS)
+
         val relatedItemIds = contractProcess.planning!!.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
         val awardItemIds = contractProcess.award.items.asSequence().map { it.id }.toSet()
         if (awardItemIds.size != relatedItemIds.size) throw ErrorException(BA_ITEM_ID)
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
 
-//        if (contractProcess.contract.status == ContractStatus.PENDING && contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION) {
-            contractProcess.contract.statusDetails = ContractStatusDetails.ISSUED
-            contractProcess.contract.date = dateTime
-//        } else {
-//            throw ErrorException(CONTRACT_STATUS_DETAILS)
-//        }
+        contractProcess.contract.statusDetails = ContractStatusDetails.ISSUED
+        contractProcess.contract.date = dateTime
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
