@@ -10,7 +10,7 @@ data class Identifier @JsonCreator constructor(
 
         val scheme: String,
 
-        val legalName: String?,
+        val legalName: String,
 
         val uri: String?
 )

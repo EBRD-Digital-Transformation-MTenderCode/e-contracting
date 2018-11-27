@@ -36,7 +36,7 @@ data class DocumentBF @JsonCreator constructor(
 
         val documentType: DocumentTypeBF,
 
-        var title: String?,
+        var title: String,
 
         var description: String?
 )
