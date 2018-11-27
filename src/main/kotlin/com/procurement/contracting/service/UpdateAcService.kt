@@ -497,7 +497,7 @@ class UpdateAcService(private val acDao: AcDao,
         val planningAmount = dto.planning.budget.budgetSource.asSequence()
                 .sumByDouble { it.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-        if (award.value.amountNet != planningAmount) throw ErrorException(AWARD_VALUE)
+        if (award.value.amountNet > planningAmount) throw ErrorException(AWARD_VALUE)
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
