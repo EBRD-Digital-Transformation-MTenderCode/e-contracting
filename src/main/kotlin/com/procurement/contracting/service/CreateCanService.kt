@@ -29,7 +29,8 @@ class CreateCanService(private val canDao: CanDao,
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CanCreate::class.java, cm.data)
 
-        if (dto.awards.isEmpty()) throw ErrorException(ErrorType.NO_ACTIVE_AWARDS)
+        if (dto.awards.isEmpty()) return ResponseDto(data = CreateCanRs(listOf()))
+
         val canEntities = dto.awards.asSequence()
                 .map { createCanEntity(cpId, it.id, owner, dateTime) }
                 .toList()

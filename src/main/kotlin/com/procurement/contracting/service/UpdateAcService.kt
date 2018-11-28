@@ -207,10 +207,8 @@ class UpdateAcService(private val acDao: AcDao,
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
-        val relatedItemIds = milestonesDto.asSequence()
-                .filter { it.type != MilestoneType.X_REPORTING && it.relatedItems != null }
-                .flatMap { it.relatedItems!!.asSequence() }.toSet()
 
+        val relatedItemIds = milestonesDto.asSequence().flatMap { it.relatedItems!!.asSequence() }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
@@ -316,6 +314,7 @@ class UpdateAcService(private val acDao: AcDao,
         //BR-9.2.7
         val relatedItemIds = dto.planning.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
+        if (awardItemIds.size != relatedItemIds.size) throw ErrorException(BA_ITEM_ID)
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
         return dto.planning
     }
@@ -496,7 +495,7 @@ class UpdateAcService(private val acDao: AcDao,
         val planningAmount = dto.planning.budget.budgetSource.asSequence()
                 .sumByDouble { it.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-        if (award.value.amountNet != planningAmount) throw ErrorException(AWARD_VALUE)
+        if (award.value.amountNet > planningAmount) throw ErrorException(AWARD_VALUE)
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {

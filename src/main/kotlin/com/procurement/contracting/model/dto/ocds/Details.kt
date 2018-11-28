@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class DetailsSupplier @JsonCreator constructor(
@@ -52,7 +53,15 @@ data class Permit @JsonCreator constructor(
 
         val issuedThought: Issue,
 
-        val validityPeriod: Period
+        val validityPeriod: ValidityPeriod
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ValidityPeriod @JsonCreator constructor(
+
+        val startDate: LocalDateTime,
+
+        val endDate: LocalDateTime
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

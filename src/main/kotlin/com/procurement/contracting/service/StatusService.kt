@@ -53,11 +53,20 @@ class StatusService(private val acDao: AcDao) {
         return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBid))
     }
 
-    fun contractVerification(cm: CommandMessage): ResponseDto {
+    fun buyerSigningAC(cm: CommandMessage): ResponseDto {
         TODO()
     }
 
-    fun proceedTreasuryResponse(cm: CommandMessage): ResponseDto {
+    fun supplierSigningAC(cm: CommandMessage): ResponseDto {
         TODO()
     }
+
+    fun verificationAC(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun activationAC(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
 }

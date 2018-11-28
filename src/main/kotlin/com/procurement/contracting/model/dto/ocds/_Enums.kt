@@ -73,6 +73,8 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     CONTRACT_PROJECT("contractProject"),
     CONTRACT_PREPARATION("contractPreparation"),
     ACTIVE("active"),
+    SIGNED("signed"),
+    VERIFICATION("verification"),
     VERIFIED("verified"),
     CANCELLED("cancelled"),
     COMPLETE("complete"),

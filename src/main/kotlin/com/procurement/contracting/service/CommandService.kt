@@ -14,7 +14,9 @@ class CommandService(private val historyDao: HistoryDao,
                      private val updateAcService: UpdateAcService,
                      private val issuingAcService: IssuingAcService,
                      private val statusService: StatusService,
-                     private val finalUpdateService: FinalUpdateService) {
+                     private val finalUpdateService: FinalUpdateService,
+                     private val verificationAcService: VerificationAcService,
+                     private val treasuryAcService: TreasuryAcService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -26,12 +28,16 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
-            CommandType.SET_ISSUED_STATUS_DETAILS-> issuingAcService.setIssuesStatusDetails(cm)
+            CommandType.CHECK_STATUS_DETAILS -> TODO()
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
-            CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
             CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
-            CommandType.CONTRACT_VERIFICATION -> statusService.contractVerification(cm)
-            CommandType.PROCEED_TREASURY_RESPONSE -> statusService.proceedTreasuryResponse(cm)
+            CommandType.ISSUING_AC-> issuingAcService.issuingAc(cm)
+            CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
+            CommandType.BUYER_SIGNING_AC -> statusService.buyerSigningAC(cm)
+            CommandType.SUPPLIER_SIGNING_AC -> statusService.supplierSigningAC(cm)
+            CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
+            CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
+            CommandType.ACTIVATION_AC -> statusService.activationAC(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
