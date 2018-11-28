@@ -43,11 +43,11 @@ data class Permits @JsonCreator constructor(
 
         val url: String?,
 
-        val permit: Permit
+        val permitDetails: PermitDetails
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Permit @JsonCreator constructor(
+data class PermitDetails @JsonCreator constructor(
 
         val issuedBy: Issue,
 
