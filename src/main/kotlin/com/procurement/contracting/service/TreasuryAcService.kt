@@ -3,7 +3,8 @@ package com.procurement.contracting.service
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.TreasuryAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service
 @Service
 class TreasuryAcService(private val acDao: AcDao) {
 
-    fun proceedTreasuryResponse(cm: CommandMessage): ResponseDto {
+    fun treasuryApprovingAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -36,6 +37,22 @@ class TreasuryAcService(private val acDao: AcDao) {
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = TreasuryAcRs(contractProcess.contract))
+    }
+
+    fun buyerSigningAC(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun supplierSigningAC(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun verificationAC(cm: CommandMessage): ResponseDto {
+        TODO()
+    }
+
+    fun activationAC(cm: CommandMessage): ResponseDto {
+        TODO()
     }
 
 

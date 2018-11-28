@@ -46,12 +46,16 @@ enum class CommandType(private val value: String) {
     CREATE_CAN("createCAN"),
     CREATE_AC("createAC"),
     UPDATE_AC("updateAC"),
-    SET_ISSUED_STATUS_DETAILS("setIssuedStatusDetails"),
     GET_BUDGET_SOURCES("getActualBudgetSources"),
-    FINAL_UPDATE("finalUpdateAC"),
+    CHECK_STATUS_DETAILS("contractingCheckStatusDetails"),
     GET_RELATED_BID_ID("getRelatedBidId"),
-    VERIFICATION_AC("verificationAc"),
-    PROCEED_TREASURY_RESPONSE("proceedTreasuryResponse");
+    ISSUING_AC("issuingAC"),
+    FINAL_UPDATE("finalUpdateAC"),
+    BUYER_SIGNING_AC("buyerSigningAC"),
+    SUPPLIER_SIGNING_AC("supplierSigningAC"),
+    VERIFICATION_AC("verificationAC"),
+    TREASURY_APPROVING_AC("treasuryApprovingAC"),
+    ACTIVATION_AC("activationAC");
 
     @JsonValue
     fun value(): String {

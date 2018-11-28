@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service
 @Service
 class IssuingAcService(private val acDao: AcDao) {
 
-    fun setIssuesStatusDetails(cm: CommandMessage): ResponseDto {
+    fun issuingAc(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
