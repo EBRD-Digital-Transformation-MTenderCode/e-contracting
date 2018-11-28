@@ -65,7 +65,8 @@ class CreateAcService(private val acDao: AcDao,
                     buyer = null,
                     funders = null,
                     payers = null,
-                    treasuryBudgetSources = null)
+                    treasuryBudgetSources = null,
+                    treasuryData = null)
             contractProcesses.add(contractProcess)
 
             val canEntity = canEntities.asSequence().filter { it.awardId == awardDto.id }.firstOrNull()
