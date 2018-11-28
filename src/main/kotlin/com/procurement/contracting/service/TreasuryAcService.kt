@@ -38,22 +38,4 @@ class TreasuryAcService(private val acDao: AcDao) {
         acDao.save(entity)
         return ResponseDto(data = TreasuryAcRs(contractProcess.contract))
     }
-
-    fun buyerSigningAC(cm: CommandMessage): ResponseDto {
-        TODO()
-    }
-
-    fun supplierSigningAC(cm: CommandMessage): ResponseDto {
-        TODO()
-    }
-
-    fun verificationAC(cm: CommandMessage): ResponseDto {
-        TODO()
-    }
-
-    fun activationAC(cm: CommandMessage): ResponseDto {
-        TODO()
-    }
-
-
 }
