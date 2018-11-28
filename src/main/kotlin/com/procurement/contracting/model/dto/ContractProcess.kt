@@ -20,6 +20,8 @@ data class ContractProcess @JsonCreator constructor(
 
         var payers: HashSet<OrganizationReference>?,
 
-        var treasuryBudgetSources: List<TreasuryBudgetSource>?
+        var treasuryBudgetSources: List<TreasuryBudgetSource>?,
+
+        var treasuryData: TreasuryData?
 
 )

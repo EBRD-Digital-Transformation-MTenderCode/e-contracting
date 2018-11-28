@@ -50,7 +50,7 @@ enum class CommandType(private val value: String) {
     GET_BUDGET_SOURCES("getActualBudgetSources"),
     FINAL_UPDATE("finalUpdateAC"),
     GET_RELATED_BID_ID("getRelatedBidId"),
-    CONTRACT_VERIFICATION("contractVerification"),
+    VERIFICATION_AC("verificationAc"),
     PROCEED_TREASURY_RESPONSE("proceedTreasuryResponse");
 
     @JsonValue

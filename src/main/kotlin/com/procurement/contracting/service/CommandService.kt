@@ -14,7 +14,9 @@ class CommandService(private val historyDao: HistoryDao,
                      private val updateAcService: UpdateAcService,
                      private val issuingAcService: IssuingAcService,
                      private val statusService: StatusService,
-                     private val finalUpdateService: FinalUpdateService) {
+                     private val finalUpdateService: FinalUpdateService,
+                     private val verificationAcService: VerificationAcService,
+                     private val treasuryAcService: TreasuryAcService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -30,8 +32,8 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
             CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
             CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
-            CommandType.CONTRACT_VERIFICATION -> statusService.contractVerification(cm)
-            CommandType.PROCEED_TREASURY_RESPONSE -> statusService.proceedTreasuryResponse(cm)
+            CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
+            CommandType.PROCEED_TREASURY_RESPONSE -> treasuryAcService.proceedTreasuryResponse(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
