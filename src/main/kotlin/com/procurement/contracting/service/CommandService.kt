@@ -16,7 +16,8 @@ class CommandService(private val historyDao: HistoryDao,
                      private val statusService: StatusService,
                      private val finalUpdateService: FinalUpdateService,
                      private val verificationAcService: VerificationAcService,
-                     private val treasuryAcService: TreasuryAcService) {
+                     private val treasuryAcService: TreasuryAcService,
+                     private val proccedResponseService: SigningAcService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -33,8 +34,8 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
             CommandType.ISSUING_AC-> issuingAcService.issuingAc(cm)
             CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
-            CommandType.BUYER_SIGNING_AC -> statusService.buyerSigningAC(cm)
-            CommandType.SUPPLIER_SIGNING_AC -> statusService.supplierSigningAC(cm)
+            CommandType.BUYER_SIGNING_AC -> proccedResponseService.buyerSigningAC(cm)
+            CommandType.SUPPLIER_SIGNING_AC -> proccedResponseService.supplierSigningAC(cm)
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
             CommandType.ACTIVATION_AC -> statusService.activationAC(cm)

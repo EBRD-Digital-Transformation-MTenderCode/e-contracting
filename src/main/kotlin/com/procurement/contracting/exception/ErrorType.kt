@@ -47,5 +47,10 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_TOKEN("20.02", "Invalid access token."),
     BUYER_NAME_IS_EMPTY("20.03", "Buyer name must be not null"),
     BUYER_IS_EMPTY("20.04", "Buyer must be not null"),
-    ORGANIZATION_AUTHORITY_PERSON_INVALID("20.05","person authority not found");
+    ORGANIZATION_AUTHORITY_PERSON_INVALID("20.05","person authority not found"),
+    INVALID_REQUEST_ID("20.06","invalid requestId VR-9.6.3"),
+    INVALID_BUYER_ID("20.07","invalid buyerId VR-9.6.5"),
+    INVALID_RELATED_PERSON_ID("20.08","invalid related person id VR-9.6.6"),
+    INVALID_CONFIRMATION_REQUEST_DATE("20.09","invalid Confirmation request date VR-9.6.7"),
+    INVALID_SUPPLIER_ID("20.07","invalid supplierId VR-9.7.4");
 }

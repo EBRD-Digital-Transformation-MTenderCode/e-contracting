@@ -1,6 +1,7 @@
 package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 
@@ -15,6 +16,9 @@ data class Milestone @JsonCreator constructor(
 
         val type: MilestoneType,
 
+        @JsonIgnore
+        val subtype: MilestoneSubType,
+
         var status: MilestoneStatus?,
 
         var relatedItems: Set<String>?,
@@ -23,7 +27,11 @@ data class Milestone @JsonCreator constructor(
 
         var dueDate: LocalDateTime,
 
-        var relatedParties: List<RelatedParty>?
+        var relatedParties: List<RelatedParty>?,
+
+        var dateModified: LocalDateTime?,
+
+        var dateMet: LocalDateTime?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

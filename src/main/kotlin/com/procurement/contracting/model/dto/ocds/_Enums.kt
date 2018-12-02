@@ -37,7 +37,8 @@ enum class TransactionType(@JsonValue val value: String) {
 }
 
 enum class MilestoneStatus(@JsonValue val value: String) {
-    SCHEDULED("scheduled");
+    SCHEDULED("scheduled"),
+    MET("met");
 
     override fun toString(): String {
         return this.value
@@ -73,6 +74,7 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     CONTRACT_PROJECT("contractProject"),
     CONTRACT_PREPARATION("contractPreparation"),
     ACTIVE("active"),
+    APPROVED("approved"),
     SIGNED("signed"),
     VERIFICATION("verification"),
     VERIFIED("verified"),
@@ -171,7 +173,8 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     SUB_CONTRACT("subContract"),
     ILLUSTRATION("illustration"),
     CONTRACT_SIGNED("contractSigned"),
-    CONTRACT_SUMMARY("contractSummary");
+    CONTRACT_SUMMARY("contractSummary"),
+    BUYERS_RESPONSE_ADD("buyersResponseAdd");
 
     override fun toString(): String {
         return this.value
@@ -201,6 +204,19 @@ enum class MilestoneType(@JsonValue val value: String) {
     }
 }
 
+enum class MilestoneSubType(@JsonValue val value: String) {
+
+    BUYERS_APPROVAL("buyersApproval"),
+    SUPPLIERS_APPROVAL("suppliersApproval"),
+    CONTRACT_ACTIVATION("contractActivation"),
+    APPROVE_BODY_VALIDATION("approveBodyValidation");
+
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 
 enum class RelatedProcessType(@JsonValue val value: String) {
     FRAMEWORK("framework"),
@@ -219,6 +235,14 @@ enum class RelatedProcessType(@JsonValue val value: String) {
 
 enum class RelatedProcessScheme(@JsonValue val value: String) {
     OCID("ocid");
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
+enum class ConfirmationResponseType(@JsonValue val value: String){
+    DOCUMENT("document");
 
     override fun toString(): String {
         return this.value

@@ -14,5 +14,7 @@ data class DocumentContract @JsonCreator constructor(
 
         var description: String?,
 
-        var relatedLots: List<String>?
+        var relatedLots: List<String>?,
+
+        var relatedConfirmations: List<String>?
 )
