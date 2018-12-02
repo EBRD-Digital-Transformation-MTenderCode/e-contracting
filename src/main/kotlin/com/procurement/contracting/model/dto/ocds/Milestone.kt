@@ -17,7 +17,7 @@ data class Milestone @JsonCreator constructor(
         val type: MilestoneType,
 
         @JsonIgnore
-        val subtype: MilestoneSubType,
+        val subtype: MilestoneSubType? = null,
 
         var status: MilestoneStatus?,
 
@@ -27,11 +27,11 @@ data class Milestone @JsonCreator constructor(
 
         var dueDate: LocalDateTime,
 
-        var relatedParties: List<RelatedParty>?,
+        var relatedParties: List<RelatedParty>? = null,
 
-        var dateModified: LocalDateTime?,
+        var dateModified: LocalDateTime? = null,
 
-        var dateMet: LocalDateTime?
+        var dateMet: LocalDateTime? = null
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
