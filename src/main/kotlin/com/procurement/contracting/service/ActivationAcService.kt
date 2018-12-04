@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service
 @Service
 class ActivationAcService(private val acDao: AcDao) {
 
-    fun issuingAc(cm: CommandMessage): ResponseDto {
+    fun activateAc(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
