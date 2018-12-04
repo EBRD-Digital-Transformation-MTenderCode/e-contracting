@@ -1,4632 +1,716 @@
 {
-  "awards": [
-    {
-      "token": "02f12980-48c4-4dab-9f1f-09a4b96e64f6",
-      "id": "d17f6375-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f99-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "0c1af719-8600-46fe-90f8-8bf546774062",
-      "id": "d17f6360-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 52.50,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "750857c0-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f8b-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Sare de lamiie",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "0cad7c36-0780-4061-8f3f-13230a72b67f",
-      "id": "d17f6362-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 745.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "274bcd20-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305168-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Taietei de casa",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "10a2e41a-bc50-44d5-bf3b-c00ebb5d9d63",
-      "id": "d17f6368-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 623.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "d4845a90-e686-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f87-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Faina de griu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 110.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "11d61a3d-07a4-4944-96d9-898247cd9995",
-      "id": "d17f636a-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 90.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "d2b8d440-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305167-ddc2-11e8-a344-bd78e72aa65c",
-          "description": " Otet 6%",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "21b07039-05a3-448e-8667-011217fd9690",
-      "id": "d17f636c-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 53.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "f373dbf0-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305163-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de griu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 10.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "24d6d17d-b5fb-433d-9402-d85113bd5e95",
-      "id": "d17f636b-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 140.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "4a7eaf70-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516c-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de porumb",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "3dfe9e49-75ed-4773-a02f-d5c9d907b055",
-      "id": "d17f6370-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 250.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "01308a30-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f82-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Sare iodata",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 80.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "423ea434-44f4-4a4c-ba33-9637db2e9435",
-      "id": "d17f6378-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f8e-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "48cfb018-c59b-4d01-882c-5c6235d985b2",
-      "id": "d17f6369-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 33.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "a0b63f50-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f85-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Vanilie",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6000a228-c4c3-4f8e-afc7-7e8474378e55",
-      "id": "d17f636e-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 290.79,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "82bfa010-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305161-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Hrisca",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6c26d2d0-f1cb-4e64-b1fd-f4534d1196c1",
-      "id": "d17f6372-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 114.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "3fc38590-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f80-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Ceai din  fructe",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 2.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6d46fc99-b34d-496a-8aaf-97169a0a4441",
-      "id": "d17f6366-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 183.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "b3759b50-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f88-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Mazare uscata",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "8eef9ad6-9f76-4721-bebc-cee7330b6701",
-      "id": "d17f6376-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f9d-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "a600b96c-1df8-4eaa-bd16-5d899e08e251",
-      "id": "d17f6374-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f9a-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "c433f36e-8297-413a-b666-60f54a11a148",
-      "id": "d17f6373-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 49.50,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "11d3c450-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f83-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Frunze de dafin",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "d1992145-142c-4c73-838d-7ad20e3e9cd9",
-      "id": "d17f6364-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 254.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "1d22d450-e689-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305166-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de arnaut",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "d75ed3cd-e6bf-4d3d-9e54-f2d5f375b6e7",
-      "id": "d17f6361-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 370.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "bc2e6250-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516a-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Orez rotund",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "dd8b1c0e-7439-4008-9056-0d85bc58fc97",
-      "id": "d17f6371-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 57.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "79705050-e686-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f84-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Piper negru (macinat)",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "e2e5cbb8-939f-49a6-8059-046d28f4cbb3",
-      "id": "d17f6377-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f94-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "e61f9d80-8acb-40ee-8b03-316e845ef3d4",
-      "id": "d17f636f-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 72.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "458baa60-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f81-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Bicarbonat de sodiu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 10.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "e860dcf0-41bb-4671-aeb6-6bef96c18e19",
-      "id": "d17f636d-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 280.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "120fa9f0-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f86-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Fulgi de ovas",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "f26186ed-e20b-4641-a9f1-aee144533f9d",
-      "id": "d17f637a-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309f95-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "token": "fa301b74-af60-4072-ac7c-f316144ad429",
-      "id": "d17f6363-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 256.67,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "5f4a3680-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516b-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de gris",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fba15ed3-6035-486c-b5d5-5d16bf314a3b",
-      "id": "d17f6367-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 1883.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "f4938750-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305164-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Zahar tos",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 180.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fc05fc12-d02b-4d0a-8374-d77ddbbc73ad",
-      "id": "d17f6365-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 806.67,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "87093b30-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f8a-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Fulgi de porumb(ceriale)",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 22.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fc184c4c-b683-4207-95d5-6511204e1fc8",
-      "id": "d17f6379-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-14T12:00:02Z",
-      "description": "Other reasons (discontinuation of procedure)",
-      "title": "The contract/lot is not awarded",
-      "status": "unsuccessful",
-      "statusDetails": "empty",
-      "relatedLots": [
-        "bb309fa2-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    }
-  ],
-  "activeAwards": [
-    {
-      "token": "0c1af719-8600-46fe-90f8-8bf546774062",
-      "id": "d17f6360-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 52.50,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "750857c0-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f8b-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Sare de lamiie",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "0cad7c36-0780-4061-8f3f-13230a72b67f",
-      "id": "d17f6362-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 745.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "274bcd20-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305168-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Taietei de casa",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "10a2e41a-bc50-44d5-bf3b-c00ebb5d9d63",
-      "id": "d17f6368-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 623.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "d4845a90-e686-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f87-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Faina de griu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 110.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "11d61a3d-07a4-4944-96d9-898247cd9995",
-      "id": "d17f636a-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 90.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "d2b8d440-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305167-ddc2-11e8-a344-bd78e72aa65c",
-          "description": " Otet 6%",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "21b07039-05a3-448e-8667-011217fd9690",
-      "id": "d17f636c-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 53.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "f373dbf0-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305163-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de griu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 10.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "24d6d17d-b5fb-433d-9402-d85113bd5e95",
-      "id": "d17f636b-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 140.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "4a7eaf70-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516c-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de porumb",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "3dfe9e49-75ed-4773-a02f-d5c9d907b055",
-      "id": "d17f6370-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 250.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "01308a30-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f82-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Sare iodata",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 80.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "48cfb018-c59b-4d01-882c-5c6235d985b2",
-      "id": "d17f6369-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 33.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "a0b63f50-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f85-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Vanilie",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 20.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6000a228-c4c3-4f8e-afc7-7e8474378e55",
-      "id": "d17f636e-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 290.79,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "82bfa010-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305161-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Hrisca",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6c26d2d0-f1cb-4e64-b1fd-f4534d1196c1",
-      "id": "d17f6372-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 114.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "3fc38590-e684-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f80-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Ceai din  fructe",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 2.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "6d46fc99-b34d-496a-8aaf-97169a0a4441",
-      "id": "d17f6366-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 183.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "b3759b50-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f88-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Mazare uscata",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "c433f36e-8297-413a-b666-60f54a11a148",
-      "id": "d17f6373-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 49.50,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "11d3c450-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f83-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Frunze de dafin",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "d1992145-142c-4c73-838d-7ad20e3e9cd9",
-      "id": "d17f6364-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 254.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "1d22d450-e689-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305166-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de arnaut",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "d75ed3cd-e6bf-4d3d-9e54-f2d5f375b6e7",
-      "id": "d17f6361-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 370.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "bc2e6250-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516a-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Orez rotund",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "dd8b1c0e-7439-4008-9056-0d85bc58fc97",
-      "id": "d17f6371-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 57.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "79705050-e686-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f84-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Piper negru (macinat)",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 30.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "e61f9d80-8acb-40ee-8b03-316e845ef3d4",
-      "id": "d17f636f-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 72.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "458baa60-e685-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f81-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Bicarbonat de sodiu",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 10.00,
-          "unit": {
-            "id": "794",
-            "name": "Bucata"
-          },
-          "relatedLot": "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "e860dcf0-41bb-4671-aeb6-6bef96c18e19",
-      "id": "d17f636d-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 280.00,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "120fa9f0-e687-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f86-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Fulgi de ovas",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fa301b74-af60-4072-ac7c-f316144ad429",
-      "id": "d17f6363-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 256.67,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "5f4a3680-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb30516b-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Crupa de gris",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 35.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fba15ed3-6035-486c-b5d5-5d16bf314a3b",
-      "id": "d17f6367-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 1883.33,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "f4938750-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb305164-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Zahar tos",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 180.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    },
-    {
-      "token": "fc05fc12-d02b-4d0a-8374-d77ddbbc73ad",
-      "id": "d17f6365-e804-11e8-9d90-ab96f972450f",
-      "date": "2018-11-22T14:56:03Z",
-      "description": "Evaluarea s-a desfăşurat pe poziţii şi compararea\r\n s-a efectuat conform cel mai mic preţ,calitatea superioară a produselor şi livrarea lor \r\ncu transportul furnizorului.",
-      "status": "active",
-      "statusDetails": "empty",
-      "value": {
-        "amount": 806.67,
-        "currency": "MDL"
-      },
-      "relatedLots": [
-        "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-      ],
-      "relatedBid": "87093b30-e688-11e8-a2fa-17f2fe410162",
-      "suppliers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\"",
-            "uri": null
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "items": [
-        {
-          "id": "bb309f8a-ddc2-11e8-a344-bd78e72aa65c",
-          "description": "Fulgi de porumb(ceriale)",
-          "classification": {
-            "scheme": "CPV",
-            "id": "15800000-6",
-            "description": "Diverse produse alimentare"
-          },
-          "quantity": 22.00,
-          "unit": {
-            "id": "166",
-            "name": "Kilogram"
-          },
-          "relatedLot": "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-        }
-      ]
-    }
-  ],
-  "awardPeriod": {
-    "startDate": "2018-11-14T12:00:01Z",
-    "endDate": "2018-11-28T13:53:07Z"
+  "id": "6cdbd1c0-f7ca-11e8-b549-91f3f6e7effa",
+  "command": "updateAC",
+  "context": {
+    "operationId": "2217257c-31d9-4347-ad75-c2f81fdf1880",
+    "requestId": "6cdbd1c0-f7ca-11e8-b549-91f3f6e7effa",
+    "cpid": "ocds-t1s2t3-MD-1543918411194",
+    "ocid": "ocds-t1s2t3-MD-1543918411194-AC-1545724629893",
+    "stage": "AC",
+    "prevStage": "AC",
+    "processType": "updateAC",
+    "operationType": "updateAC",
+    "phase": "contractPreparation",
+    "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
+    "country": "MD",
+    "language": "ro",
+    "pmd": "TEST_OT",
+    "token": "1b89fb0b-4be9-4313-8bd7-bcb3b4f03d79",
+    "startDate": "2018-12-04T13:42:21Z",
+    "timeStamp": 1543930941660,
+    "isAuction": false,
+    "mainProcurementCategory": "goods",
+    "awardCriteria": "priceOnly"
   },
-  "unsuccessfulLots": [
-    {
-      "id": "bb309f9a-ddc2-11e8-a344-bd78e72aa65c"
+  "data": {
+    "planning": {
+      "implementation": {
+        "transactions": [
+          {
+            "id": "144",
+            "type": "advance",
+            "value": {
+              "amount": 2000,
+              "currency": "MDL"
+            },
+            "executionPeriod": {
+              "durationInDays": "10"
+            },
+            "relatedContractMilestone": "approval-3"
+          }
+        ]
+      },
+      "budget": {
+        "description": "описание",
+        "budgetAllocation": [
+          {
+            "budgetBreakdownID": "ocds-t1s2t3-MD-1543917297687-FS-1543917367238",
+            "period": {
+              "startDate": "2018-11-30T00:00:00Z",
+              "endDate": "2018-11-30T23:00:00Z"
+            },
+            "amount": 1200,
+            "relatedItem": "401e71a1-f7ad-11e8-924d-09fdb0fd6a88"
+          }
+        ],
+        "budgetSource": [
+          {
+            "budgetBreakdownID": "ocds-t1s2t3-MD-1543917297687-FS-1543917367238",
+            "amount": 500,
+            "currency": "MDL"
+          }
+        ]
+      }
     },
-    {
-      "id": "bb309f99-ddc2-11e8-a344-bd78e72aa65c"
-    },
-    {
-      "id": "bb309f9d-ddc2-11e8-a344-bd78e72aa65c"
-    },
-    {
-      "id": "bb309f8e-ddc2-11e8-a344-bd78e72aa65c"
-    },
-    {
-      "id": "bb309f94-ddc2-11e8-a344-bd78e72aa65c"
-    },
-    {
-      "id": "bb309f95-ddc2-11e8-a344-bd78e72aa65c"
-    },
-    {
-      "id": "bb309fa2-ddc2-11e8-a344-bd78e72aa65c"
-    }
-  ],
-  "bids": [
-    {
-      "id": "01308a30-e684-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
+    "contract": {
+      "title": "title",
+      "description": "description",
+      "period": {
+        "startDate": "2018-11-25T00:00:00Z",
+        "endDate": "2018-11-26T00:00:00Z"
+      },
+      "milestones": [
         {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
+          "id": "approval-re1atedparties.id",
+          "type": "approval",
+          "relatedItems": [
+            "401e71a1-f7ad-11e8-924d-09fdb0fd6a88"
+          ],
+          "additionalInformation": "дополнительная информация",
+          "dueDate": "2018-12-15T00:00:00Z",
+          "title": "title",
+          "description": "description"
+        }
+      ],
+      "confirmationRequests": [
+        {
+          "id": "cs-tenderer-confirmation-on-document.id",
+          "relatedItem": "fa369197-e2f5-4180-834f-073f3e4b4821-1543921570413",
+          "source": "tenderer"
+        }
+      ],
+      "agreedMetrics": [
+        {
+          "id": "cc-general",
+          "title": "Responsabilități generale",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de ambele părți",
+          "observations": [
+            {
+              "id": "cc-general-1-1",
+              "notes": "Nr. max. de zile pentru informarea prinvind invocarea forței majore",
+              "measure": 5,
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-general-1-2",
+              "notes": "Nr. max. de pentru notificarea despre intenția de reziliere",
+              "measure": 5,
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-general-1-3",
+              "notes": "Nr. max. de zile pentru răspunsul la notificarea despre intenția de reziliere",
+              "measure": 5,
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
               }
             }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 250.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "391d34bd-605f-4365-9310-bf5ece6d54a2-1542031512083",
-          "documentType": "submissionDocuments",
-          "title": "a.s-sare 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f96-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "3fc38590-e684-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 114.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "54dc1154-f85d-4cbb-b63a-2a0ed271641b-1542031585866",
-          "documentType": "submissionDocuments",
-          "title": "c.i-ceai 100g 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa5-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "a0b63f50-e684-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 33.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "d0fe7d71-252b-4d8f-b6f7-b265734c80ed-1542031722327",
-          "documentType": "submissionDocuments",
-          "title": "certifiat bana.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
           ]
         },
         {
-          "id": "499563b7-f504-4173-ad16-664d15e9991d-1542031722314",
-          "documentType": "x_qualificationDocuments",
-          "title": "declaratie conduita etica 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-tenderer-1",
+          "title": "Garanție de executare",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de operatorul economic în ceea ce privește garanția",
+          "observations": [
+            {
+              "id": "cc-tenderer-1-1",
+              "notes": "Cuantumul garanției",
+              "measure": 5,
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-1-2",
+              "notes": "Forma de garanţie de bună executare a contractului",
+              "measure": 5
+            }
           ]
         },
         {
-          "id": "1dc8259d-9ab4-425e-9d0f-25ff276d35ec-1542031722351",
-          "documentType": "x_qualificationDocuments",
-          "title": "extras.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-tenderer-2",
+          "title": "Termeni",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de EO în ceea ce privește calendarul",
+          "observations": [
+            {
+              "id": "cc-tenderer-2-1",
+              "notes": "Nr. max. de zile de la semnarea contractului pentru anunțarea Cumpărătorului despre disponibilitatea livrării Bunurilor şi/sau prestării Serviciilor",
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-2-2",
+              "notes": "Nr. max. de zile pentru examinarea pretenţiilor înaintate privind calitatea bunurilor şi/sau serviciilor livrate",
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-2-3",
+              "notes": "Nr. max. de zile pentru livrarea suplimentară în baza pretențiilor privind calitatea",
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-2-4",
+              "notes": "Nr. de zile după care se consideră refuz de a vinde Bunurile/Serviciile/Lucrările contractate",
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            }
           ]
         },
         {
-          "id": "3d4dfdfa-38c2-48af-a782-5c46dd0f5671-1542031722548",
-          "documentType": "x_qualificationDocuments",
-          "title": "inregistrare ansa 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-tenderer-3",
+          "title": "Răspundere",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de furnizor în ceea ce privește răspunderea",
+          "observations": [
+            {
+              "id": "cc-tenderer-3-1",
+              "notes": "% de răspundere materială pentru livrarea cu întărziere",
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-3-2",
+              "notes": "% maxim de răspundere materială a Vânzătorului în cazul livrării cu întârziere",
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-tenderer-3-3",
+              "notes": "% max. a penalității pentru refuzul executării contractului",
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            }
           ]
         },
         {
-          "id": "d2b7a23e-15f2-4719-893d-c2c6f531f15b-1542031722323",
-          "documentType": "x_qualificationDocuments",
-          "title": "lipsa datoriilor pina la 22.11 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-buyer-1",
+          "title": "Termeni",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de entitatea contractantă în ceea ce privește calendarul",
+          "observations": [
+            {
+              "id": "cc-buyer-1-1",
+              "notes": "Nr. max. de zile pentru depunerea pretențiilor privind calitatea bunurilor şi/sau serviciilor livrate",
+              "measure": 5,
+              "unit": {
+                "id": "359",
+                "name": "ziua",
+                "scheme": "MD-CUMC"
+              }
+            }
           ]
         },
         {
-          "id": "65c419ff-b0bb-4bc9-b7f7-1b24b815fd57-1542031722611",
-          "documentType": "x_qualificationDocuments",
-          "title": "lista fondatori.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-buyer-2",
+          "title": "Răspundere",
+          "description": "Condiții contractuale care reglementează responsabilitățile generale legate de entitatea contractantă privind răspunderea",
+          "observations": [
+            {
+              "id": "cc-buyer-2-1",
+              "notes": "% de răspundere materială a Beneficiarului in caz de achitare cu întârziere",
+              "measure": 5,
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            },
+            {
+              "id": "cc-buyer-2-2",
+              "notes": "% răspundere materială maximă a Beneficiarului in caz de achitare cu întârziere",
+              "measure": 5,
+              "unit": {
+                "id": "743",
+                "name": "procent",
+                "scheme": "MD-CUMC"
+              }
+            }
           ]
         },
         {
-          "id": "ff594260-2dc1-41d8-a7c9-4ef9d8b4fe2f-1542031722614",
-          "documentType": "x_commercialOffer",
-          "title": "oferta-diverse produse 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
+          "id": "cc-subject-e08c8af1-f7ad-11e8-a594-5d02d1e70482-401e71a1-f7ad-11e8-924d-09fdb0fd6a88",
+          "title": "Specificație pentru 777-2",
+          "description": "Informații detaliate privind obiectul achiziției",
+          "observations": [
+            {
+              "id": "cc-subject-1",
+              "notes": "Modelul articolului",
+              "measure": 5
+            },
+            {
+              "id": "cc-subject-2",
+              "notes": "Tara de origine",
+              "measure": 5
+            },
+            {
+              "id": "cc-subject-3",
+              "notes": "Producător",
+              "measure": 5
+            },
+            {
+              "id": "cc-subject-4",
+              "notes": "Specificația tehnică propusă de Furnizor",
+              "measure": 5
+            },
+            {
+              "id": "cc-subject-5",
+              "notes": "Standarde de referință",
+              "measure": 5
+            }
           ]
+        }
+      ]
+    },
+    "award": {
+      "id": "e08c8af1-f7ad-11e8-a594-5d02d1e70482",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-1-6",
+          "additionalIdentifiers": [
+            {
+              "scheme": "MD-SRJE",
+              "id": "123",
+              "legalName": "987",
+              "uri": "456"
+            }
+          ],
+          "persones": [
+            {
+              "title": "sss",
+              "name": "qwerty",
+              "identifier": {
+                "scheme": "MD-IDNO",
+                "id": "95-78-52",
+                "uri": "URL*"
+              },
+              "businessFunctions": [
+                {
+                  "id": "456951",
+                  "type": "authority",
+                  "jobTitle": "Chief Executive Officer",
+                  "period": {
+                    "startDate": "2018-12-15T00:00:00Z"
+                  },
+                  "documents": [
+                    {
+                      "id": "cdd3485f-6301-494f-bac0-063cabf05861-1543925453254",
+                      "documentType": "regulatoryDocument",
+                      "title": "PRIVET_MEDVED"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "details": {
+            "typeOfSupplier": "supplier",
+            "mainEconomicActivities": [
+              "456-95"
+            ],
+            "scale": "sme",
+            "permits": [
+              {
+                "scheme": "SRLE",
+                "id": "45621",
+                "url": "4",
+                "permitDetails": {
+                  "issuedBy": {
+                    "id": "popopo",
+                    "name": "vasia pupkin"
+                  },
+                  "issuedThought": {
+                    "id": "95874",
+                    "name": "name"
+                  },
+                  "validityPeriod": {
+                    "startDate": "2018-12-05T00:00:00Z",
+                    "endDate": "2018-12-06T00:00:00Z"
+                  }
+                }
+              }
+            ],
+            "bankAccounts": [
+              {
+                "description": "description",
+                "bankName": "bankName",
+                "address": {
+                  "streetAddress": "Steet",
+                  "postalCode": "5",
+                  "addressDetails": {
+                    "country": {
+                      "scheme": "iso",
+                      "id": "MD",
+                      "description": "13553",
+                      "uri": "543543554"
+                    },
+                    "region": {
+                      "scheme": "1",
+                      "id": "0301000",
+                      "description": "uri_description",
+                      "uri": "uri_region"
+                    },
+                    "locality": {
+                      "scheme": "CUATM",
+                      "id": "0301000",
+                      "description": "locality_description"
+                    }
+                  }
+                },
+                "identifier": {
+                  "scheme": "UA-MFO",
+                  "id": "300711"
+                },
+                "accountIdentification": {
+                  "scheme": "IBAN",
+                  "id": "2600000625637"
+                },
+                "additionalAccountIdentifiers": [
+                  {
+                    "scheme": "settlement",
+                    "id": "458-9652"
+                  }
+                ]
+              }
+            ],
+            "legalForm": {
+              "scheme": "MD-IDNO",
+              "id": "4592",
+              "description": "description",
+              "uri": "uri"
+            }
+          }
+        }
+      ],
+      "documents": [
+        {
+          "documentType": "contractDraft",
+          "id": "41d7e728-1b7d-42ae-bfb3-fc11e5c78e98-1543926352546"
+        }
+      ],
+      "value": {
+        "amount": 550,
+        "currency": "MDL",
+        "amountNet": 500,
+        "valueAddedTaxincluded": true
+      },
+      "items": [
+        {
+          "id": "401e71a1-f7ad-11e8-924d-09fdb0fd6a88",
+          "quantity": 10.00,
+          "unit": {
+            "value": {
+              "amount": 550.00,
+              "currency": "MDL",
+              "amountNet": 500.00,
+              "valueAddedTaxIncluded": true
+            }
+          },
+          "deliveryAddress": {
+            "streetAddress": "street",
+            "postalCode": "45900",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "0301000",
+                "description": "mun.Bălţi",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "UN/LOCDE",
+                "id": "450020",
+                "description": "Dnipro"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "buyer": {
+      "id": "MD-IDNO-354-37-1072",
+      "name": "Burns-Davis222",
+      "identifier": {
+        "id": "354-37-1072",
+        "scheme": "MD-IDNO",
+        "legalName": "Burns-Davis PLC",
+        "uri": "enotiss"
+      },
+      "address": {
+        "streetAddress": "232323",
+        "postalCode": "424422",
+        "addressDetails": {
+          "country": {
+            "scheme": "iso-alpha2",
+            "id": "MD",
+            "description": "MOLDOVA",
+            "uri": "http://reference.iatistandard.org"
+          },
+          "region": {
+            "scheme": "CUATM",
+            "id": "1000000",
+            "description": "Anenii Noi",
+            "uri": "http://statistica.md"
+          },
+          "locality": {
+            "scheme": "CUATM",
+            "id": "1001000",
+            "description": "or.Anenii Noi",
+            "uri": "http://statistica.md"
+          }
+        }
+      },
+      "contactPoint": {
+        "name": "Jacqueline Soto",
+        "email": "tiffanygutierrez@yahoo.com",
+        "telephone": "724-095-3938x237",
+        "faxNumber": "897-612-1545",
+        "url": "enotiss"
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "4569512357",
+          "scheme": "MD-IDNO",
+          "legalName": "LN",
+          "uri": "uri"
+        }
+      ],
+      "persones": [
+        {
+          "title": "title",
+          "name": "name",
+          "identifier": {
+            "id": "4569123",
+            "scheme": "MD-IDNO",
+            "uri": "uri"
+          },
+          "businessFunctions": [
+            {
+              "id": "456921",
+              "type": "authority",
+              "jobTitle": "Chief Executive Officer",
+              "period": {
+                "startDate": "2018-11-20T00:00:00Z"
+              },
+              "documents": [
+                {
+                  "id": "a58b5e64-e338-4b20-a2c1-3650b220489c-1542127310613",
+                  "documentType": "regulatoryDocument",
+                  "title": "loli"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "details": {
+        "typeOfBuyer": "NATIONAL_AGENCY",
+        "mainGeneralActivity": "PUBLIC_ORDER_AND_SAFETY",
+        "mainSectoralActivity": "RAILWAY_SERVICES",
+        "bankAccounts": [
+          {
+            "description": "32dfgv",
+            "bankName": "MBank",
+            "address": {
+              "streetAddress": "address of pe",
+              "addressDetails": {
+                "country": {
+                  "scheme": "CUATM",
+                  "id": "MD",
+                  "description": "desc_country",
+                  "uri": "uri_country"
+                },
+                "region": {
+                  "scheme": "scheme_region",
+                  "id": "id_region",
+                  "description": "desc_region",
+                  "uri": "uri_region"
+                },
+                "locality": {
+                  "scheme": "CUATM",
+                  "id": "0101000",
+                  "description": "DESCRIPTION"
+                }
+              }
+            },
+            "identifier": {
+              "id": "300711",
+              "scheme": "MD-BANKS"
+            },
+            "accountIdentification": {
+              "id": "2600000625637",
+              "scheme": "MD-IBAN"
+            },
+            "additionalAccountIdentifiers": [
+              {
+                "id": "123",
+                "scheme": "MD-SETTLEMENT"
+              }
+            ]
+          }
+        ],
+        "legalForm": {
+          "id": "654",
+          "scheme": "MD-IDNO",
+          "description": "ddd",
+          "uri": "ddd"
+        }
+      },
+      "buyerProfile": "http://ray.com/"
+    },
+    "language": "ro",
+    "actualBudgetSource": [],
+    "itemsCPVs": [
+      "30199230-1"
+    ],
+    "treasuryBudgetSources": null,
+    "funders": [
+      {
+        "id": "MD-IDNO-Enotis1",
+        "name": "BUYER_NAME1",
+        "identifier": {
+          "id": "Enotis1",
+          "scheme": "MD-IDNO",
+          "legalName": "legalName"
         },
-        {
-          "id": "88d9fa0b-2057-484a-a55b-ef0f892a56d0-1542031723143",
-          "documentType": "x_qualificationDocuments",
-          "title": "raport financiar 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-          ]
+        "address": {
+          "streetAddress": "",
+          "postalCode": "",
+          "addressDetails": {
+            "country": {
+              "scheme": "iso-alpha2",
+              "id": "MD",
+              "description": "MOLDOVA",
+              "uri": "http://reference.iatistandard.org"
+            },
+            "region": {
+              "scheme": "CUATM",
+              "id": "1000000",
+              "description": "Anenii Noi",
+              "uri": "http://statistica.md"
+            },
+            "locality": {
+              "scheme": "CUA",
+              "id": "1001001",
+              "description": "eee"
+            }
+          }
         },
-        {
-          "id": "2c0bb541-515c-4316-a983-46e7fde1a820-1542031722306",
-          "documentType": "x_qualificationDocuments",
-          "title": "situatii financiare 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa6-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "d2b8d440-e684-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
+        "additionalIdentifiers": [
+          {
+            "id": "string",
+            "scheme": "string",
+            "legalName": "string"
           }
+        ],
+        "contactPoint": {
+          "name": "string",
+          "email": "string",
+          "telephone": "string",
+          "faxNumber": "string"
         }
-      ],
-      "value": {
-        "amount": 90.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "d522cd91-eb71-4fa3-b814-7421dd79f321-1542031837023",
-          "documentType": "submissionDocuments",
-          "title": "c.c-otet 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f8f-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "11d3c450-e685-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 49.50,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "203b194b-2f67-4e3f-bd0b-dc1d8598b547-1542031935342",
-          "documentType": "submissionDocuments",
-          "title": "autorizatia de functionare 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-          ]
+      }
+    ],
+    "payers": [
+      {
+        "id": "MD-IDNO-Ebudget1",
+        "name": "PROCURING_ENTITY_NAME1",
+        "identifier": {
+          "id": "Ebudget1",
+          "scheme": "MD-IDNO",
+          "legalName": "legalName"
         },
-        {
-          "id": "aa5e3689-1898-4901-91f9-a6669fca8126-1542031935316",
-          "documentType": "x_qualificationDocuments",
-          "title": "autorizatie masina 1 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-          ]
+        "address": {
+          "streetAddress": "1",
+          "postalCode": "2",
+          "addressDetails": {
+            "country": {
+              "scheme": "iso-alpha2",
+              "id": "MD",
+              "description": "MOLDOVA",
+              "uri": "http://reference.iatistandard.org"
+            },
+            "region": {
+              "scheme": "CUATM",
+              "id": "1000000",
+              "description": "Anenii Noi",
+              "uri": "http://statistica.md"
+            },
+            "locality": {
+              "scheme": "CUATM",
+              "id": "1001000",
+              "description": "or.Anenii Noi",
+              "uri": "http://statistica.md"
+            }
+          }
         },
-        {
-          "id": "bafe932c-84d6-45c4-aaee-4cf72b7bdab2-1542031935355",
-          "documentType": "x_qualificationDocuments",
-          "title": "autorizatie masina 2 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "3afc38d5-ac17-48ad-a14e-d94048b3eca4-1542031935225",
-          "documentType": "x_qualificationDocuments",
-          "title": "autorizatie notificare.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "b3d8ae67-5b99-4770-8840-e73042d3bced-1542031935263",
-          "documentType": "x_qualificationDocuments",
-          "title": "autorizatie veterinara 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f9b-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "458baa60-e685-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
+        "additionalIdentifiers": [
+          {
+            "id": "id",
+            "scheme": "scheme",
+            "legalName": "legalName2",
+            "uri": "enotiss"
           }
+        ],
+        "contactPoint": {
+          "name": "name",
+          "email": "email",
+          "telephone": "telephone",
+          "faxNumber": "fax"
         }
-      ],
-      "value": {
-        "amount": 72.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "4e5018c1-49da-4daa-b3cf-c08cd7c488a9-1542032037812",
-          "documentType": "submissionDocuments",
-          "title": "a.s-soda mincar 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa3-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "750857c0-e685-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 52.50,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "418ed6b4-933d-4a20-a301-d252ce925757-1542032118175",
-          "documentType": "submissionDocuments",
-          "title": "extras.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f8d-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "79705050-e686-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 57.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "6c7cc171-c5f9-4885-a7c9-ad6c54e4ab92-1542032549463",
-          "documentType": "submissionDocuments",
-          "title": "aneza cacao,frunza dafin, piper negru.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "3a1662ef-3c58-415e-be23-83afb0d45cea-1542032550389",
-          "documentType": "submissionDocuments",
-          "title": "c.i-cacao,fr.dafin.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f92-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "d4845a90-e686-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 623.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "94d6a872-ef50-4f81-95da-451c21d7c86a-1542032707416",
-          "documentType": "submissionDocuments",
-          "title": "c.c-faina de griu 1- 2kg 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f97-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "120fa9f0-e687-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 280.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "f1348651-1d7f-4a27-a131-f6224da4922d-1542032805657",
-          "documentType": "submissionDocuments",
-          "title": "c.i-fulgi de ovas 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f9c-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "4a7eaf70-e687-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 140.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "3377d9cb-6489-45d3-b8a7-3a32a4d2bf00-1542032897227",
-          "documentType": "x_qualificationDocuments",
-          "title": "anexa porumb 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "555293e9-6bc9-472d-8548-620482785f58-1542032897254",
-          "documentType": "submissionDocuments",
-          "title": "c.i-porumb 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f9e-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "82bfa010-e687-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 290.79,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "21939f1d-50a0-45b4-88ef-ddf2c794d198-1542032992956",
-          "documentType": "submissionDocuments",
-          "title": "c.i-hrisca 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f98-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "bc2e6250-e687-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 370.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "1427b843-42c1-4262-9f76-7bd220f2f982-1542033118342",
-          "documentType": "submissionDocuments",
-          "title": "aneza orez rotund 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "f0dcd953-dc9e-4cce-8ccf-f11c580c34f3-1542033118032",
-          "documentType": "submissionDocuments",
-          "title": "c.c-orez 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa7-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "f373dbf0-e687-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 53.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "cdf975cb-9360-49f8-ae12-7d74b124418d-1542033187256",
-          "documentType": "submissionDocuments",
-          "title": "c.i-cr.griu 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f93-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "274bcd20-e688-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 745.00,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "54ae69ec-0f8c-4371-bcf0-2912baa13e3b-1542033272920",
-          "documentType": "x_qualificationDocuments",
-          "title": "aneza taietei 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "12c8a3f3-6d08-4ef9-85b6-251fbc824f82-1542033273951",
-          "documentType": "submissionDocuments",
-          "title": "c.c-taietei 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa0-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "5f4a3680-e688-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 256.67,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "22310d0f-9bfa-4703-a19a-2a640303b674-1542033364371",
-          "documentType": "x_qualificationDocuments",
-          "title": "anexa-gris 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        },
-        {
-          "id": "41a4291b-cf39-4e3a-9582-c25b3b8f217e-1542033364192",
-          "documentType": "submissionDocuments",
-          "title": "c.i-gris 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f90-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "87093b30-e688-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 806.67,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "af96c7e9-ecd4-455b-a9de-90bc7f77bb08-1542033441571",
-          "documentType": "submissionDocuments",
-          "title": "lista fondatori.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa4-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "b3759b50-e688-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 183.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "ee5da072-cca7-4fd3-8e51-4c32e2558c82-1542033513147",
-          "documentType": "submissionDocuments",
-          "title": "c.i.-mazare uscata 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309fa1-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "f4938750-e688-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 1883.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "500fe027-f824-4fa9-89a8-e2c351ef0b8a-1542033621682",
-          "documentType": "submissionDocuments",
-          "title": "c.c-zahar 1kg 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f91-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    },
-    {
-      "id": "1d22d450-e689-11e8-a2fa-17f2fe410162",
-      "date": "2018-11-22T14:55:58Z",
-      "status": "valid",
-      "statusDetails": "empty",
-      "tenderers": [
-        {
-          "id": "MD-IDNO-1007600043788",
-          "name": "SRL \"Lovis Angro\"",
-          "identifier": {
-            "id": "1007600043788",
-            "scheme": "MD-IDNO",
-            "legalName": "SRL \"Lovis Angro\""
-          },
-          "address": {
-            "streetAddress": "str. Columna 170",
-            "postalCode": "2004",
-            "addressDetails": {
-              "country": {
-                "scheme": "iso-alpha2",
-                "id": "MD",
-                "description": "MOLDOVA",
-                "uri": "http://reference.iatistandard.org"
-              },
-              "region": {
-                "scheme": "CUATM",
-                "id": "0101000",
-                "description": "mun.Chişinău",
-                "uri": "http://statistica.md"
-              },
-              "locality": {
-                "scheme": "other",
-                "id": "or. Chisinau",
-                "description": "or. Chisinau"
-              }
-            }
-          },
-          "contactPoint": {
-            "name": "Angro Lovis",
-            "email": "lovisangro@mail.ru",
-            "telephone": "079970029"
-          },
-          "details": {
-            "scale": "micro"
-          }
-        }
-      ],
-      "value": {
-        "amount": 254.33,
-        "currency": "MDL"
-      },
-      "documents": [
-        {
-          "id": "b015e197-0fa9-4f03-a736-ef6b019f0c0c-1542033690948",
-          "documentType": "submissionDocuments",
-          "title": "c.i-arnautca 001.pdf",
-          "description": "",
-          "relatedLots": [
-            "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-          ]
-        }
-      ],
-      "relatedLots": [
-        "bb309f9f-ddc2-11e8-a344-bd78e72aa65c"
-      ]
-    }
-  ]
+      }
+    ],
+    "addedEI": null,
+    "excludedEI": null,
+    "addedFS": null,
+    "excludedFS": null
+  },
+  "version": "0.0.1"
 }
