@@ -55,7 +55,7 @@ enum class CommandType(private val value: String) {
     SUPPLIER_SIGNING_AC("supplierSigningAC"),
     VERIFICATION_AC("verificationAC"),
     TREASURY_APPROVING_AC("treasuryApprovingAC"),
-    ACTIVATION_AC("activationAC");
+    ACTIVATE_AC("activateAC");
 
     @JsonValue
     fun value(): String {
