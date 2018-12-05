@@ -43,7 +43,9 @@ class SigningAcService(private val acDao: AcDao,
         var isRequestIdPresent = false
         contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
             confirmationRequest.requestGroups?.forEach { requestGroup ->
-                isRequestIdPresent = requestGroup.requests.any { it.id == requestId }
+                requestGroup.requests.forEach {
+                    if (it.id == requestId) isRequestIdPresent = true
+                }
             }
         }
         if (!isRequestIdPresent) throw ErrorException(INVALID_REQUEST_ID)
