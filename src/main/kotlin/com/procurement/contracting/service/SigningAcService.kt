@@ -40,10 +40,13 @@ class SigningAcService(private val acDao: AcDao,
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS) //VR-9.6.4
 //        if (contractProcess.contract.statusDetails != ContractStatusDetails.APPROVEMENT) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
-        if (contractProcess.contract.confirmationRequests?.firstOrNull()
-                        ?.requestGroups?.firstOrNull()
-                        ?.requests?.firstOrNull()
-                        ?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
+        var isRequestIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                isRequestIdPresent = requestGroup.requests.any { it.id == requestId }
+            }
+        }
+        if (!isRequestIdPresent) throw ErrorException(INVALID_REQUEST_ID)
 
         val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
         if (dto.confirmationResponse.value.id != buyer.id) throw ErrorException(INVALID_BUYER_ID)//VR-9.6.5
@@ -276,7 +279,7 @@ class SigningAcService(private val acDao: AcDao,
 
     private fun getAuthorityOrganizationPersonBuyer(contractProcess: ContractProcess, requestId: String): RelatedPerson {
         return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter {it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId}
+                ?.filter { it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId }
                 ?.toList()
                 ?.firstOrNull()?.requestGroups
                 ?.firstOrNull()?.requests
@@ -286,7 +289,7 @@ class SigningAcService(private val acDao: AcDao,
 
     private fun getAuthorityOrganizationPersonSupplier(contractProcess: ContractProcess, requestId: String): RelatedPerson {
         return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter {it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId}
+                ?.filter { it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId }
                 ?.toList()
                 ?.firstOrNull()?.requestGroups
                 ?.firstOrNull()?.requests
