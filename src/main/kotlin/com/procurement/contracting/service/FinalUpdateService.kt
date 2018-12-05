@@ -95,8 +95,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
+                title = template.title!!,
+                description = template.description!!,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -118,8 +118,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
+                title = template.title!!,
+                description = template.description!!,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -142,8 +142,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
+                title = template.title!!,
+                description = template.description!!,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -165,8 +165,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
+                title = template.title!!,
+                description = template.description!!,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -185,7 +185,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedPerson = getAuthorityOrganizationPersonBuyer(buyer)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description,
+                description = template.description!!,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
@@ -212,7 +212,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedPerson = getAuthorityOrganizationPersonSupplier(supplier)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description,
+                description = template.description!!,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(

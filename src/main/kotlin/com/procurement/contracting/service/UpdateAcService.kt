@@ -255,7 +255,7 @@ class UpdateAcService(private val acDao: AcDao,
                                         requests = setOf(Request(
                                                 id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
                                                 title = buyerTemplate.requestTitle + buyerAuthority.name,
-                                                description = buyerTemplate.requestDescription,
+                                                description = buyerTemplate.requestDescription!!,
                                                 relatedPerson = buyerAuthority
                                         ))
                                 )
@@ -274,7 +274,7 @@ class UpdateAcService(private val acDao: AcDao,
                                                 relatedPerson = tendererAuthority,
                                                 id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
                                                 title = tendererTemplate.requestTitle + tendererAuthority.name,
-                                                description = tendererTemplate.requestDescription
+                                                description = tendererTemplate.requestDescription!!
                                         ))
                                 )
                         )

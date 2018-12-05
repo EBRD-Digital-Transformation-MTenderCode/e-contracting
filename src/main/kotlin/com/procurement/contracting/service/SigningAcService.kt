@@ -59,7 +59,7 @@ class SigningAcService(private val acDao: AcDao,
                 country = country,
                 pmd = pmd,
                 language = language,
-                relatedPerson = getAuthorityOrganizationPersonBuyer(contractProcess, requestId),
+                relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
         val supplier = contractProcess.award.suppliers.first()
@@ -131,7 +131,7 @@ class SigningAcService(private val acDao: AcDao,
                 country = country,
                 pmd = pmd,
                 language = language,
-                relatedPerson = getAuthorityOrganizationPersonSupplier(contractProcess, requestId),
+                relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
         val confirmationResponses = contractProcess.contract.confirmationResponses?.toMutableList() ?: mutableListOf()
@@ -186,15 +186,21 @@ class SigningAcService(private val acDao: AcDao,
     }
 
     private fun validateRelatedPersonId(contractProcess: ContractProcess, dto: ProceedResponseRq, requestId: String) {
-        val confirmationRequestsFromBase = contractProcess.contract.confirmationRequests?.asSequence()?.filter {
-            it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId
-        }?.toList()
-
-        if (confirmationRequestsFromBase?.firstOrNull()
-                        ?.requestGroups?.firstOrNull()
-                        ?.requests?.firstOrNull()
-                        ?.relatedPerson?.id != dto.confirmationResponse.value.relatedPerson.id)
-            throw ErrorException(INVALID_RELATED_PERSON_ID)
+        var isRelatedPersonIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach { request ->
+                    if (request.id == requestId) {
+                        if (request.relatedPerson != null) {
+                            if (request.relatedPerson.id == dto.confirmationResponse.value.relatedPerson.id) {
+                                isRelatedPersonIdPresent = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!isRelatedPersonIdPresent) throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
     private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: String, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
@@ -214,7 +220,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale.description!!
         )
 
         val buyerName = buyer.name ?: throw ErrorException(BUYER_NAME_IS_EMPTY)
@@ -254,7 +260,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale.description!!
         )
 
         val supplierName = supplier.name
@@ -277,25 +283,18 @@ class SigningAcService(private val acDao: AcDao,
         )
     }
 
-    private fun getAuthorityOrganizationPersonBuyer(contractProcess: ContractProcess, requestId: String): RelatedPerson {
-        return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter { it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId }
-                ?.toList()
-                ?.firstOrNull()?.requestGroups
-                ?.firstOrNull()?.requests
-                ?.firstOrNull()?.relatedPerson
-                ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
-    }
-
-    private fun getAuthorityOrganizationPersonSupplier(contractProcess: ContractProcess, requestId: String): RelatedPerson {
-        return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter { it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId }
-                ?.toList()
-                ?.firstOrNull()?.requestGroups
-                ?.firstOrNull()?.requests
-                ?.firstOrNull()?.relatedPerson
-                ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
-
+    private fun getAuthorityOrganizationPerson(contractProcess: ContractProcess, requestId: String): RelatedPerson {
+        var relatedPerson: RelatedPerson? = null
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach { request ->
+                    if (request.id == requestId) {
+                        relatedPerson = request.relatedPerson
+                    }
+                }
+            }
+        }
+        return relatedPerson ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier,
@@ -313,7 +312,7 @@ class SigningAcService(private val acDao: AcDao,
         val request = Request(
                 id = template.id + verificationValue + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description,
+                description = template.description!!,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
@@ -323,7 +322,7 @@ class SigningAcService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = template.id + verificationValue,
                 relatedItem = verificationValue,
-                source = template.source!!,
+                source = template.source ?: "",
                 type = template.type,
                 title = template.title,
                 description = template.description,
