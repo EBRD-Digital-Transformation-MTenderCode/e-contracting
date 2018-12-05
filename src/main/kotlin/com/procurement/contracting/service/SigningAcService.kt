@@ -44,11 +44,12 @@ class SigningAcService(private val acDao: AcDao,
                         ?.requestGroups?.firstOrNull()
                         ?.requests?.firstOrNull()
                         ?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
-        if (dto.confirmationResponse.value.id != contractProcess.buyer?.id) throw ErrorException(INVALID_BUYER_ID)//VR-9.6.5
+
+        val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
+        if (dto.confirmationResponse.value.id != buyer.id) throw ErrorException(INVALID_BUYER_ID)//VR-9.6.5
         validateRelatedPersonId(contractProcess, dto, requestId)//9.6.6
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)//VR-9.6.7
 
-        val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
         val confirmationResponse = generateBuyerConfirmationResponse(
                 buyer = buyer,
                 dto = dto.confirmationResponse,
