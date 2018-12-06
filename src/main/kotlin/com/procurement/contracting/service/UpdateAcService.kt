@@ -13,8 +13,6 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.collections.HashSet
 
 @Service
 class UpdateAcService(private val acDao: AcDao,
@@ -210,7 +208,9 @@ class UpdateAcService(private val acDao: AcDao,
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
-        val relatedItemIds = milestonesDto.asSequence().flatMap { it.relatedItems!!.asSequence() }.toSet()
+        val relatedItemIds = milestonesDto.asSequence()
+                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(MILESTONE_RELATED_ITEMS) }
+                .toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
