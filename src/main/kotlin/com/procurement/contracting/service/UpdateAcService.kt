@@ -122,11 +122,10 @@ class UpdateAcService(private val acDao: AcDao,
         val updatedMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in milestonesDtoIds }
                 .map { milestoneDb -> milestoneDb.update(milestonesDto.first { it.id == milestoneDb.id }) }
-                .toHashSet()
+                .toMutableSet()
         val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         return if (updatedMilestonesDb.isNotEmpty()) {
-            updatedMilestonesDb.addAll(newMilestones)
-            updatedMilestonesDb
+            (updatedMilestonesDb + newMilestones).toHashSet()
         } else {
             newMilestones
         }
@@ -209,7 +208,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
         val relatedItemIds = milestonesDto.asSequence()
-                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(MILESTONE_RELATED_ITEMS) }
+                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM) }
                 .toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
