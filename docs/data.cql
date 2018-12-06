@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_can (
     owner text,
     status text,
     status_details text,
+    json_data text,
     primary key(cp_id, can_id)
 );
 

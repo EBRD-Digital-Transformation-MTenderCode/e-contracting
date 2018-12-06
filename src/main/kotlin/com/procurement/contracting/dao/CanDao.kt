@@ -66,6 +66,27 @@ class CanDao(private val session: Session) {
         }
         return entities
     }
+    fun getByCpIdAndAcId(cpId: String, canId: String): CanEntity {
+        val query = select()
+            .all()
+            .from(NOTICE_TABLE)
+            .where(eq(CP_ID, cpId))
+            .and(eq(CAN_ID, canId))
+            .limit(1)
+        val row = session.execute(query).one()
+        return if (row != null)
+            CanEntity(
+                cpId = row.getString(CP_ID),
+                canId = row.getUUID(CAN_ID),
+                owner = row.getString(OWNER),
+                createdDate = row.getTimestamp(CREATED_DATE),
+                awardId = row.getString(AWARD_ID),
+                acId = row.getString(AC_ID),
+                status = row.getString(STATUS),
+                statusDetails = row.getString(STATUS_DETAILS),
+                jsonData = row.getString(JSON_DATA))
+        else throw ErrorException(ErrorType.CAN_NOT_FOUND)
+    }
 
     fun getByCpIdAndAcId(cpId: String, canId: String): CanEntity {
         val query = select()

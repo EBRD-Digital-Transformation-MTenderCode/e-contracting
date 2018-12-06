@@ -179,6 +179,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.documents = documents
         contractProcess.contract.statusDetails = ContractStatusDetails.SIGNED
 
+        entity.statusDetails=ContractStatusDetails.SIGNED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSources, contractProcess.contract))
