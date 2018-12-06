@@ -3,7 +3,6 @@ package com.procurement.contracting.model.dto.ocds
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.exception.EnumException
 
-
 enum class MainProcurementCategory(@JsonValue val value: String) {
     GOODS("goods"),
     SERVICES("services"),
@@ -29,7 +28,6 @@ enum class MainProcurementCategory(@JsonValue val value: String) {
 enum class TransactionType(@JsonValue val value: String) {
     ADVANCE("advance"),
     PAYMENT("payment");
-
 
     override fun toString(): String {
         return this.value
@@ -191,14 +189,12 @@ enum class DocumentTypeBF(@JsonValue val value: String) {
     }
 }
 
-
 enum class MilestoneType(@JsonValue val value: String) {
 
     DELIVERY("delivery"),
     X_WARRANTY("x_warranty"),
     X_REPORTING("x_reporting"),
     APPROVAL("approval");
-
 
     override fun toString(): String {
         return this.value
@@ -212,12 +208,10 @@ enum class MilestoneSubType(@JsonValue val value: String) {
     CONTRACT_ACTIVATION("contractActivation"),
     APPROVE_BODY_VALIDATION("approveBodyValidation");
 
-
     override fun toString(): String {
         return this.value
     }
 }
-
 
 enum class RelatedProcessType(@JsonValue val value: String) {
     FRAMEWORK("framework"),
@@ -242,7 +236,7 @@ enum class RelatedProcessScheme(@JsonValue val value: String) {
     }
 }
 
-enum class ConfirmationResponseType(@JsonValue val value: String){
+enum class ConfirmationResponseType(@JsonValue val value: String) {
     DOCUMENT("document");
 
     override fun toString(): String {

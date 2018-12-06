@@ -41,6 +41,7 @@ class IssuingAcService(private val acDao: AcDao) {
         contractProcess.contract.statusDetails = ContractStatusDetails.ISSUED
         contractProcess.contract.date = dateTime
 
+        entity.statusDetails=ContractStatusDetails.ISSUED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = IssuingAcRs(ContractIssuingAcRs(date = contractProcess.contract.date, statusDetails = contractProcess.contract.statusDetails)))
