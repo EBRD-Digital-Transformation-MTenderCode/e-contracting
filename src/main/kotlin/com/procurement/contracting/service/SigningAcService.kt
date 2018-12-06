@@ -215,7 +215,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 templateId = "cs-buyer-confirmation-on")
 
-        val templateRationale = templateService.getConfirmationRequestTemplate(
+        val templateRationale = templateService.getVerificationTemplate(
                 country = country,
                 pmd = pmd,
                 language = language,
@@ -225,7 +225,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale
         )
 
         val buyerName = buyer.name ?: throw ErrorException(BUYER_NAME_IS_EMPTY)
@@ -255,7 +255,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 templateId = "cs-tenderer-confirmation-on")
 
-        val templateRationale = templateService.getConfirmationRequestTemplate(
+        val templateRationale = templateService.getVerificationTemplate(
                 country = country,
                 pmd = pmd,
                 language = language,
@@ -265,7 +265,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale
         )
 
         val supplierName = supplier.name
