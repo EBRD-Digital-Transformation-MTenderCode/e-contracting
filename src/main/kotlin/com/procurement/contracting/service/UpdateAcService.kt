@@ -202,7 +202,7 @@ class UpdateAcService(private val acDao: AcDao,
                 .filter { it.type != TransactionType.ADVANCE }
                 .map { it.relatedContractMilestone!! }.toHashSet()
 
-        if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
+//        if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
