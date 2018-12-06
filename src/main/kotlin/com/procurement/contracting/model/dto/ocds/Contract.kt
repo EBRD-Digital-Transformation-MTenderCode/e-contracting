@@ -16,7 +16,7 @@ data class Contract @JsonCreator constructor(
 
         val awardId: String,
 
-        val status: ContractStatus,
+        var status: ContractStatus,
 
         var statusDetails: ContractStatusDetails,
 

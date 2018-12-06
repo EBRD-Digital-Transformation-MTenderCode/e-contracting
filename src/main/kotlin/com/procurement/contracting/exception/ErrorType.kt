@@ -52,5 +52,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_BUYER_ID("20.07","invalid buyerId VR-9.6.5"),
     INVALID_RELATED_PERSON_ID("20.08","invalid related person id VR-9.6.6"),
     INVALID_CONFIRMATION_REQUEST_DATE("20.09","invalid Confirmation request date VR-9.6.7"),
-    INVALID_SUPPLIER_ID("20.07","invalid supplierId VR-9.7.4");
+    INVALID_SUPPLIER_ID("20.10","invalid supplierId VR-9.7.4"),
+    EMPTY_AWARD_RELATED_LOT("20.11","Related lot in award in relatedProcess is empty."),
+    AC_NOT_FOUND("20.12","Awarded Contract not found");
 }

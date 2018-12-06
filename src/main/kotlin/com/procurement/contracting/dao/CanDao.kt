@@ -3,6 +3,8 @@ package com.procurement.contracting.dao
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
+import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.entity.CanEntity
 import org.springframework.stereotype.Service
 import java.util.*
@@ -58,10 +60,33 @@ class CanDao(private val session: Session) {
                             awardId = row.getString(AWARD_ID),
                             acId = row.getString(AC_ID),
                             status = row.getString(STATUS),
-                            statusDetails = row.getString(STATUS_DETAILS))
+                            statusDetails = row.getString(STATUS_DETAILS),
+                        jsonData = row.getString(JSON_DATA))
             )
         }
         return entities
+    }
+
+    fun getByCpIdAndAcId(cpId: String, canId: String): CanEntity {
+        val query = select()
+            .all()
+            .from(NOTICE_TABLE)
+            .where(eq(CP_ID, cpId))
+            .and(eq(CAN_ID, canId))
+            .limit(1)
+        val row = session.execute(query).one()
+        return if (row != null)
+            CanEntity(
+                cpId = row.getString(CP_ID),
+                canId = row.getUUID(CAN_ID),
+                owner = row.getString(OWNER),
+                createdDate = row.getTimestamp(CREATED_DATE),
+                awardId = row.getString(AWARD_ID),
+                acId = row.getString(AC_ID),
+                status = row.getString(STATUS),
+                statusDetails = row.getString(STATUS_DETAILS),
+                jsonData = row.getString(JSON_DATA))
+        else throw ErrorException(ErrorType.CAN_NOT_FOUND)
     }
 
     companion object {
@@ -74,5 +99,6 @@ class CanDao(private val session: Session) {
         private const val CREATED_DATE = "created_date"
         private const val STATUS = "status"
         private const val STATUS_DETAILS = "status_details"
+        private const val JSON_DATA = "json_data"
     }
 }

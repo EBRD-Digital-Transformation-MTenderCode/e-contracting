@@ -18,5 +18,7 @@ data class CanEntity(
 
         var status: String,
 
-        var statusDetails: String
+        var statusDetails: String,
+
+        var jsonData: String
 )

@@ -18,7 +18,7 @@ data class AcEntity(
 
         val status: String,
 
-        val statusDetails: String,
+        var statusDetails: String,
 
         val mainProcurementCategory: String,
 

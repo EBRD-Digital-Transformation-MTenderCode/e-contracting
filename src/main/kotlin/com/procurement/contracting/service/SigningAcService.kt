@@ -101,6 +101,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.confirmationResponses = mutableListOf(confirmationResponse)
         contractProcess.contract.documents = documents
 
+        entity.statusDetails=ContractStatusDetails.APPROVED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = BuyerSigningRs(contractProcess.contract))
