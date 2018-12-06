@@ -3,18 +3,6 @@
     "implementation": {
       "transactions": [
         {
-          "id": "c7f11af0-f97f-11e8-a857-f7e9151dbbbb",
-          "type": "payment",
-          "value": {
-            "amount": 2000.00,
-            "currency": "MDL"
-          },
-          "executionPeriod": {
-            "durationInDays": 10
-          },
-          "relatedContractMilestone": "delivery-MD-IDNO-6666 88rosto-c7f0a5c0-f97f-11e8-a857-f7e9151dbbbb"
-        },
-        {
           "id": "c7f11af1-f97f-11e8-a857-f7e9151dbbbb",
           "type": "payment",
           "value": {
@@ -25,6 +13,18 @@
             "durationInDays": 10
           },
           "relatedContractMilestone": "delivery-MD-IDNO-6666 88rosto-c7f0a5c1-f97f-11e8-a857-f7e9151dbbbb"
+        },
+        {
+          "id": "c7f11af0-f97f-11e8-a857-f7e9151dbbbb",
+          "type": "payment",
+          "value": {
+            "amount": 2000.00,
+            "currency": "MDL"
+          },
+          "executionPeriod": {
+            "durationInDays": 10
+          },
+          "relatedContractMilestone": "delivery-MD-IDNO-6666 88rosto-c7f0a5c0-f97f-11e8-a857-f7e9151dbbbb"
         }
       ]
     },
@@ -76,7 +76,7 @@
   "contract": {
     "token": "c244f61e-a42b-453f-a7eb-0625aa78ea9d",
     "id": "ocds-t1s2t3-MD-1544113930847-AC-1544797180789",
-    "date": "2018-12-06T17:54:19Z",
+    "date": "2018-12-06T18:13:19Z",
     "awardId": "03dd1330-f975-11e8-940d-a5f60d9bc9bf",
     "status": "pending",
     "statusDetails": "approvement",
@@ -96,9 +96,94 @@
       {
         "id": "1a05a7a2-31b2-48e1-9127-accc273e932b-1544118864570",
         "documentType": "contractSigned"
+      },
+      {
+        "id": "ee2bec2c-f9d6-4c1d-9659-6f0254ea8c2e-1544120000530",
+        "documentType": "contractSigned"
       }
     ],
     "milestones": [
+      {
+        "id": "delivery-MD-IDNO-6666 88rosto-c7f0a5c1-f97f-11e8-a857-f7e9151dbbbb",
+        "title": "titl2",
+        "description": "description2",
+        "type": "delivery",
+        "status": "scheduled",
+        "relatedItems": [
+          "7ae9def0-f974-11e8-924d-09fdb0fd6a88"
+        ],
+        "additionalInformation": "дополнительная информация3",
+        "dueDate": "2018-12-15T00:00:00Z",
+        "relatedParties": [
+          {
+            "id": "MD-IDNO-6666 88rosto",
+            "name": "Googleh555fhfgh55g12"
+          }
+        ]
+      },
+      {
+        "id": "approval-MD-IDNO-354-37-10729cf66be0-f982-11e8-a0f1-591250bc3b6d",
+        "title": "Signature by the Buyer",
+        "description": "Buyer has to sign the contract",
+        "type": "approval",
+        "subtype": "buyersApproval",
+        "status": "scheduled",
+        "dueDate": "2018-12-06T18:13:20Z",
+        "relatedParties": [
+          {
+            "id": "MD-IDNO-354-37-1072",
+            "name": "Burns-Davis222"
+          }
+        ]
+      },
+      {
+        "id": "delivery-MD-IDNO-6666 88rosto-c7f0a5c0-f97f-11e8-a857-f7e9151dbbbb",
+        "title": "titl2",
+        "description": "description2",
+        "type": "delivery",
+        "status": "scheduled",
+        "relatedItems": [
+          "7ae9def1-f974-11e8-924d-09fdb0fd6a88"
+        ],
+        "additionalInformation": "дополнительная информация3",
+        "dueDate": "2018-12-15T00:00:00Z",
+        "relatedParties": [
+          {
+            "id": "MD-IDNO-6666 88rosto",
+            "name": "Googleh555fhfgh55g12"
+          }
+        ]
+      },
+      {
+        "id": "approval-MD-IDNO-6666 88rosto9cf6ba00-f982-11e8-a0f1-591250bc3b6d",
+        "title": "Signature by the Supplier",
+        "description": "Supplier has to sign the contract",
+        "type": "approval",
+        "subtype": "suppliersApproval",
+        "status": "scheduled",
+        "dueDate": "2018-12-06T18:13:20Z",
+        "relatedParties": [
+          {
+            "id": "MD-IDNO-6666 88rosto",
+            "name": "Googleh555fhfgh55g12"
+          }
+        ]
+      },
+      {
+        "id": "approval-MD-IDNO-354-37-10729cf6e110-f982-11e8-a0f1-591250bc3b6d",
+        "title": "Contract activation",
+        "description": "Buyer has to activate the contract",
+        "type": "approval",
+        "subtype": "contractActivation",
+        "status": "scheduled",
+        "dueDate": "2018-12-06T18:13:20Z",
+        "relatedParties": [
+          {
+            "id": "MD-IDNO-354-37-1072",
+            "name": "Burns-Davis222"
+          }
+        ]
+      },
       {
         "id": "approval-MD-IDNO-354-37-1072f7fb3b40-f97f-11e8-a857-f7e9151dbbbb",
         "title": "Signature by the Buyer",
@@ -128,24 +213,6 @@
         ]
       },
       {
-        "id": "delivery-MD-IDNO-6666 88rosto-c7f0a5c0-f97f-11e8-a857-f7e9151dbbbb",
-        "title": "titl2",
-        "description": "description2",
-        "type": "delivery",
-        "status": "scheduled",
-        "relatedItems": [
-          "7ae9def1-f974-11e8-924d-09fdb0fd6a88"
-        ],
-        "additionalInformation": "дополнительная информация3",
-        "dueDate": "2018-12-15T00:00:00Z",
-        "relatedParties": [
-          {
-            "id": "MD-IDNO-6666 88rosto",
-            "name": "Googleh555fhfgh55g12"
-          }
-        ]
-      },
-      {
         "id": "approval-MD-IDNO-354-37-1072f7fb8960-f97f-11e8-a857-f7e9151dbbbb",
         "title": "Contract activation",
         "description": "Buyer has to activate the contract",
@@ -156,24 +223,6 @@
           {
             "id": "MD-IDNO-354-37-1072",
             "name": "Burns-Davis222"
-          }
-        ]
-      },
-      {
-        "id": "delivery-MD-IDNO-6666 88rosto-c7f0a5c1-f97f-11e8-a857-f7e9151dbbbb",
-        "title": "titl2",
-        "description": "description2",
-        "type": "delivery",
-        "status": "scheduled",
-        "relatedItems": [
-          "7ae9def0-f974-11e8-924d-09fdb0fd6a88"
-        ],
-        "additionalInformation": "дополнительная информация3",
-        "dueDate": "2018-12-15T00:00:00Z",
-        "relatedParties": [
-          {
-            "id": "MD-IDNO-6666 88rosto",
-            "name": "Googleh555fhfgh55g12"
           }
         ]
       }
@@ -223,6 +272,31 @@
                 "relatedPerson": {
                   "id": "95-78-52",
                   "name": "qwerty"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cs-buyer-confirmation-on-ee2bec2c-f9d6-4c1d-9659-6f0254ea8c2e-1544120000530",
+        "type": "digitalSignature",
+        "title": "Document signing",
+        "description": "Buyer has to sign the transferred document",
+        "relatesTo": "document",
+        "relatedItem": "ee2bec2c-f9d6-4c1d-9659-6f0254ea8c2e-1544120000530",
+        "source": "buyer",
+        "requestGroups": [
+          {
+            "id": "cs-buyer-confirmation-on-ee2bec2c-f9d6-4c1d-9659-6f0254ea8c2e-1544120000530-354-37-1072",
+            "requests": [
+              {
+                "id": "cs-buyer-confirmation-on-ee2bec2c-f9d6-4c1d-9659-6f0254ea8c2e-1544120000530-4569123",
+                "title": "parties[role:buyer].persones[role:authority].name",
+                "description": "Buyer has to sign the transferred document",
+                "relatedPerson": {
+                  "id": "4569123",
+                  "name": "name"
                 }
               }
             ]
