@@ -86,6 +86,7 @@ class SigningAcService(private val acDao: AcDao,
 
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
         documents.add(document)
+
         contractProcess.contract.milestones?.asSequence()
                 ?.filter { it.subtype == MilestoneSubType.BUYERS_APPROVAL }
                 ?.forEach { milestone ->
