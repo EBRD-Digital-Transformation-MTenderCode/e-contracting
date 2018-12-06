@@ -75,32 +75,6 @@ class AcDao(private val session: Session) {
                     jsonData = row.getString(JSON_DATA))
         else throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
     }
-    fun getAllByCpId(cpId: String): List<AcEntity> {
-        val query = select()
-            .all()
-            .from(CONTRACT_TABLE)
-            .where(eq(CP_ID, cpId))
-        val resultSet = session.execute(query)
-        val entities = ArrayList<AcEntity>()
-        resultSet.forEach {
-        row ->
-        entities.add(AcEntity(
-            cpId = row.getString(CP_ID),
-            acId = row.getString(AC_ID),
-            token = row.getUUID(TOKEN),
-            owner = row.getString(OWNER),
-            createdDate = row.getTimestamp(CREATED_DATE),
-            canId = row.getString(CAN_ID),
-            status = row.getString(STATUS),
-            statusDetails = row.getString(STATUS_DETAILS),
-            mainProcurementCategory = row.getString(MPC),
-            language = row.getString(LANGUAGE),
-            jsonData = row.getString(JSON_DATA))
-        )
-    }
-        return entities
-    }
-
 
     fun getAllByCpId(cpId: String): List<AcEntity> {
         val query = select()

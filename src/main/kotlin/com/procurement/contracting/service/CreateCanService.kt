@@ -14,6 +14,7 @@ import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
+import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -76,7 +77,8 @@ class CreateCanService(private val canDao: CanDao,
                 owner = owner,
                 status = ContractStatus.PENDING.value,
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value,
-                createdDate = dateTime.toDate()
+                createdDate = dateTime.toDate(),
+                jsonData = toJson("")
         )
     }
 }
