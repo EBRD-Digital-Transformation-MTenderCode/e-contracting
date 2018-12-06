@@ -61,7 +61,7 @@ class FinalUpdateService(private val acDao: AcDao,
         contractProcess.contract.confirmationRequests = confirmationRequests
 
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
-        entity.statusDetails=ContractStatusDetails.APPROVEMENT.toString()
+        entity.statusDetails = ContractStatusDetails.APPROVEMENT.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = FinalUpdateAcRs(contractProcess.contract))
@@ -76,7 +76,7 @@ class FinalUpdateService(private val acDao: AcDao,
                             documentType = DocumentTypeContract.CONTRACT_SIGNED,
                             title = null,
                             description = null,
-                            relatedLots = listOf(""))
+                            relatedLots = null)
                 }
                 .toList()
         return if (documentsDb != null && documentsDb.isNotEmpty()) (documentsDb + newDocuments)
