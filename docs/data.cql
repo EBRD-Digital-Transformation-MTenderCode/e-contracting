@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_can (
     primary key(cp_id, can_id)
 );
 
+ALTER TABLE ocds.contracting_can ADD json_data text;
+
 CREATE TABLE IF NOT EXISTS  ocds.contracting_ac (
     cp_id text,
     ac_id text,

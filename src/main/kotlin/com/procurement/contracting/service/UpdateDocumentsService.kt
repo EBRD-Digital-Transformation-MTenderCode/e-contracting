@@ -26,7 +26,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
-        val canEntity = canDao.getByCpIdAndAcId(cpId, canId)
+        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)

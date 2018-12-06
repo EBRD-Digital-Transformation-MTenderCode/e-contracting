@@ -14,7 +14,7 @@ class CanDao(private val session: Session) {
 
     fun save(entity: CanEntity) {
         val insert =
-                insertInto(NOTICE_TABLE)
+                insertInto(CAN_TABLE)
                         .value(CP_ID, entity.cpId)
                         .value(CAN_ID, entity.canId)
                         .value(OWNER, entity.owner)
@@ -23,13 +23,14 @@ class CanDao(private val session: Session) {
                         .value(AC_ID, entity.acId)
                         .value(STATUS, entity.status)
                         .value(STATUS_DETAILS, entity.statusDetails)
+                        .value(JSON_DATA, entity.jsonData)
         session.execute(insert)
     }
 
     fun saveAll(entities: List<CanEntity>) {
         val operations = ArrayList<Insert>()
         entities.forEach { entity ->
-            operations.add(insertInto(NOTICE_TABLE)
+            operations.add(insertInto(CAN_TABLE)
                     .value(CP_ID, entity.cpId)
                     .value(CAN_ID, entity.canId)
                     .value(OWNER, entity.owner)
@@ -37,7 +38,8 @@ class CanDao(private val session: Session) {
                     .value(AWARD_ID, entity.awardId)
                     .value(AC_ID, entity.acId)
                     .value(STATUS, entity.status)
-                    .value(STATUS_DETAILS, entity.statusDetails))
+                    .value(STATUS_DETAILS, entity.statusDetails)
+                    .value(JSON_DATA, entity.jsonData))
         }
         val batch = batch(*operations.toTypedArray())
         session.execute(batch)
@@ -46,7 +48,7 @@ class CanDao(private val session: Session) {
     fun findAllByCpId(cpId: String): List<CanEntity> {
         val query = select()
                 .all()
-                .from(NOTICE_TABLE)
+                .from(CAN_TABLE)
                 .where(eq(CP_ID, cpId))
         val resultSet = session.execute(query)
         val entities = ArrayList<CanEntity>()
@@ -61,35 +63,36 @@ class CanDao(private val session: Session) {
                             acId = row.getString(AC_ID),
                             status = row.getString(STATUS),
                             statusDetails = row.getString(STATUS_DETAILS),
-                        jsonData = row.getString(JSON_DATA))
+                            jsonData = row.getString(JSON_DATA) ?: "")
             )
         }
         return entities
     }
-    fun getByCpIdAndAcId(cpId: String, canId: String): CanEntity {
+
+    fun getByCpIdAndCanId(cpId: String, canId: String): CanEntity {
         val query = select()
-            .all()
-            .from(NOTICE_TABLE)
-            .where(eq(CP_ID, cpId))
-            .and(eq(CAN_ID, canId))
-            .limit(1)
+                .all()
+                .from(CAN_TABLE)
+                .where(eq(CP_ID, cpId))
+                .and(eq(CAN_ID, canId))
+                .limit(1)
         val row = session.execute(query).one()
         return if (row != null)
             CanEntity(
-                cpId = row.getString(CP_ID),
-                canId = row.getUUID(CAN_ID),
-                owner = row.getString(OWNER),
-                createdDate = row.getTimestamp(CREATED_DATE),
-                awardId = row.getString(AWARD_ID),
-                acId = row.getString(AC_ID),
-                status = row.getString(STATUS),
-                statusDetails = row.getString(STATUS_DETAILS),
-                jsonData = row.getString(JSON_DATA))
+                    cpId = row.getString(CP_ID),
+                    canId = row.getUUID(CAN_ID),
+                    owner = row.getString(OWNER),
+                    createdDate = row.getTimestamp(CREATED_DATE),
+                    awardId = row.getString(AWARD_ID),
+                    acId = row.getString(AC_ID),
+                    status = row.getString(STATUS),
+                    statusDetails = row.getString(STATUS_DETAILS),
+                    jsonData = row.getString(JSON_DATA) ?: "")
         else throw ErrorException(ErrorType.CAN_NOT_FOUND)
     }
 
     companion object {
-        private const val NOTICE_TABLE = "contracting_can"
+        private const val CAN_TABLE = "contracting_can"
         private const val CP_ID = "cp_id"
         private const val CAN_ID = "can_id"
         private const val AC_ID = "ac_id"
