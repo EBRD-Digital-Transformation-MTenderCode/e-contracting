@@ -129,6 +129,7 @@ class SigningAcService(private val acDao: AcDao,
         if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.firstOrNull()?.id) throw ErrorException(INVALID_SUPPLIER_ID)
         validateRelatedPersonId(contractProcess, dto, requestId)
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)
+
         val supplier = contractProcess.award.suppliers.first()
         val confirmationResponse = generateSupplierConfirmationResponse(
                 supplier = supplier,
@@ -141,6 +142,7 @@ class SigningAcService(private val acDao: AcDao,
         )
         val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
         confirmationResponses.add(confirmationResponse)
+
         val document = DocumentContract(
                 id = dto.confirmationResponse.value.verification.first().value,
                 documentType = DocumentTypeContract.CONTRACT_SIGNED,
@@ -151,6 +153,7 @@ class SigningAcService(private val acDao: AcDao,
         )
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
         documents.add(document)
+
         contractProcess.contract.milestones?.asSequence()
                 ?.filter { it.subtype == MilestoneSubType.SUPPLIERS_APPROVAL }
                 ?.forEach { milestone ->
@@ -163,8 +166,8 @@ class SigningAcService(private val acDao: AcDao,
 
         var treasuryValidation = false
         val treasuryBudgetSources = ArrayList<TreasuryBudgetSourceSupplierSigning>()
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
 
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
             val confirmationRequest = generateApproveBodyConfirmationRequest()
             confirmationRequests.add(confirmationRequest)
