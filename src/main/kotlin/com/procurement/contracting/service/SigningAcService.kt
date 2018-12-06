@@ -14,6 +14,7 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.HashSet
+import kotlin.collections.ArrayList
 
 @Service
 class SigningAcService(private val acDao: AcDao,
@@ -106,7 +107,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
 
-        entity.statusDetails=ContractStatusDetails.APPROVED.toString()
+        entity.statusDetails = ContractStatusDetails.APPROVED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = BuyerSigningRs(contractProcess.contract))
@@ -128,7 +129,13 @@ class SigningAcService(private val acDao: AcDao,
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
 //        if (contractProcess.contract.statusDetails != ContractStatusDetails.APPROVED) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
-        if (contractProcess.contract.confirmationResponses?.firstOrNull()?.value?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
+
+//        if (contractProcess.contract.confirmationResponses?.firstOrNull()?.value?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
+        var isResponseIdPresent = false
+        contractProcess.contract.confirmationResponses?.forEach { confirmationResponse ->
+            if (confirmationResponse.value.id == requestId) isResponseIdPresent = true
+        }
+        if (!isResponseIdPresent) throw ErrorException(INVALID_REQUEST_ID)
         if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.firstOrNull()?.id) throw ErrorException(INVALID_SUPPLIER_ID)
         validateRelatedPersonId(contractProcess, dto, requestId)
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)
@@ -187,7 +194,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.documents = documents
         contractProcess.contract.statusDetails = ContractStatusDetails.SIGNED
 
-        entity.statusDetails=ContractStatusDetails.SIGNED.toString()
+        entity.statusDetails = ContractStatusDetails.SIGNED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSources, contractProcess.contract))

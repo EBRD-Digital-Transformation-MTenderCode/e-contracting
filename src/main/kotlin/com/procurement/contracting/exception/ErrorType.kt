@@ -57,5 +57,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     EMPTY_AWARD_RELATED_LOT("20.11","Related lot in award in relatedProcess is empty."),
     AC_NOT_FOUND("20.12","Awarded Contract not found"),
     CAN_NOT_FOUND("20.13", "CAN not found."),
-    CAN_AC_ID_NOT_FOUND("20.14","CAN acId not found");
+    CAN_AC_ID_NOT_FOUND("20.14","CAN acId not found"),
+    INVALID_RESPONSE_ID("20.15","invalid response id");
 }
