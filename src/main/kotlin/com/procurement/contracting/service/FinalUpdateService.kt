@@ -96,8 +96,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title!!,
-                description = template.description!!,
+                title = template.title,
+                description = template.description,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -119,8 +119,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title!!,
-                description = template.description!!,
+                title = template.title,
+                description = template.description,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -143,8 +143,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title!!,
-                description = template.description!!,
+                title = template.title,
+                description = template.description,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -166,8 +166,8 @@ class FinalUpdateService(private val acDao: AcDao,
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title!!,
-                description = template.description!!,
+                title = template.title,
+                description = template.description,
                 status = MilestoneStatus.SCHEDULED,
                 type = MilestoneType.APPROVAL,
                 relatedItems = null,
@@ -186,7 +186,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedPerson = getAuthorityOrganizationPersonBuyer(buyer)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description!!,
+                description = template.description,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
@@ -196,34 +196,7 @@ class FinalUpdateService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = template.id + documentId,
                 relatedItem = documentId,
-                source = template.source!!,
-                type = template.type,
-                title = template.title,
-                description = template.description,
-                relatesTo = template.relatesTo,
-                requestGroups = hashSetOf(requestGroup))
-    }
-
-    private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier, country: String, pmd: String, language: String, documentId: String): ConfirmationRequest {
-        val template = templateService.getConfirmationRequestTemplate(
-                country = country,
-                pmd = pmd,
-                language = language,
-                templateId = "cs-tenderer-confirmation-on")
-        val relatedPerson = getAuthorityOrganizationPersonSupplier(supplier)
-        val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
-                title = template.requestTitle + relatedPerson.name,
-                description = template.description!!,
-                relatedPerson = relatedPerson
-        )
-        val requestGroup = RequestGroup(
-                id = template.id + documentId + "-" + supplier.identifier.id,
-                requests = hashSetOf(request)
-        )
-        return ConfirmationRequest(
-                id = template.id + documentId,
-                relatedItem = documentId,
-                source = template.source!!,
+                source = SourceType.BUYER,
                 type = template.type,
                 title = template.title,
                 description = template.description,
@@ -239,18 +212,5 @@ class FinalUpdateService(private val acDao: AcDao,
         }
         throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
     }
-
-    private fun getAuthorityOrganizationPersonSupplier(supplier: OrganizationReferenceSupplier): RelatedPerson {
-        val persones = supplier.persones
-        if (persones != null && persones.isNotEmpty()) {
-            for (person in persones) {
-                val id: String? = person.businessFunctions.firstOrNull { it.type == "authority" }?.id
-                if (id != null)
-                    return RelatedPerson(id = person.identifier.id, name = person.name)
-            }
-        }
-        throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
-    }
-
 
 }

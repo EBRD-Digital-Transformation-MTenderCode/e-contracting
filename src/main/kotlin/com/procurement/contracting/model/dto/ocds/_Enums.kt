@@ -236,6 +236,15 @@ enum class RelatedProcessScheme(@JsonValue val value: String) {
     }
 }
 
+enum class SourceType (@JsonValue val value: String) {
+    BUYER("buyer"),
+    TENDERER("tenderer");
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 enum class ConfirmationResponseType(@JsonValue val value: String) {
     DOCUMENT("document");
 

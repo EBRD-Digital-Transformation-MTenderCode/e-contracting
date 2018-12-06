@@ -225,7 +225,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description!!
+                rationale = templateRationale.description
         )
 
         val buyerName = buyer.name ?: throw ErrorException(BUYER_NAME_IS_EMPTY)
@@ -265,7 +265,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description!!
+                rationale = templateRationale.description
         )
 
         val supplierName = supplier.name
@@ -317,7 +317,7 @@ class SigningAcService(private val acDao: AcDao,
         val request = Request(
                 id = template.id + verificationValue + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description!!,
+                description = template.description,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
@@ -327,7 +327,7 @@ class SigningAcService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = template.id + verificationValue,
                 relatedItem = verificationValue,
-                source = template.source ?: "",
+                source = SourceType.TENDERER,
                 type = template.type,
                 title = template.title,
                 description = template.description,
@@ -355,7 +355,7 @@ class SigningAcService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = "hardCode!",
                 relatedItem = "hardCode!",
-                source = "hardCode!",
+                source = SourceType.TENDERER,
                 type = "hardCode!",
                 title = "hardCode!",
                 description = "hardCode!",

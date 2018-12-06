@@ -19,7 +19,5 @@ data class ConfirmationRequestTemplate @JsonCreator constructor(
 
         var requestTitle: String,
 
-        val source: String?,
-
         var requestDescription: String
 )
