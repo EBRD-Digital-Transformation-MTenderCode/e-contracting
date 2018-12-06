@@ -20,5 +20,5 @@ data class ContractActivationAcRs @JsonCreator constructor(
 
     var status: ContractStatus,
     var statusDetails: ContractStatusDetails,
-    val milestone: List<Milestone>?
+    val milestone: HashSet<Milestone>?
 )

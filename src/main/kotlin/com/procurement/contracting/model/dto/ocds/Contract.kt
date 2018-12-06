@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.HashSet
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Contract @JsonCreator constructor(
@@ -44,11 +45,11 @@ data class Contract @JsonCreator constructor(
 
         val amendments: List<Amendment>?,
 
-        var milestones: List<Milestone>?,
+        var milestones: HashSet<Milestone>?,
 
-        var confirmationRequests: List<ConfirmationRequest>?,
+        var confirmationRequests: HashSet<ConfirmationRequest>?,
 
-        var confirmationResponses: List<ConfirmationResponse>? = null,
+        var confirmationResponses: HashSet<ConfirmationResponse>? = null,
 
         var agreedMetrics: LinkedList<AgreedMetric>? = null
 )

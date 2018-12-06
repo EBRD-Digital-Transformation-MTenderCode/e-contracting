@@ -13,6 +13,7 @@ import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.util.HashSet
 
 @Service
 class SigningAcService(private val acDao: AcDao,
@@ -72,7 +73,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 verificationValue = dto.confirmationResponse.value.verification.first().value
         )
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         confirmationRequests.add(confirmationRequest)
 
         val document = DocumentContract(
@@ -99,7 +100,7 @@ class SigningAcService(private val acDao: AcDao,
 
         contractProcess.contract.confirmationRequests = confirmationRequests
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVED
-        contractProcess.contract.confirmationResponses = mutableListOf(confirmationResponse)
+        contractProcess.contract.confirmationResponses = hashSetOf(confirmationResponse)
         contractProcess.contract.documents = documents
 
         entity.statusDetails=ContractStatusDetails.APPROVED.toString()
@@ -138,7 +139,7 @@ class SigningAcService(private val acDao: AcDao,
                 relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
-        val confirmationResponses = contractProcess.contract.confirmationResponses?.toMutableList() ?: mutableListOf()
+        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
         confirmationResponses.add(confirmationResponse)
         val document = DocumentContract(
                 id = dto.confirmationResponse.value.verification.first().value,
@@ -162,7 +163,7 @@ class SigningAcService(private val acDao: AcDao,
 
         var treasuryValidation = false
         val treasuryBudgetSources = ArrayList<TreasuryBudgetSourceSupplierSigning>()
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
 
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
             val confirmationRequest = generateApproveBodyConfirmationRequest()
@@ -186,7 +187,7 @@ class SigningAcService(private val acDao: AcDao,
         return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSources, contractProcess.contract))
     }
 
-    private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
+    private fun isApproveBodyValidationPresent(milestones: HashSet<Milestone>?): Boolean {
         return milestones?.asSequence()?.any { it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION } ?: false
     }
 

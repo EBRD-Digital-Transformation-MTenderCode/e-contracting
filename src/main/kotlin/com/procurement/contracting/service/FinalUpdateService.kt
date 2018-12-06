@@ -44,7 +44,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)
         val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
 
-        val milestones = contractProcess.contract.milestones?.toMutableList() ?: mutableListOf()
+        val milestones = contractProcess.contract.milestones?.toHashSet() ?: hashSetOf()
         milestones.add(buyerMilestone)
         milestones.add(supplierMilestone)
         milestones.add(activationMilestone)
@@ -55,7 +55,7 @@ class FinalUpdateService(private val acDao: AcDao,
         }
         contractProcess.contract.milestones = milestones
 
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         val confirmationRequestBuyer = generateBuyerConfirmationRequest(buyer, country, pmd, language, dto.documents.first().id)
         confirmationRequests.add(confirmationRequestBuyer)
         contractProcess.contract.confirmationRequests = confirmationRequests
