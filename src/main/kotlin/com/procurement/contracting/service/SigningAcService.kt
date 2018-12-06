@@ -129,14 +129,16 @@ class SigningAcService(private val acDao: AcDao,
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
 //        if (contractProcess.contract.statusDetails != ContractStatusDetails.APPROVED) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
-
-//        if (contractProcess.contract.confirmationResponses?.firstOrNull()?.value?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
-        var isResponseIdPresent = false
-        contractProcess.contract.confirmationResponses?.forEach { confirmationResponse ->
-            if (confirmationResponse.value.id == requestId) isResponseIdPresent = true
+        var isRequestIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach {
+                    if (it.id == requestId) isRequestIdPresent = true
+                }
+            }
         }
-        if (!isResponseIdPresent) throw ErrorException(INVALID_REQUEST_ID)
-        if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.firstOrNull()?.id) throw ErrorException(INVALID_SUPPLIER_ID)
+        if (!isRequestIdPresent) throw ErrorException(INVALID_REQUEST_ID)
+        if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.first().id) throw ErrorException(INVALID_SUPPLIER_ID)
         validateRelatedPersonId(contractProcess, dto, requestId)
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)
 
