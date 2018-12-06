@@ -65,6 +65,9 @@ class SigningAcService(private val acDao: AcDao,
                 relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
+        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
+        confirmationResponses.add(confirmationResponse)
+
         val supplier = contractProcess.award.suppliers.first()
         val confirmationRequest = generateSupplierConfirmationRequest(
                 supplier = supplier,
@@ -100,7 +103,7 @@ class SigningAcService(private val acDao: AcDao,
 
         contractProcess.contract.confirmationRequests = confirmationRequests
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVED
-        contractProcess.contract.confirmationResponses = hashSetOf(confirmationResponse)
+        contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
 
         entity.statusDetails=ContractStatusDetails.APPROVED.toString()
