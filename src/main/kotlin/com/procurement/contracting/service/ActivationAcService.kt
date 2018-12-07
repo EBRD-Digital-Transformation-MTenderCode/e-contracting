@@ -52,10 +52,13 @@ class ActivationAcService(private val acDao: AcDao) {
         val relatedLot = contractProcess.award.relatedLots.firstOrNull()
                 ?: throw ErrorException(EMPTY_AWARD_RELATED_LOT)
 
+        entity.jsonData = toJson(contractProcess)
+        entity.status = ContractStatus.ACTIVE.value
+        entity.statusDetails = ContractStatusDetails.EXECUTION.value
+        acDao.save(entity)
+
         val stageEnd = !isAnyContractPending(cpId)
 
-        entity.jsonData = toJson(contractProcess)
-        acDao.save(entity)
         return ResponseDto(data = ActivationAcRs(
                 stageEnd = stageEnd,
                 lotId = relatedLot,
