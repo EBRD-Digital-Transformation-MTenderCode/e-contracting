@@ -78,7 +78,9 @@ class TreasuryAcService(private val acDao: AcDao) {
                 }
 
         entity.jsonData = toJson(contractProcess)
+
         acDao.save(entity)
+
         return ResponseDto(data = TreasuryAcRs(contractProcess.contract))
     }
 }
