@@ -180,7 +180,9 @@ class SigningAcService(private val acDao: AcDao,
         val treasuryBudgetSourcesRs = ArrayList<TreasuryBudgetSourceSupplierSigning>()
         val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
-            val confirmationRequest = generateApproveBodyConfirmationRequest()
+            val confirmationRequest = generateApproveBodyConfirmationRequest(confirmationResponse
+
+            )
             confirmationRequests.add(confirmationRequest)
             treasuryValidation = true
             val treasuryBudgetSources = contractProcess.treasuryBudgetSources
@@ -273,7 +275,13 @@ class SigningAcService(private val acDao: AcDao,
         )
     }
 
-    private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier, dto: ConfirmationResponseRq, country: String, pmd: String, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
+    private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier,
+                                                     dto: ConfirmationResponseRq,
+                                                     country: String,
+                                                     pmd: String,
+                                                     language: String,
+                                                     relatedPerson: RelatedPerson,
+                                                     requestId: String): ConfirmationResponse {
         val templateBuyer = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,
@@ -360,7 +368,7 @@ class SigningAcService(private val acDao: AcDao,
                 requestGroups = hashSetOf(requestGroup))
     }
 
-    private fun generateApproveBodyConfirmationRequest(): ConfirmationRequest {
+    private fun generateApproveBodyConfirmationRequest(confirmationResponse: ConfirmationResponse): ConfirmationRequest {
 
         val relatedPerson = RelatedPerson(
                 id = "TEST",
@@ -377,9 +385,9 @@ class SigningAcService(private val acDao: AcDao,
                 id = "TEST",
                 requests = hashSetOf(request)
         )
-        return ConfirmationRequest(
-                id = "TEST",
-                relatedItem = "TEST",
+         return ConfirmationRequest(
+                id = "cs-approveBody-confirmation-on-"+confirmationResponse.value.id + "-" + "approveBodyID",
+                relatedItem = confirmationResponse.value.id,
                 source = SourceType.APPROVE_BODY,
                 type = "TEST",
                 title = "TEST",
