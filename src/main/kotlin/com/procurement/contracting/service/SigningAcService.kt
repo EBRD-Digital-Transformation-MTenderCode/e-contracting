@@ -12,7 +12,7 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.HashSet
 import kotlin.collections.ArrayList
 
@@ -177,18 +177,26 @@ class SigningAcService(private val acDao: AcDao,
                 }
 
         var treasuryValidation = false
-        val treasuryBudgetSources = ArrayList<TreasuryBudgetSourceSupplierSigning>()
-
+        val treasuryBudgetSourcesRs = ArrayList<TreasuryBudgetSourceSupplierSigning>()
         val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
             val confirmationRequest = generateApproveBodyConfirmationRequest()
             confirmationRequests.add(confirmationRequest)
             treasuryValidation = true
-            treasuryBudgetSources.add(TreasuryBudgetSourceSupplierSigning(
-                    budgetBreakdownID = "hardCode!",
-                    budgetIBAN = "hardCode!",
-                    amount = BigDecimal(0)
-            ))
+            val treasuryBudgetSources = contractProcess.treasuryBudgetSources
+                    ?: throw ErrorException(TREASURY_BUDGET_SOURCES)
+            val budgetAllocation = contractProcess.planning?.budget?.budgetAllocation
+                    ?: throw ErrorException(BUDGET_ALLOCATION)
+            treasuryBudgetSources.asSequence().forEach { tbs ->
+                val totalAmount = budgetAllocation.asSequence()
+                        .filter { it.budgetBreakdownID == tbs.budgetBreakdownID }
+                        .sumByDouble { it.amount.toDouble() }
+                        .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                treasuryBudgetSourcesRs.add(TreasuryBudgetSourceSupplierSigning(
+                        budgetBreakdownID = tbs.budgetBreakdownID,
+                        budgetIBAN = tbs.budgetIBAN!!,
+                        amount = totalAmount))
+            }
         }
 
         contractProcess.contract.confirmationRequests = confirmationRequests
@@ -199,7 +207,7 @@ class SigningAcService(private val acDao: AcDao,
         entity.statusDetails = ContractStatusDetails.SIGNED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSources, contractProcess.contract))
+        return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract))
     }
 
     private fun isApproveBodyValidationPresent(milestones: HashSet<Milestone>?): Boolean {
