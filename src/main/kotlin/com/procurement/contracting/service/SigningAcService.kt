@@ -370,29 +370,24 @@ class SigningAcService(private val acDao: AcDao,
 
     private fun generateApproveBodyConfirmationRequest(confirmationResponse: ConfirmationResponse): ConfirmationRequest {
 
-        val relatedPerson = RelatedPerson(
-                id = "TEST",
-                name = "TEST"
-        )
-
         val request = Request(
-                id = "TEST",
+                id = "cs-approveBody-confirmation-on-" + confirmationResponse.value.id + "-" + "approveBodyID",
                 title = "TEST",
                 description = "TEST",
-                relatedPerson = relatedPerson
+                relatedPerson = null
         )
         val requestGroup = RequestGroup(
                 id = "TEST",
                 requests = hashSetOf(request)
         )
-         return ConfirmationRequest(
-                id = "cs-approveBody-confirmation-on-"+confirmationResponse.value.id + "-" + "approveBodyID",
+        return ConfirmationRequest(
+                id = "cs-approveBody-confirmation-on-" + confirmationResponse.value.id,
                 relatedItem = confirmationResponse.value.id,
                 source = SourceType.APPROVE_BODY,
-                type = "TEST",
-                title = "TEST",
+                type = "outsideAction",
+                title = "Document approving",
                 description = "TEST",
-                relatesTo = "TEST",
+                relatesTo = "document",
                 requestGroups = hashSetOf(requestGroup))
     }
 
