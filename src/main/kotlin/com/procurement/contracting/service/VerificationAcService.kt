@@ -2,8 +2,10 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.ContractVerifiedAcRs
+import com.procurement.contracting.model.dto.VerificationAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
@@ -26,7 +28,7 @@ class VerificationAcService(private val acDao: AcDao) {
 
         contractProcess.contract.statusDetails = ContractStatusDetails.VERIFICATION
 
-        entity.statusDetails=ContractStatusDetails.VERIFICATION.toString()
+        entity.statusDetails = ContractStatusDetails.VERIFICATION.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = VerificationAcRs(ContractVerifiedAcRs(contractProcess.contract.statusDetails)))
