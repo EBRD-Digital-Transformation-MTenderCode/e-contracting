@@ -17,12 +17,8 @@ class VerificationAcService(private val acDao: AcDao) {
     fun verificationAc(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
-        if (entity.owner != owner) throw ErrorException(OWNER)
-        if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)

@@ -60,5 +60,8 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CAN_AC_ID_NOT_FOUND("00.56","CAN acId not found"),
     INVALID_RESPONSE_ID("00.57","invalid response id"),
     TREASURY_BUDGET_SOURCES("00.58","Treasury budget sources is empty."),
-    BUDGET_ALLOCATION("00.59","Budget allocation is empty.");
+    BUDGET_ALLOCATION("00.59","Budget allocation is empty."),
+    CONFIRMATION_REQUEST("00.59","Confirmation request not found."),
+    MILESTONE("00.59","Milestone not found."),
+    MILESTONE_RELATED_PARTY("00.60", "Invalid milestone related party."),;
 }
