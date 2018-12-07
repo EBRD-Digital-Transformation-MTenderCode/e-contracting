@@ -53,7 +53,7 @@ class TreasuryAcService(private val acDao: AcDao) {
         val confirmationResponseValue = ConfirmationResponseValue(
                 id = milestoneRelatedParty.id,
                 name = milestoneRelatedParty.name,
-                date = treasuryData.st_date.toLocalDateTime(),
+                date = treasuryData.st_date,
                 relatedPerson = request.relatedPerson!!,
                 verification = listOf(verification))
 
@@ -67,7 +67,7 @@ class TreasuryAcService(private val acDao: AcDao) {
 
         milestone.apply {
             dateModified = dateTime
-            dateMet = treasuryData.st_date.toLocalDateTime()
+            dateMet = treasuryData.st_date
             status = MilestoneStatus.MET
         }
 
