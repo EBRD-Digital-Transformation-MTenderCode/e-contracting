@@ -33,6 +33,4 @@ class VerificationAcService(private val acDao: AcDao) {
         acDao.save(entity)
         return ResponseDto(data = VerificationAcRs(ContractVerifiedAcRs(contractProcess.contract.statusDetails)))
     }
-
-
 }
