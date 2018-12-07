@@ -64,6 +64,7 @@ class TreasuryAcService(private val acDao: AcDao) {
         )
 
         confirmationResponses.add(confirmationResponse)
+        contractProcess.contract.confirmationResponses = confirmationResponses
 
         milestone.apply {
             dateModified = dateTime
