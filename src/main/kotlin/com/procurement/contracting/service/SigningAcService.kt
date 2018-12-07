@@ -187,14 +187,15 @@ class SigningAcService(private val acDao: AcDao,
                     ?: throw ErrorException(TREASURY_BUDGET_SOURCES)
             val budgetAllocation = contractProcess.planning?.budget?.budgetAllocation
                     ?: throw ErrorException(BUDGET_ALLOCATION)
-            treasuryBudgetSources.asSequence().forEach { tbs ->
+
+            for (treasuryBudgetSource in treasuryBudgetSources) {
                 val totalAmount = budgetAllocation.asSequence()
-                        .filter { it.budgetBreakdownID == tbs.budgetBreakdownID }
+                        .filter { it.budgetBreakdownID == treasuryBudgetSource.budgetBreakdownID }
                         .sumByDouble { it.amount.toDouble() }
                         .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
                 treasuryBudgetSourcesRs.add(TreasuryBudgetSourceSupplierSigning(
-                        budgetBreakdownID = tbs.budgetBreakdownID,
-                        budgetIBAN = tbs.budgetIBAN!!,
+                        budgetBreakdownID = treasuryBudgetSource.budgetBreakdownID,
+                        budgetIBAN = treasuryBudgetSource.budgetIBAN,
                         amount = totalAmount))
             }
         }
