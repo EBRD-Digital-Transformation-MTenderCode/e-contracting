@@ -54,7 +54,7 @@ data class Budget @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BudgetAllocation @JsonCreator constructor(
 
-        var budgetBreakdownId: String,
+        var budgetBreakdownID: String,
 
         @JsonDeserialize(using = MoneyDeserializer::class)
         val amount: BigDecimal,
@@ -67,7 +67,7 @@ data class BudgetAllocation @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class PlanningBudgetSource @JsonCreator constructor(
 
-        var budgetBreakdownId: String,
+        var budgetBreakdownID: String,
 
         @JsonDeserialize(using = MoneyDeserializer::class)
         val amount: BigDecimal,
