@@ -165,7 +165,7 @@ class FinalUpdateService(private val acDao: AcDao,
                 language = language,
                 templateId = "cs-treasury-validate-on")
 
-        val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = "hardcodeID!", name = "hardcodeNAME!"))
+        val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = "approveBodyId", name = "approveBodyName"))
 
         return Milestone(
                 id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),

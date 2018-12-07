@@ -54,7 +54,7 @@ class TreasuryAcService(private val acDao: AcDao) {
                 id = milestoneRelatedParty.id,
                 name = milestoneRelatedParty.name,
                 date = treasuryData.st_date,
-                relatedPerson = request.relatedPerson!!,
+                relatedPerson = null,
                 verification = listOf(verification))
 
         val confirmationResponse = ConfirmationResponse(
