@@ -75,7 +75,9 @@ class TreasuryAcService(private val acDao: AcDao) {
         contractProcess.contract.documents?.asSequence()
                 ?.filter { it.id == confirmationRequest.relatedItem }
                 ?.forEach { document ->
-                    document.relatedConfirmations = listOf(confirmationResponse.id)
+                    val relatedConfirmations = document.relatedConfirmations?.toMutableList()
+                    relatedConfirmations?.add(confirmationResponse.id)
+                    document.relatedConfirmations = relatedConfirmations
                 }
 
         entity.jsonData = toJson(contractProcess)
