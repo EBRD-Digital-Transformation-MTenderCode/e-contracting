@@ -76,7 +76,8 @@ class CreateCanService(private val canDao: CanDao,
                 owner = owner,
                 status = ContractStatus.PENDING.value,
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value,
-                createdDate = dateTime.toDate()
+                createdDate = dateTime.toDate(),
+                jsonData = ""
         )
     }
 }
