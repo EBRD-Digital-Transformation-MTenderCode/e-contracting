@@ -1,5 +1,6 @@
 package com.procurement.contracting.service
 
+import com.datastax.driver.core.utils.UUIDs
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
@@ -15,6 +16,7 @@ import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UpdateDocumentsService(private val canDao: CanDao,
@@ -26,7 +28,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
-        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
+        val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)

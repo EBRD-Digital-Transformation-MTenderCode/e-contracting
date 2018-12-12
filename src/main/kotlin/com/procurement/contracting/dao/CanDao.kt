@@ -69,7 +69,7 @@ class CanDao(private val session: Session) {
         return entities
     }
 
-    fun getByCpIdAndCanId(cpId: String, canId: String): CanEntity {
+    fun getByCpIdAndCanId(cpId: String, canId: UUID): CanEntity {
         val query = select()
                 .all()
                 .from(CAN_TABLE)
