@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.procurement.contracting.model.dto.databinding.BooleansDeserializer
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import com.procurement.contracting.model.dto.ocds.*
@@ -53,9 +54,9 @@ data class ContractUpdate @JsonCreator constructor(
 
         val documents: List<DocumentContract>?,
 
-        val milestones: List<Milestone>,
+        val milestones: HashSet<Milestone>,
 
-        val confirmationRequests: List<ConfirmationRequest>?,
+        val confirmationRequests: HashSet<ConfirmationRequest>?,
 
         val agreedMetrics: LinkedList<AgreedMetric>
 )
@@ -90,6 +91,7 @@ data class ValueUpdate @JsonCreator constructor(
         @JsonDeserialize(using = MoneyDeserializer::class)
         val amountNet: BigDecimal,
 
+        @JsonDeserialize(using = BooleansDeserializer::class)
         val valueAddedTaxIncluded: Boolean
 )
 
@@ -98,7 +100,7 @@ data class TreasuryBudgetSource @JsonCreator constructor(
 
         var budgetBreakdownID: String,
 
-        val budgetIBAN: String?,
+        val budgetIBAN: String,
 
         @JsonDeserialize(using = MoneyDeserializer::class)
         val amount: BigDecimal

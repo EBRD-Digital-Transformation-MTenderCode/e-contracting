@@ -17,7 +17,7 @@ class CommandService(private val historyDao: HistoryDao,
                      private val finalUpdateService: FinalUpdateService,
                      private val verificationAcService: VerificationAcService,
                      private val treasuryAcService: TreasuryAcService,
-                     private val proccedResponseService: SigningAcService,
+                     private val signingAcService: SigningAcService,
                      private val acService: ActivationAcService,
                      private val  updateDocumentsService: UpdateDocumentsService) {
 
@@ -36,11 +36,11 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
             CommandType.ISSUING_AC-> issuingAcService.issuingAc(cm)
             CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
-            CommandType.BUYER_SIGNING_AC -> proccedResponseService.buyerSigningAC(cm)
-            CommandType.SUPPLIER_SIGNING_AC -> proccedResponseService.supplierSigningAC(cm)
+            CommandType.BUYER_SIGNING_AC -> signingAcService.buyerSigningAC(cm)
+            CommandType.SUPPLIER_SIGNING_AC -> signingAcService.supplierSigningAC(cm)
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
-            CommandType.ACTIVATE_AC ->acService.activateAc(cm)
+            CommandType.ACTIVATION_AC ->acService.activateAc(cm)
             CommandType.UPDATE_CAN_DOCS->updateDocumentsService.updateCanDocs(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)

@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.dto.ocds.Milestone
-import java.time.LocalDateTime
 
 data class ActivationAcRs @JsonCreator constructor(
 
-    val stageEnd:Boolean,
-    val lotId:String,
+        val stageEnd: Boolean,
+
+        val lotId: String,
+
         val contract: ContractActivationAcRs
 )
 
@@ -18,7 +19,9 @@ data class ActivationAcRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractActivationAcRs @JsonCreator constructor(
 
-    var status: ContractStatus,
-    var statusDetails: ContractStatusDetails,
-    val milestone: List<Milestone>?
+        var status: ContractStatus,
+
+        var statusDetails: ContractStatusDetails,
+
+        val milestones: HashSet<Milestone>?
 )

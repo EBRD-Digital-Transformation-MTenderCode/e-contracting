@@ -24,15 +24,6 @@ class TemplateDao(private val session: Session) {
         return row.getString(TEMPLATE)
     }
 
-
-    fun getTemplates(country: String, pmd: String, language: String, templateIds: LinkedList<String>): LinkedList<String> {
-        val templates = LinkedList<String>()
-        templateIds.forEach { templateId ->
-            templates.add(getTemplate(country, pmd, language, templateId))
-        }
-        return templates
-    }
-
     companion object {
         private const val TABLE = "contracting_templates"
         private const val COUNTRY = "country"

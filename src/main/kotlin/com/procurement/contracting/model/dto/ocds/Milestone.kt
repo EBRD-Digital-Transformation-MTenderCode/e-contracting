@@ -16,7 +16,6 @@ data class Milestone @JsonCreator constructor(
 
         val type: MilestoneType,
 
-        @JsonIgnore
         val subtype: MilestoneSubType? = null,
 
         var status: MilestoneStatus?,

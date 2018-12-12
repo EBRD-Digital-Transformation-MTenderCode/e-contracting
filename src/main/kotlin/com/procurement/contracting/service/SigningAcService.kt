@@ -12,7 +12,9 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
+import java.math.RoundingMode
+import java.util.HashSet
+import kotlin.collections.ArrayList
 
 @Service
 class SigningAcService(private val acDao: AcDao,
@@ -40,24 +42,33 @@ class SigningAcService(private val acDao: AcDao,
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS) //VR-9.6.4
 //        if (contractProcess.contract.statusDetails != ContractStatusDetails.APPROVEMENT) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
-        if (contractProcess.contract.confirmationRequests?.firstOrNull()
-                        ?.requestGroups?.firstOrNull()
-                        ?.requests?.firstOrNull()
-                        ?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
-        if (dto.confirmationResponse.value.id != contractProcess.buyer?.id) throw ErrorException(INVALID_BUYER_ID)//VR-9.6.5
+        var isRequestIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach {
+                    if (it.id == requestId) isRequestIdPresent = true
+                }
+            }
+        }
+        if (!isRequestIdPresent) throw ErrorException(INVALID_REQUEST_ID)
+
+        val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
+        if (dto.confirmationResponse.value.id != buyer.id) throw ErrorException(INVALID_BUYER_ID)//VR-9.6.5
         validateRelatedPersonId(contractProcess, dto, requestId)//9.6.6
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)//VR-9.6.7
 
-        val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
         val confirmationResponse = generateBuyerConfirmationResponse(
                 buyer = buyer,
                 dto = dto.confirmationResponse,
                 country = country,
                 pmd = pmd,
                 language = language,
-                relatedPerson = getAuthorityOrganizationPersonBuyer(contractProcess, requestId),
+                relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
+        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
+        confirmationResponses.add(confirmationResponse)
+
         val supplier = contractProcess.award.suppliers.first()
         val confirmationRequest = generateSupplierConfirmationRequest(
                 supplier = supplier,
@@ -66,7 +77,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 verificationValue = dto.confirmationResponse.value.verification.first().value
         )
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         confirmationRequests.add(confirmationRequest)
 
         val document = DocumentContract(
@@ -80,6 +91,7 @@ class SigningAcService(private val acDao: AcDao,
 
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
         documents.add(document)
+
         contractProcess.contract.milestones?.asSequence()
                 ?.filter { it.subtype == MilestoneSubType.BUYERS_APPROVAL }
                 ?.forEach { milestone ->
@@ -92,10 +104,10 @@ class SigningAcService(private val acDao: AcDao,
 
         contractProcess.contract.confirmationRequests = confirmationRequests
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVED
-        contractProcess.contract.confirmationResponses = mutableListOf(confirmationResponse)
+        contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
 
-        entity.statusDetails=ContractStatusDetails.APPROVED.toString()
+        entity.statusDetails = ContractStatusDetails.APPROVED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = BuyerSigningRs(contractProcess.contract))
@@ -117,10 +129,19 @@ class SigningAcService(private val acDao: AcDao,
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
 //        if (contractProcess.contract.statusDetails != ContractStatusDetails.APPROVED) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
-        if (contractProcess.contract.confirmationResponses?.firstOrNull()?.value?.id != requestId) throw ErrorException(INVALID_REQUEST_ID)
-        if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.firstOrNull()?.id) throw ErrorException(INVALID_SUPPLIER_ID)
+        var isRequestIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach {
+                    if (it.id == requestId) isRequestIdPresent = true
+                }
+            }
+        }
+        if (!isRequestIdPresent) throw ErrorException(INVALID_REQUEST_ID)
+        if (dto.confirmationResponse.value.id != contractProcess.award.suppliers.first().id) throw ErrorException(INVALID_SUPPLIER_ID)
         validateRelatedPersonId(contractProcess, dto, requestId)
         if (dto.confirmationResponse.value.date.isAfter(startDate)) throw ErrorException(INVALID_CONFIRMATION_REQUEST_DATE)
+
         val supplier = contractProcess.award.suppliers.first()
         val confirmationResponse = generateSupplierConfirmationResponse(
                 supplier = supplier,
@@ -128,11 +149,12 @@ class SigningAcService(private val acDao: AcDao,
                 country = country,
                 pmd = pmd,
                 language = language,
-                relatedPerson = getAuthorityOrganizationPersonSupplier(contractProcess, requestId),
+                relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
-        val confirmationResponses = contractProcess.contract.confirmationResponses?.toMutableList() ?: mutableListOf()
+        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
         confirmationResponses.add(confirmationResponse)
+
         val document = DocumentContract(
                 id = dto.confirmationResponse.value.verification.first().value,
                 documentType = DocumentTypeContract.CONTRACT_SIGNED,
@@ -143,6 +165,7 @@ class SigningAcService(private val acDao: AcDao,
         )
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
         documents.add(document)
+
         contractProcess.contract.milestones?.asSequence()
                 ?.filter { it.subtype == MilestoneSubType.SUPPLIERS_APPROVAL }
                 ?.forEach { milestone ->
@@ -154,18 +177,29 @@ class SigningAcService(private val acDao: AcDao,
                 }
 
         var treasuryValidation = false
-        val treasuryBudgetSources = ArrayList<TreasuryBudgetSourceSupplierSigning>()
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toMutableList() ?: mutableListOf()
-
+        val treasuryBudgetSourcesRs = ArrayList<TreasuryBudgetSourceSupplierSigning>()
+        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
-            val confirmationRequest = generateApproveBodyConfirmationRequest()
+            val confirmationRequest = generateApproveBodyConfirmationRequest(confirmationResponse
+
+            )
             confirmationRequests.add(confirmationRequest)
             treasuryValidation = true
-            treasuryBudgetSources.add(TreasuryBudgetSourceSupplierSigning(
-                    budgetBreakdownID = "hardCode!",
-                    budgetIBAN = "hardCode!",
-                    amount = BigDecimal(0)
-            ))
+            val treasuryBudgetSources = contractProcess.treasuryBudgetSources
+                    ?: throw ErrorException(TREASURY_BUDGET_SOURCES)
+            val budgetAllocation = contractProcess.planning?.budget?.budgetAllocation
+                    ?: throw ErrorException(BUDGET_ALLOCATION)
+
+            for (treasuryBudgetSource in treasuryBudgetSources) {
+                val totalAmount = budgetAllocation.asSequence()
+                        .filter { it.budgetBreakdownID == treasuryBudgetSource.budgetBreakdownID }
+                        .sumByDouble { it.amount.toDouble() }
+                        .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                treasuryBudgetSourcesRs.add(TreasuryBudgetSourceSupplierSigning(
+                        budgetBreakdownID = treasuryBudgetSource.budgetBreakdownID,
+                        budgetIBAN = treasuryBudgetSource.budgetIBAN,
+                        amount = totalAmount))
+            }
         }
 
         contractProcess.contract.confirmationRequests = confirmationRequests
@@ -173,26 +207,32 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.documents = documents
         contractProcess.contract.statusDetails = ContractStatusDetails.SIGNED
 
-        entity.statusDetails=ContractStatusDetails.SIGNED.toString()
+        entity.statusDetails = ContractStatusDetails.SIGNED.toString()
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSources, contractProcess.contract))
+        return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract))
     }
 
-    private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
+    private fun isApproveBodyValidationPresent(milestones: HashSet<Milestone>?): Boolean {
         return milestones?.asSequence()?.any { it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION } ?: false
     }
 
     private fun validateRelatedPersonId(contractProcess: ContractProcess, dto: ProceedResponseRq, requestId: String) {
-        val confirmationRequestsFromBase = contractProcess.contract.confirmationRequests?.asSequence()?.filter {
-            it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId
-        }?.toList()
-
-        if (confirmationRequestsFromBase?.firstOrNull()
-                        ?.requestGroups?.firstOrNull()
-                        ?.requests?.firstOrNull()
-                        ?.relatedPerson?.id != dto.confirmationResponse.value.relatedPerson.id)
-            throw ErrorException(INVALID_RELATED_PERSON_ID)
+        var isRelatedPersonIdPresent = false
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach { request ->
+                    if (request.id == requestId) {
+                        if (request.relatedPerson != null) {
+                            if (request.relatedPerson.id == dto.confirmationResponse.value.relatedPerson.id) {
+                                isRelatedPersonIdPresent = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!isRelatedPersonIdPresent) throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
     private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: String, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
@@ -202,7 +242,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 templateId = "cs-buyer-confirmation-on")
 
-        val templateRationale = templateService.getConfirmationRequestTemplate(
+        val templateRationale = templateService.getVerificationTemplate(
                 country = country,
                 pmd = pmd,
                 language = language,
@@ -212,7 +252,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale
         )
 
         val buyerName = buyer.name ?: throw ErrorException(BUYER_NAME_IS_EMPTY)
@@ -235,14 +275,20 @@ class SigningAcService(private val acDao: AcDao,
         )
     }
 
-    private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier, dto: ConfirmationResponseRq, country: String, pmd: String, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
+    private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier,
+                                                     dto: ConfirmationResponseRq,
+                                                     country: String,
+                                                     pmd: String,
+                                                     language: String,
+                                                     relatedPerson: RelatedPerson,
+                                                     requestId: String): ConfirmationResponse {
         val templateBuyer = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,
                 language = language,
                 templateId = "cs-tenderer-confirmation-on")
 
-        val templateRationale = templateService.getConfirmationRequestTemplate(
+        val templateRationale = templateService.getVerificationTemplate(
                 country = country,
                 pmd = pmd,
                 language = language,
@@ -252,7 +298,7 @@ class SigningAcService(private val acDao: AcDao,
         val verification = Verification(
                 type = ConfirmationResponseType.DOCUMENT,
                 value = dto.value.verification.first().value,
-                rationale = templateRationale.description
+                rationale = templateRationale
         )
 
         val supplierName = supplier.name
@@ -275,25 +321,18 @@ class SigningAcService(private val acDao: AcDao,
         )
     }
 
-    private fun getAuthorityOrganizationPersonBuyer(contractProcess: ContractProcess, requestId: String): RelatedPerson {
-        return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter {it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId}
-                ?.toList()
-                ?.firstOrNull()?.requestGroups
-                ?.firstOrNull()?.requests
-                ?.firstOrNull()?.relatedPerson
-                ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
-    }
-
-    private fun getAuthorityOrganizationPersonSupplier(contractProcess: ContractProcess, requestId: String): RelatedPerson {
-        return contractProcess.contract.confirmationRequests?.asSequence()
-                ?.filter {it.requestGroups?.firstOrNull()?.requests?.firstOrNull()?.id == requestId}
-                ?.toList()
-                ?.firstOrNull()?.requestGroups
-                ?.firstOrNull()?.requests
-                ?.firstOrNull()?.relatedPerson
-                ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
-
+    private fun getAuthorityOrganizationPerson(contractProcess: ContractProcess, requestId: String): RelatedPerson {
+        var relatedPerson: RelatedPerson? = null
+        contractProcess.contract.confirmationRequests?.forEach { confirmationRequest ->
+            confirmationRequest.requestGroups?.forEach { requestGroup ->
+                requestGroup.requests.forEach { request ->
+                    if (request.id == requestId) {
+                        relatedPerson = request.relatedPerson
+                    }
+                }
+            }
+        }
+        return relatedPerson ?: throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier,
@@ -321,7 +360,7 @@ class SigningAcService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = template.id + verificationValue,
                 relatedItem = verificationValue,
-                source = template.source!!,
+                source = SourceType.TENDERER,
                 type = template.type,
                 title = template.title,
                 description = template.description,
@@ -329,31 +368,28 @@ class SigningAcService(private val acDao: AcDao,
                 requestGroups = hashSetOf(requestGroup))
     }
 
-    private fun generateApproveBodyConfirmationRequest(): ConfirmationRequest {
+    private fun generateApproveBodyConfirmationRequest(confirmationResponse: ConfirmationResponse): ConfirmationRequest {
 
-        val relatedPerson = RelatedPerson(
-                id = "hardCode!",
-                name = "hardCode!"
-        )
+        val relatedItem = confirmationResponse.value.verification.first().value
 
         val request = Request(
-                id = "hardCode!",
-                title = "hardCode!",
-                description = "hardCode!",
-                relatedPerson = relatedPerson
+                id = "cs-approveBody-confirmation-on-$relatedItem-approveBodyID",
+                title = "TEST",
+                description = "TEST",
+                relatedPerson = null
         )
         val requestGroup = RequestGroup(
-                id = "hardCode!",
+                id = "TEST",
                 requests = hashSetOf(request)
         )
         return ConfirmationRequest(
-                id = "hardCode!",
-                relatedItem = "hardCode!",
-                source = "hardCode!",
-                type = "hardCode!",
-                title = "hardCode!",
-                description = "hardCode!",
-                relatesTo = "hardCode!",
+                id = "cs-approveBody-confirmation-on-$relatedItem",
+                relatedItem = relatedItem,
+                source = SourceType.APPROVE_BODY,
+                type = "outsideAction",
+                title = "Document approving",
+                description = "TEST",
+                relatesTo = "document",
                 requestGroups = hashSetOf(requestGroup))
     }
 

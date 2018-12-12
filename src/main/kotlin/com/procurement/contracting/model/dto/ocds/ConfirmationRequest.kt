@@ -18,7 +18,7 @@ data class ConfirmationRequest @JsonCreator constructor(
 
         val relatedItem: String,
 
-        val source: String,
+        val source: SourceType,
 
         var requestGroups: Set<RequestGroup>?
 )
