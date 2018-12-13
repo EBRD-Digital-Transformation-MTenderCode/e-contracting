@@ -18,6 +18,7 @@ import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class CreateCanService(private val canDao: CanDao,
@@ -59,7 +60,7 @@ class CreateCanService(private val canDao: CanDao,
                                 can: Can): CanEntity {
         return CanEntity(
                 cpId = cpId,
-                canId = generationService.generateRandomUUID(),
+                canId = UUID.fromString(can.contract.id),
                 awardId = can.contract.awardId,
                 acId = null,
                 owner = owner,
