@@ -8,5 +8,19 @@ data class Amendment @JsonCreator constructor(
 
         val rationale: String,
 
-        val description: String?
+        val description: String?,
+
+        val documents: List<DocumentAmendment>
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class DocumentAmendment @JsonCreator constructor(
+
+        val id: String,
+
+        var documentType: DocumentTypeContract,
+
+        var title: String,
+
+        var description: String?
 )

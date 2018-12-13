@@ -1,0 +1,74 @@
+package com.procurement.contracting.service
+
+import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.model.dto.CancelCanRq
+import com.procurement.contracting.model.dto.CancelCanRs
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.bpe.CommandMessage
+import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.model.dto.ocds.Can
+import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.ContractStatus
+import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.utils.toJson
+import com.procurement.contracting.utils.toObject
+import org.springframework.stereotype.Service
+import java.util.*
+
+@Service
+class CancelCanService(private val canDao: CanDao,
+                       private val acDao: AcDao) {
+
+    fun cancelCan(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val canId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val dto = toObject(CancelCanRq::class.java, cm.data)
+
+        val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
+        if (canEntity.owner != owner) throw ErrorException(OWNER)
+        if (canEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
+        val can = toObject(Can::class.java, canEntity.jsonData)
+
+        if (can.contract.status != ContractStatus.PENDING && can.contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT) throw ErrorException(CAN_STATUS)
+        if (can.contract.status != ContractStatusDetails.ACTIVE && can.contract.statusDetails != ContractStatusDetails.EMPTY) throw ErrorException(CAN_STATUS)
+
+        can.contract.status = ContractStatus.CANCELLED
+        can.contract.statusDetails = ContractStatusDetails.EMPTY
+        can.contract.amendment = dto.contract.amendment
+
+        canEntity.status = can.contract.status.value
+        canEntity.statusDetails = can.contract.statusDetails.value
+        canEntity.jsonData = toJson(can)
+        canDao.save(canEntity)
+
+        var acCancel = false
+        var contract: Contract? = null
+        if (canEntity.acId != null) {
+            val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
+            val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
+            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
+            contractProcess.contract.status = ContractStatus.CANCELLED
+            contractProcess.contract.statusDetails = ContractStatusDetails.EMPTY
+            acEntity.status = contractProcess.contract.status.value
+            acEntity.statusDetails = contractProcess.contract.statusDetails.value
+            acEntity.jsonData = toJson(contractProcess)
+            acDao.save(acEntity)
+            acCancel = true
+            contract = contractProcess.contract
+        }
+
+        return ResponseDto(
+                data = CancelCanRs(
+                        can = can,
+                        acCancel = acCancel,
+                        contract = contract)
+        )
+    }
+}
+
