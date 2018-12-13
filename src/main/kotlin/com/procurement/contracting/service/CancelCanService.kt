@@ -5,6 +5,7 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.model.dto.CancelCanContractRs
 import com.procurement.contracting.model.dto.CancelCanRq
 import com.procurement.contracting.model.dto.CancelCanRs
 import com.procurement.contracting.model.dto.ContractProcess
@@ -45,8 +46,6 @@ class CancelCanService(private val canDao: CanDao,
         canEntity.status = can.contract.status.value
         canEntity.statusDetails = can.contract.statusDetails.value
         canEntity.jsonData = toJson(can)
-        canDao.save(canEntity)
-
         var acCancel = false
         var contract: Contract? = null
         if (canEntity.acId != null) {
@@ -62,13 +61,23 @@ class CancelCanService(private val canDao: CanDao,
             acCancel = true
             contract = contractProcess.contract
         }
-
+        canDao.save(canEntity)
         return ResponseDto(
                 data = CancelCanRs(
                         can = can,
                         acCancel = acCancel,
-                        contract = contract)
+                        contract = convertToContractDto(contract))
         )
+    }
+
+    private fun convertToContractDto(contract: Contract?): CancelCanContractRs? {
+        return if (contract != null) {
+            CancelCanContractRs(
+                    id = contract.id,
+                    status = contract.status,
+                    statusDetails = contract.statusDetails
+            )
+        } else null
     }
 }
 
