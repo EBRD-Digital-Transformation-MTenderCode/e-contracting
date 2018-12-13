@@ -8,13 +8,15 @@ import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.entity.CanEntity
+import com.procurement.contracting.model.dto.ocds.Can
+import com.procurement.contracting.model.dto.ocds.ContractStatus
+import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class UpdateDocumentsService(private val canDao: CanDao,
@@ -41,9 +43,9 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canDocuments = can.contract.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
             validateRelatedLotInRq(dto, contractProcess)
-            val newDocuments: List<DocumentContract> = mutableListOf()
+            val newDocuments: ArrayList<DocumentContract> = arrayListOf()
             dto.documents.forEach {
-                newDocuments.toMutableList().add(DocumentContract(
+                newDocuments.add(DocumentContract(
                         id = it.id,
                         documentType = it.documentType,
                         title = it.title,
@@ -129,15 +131,5 @@ class UpdateDocumentsService(private val canDao: CanDao,
         }
     }
 
-    private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
-        val contract = CanContract(
-                id = entity.canId.toString(),
-                date = dateTime,
-                awardId = entity.awardId,
-                status = ContractStatus.fromValue(entity.status),
-                statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null)
-        return Can(contract)
-    }
 }
 
