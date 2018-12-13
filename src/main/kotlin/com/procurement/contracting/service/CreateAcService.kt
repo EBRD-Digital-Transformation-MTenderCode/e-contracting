@@ -87,7 +87,7 @@ class CreateAcService(private val acDao: AcDao,
                     canEntity)
             acEntities.add(acEntity)
         }
-        canDao.saveAll(canEntities)
+        canEntities.asSequence().forEach { canDao.save(it)}
         acDao.saveAll(acEntities)
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
