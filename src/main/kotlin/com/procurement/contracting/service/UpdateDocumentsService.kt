@@ -96,8 +96,8 @@ class UpdateDocumentsService(private val canDao: CanDao,
     }
 
     private fun newDocumentsInRq(dtoDocuments: List<UpdateDocument>, canDocuments: List<DocumentContract>): List<DocumentContract>? {
-        val newDocuments: List<DocumentContract> = mutableListOf()
-        val canDocumentsIds: MutableList<String> = mutableListOf()
+        val newDocuments: ArrayList<DocumentContract> = arrayListOf()
+        val canDocumentsIds: ArrayList<String> = arrayListOf()
 
         canDocuments.forEach {
             canDocumentsIds.add(it.id)
@@ -105,7 +105,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
-                newDocuments.toMutableList().add(DocumentContract(
+                newDocuments.add(DocumentContract(
                         id = it.id,
                         documentType = it.documentType,
                         title = it.title,
