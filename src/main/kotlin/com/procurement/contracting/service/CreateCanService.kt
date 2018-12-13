@@ -30,42 +30,43 @@ class CreateCanService(private val canDao: CanDao,
         val dto = toObject(CanCreate::class.java, cm.data)
 
         if (dto.awards.isEmpty()) return ResponseDto(data = CreateCanRs(listOf()))
+        val cans = dto.awards.asSequence()
+                .map { createCan(it.id, dateTime) }
+                .toList()
 
-        val canEntities = dto.awards.asSequence()
-            .map {
-                createCanEntity(cpId, it.id, owner, dateTime).apply { jsonData = toJson(this)}
-                }
-            .toList()
-        val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
-        canDao.saveAll(canEntities)
+        val canEntities = cans.asSequence()
+                .map { createCanEntity(cpId, owner, dateTime, it) }
+                .toList()
+        canEntities.asSequence().forEach { canDao.save(it)}
         return ResponseDto(data = CreateCanRs(cans))
     }
 
-    private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
-        val contract = CanContract(
-            id = entity.canId.toString(),
-            date = dateTime,
-            awardId = entity.awardId,
-            status = ContractStatus.fromValue(entity.status),
-            statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-            documents = null)
-        return Can(contract)
+    private fun createCan(awardId: String, dateTime: LocalDateTime): Can {
+        return Can(
+                contract = CanContract(
+                        id = generationService.generateRandomUUID().toString(),
+                        date = dateTime,
+                        awardId = awardId,
+                        status = ContractStatus.PENDING,
+                        statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
+                        documents = null)
+        )
     }
 
     private fun createCanEntity(cpId: String,
-                                awardId: String,
                                 owner: String,
-                                dateTime: LocalDateTime): CanEntity {
+                                dateTime: LocalDateTime,
+                                can: Can): CanEntity {
         return CanEntity(
-            cpId = cpId,
-            canId = generationService.generateRandomUUID(),
-            awardId = awardId,
-            acId = null,
-            owner = owner,
-            status = ContractStatus.PENDING.value,
-            statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value,
-            createdDate = dateTime.toDate(),
-            jsonData = ""
+                cpId = cpId,
+                canId = generationService.generateRandomUUID(),
+                awardId = can.contract.awardId,
+                acId = null,
+                owner = owner,
+                status = can.contract.status.value,
+                statusDetails = can.contract.statusDetails.value,
+                createdDate = dateTime.toDate(),
+                jsonData = toJson(can)
         )
     }
 }
