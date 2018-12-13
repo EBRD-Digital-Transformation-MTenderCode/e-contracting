@@ -73,7 +73,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         return ResponseDto(data = UpdateDocumentsRs(
                 contract = UpdateDocumentContract(
-                        id = canAcOcId,
+                        id = canId,
                         documents = canDocuments
                 )
         ))
