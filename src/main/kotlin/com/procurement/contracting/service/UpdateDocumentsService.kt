@@ -27,7 +27,6 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
@@ -38,11 +37,8 @@ class UpdateDocumentsService(private val canDao: CanDao,
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
                 || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
-        var can = convertEntityToCanDto(canEntity,dateTime)
-        val canJson = canEntity.jsonData
-        if (canJson!=null){
-            val can = toObject(Can::class.java, canJson)
-        }
+        val can = toObject(Can::class.java, canEntity.jsonData)
+
 
         val canDocuments = can.contract.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {

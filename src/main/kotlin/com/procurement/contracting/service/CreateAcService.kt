@@ -128,27 +128,13 @@ class CreateAcService(private val acDao: AcDao,
     }
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
-        return Can(contract = Contract(
-                id = entity.canId.toString(),
-                token = null,
-                date = entity.createdDate.toLocal(),
-                awardId = entity.awardId,
-                status = ContractStatus.fromValue(entity.status),
-                statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                title = null,
-                description = null,
-                value = null,
-                items = null,
-                period = null,
-                extendsContractID = null,
-                dateSigned = null,
-                budgetSource = null,
-                amendments = null,
-                relatedProcesses = null,
-                classification = null,
-                documents = null,
-                confirmationRequests = null,
-                milestones = null)
+        return Can(contract = CanContract(
+            id = entity.canId.toString(),
+            date = entity.createdDate.toLocal(),
+            awardId = entity.awardId,
+            status = ContractStatus.fromValue(entity.status),
+            statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
+            documents = null)
         )
     }
 
