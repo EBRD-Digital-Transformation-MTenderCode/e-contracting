@@ -19,7 +19,7 @@ class CommandService(private val historyDao: HistoryDao,
                      private val treasuryAcService: TreasuryAcService,
                      private val signingAcService: SigningAcService,
                      private val acService: ActivationAcService,
-                     private val  updateDocumentsService: UpdateDocumentsService) {
+                     private val updateDocumentsService: UpdateDocumentsService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -34,14 +34,14 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CHECK_STATUS_DETAILS -> TODO()
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
             CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
-            CommandType.ISSUING_AC-> issuingAcService.issuingAc(cm)
-            CommandType.FINAL_UPDATE->finalUpdateService.finalUpdate(cm)
+            CommandType.ISSUING_AC -> issuingAcService.issuingAc(cm)
+            CommandType.FINAL_UPDATE -> finalUpdateService.finalUpdate(cm)
             CommandType.BUYER_SIGNING_AC -> signingAcService.buyerSigningAC(cm)
             CommandType.SUPPLIER_SIGNING_AC -> signingAcService.supplierSigningAC(cm)
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
-            CommandType.ACTIVATION_AC ->acService.activateAc(cm)
-            CommandType.UPDATE_CAN_DOCS->updateDocumentsService.updateCanDocs(cm)
+            CommandType.ACTIVATION_AC -> acService.activateAc(cm)
+            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

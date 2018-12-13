@@ -1,7 +1,6 @@
 package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType

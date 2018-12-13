@@ -13,6 +13,6 @@ data class IssuingAcRs @JsonCreator constructor(
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractIssuingAcRs @JsonCreator constructor(
-    var date: LocalDateTime?,
-    var statusDetails: ContractStatusDetails
+        var date: LocalDateTime?,
+        var statusDetails: ContractStatusDetails
 )

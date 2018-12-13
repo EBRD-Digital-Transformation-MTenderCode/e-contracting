@@ -10,60 +10,60 @@ import java.time.LocalDateTime
 
 data class ProceedResponseRq @JsonCreator constructor(
 
-    val confirmationResponse: ConfirmationResponseRq
+        val confirmationResponse: ConfirmationResponseRq
 )
 
 data class ConfirmationResponseRq @JsonCreator constructor(
 
-    val value: ConfirmationResponseValueRq
+        val value: ConfirmationResponseValueRq
 )
 
 data class ConfirmationResponseValueRq @JsonCreator constructor(
 
-    val id: String,
+        val id: String,
 
-    val date: LocalDateTime,
+        val date: LocalDateTime,
 
-    val relatedPerson: RelatedPersonRq,
+        val relatedPerson: RelatedPersonRq,
 
-    val verification: List<VerificationRq>
+        val verification: List<VerificationRq>
 )
 
 data class RelatedPersonRq @JsonCreator constructor(
 
-    val id: String
+        val id: String
 )
 
 data class VerificationRq @JsonCreator constructor(
 
-    val value: String
+        val value: String
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BuyerSigningRs @JsonCreator constructor(
 
-    val contract: Contract
+        val contract: Contract
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SupplierSigningRs @JsonCreator constructor(
 
-    val treasuryValidation: Boolean,
+        val treasuryValidation: Boolean,
 
-    val treasuryBudgetSources: List<TreasuryBudgetSourceSupplierSigning>?,
+        val treasuryBudgetSources: List<TreasuryBudgetSourceSupplierSigning>?,
 
-    val contract: Contract
+        val contract: Contract
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class TreasuryBudgetSourceSupplierSigning @JsonCreator constructor(
 
-    var budgetBreakdownID: String,
+        var budgetBreakdownID: String,
 
-    val budgetIBAN: String,
+        val budgetIBAN: String,
 
-    @JsonDeserialize(using = MoneyDeserializer::class)
-    val amount: BigDecimal
+        @JsonDeserialize(using = MoneyDeserializer::class)
+        val amount: BigDecimal
 )
 
 

@@ -37,7 +37,7 @@ class CreateCanService(private val canDao: CanDao,
         val canEntities = cans.asSequence()
                 .map { createCanEntity(cpId, owner, dateTime, it) }
                 .toList()
-        canEntities.asSequence().forEach { canDao.save(it)}
+        canEntities.asSequence().forEach { canDao.save(it) }
         return ResponseDto(data = CreateCanRs(cans))
     }
 

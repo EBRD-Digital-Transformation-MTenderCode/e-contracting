@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.HashSet
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Contract @JsonCreator constructor(

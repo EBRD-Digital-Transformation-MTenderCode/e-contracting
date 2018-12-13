@@ -236,7 +236,7 @@ enum class RelatedProcessScheme(@JsonValue val value: String) {
     }
 }
 
-enum class SourceType (@JsonValue val value: String) {
+enum class SourceType(@JsonValue val value: String) {
     BUYER("buyer"),
     TENDERER("tenderer"),
     APPROVE_BODY("approveBody");

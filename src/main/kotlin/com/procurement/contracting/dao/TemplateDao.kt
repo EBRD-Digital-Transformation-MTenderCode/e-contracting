@@ -6,7 +6,6 @@ import com.datastax.driver.core.querybuilder.QueryBuilder.select
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class TemplateDao(private val session: Session) {

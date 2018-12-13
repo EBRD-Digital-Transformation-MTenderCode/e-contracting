@@ -1,8 +1,6 @@
 package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.Insert
-import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
@@ -29,26 +27,26 @@ class AcDao(private val session: Session) {
         session.execute(insert)
     }
 
-    fun saveAll(entities: List<AcEntity>) {
-        val operations = ArrayList<Insert>()
-        entities.forEach { entity ->
-            operations.add(
-                    insertInto(CONTRACT_TABLE)
-                            .value(CP_ID, entity.cpId)
-                            .value(AC_ID, entity.acId)
-                            .value(TOKEN, entity.token)
-                            .value(OWNER, entity.owner)
-                            .value(CREATED_DATE, entity.createdDate)
-                            .value(CAN_ID, entity.canId)
-                            .value(STATUS, entity.status)
-                            .value(STATUS_DETAILS, entity.statusDetails)
-                            .value(MPC, entity.mainProcurementCategory)
-                            .value(LANGUAGE, entity.language)
-                            .value(JSON_DATA, entity.jsonData))
-        }
-        val batch = QueryBuilder.batch(*operations.toTypedArray())
-        session.execute(batch)
-    }
+//    fun saveAll(entities: List<AcEntity>) {
+//        val operations = ArrayList<Insert>()
+//        entities.forEach { entity ->
+//            operations.add(
+//                    insertInto(CONTRACT_TABLE)
+//                            .value(CP_ID, entity.cpId)
+//                            .value(AC_ID, entity.acId)
+//                            .value(TOKEN, entity.token)
+//                            .value(OWNER, entity.owner)
+//                            .value(CREATED_DATE, entity.createdDate)
+//                            .value(CAN_ID, entity.canId)
+//                            .value(STATUS, entity.status)
+//                            .value(STATUS_DETAILS, entity.statusDetails)
+//                            .value(MPC, entity.mainProcurementCategory)
+//                            .value(LANGUAGE, entity.language)
+//                            .value(JSON_DATA, entity.jsonData))
+//        }
+//        val batch = QueryBuilder.batch(*operations.toTypedArray())
+//        session.execute(batch)
+//    }
 
     fun getByCpIdAndAcId(cpId: String, acId: String): AcEntity {
         val query = select()

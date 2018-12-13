@@ -1,6 +1,5 @@
 package com.procurement.contracting.service
 
-import com.datastax.driver.core.utils.UUIDs
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
@@ -12,7 +11,6 @@ import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -35,7 +33,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+                        || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
         val can = toObject(Can::class.java, canEntity.jsonData)
 
@@ -46,11 +44,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
             val newDocuments: List<DocumentContract> = mutableListOf()
             dto.documents.forEach {
                 newDocuments.toMutableList().add(DocumentContract(
-                    id = it.id,
-                    documentType = it.documentType,
-                    title = it.title,
-                    description = it.description,
-                    relatedLots = it.relatedLots
+                        id = it.id,
+                        documentType = it.documentType,
+                        title = it.title,
+                        description = it.description,
+                        relatedLots = it.relatedLots
                 ))
 
                 canDocuments.addAll(newDocuments)
@@ -72,10 +70,10 @@ class UpdateDocumentsService(private val canDao: CanDao,
         canDao.save(canEntity)
 
         return ResponseDto(data = UpdateDocumentsRs(
-            contract = UpdateDocumentContract(
-                id = canAcOcId,
-                documents = canDocuments
-            )
+                contract = UpdateDocumentContract(
+                        id = canAcOcId,
+                        documents = canDocuments
+                )
         ))
     }
 
@@ -106,11 +104,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
                 newDocuments.toMutableList().add(DocumentContract(
-                    id = it.id,
-                    documentType = it.documentType,
-                    title = it.title,
-                    description = it.description,
-                    relatedLots = it.relatedLots
+                        id = it.id,
+                        documentType = it.documentType,
+                        title = it.title,
+                        description = it.description,
+                        relatedLots = it.relatedLots
                 ))
             }
         }
@@ -130,14 +128,15 @@ class UpdateDocumentsService(private val canDao: CanDao,
             this.description = documentDto.description
         }
     }
+
     private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
         val contract = CanContract(
-            id = entity.canId.toString(),
-            date = dateTime,
-            awardId = entity.awardId,
-            status = ContractStatus.fromValue(entity.status),
-            statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-            documents = null)
+                id = entity.canId.toString(),
+                date = dateTime,
+                awardId = entity.awardId,
+                status = ContractStatus.fromValue(entity.status),
+                statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
+                documents = null)
         return Can(contract)
     }
 }
