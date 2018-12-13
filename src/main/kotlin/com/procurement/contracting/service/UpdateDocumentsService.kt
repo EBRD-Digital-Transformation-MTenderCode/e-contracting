@@ -9,13 +9,13 @@ import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toJson
+import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -27,7 +27,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
-
+        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
@@ -38,7 +38,12 @@ class UpdateDocumentsService(private val canDao: CanDao,
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
                 || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
-        val can = toObject(Can::class.java, canEntity.jsonData)
+        var can = convertEntityToCanDto(canEntity,dateTime)
+        val canJson = canEntity.jsonData
+        if (canJson!=null){
+            val can = toObject(Can::class.java, canJson)
+        }
+
         val canDocuments = can.contract.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
             validateRelatedLotInRq(dto, contractProcess)
@@ -128,6 +133,16 @@ class UpdateDocumentsService(private val canDao: CanDao,
             this.title = documentDto.title
             this.description = documentDto.description
         }
+    }
+    private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
+        val contract = CanContract(
+            id = entity.canId.toString(),
+            date = dateTime,
+            awardId = entity.awardId,
+            status = ContractStatus.fromValue(entity.status),
+            statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
+            documents = null)
+        return Can(contract)
     }
 }
 
