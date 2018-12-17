@@ -26,24 +26,6 @@ class CanDao(private val session: Session) {
         session.execute(insert)
     }
 
-//    fun saveAll(entities: List<CanEntity>) {
-//        val operations = ArrayList<Insert>()
-//        entities.forEach { entity ->
-//            operations.add(insertInto(CAN_TABLE)
-//                    .value(CP_ID, entity.cpId)
-//                    .value(CAN_ID, entity.canId)
-//                    .value(OWNER, entity.owner)
-//                    .value(CREATED_DATE, entity.createdDate)
-//                    .value(AWARD_ID, entity.awardId)
-//                    .value(AC_ID, entity.acId)
-//                    .value(STATUS, entity.status)
-//                    .value(STATUS_DETAILS, entity.statusDetails)
-//                    .value(JSON_DATA, entity.jsonData))
-//        }
-//        val batch = batch(*operations.toTypedArray())
-//        session.execute(batch)
-//    }
-
     fun findAllByCpId(cpId: String): List<CanEntity> {
         val query = select()
                 .all()
