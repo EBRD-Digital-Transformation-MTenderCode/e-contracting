@@ -1,5 +1,7 @@
 package com.procurement.contracting.model.dto.ocds
 
+import java.time.LocalDateTime
+
 data class TreasuryData(
 
         val id_dok: String,
@@ -8,11 +10,11 @@ data class TreasuryData(
 
         val status: String,
 
-        val st_date: String,
+        val st_date: LocalDateTime,
 
         val reg_nom: Long,
 
-        val reg_date: String,
+        val reg_date: LocalDateTime,
 
         val descr: String
 )

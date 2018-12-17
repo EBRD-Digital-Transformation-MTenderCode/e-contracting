@@ -6,7 +6,6 @@ import com.datastax.driver.core.querybuilder.QueryBuilder.select
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class TemplateDao(private val session: Session) {
@@ -22,15 +21,6 @@ class TemplateDao(private val session: Session) {
                 .limit(1)
         val row = session.execute(query).one() ?: throw ErrorException(ErrorType.TEMPLATE_NOT_FOUND)
         return row.getString(TEMPLATE)
-    }
-
-
-    fun getTemplates(country: String, pmd: String, language: String, templateIds: LinkedList<String>): LinkedList<String> {
-        val templates = LinkedList<String>()
-        templateIds.forEach { templateId ->
-            templates.add(getTemplate(country, pmd, language, templateId))
-        }
-        return templates
     }
 
     companion object {

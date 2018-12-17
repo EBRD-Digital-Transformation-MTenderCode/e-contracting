@@ -13,7 +13,6 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
 import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class UpdateAcService(private val acDao: AcDao,
@@ -114,19 +113,19 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-    private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): List<Milestone>? {
+    private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): HashSet<Milestone>? {
         val milestonesDto = dto.contract.milestones
-        val milestonesDb = contractProcess.contract.milestones ?: listOf()
+        val milestonesDb = contractProcess.contract.milestones ?: hashSetOf()
         val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
         val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
         val updatedMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in milestonesDtoIds }
                 .map { milestoneDb -> milestoneDb.update(milestonesDto.first { it.id == milestoneDb.id }) }
-                .toList()
+                .toMutableSet()
         val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         return if (updatedMilestonesDb.isNotEmpty()) {
-            updatedMilestonesDb + newMilestones
+            (updatedMilestonesDb + newMilestones).toHashSet()
         } else {
             newMilestones
         }
@@ -141,10 +140,10 @@ class UpdateAcService(private val acDao: AcDao,
         return this
     }
 
-    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>): List<Milestone> {
+    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>): HashSet<Milestone> {
         val milestonesDto = dto.contract.milestones
         val transactions = dto.planning.implementation.transactions
-        val newMilestones = ArrayList<Milestone>()
+        val newMilestones = HashSet<Milestone>()
         milestonesDto.asSequence()
                 .filter { it.id in newMilestonesIds }
                 .forEach { milestone ->
@@ -201,14 +200,15 @@ class UpdateAcService(private val acDao: AcDao,
 
         val milestonesFromTrSet = transactions.asSequence()
                 .filter { it.type != TransactionType.ADVANCE }
-                .map { it.relatedContractMilestone!! }.toHashSet()
+                .map { it.relatedContractMilestone ?: throw ErrorException(INVALID_TR_RELATED_MILESTONES) }.toHashSet()
 
-        if (milestonesIdSet.size != milestonesFromTrSet.size) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
-        val relatedItemIds = milestonesDto.asSequence().flatMap { it.relatedItems!!.asSequence() }.toSet()
+        val relatedItemIds = milestonesDto.asSequence()
+                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM) }
+                .toSet()
         val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
@@ -217,7 +217,7 @@ class UpdateAcService(private val acDao: AcDao,
                                            documents: List<DocumentContract>?,
                                            country: String,
                                            pmd: String,
-                                           language: String): List<ConfirmationRequest>? {
+                                           language: String): HashSet<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         if (confRequestDto != null) {
             //validation
@@ -243,7 +243,7 @@ class UpdateAcService(private val acDao: AcDao,
             //set
             for (confRequest in confRequestDto) {
                 when (confRequest.source) {
-                    "buyer" -> {
+                    SourceType.BUYER -> {
                         confRequest.id = buyerTemplate.id + confRequest.relatedItem
                         confRequest.description = buyerTemplate.description
                         confRequest.title = buyerTemplate.title
@@ -261,7 +261,7 @@ class UpdateAcService(private val acDao: AcDao,
                                 )
                         )
                     }
-                    "tenderer" -> {
+                    SourceType.TENDERER -> {
                         confRequest.id = tendererTemplate.id + confRequest.relatedItem
                         confRequest.description = tendererTemplate.description
                         confRequest.title = tendererTemplate.title
@@ -279,7 +279,9 @@ class UpdateAcService(private val acDao: AcDao,
                                 )
                         )
                     }
-                    else -> throw ErrorException(CONFIRMATION_SOURCE)
+                    SourceType.APPROVE_BODY -> {
+                        TODO()
+                    }
                 }
             }
         }

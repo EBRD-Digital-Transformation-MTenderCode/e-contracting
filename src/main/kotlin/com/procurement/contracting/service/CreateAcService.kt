@@ -87,8 +87,8 @@ class CreateAcService(private val acDao: AcDao,
                     canEntity)
             acEntities.add(acEntity)
         }
-        canDao.saveAll(canEntities)
-        acDao.saveAll(acEntities)
+        canEntities.asSequence().forEach { canDao.save(it) }
+        acEntities.asSequence().forEach { acDao.save(it) }
         return ResponseDto(data = CreateAcRs(cans, contracts))
     }
 
@@ -128,27 +128,13 @@ class CreateAcService(private val acDao: AcDao,
     }
 
     private fun convertEntityToCanDto(entity: CanEntity): Can {
-        return Can(contract = Contract(
+        return Can(contract = CanContract(
                 id = entity.canId.toString(),
-                token = null,
                 date = entity.createdDate.toLocal(),
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
                 statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                title = null,
-                description = null,
-                value = null,
-                items = null,
-                period = null,
-                extendsContractID = null,
-                dateSigned = null,
-                budgetSource = null,
-                amendments = null,
-                relatedProcesses = null,
-                classification = null,
-                documents = null,
-                confirmationRequests = null,
-                milestones = null)
+                documents = null)
         )
     }
 

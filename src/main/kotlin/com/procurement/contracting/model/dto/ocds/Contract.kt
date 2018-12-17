@@ -16,7 +16,7 @@ data class Contract @JsonCreator constructor(
 
         val awardId: String,
 
-        val status: ContractStatus,
+        var status: ContractStatus,
 
         var statusDetails: ContractStatusDetails,
 
@@ -44,9 +44,11 @@ data class Contract @JsonCreator constructor(
 
         val amendments: List<Amendment>?,
 
-        var milestones: List<Milestone>?,
+        var milestones: HashSet<Milestone>?,
 
-        var confirmationRequests: List<ConfirmationRequest>?,
+        var confirmationRequests: HashSet<ConfirmationRequest>?,
+
+        var confirmationResponses: HashSet<ConfirmationResponse>? = null,
 
         var agreedMetrics: LinkedList<AgreedMetric>? = null
 )

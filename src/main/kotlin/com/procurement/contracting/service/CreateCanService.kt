@@ -2,22 +2,23 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.model.dto.CanCreate
 import com.procurement.contracting.model.dto.CreateCanRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.CanContract
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
+import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class CreateCanService(private val canDao: CanDao,
@@ -30,53 +31,43 @@ class CreateCanService(private val canDao: CanDao,
         val dto = toObject(CanCreate::class.java, cm.data)
 
         if (dto.awards.isEmpty()) return ResponseDto(data = CreateCanRs(listOf()))
-
-        val canEntities = dto.awards.asSequence()
-                .map { createCanEntity(cpId, it.id, owner, dateTime) }
+        val cans = dto.awards.asSequence()
+                .map { createCan(it.id, dateTime) }
                 .toList()
-        val cans = canEntities.asSequence().map { convertEntityToCanDto(it, dateTime) }.toList()
-        canDao.saveAll(canEntities)
+
+        val canEntities = cans.asSequence()
+                .map { createCanEntity(cpId, owner, dateTime, it) }
+                .toList()
+        canEntities.asSequence().forEach { canDao.save(it) }
         return ResponseDto(data = CreateCanRs(cans))
     }
 
-    private fun convertEntityToCanDto(entity: CanEntity, dateTime: LocalDateTime): Can {
-        val contract = Contract(
-                token = null,
-                id = entity.canId.toString(),
-                date = dateTime,
-                awardId = entity.awardId,
-                status = ContractStatus.fromValue(entity.status),
-                statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null,
-                classification = null,
-                relatedProcesses = null,
-                amendments = null,
-                budgetSource = null,
-                dateSigned = null,
-                extendsContractID = null,
-                period = null,
-                items = null,
-                value = null,
-                description = null,
-                title = null,
-                milestones = null,
-                confirmationRequests = null)
-        return Can(contract)
+    private fun createCan(awardId: String, dateTime: LocalDateTime): Can {
+        return Can(
+                contract = CanContract(
+                        id = generationService.generateRandomUUID().toString(),
+                        date = dateTime,
+                        awardId = awardId,
+                        status = ContractStatus.PENDING,
+                        statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
+                        documents = null)
+        )
     }
 
     private fun createCanEntity(cpId: String,
-                                awardId: String,
                                 owner: String,
-                                dateTime: LocalDateTime): CanEntity {
+                                dateTime: LocalDateTime,
+                                can: Can): CanEntity {
         return CanEntity(
                 cpId = cpId,
-                canId = generationService.generateRandomUUID(),
-                awardId = awardId,
+                canId = UUID.fromString(can.contract.id),
+                awardId = can.contract.awardId,
                 acId = null,
                 owner = owner,
-                status = ContractStatus.PENDING.value,
-                statusDetails = ContractStatusDetails.CONTRACT_PROJECT.value,
-                createdDate = dateTime.toDate()
+                status = can.contract.status.value,
+                statusDetails = can.contract.statusDetails.value,
+                createdDate = dateTime.toDate(),
+                jsonData = toJson(can)
         )
     }
 }

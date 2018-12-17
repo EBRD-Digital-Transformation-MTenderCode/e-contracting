@@ -1,33 +1,17 @@
 {
-
   "name": "",
-
   "id": "",
-
   "identifier": {
-
     "scheme": "",
-
     "id": "",
-
     "legalName": "",
-
     "uri": ""
-
   },
-
   "contactPoint": {
-
     "name": "",
-
     "email": "",
-
     "telephone": "",
-
     "faxNumber": "",
-
     "url": ""
-
   }
-
 }

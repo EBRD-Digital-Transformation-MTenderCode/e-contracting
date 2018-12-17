@@ -1,14 +1,11 @@
 package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.Insert
-import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.entity.AcEntity
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class AcDao(private val session: Session) {
@@ -30,26 +27,26 @@ class AcDao(private val session: Session) {
         session.execute(insert)
     }
 
-    fun saveAll(entities: List<AcEntity>) {
-        val operations = ArrayList<Insert>()
-        entities.forEach { entity ->
-            operations.add(
-                    insertInto(CONTRACT_TABLE)
-                            .value(CP_ID, entity.cpId)
-                            .value(AC_ID, entity.acId)
-                            .value(TOKEN, entity.token)
-                            .value(OWNER, entity.owner)
-                            .value(CREATED_DATE, entity.createdDate)
-                            .value(CAN_ID, entity.canId)
-                            .value(STATUS, entity.status)
-                            .value(STATUS_DETAILS, entity.statusDetails)
-                            .value(MPC, entity.mainProcurementCategory)
-                            .value(LANGUAGE, entity.language)
-                            .value(JSON_DATA, entity.jsonData))
-        }
-        val batch = QueryBuilder.batch(*operations.toTypedArray())
-        session.execute(batch)
-    }
+//    fun saveAll(entities: List<AcEntity>) {
+//        val operations = ArrayList<Insert>()
+//        entities.forEach { entity ->
+//            operations.add(
+//                    insertInto(CONTRACT_TABLE)
+//                            .value(CP_ID, entity.cpId)
+//                            .value(AC_ID, entity.acId)
+//                            .value(TOKEN, entity.token)
+//                            .value(OWNER, entity.owner)
+//                            .value(CREATED_DATE, entity.createdDate)
+//                            .value(CAN_ID, entity.canId)
+//                            .value(STATUS, entity.status)
+//                            .value(STATUS_DETAILS, entity.statusDetails)
+//                            .value(MPC, entity.mainProcurementCategory)
+//                            .value(LANGUAGE, entity.language)
+//                            .value(JSON_DATA, entity.jsonData))
+//        }
+//        val batch = QueryBuilder.batch(*operations.toTypedArray())
+//        session.execute(batch)
+//    }
 
     fun getByCpIdAndAcId(cpId: String, acId: String): AcEntity {
         val query = select()
@@ -74,6 +71,32 @@ class AcDao(private val session: Session) {
                     jsonData = row.getString(JSON_DATA))
         else throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
     }
+
+    fun getAllByCpId(cpId: String): List<AcEntity> {
+        val query = select()
+                .all()
+                .from(CONTRACT_TABLE)
+                .where(eq(CP_ID, cpId))
+        val resultSet = session.execute(query)
+        val entities = ArrayList<AcEntity>()
+        resultSet.forEach { row ->
+            entities.add(AcEntity(
+                    cpId = row.getString(CP_ID),
+                    acId = row.getString(AC_ID),
+                    token = row.getUUID(TOKEN),
+                    owner = row.getString(OWNER),
+                    createdDate = row.getTimestamp(CREATED_DATE),
+                    canId = row.getString(CAN_ID),
+                    status = row.getString(STATUS),
+                    statusDetails = row.getString(STATUS_DETAILS),
+                    mainProcurementCategory = row.getString(MPC),
+                    language = row.getString(LANGUAGE),
+                    jsonData = row.getString(JSON_DATA))
+            )
+        }
+        return entities
+    }
+
 
     companion object {
         private const val CONTRACT_TABLE = "contracting_ac"

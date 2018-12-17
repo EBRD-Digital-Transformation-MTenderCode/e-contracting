@@ -16,9 +16,9 @@ data class AcEntity(
 
         val canId: String,
 
-        val status: String,
+        var status: String,
 
-        val statusDetails: String,
+        var statusDetails: String,
 
         val mainProcurementCategory: String,
 

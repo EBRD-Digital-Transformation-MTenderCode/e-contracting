@@ -4,7 +4,7 @@
     "date": "",
     "awardID": "",
     "status": "",
-    "statusDetails":"",
+    "statusDetails": "",
     "title": "",
     "description": "",
     "period": {
@@ -15,18 +15,26 @@
       {
         "documentType": "",
         "id": "",
-        --"title": "",
-        --"description": "",
-        --"relatedLots": [""]
+        --
+        "title": "",
+        --
+        "description": "",
+        --
+        "relatedLots": [
+          ""
+        ]
       }
     ],
     "milestones": [
       {
         "id": "approval-relatedparties.id",
-        --"relatedItems": [],
+        --
+        "relatedItems": [],
         "status": "",
-        --"additionalInformation": "",
-        --"dueDate": "",
+        --
+        "additionalInformation": "",
+        --
+        "dueDate": "",
         "title": "Signature by the Buyer",
         "type": "approval",
         "description": "",
@@ -55,10 +63,11 @@
                 "id": "cs-tenderer-confirmation-on-document.id-tenderer.identifier.id-relatedPerson.id",
                 "title": "parties[role:supplier].persones[role:authority].name",
                 "description": "",
-                --"relatedPerson": {
-                "id": "",
-                "name": ""
-              }
+                --
+                "relatedPerson": {
+                  "id": "",
+                  "name": ""
+                }
               }
             ]
           }
@@ -72,21 +81,22 @@
       "valueAddedTaxincluded": true
     }
   },
-  --"approveBody":{
-  "name": "State Treasury of Republic of Moldova",
-  "id": "",
-  "identifier": {
-    "scheme": "",
+  --
+  "approveBody": {
+    "name": "State Treasury of Republic of Moldova",
     "id": "",
-    "legalName": "",
-    "uri": ""
-  },
-  "contactPoint": {
-    "name": "",
-    "email": "",
-    "telephone": "",
-    "faxNumber": "",
-    "url": ""
+    "identifier": {
+      "scheme": "",
+      "id": "",
+      "legalName": "",
+      "uri": ""
+    },
+    "contactPoint": {
+      "name": "",
+      "email": "",
+      "telephone": "",
+      "faxNumber": "",
+      "url": ""
+    }
   }
-}
 }
