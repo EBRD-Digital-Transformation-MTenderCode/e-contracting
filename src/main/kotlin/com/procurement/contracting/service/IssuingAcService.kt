@@ -8,6 +8,7 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.IssuingAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
