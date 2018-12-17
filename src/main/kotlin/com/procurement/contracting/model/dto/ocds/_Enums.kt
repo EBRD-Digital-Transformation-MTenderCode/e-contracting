@@ -173,6 +173,8 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     ILLUSTRATION("illustration"),
     CONTRACT_SIGNED("contractSigned"),
     CONTRACT_SUMMARY("contractSummary"),
+    CONFLICT_OF_INTEREST("conflictOfInterest"),
+    CANCELLATION_DETAILS("cancellationDetails"),
     BUYERS_RESPONSE_ADD("buyersResponseAdd");
 
     override fun toString(): String {
