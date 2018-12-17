@@ -19,8 +19,7 @@ class CommandService(private val historyDao: HistoryDao,
                      private val treasuryAcService: TreasuryAcService,
                      private val signingAcService: SigningAcService,
                      private val acService: ActivationAcService,
-                     private val updateDocumentsService: UpdateDocumentsService,
-                     private val cancelService: CancelCanService) {
+                     private val updateDocumentsService: UpdateDocumentsService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -43,7 +42,6 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
             CommandType.ACTIVATION_AC -> acService.activateAc(cm)
             CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
-            CommandType.CANCEL_CAN -> cancelService.cancelCan(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

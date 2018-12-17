@@ -23,7 +23,5 @@ data class CanContract @JsonCreator constructor(
 
         var statusDetails: ContractStatusDetails,
 
-        var documents: List<DocumentContract>?,
-
-        var amendment: Amendment
+        var documents: List<DocumentContract>?
 )
