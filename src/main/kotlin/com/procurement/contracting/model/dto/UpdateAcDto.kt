@@ -127,7 +127,7 @@ data class DetailsSupplierUpdate @JsonCreator constructor(
 
         val scale: String,
 
-        val permits: List<Permits>,
+        val permits: List<Permits>?,
 
         val bankAccounts: List<BankAccount>,
 
