@@ -75,8 +75,7 @@ class CancelCanService(private val canDao: CanDao,
             CancelCanContractRs(
                     id = contract.id,
                     status = contract.status,
-                    statusDetails = contract.statusDetails
-            )
+                    statusDetails = contract.statusDetails)
         } else null
     }
 }
