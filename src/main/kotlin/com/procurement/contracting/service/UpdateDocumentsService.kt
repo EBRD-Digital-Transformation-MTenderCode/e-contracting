@@ -32,13 +32,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
-
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
                         || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
         val can = toObject(Can::class.java, canEntity.jsonData)
-
 
         val canDocuments = can.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
@@ -52,7 +50,6 @@ class UpdateDocumentsService(private val canDao: CanDao,
                         description = it.description,
                         relatedLots = it.relatedLots
                 ))
-
                 canDocuments.addAll(newDocuments)
             }
         } else {
@@ -63,7 +60,6 @@ class UpdateDocumentsService(private val canDao: CanDao,
                 canDocuments.addAll(newDocs!!)
             }
         }
-
         can.apply {
             documents = canDocuments
         }
@@ -80,28 +76,22 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
     private fun validateRelatedLotInRq(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
         val relatedLots: MutableList<String> = mutableListOf()
-
         dto.documents.forEach {
             val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
             if (relatedLot.isNotEmpty()) {
                 relatedLots.addAll(relatedLot)
             }
         }
-
         if (relatedLots.isNotEmpty() && !relatedLots.contains(contractProcess.award.relatedLots.first()))
             throw ErrorException(DOCS_RELATED_LOTS)
-
-
     }
 
     private fun newDocumentsInRq(dtoDocuments: List<UpdateDocument>, canDocuments: List<DocumentContract>): List<DocumentContract>? {
         val newDocuments: ArrayList<DocumentContract> = arrayListOf()
         val canDocumentsIds: ArrayList<String> = arrayListOf()
-
         canDocuments.forEach {
             canDocumentsIds.add(it.id)
         }
-
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
                 newDocuments.add(DocumentContract(
