@@ -50,7 +50,8 @@ class CreateCanService(private val canDao: CanDao,
                         awardId = awardId,
                         status = ContractStatus.PENDING,
                         statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
-                        documents = null)
+                        documents = null,
+                        amendment = null)
         )
     }
 
@@ -61,6 +62,7 @@ class CreateCanService(private val canDao: CanDao,
         return CanEntity(
                 cpId = cpId,
                 canId = UUID.fromString(can.contract.id),
+                token = generationService.generateRandomUUID(),
                 awardId = can.contract.awardId,
                 acId = null,
                 owner = owner,

@@ -26,24 +26,6 @@ class CanDao(private val session: Session) {
         session.execute(insert)
     }
 
-//    fun saveAll(entities: List<CanEntity>) {
-//        val operations = ArrayList<Insert>()
-//        entities.forEach { entity ->
-//            operations.add(insertInto(CAN_TABLE)
-//                    .value(CP_ID, entity.cpId)
-//                    .value(CAN_ID, entity.canId)
-//                    .value(OWNER, entity.owner)
-//                    .value(CREATED_DATE, entity.createdDate)
-//                    .value(AWARD_ID, entity.awardId)
-//                    .value(AC_ID, entity.acId)
-//                    .value(STATUS, entity.status)
-//                    .value(STATUS_DETAILS, entity.statusDetails)
-//                    .value(JSON_DATA, entity.jsonData))
-//        }
-//        val batch = batch(*operations.toTypedArray())
-//        session.execute(batch)
-//    }
-
     fun findAllByCpId(cpId: String): List<CanEntity> {
         val query = select()
                 .all()
@@ -56,6 +38,7 @@ class CanDao(private val session: Session) {
                     CanEntity(
                             cpId = row.getString(CP_ID),
                             canId = row.getUUID(CAN_ID),
+                            token = row.getUUID(TOKEN),
                             owner = row.getString(OWNER),
                             createdDate = row.getTimestamp(CREATED_DATE),
                             awardId = row.getString(AWARD_ID),
@@ -80,6 +63,7 @@ class CanDao(private val session: Session) {
             CanEntity(
                     cpId = row.getString(CP_ID),
                     canId = row.getUUID(CAN_ID),
+                    token = row.getUUID(TOKEN),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
                     awardId = row.getString(AWARD_ID),
@@ -94,6 +78,7 @@ class CanDao(private val session: Session) {
         private const val CAN_TABLE = "contracting_can"
         private const val CP_ID = "cp_id"
         private const val CAN_ID = "can_id"
+        private const val TOKEN = "token"
         private const val AC_ID = "ac_id"
         private const val AWARD_ID = "award_id"
         private const val OWNER = "owner"
