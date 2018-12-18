@@ -18,7 +18,7 @@ data class DocumentAmendment @JsonCreator constructor(
 
         val id: String,
 
-        var documentType: DocumentTypeContract,
+        var documentType: DocumentTypeAmendment,
 
         var title: String,
 

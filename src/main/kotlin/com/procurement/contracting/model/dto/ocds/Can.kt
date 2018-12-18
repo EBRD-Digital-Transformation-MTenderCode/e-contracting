@@ -7,13 +7,9 @@ import java.time.LocalDateTime
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Can @JsonCreator constructor(
 
-        val contract: CanContract
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class CanContract @JsonCreator constructor(
-
         val id: String,
+
+        val token: String,
 
         var date: LocalDateTime?,
 

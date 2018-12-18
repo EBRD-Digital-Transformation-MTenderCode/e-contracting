@@ -8,7 +8,6 @@ import com.procurement.contracting.model.dto.CreateCanRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.CanContract
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
@@ -34,7 +33,6 @@ class CreateCanService(private val canDao: CanDao,
         val cans = dto.awards.asSequence()
                 .map { createCan(it.id, dateTime) }
                 .toList()
-
         val canEntities = cans.asSequence()
                 .map { createCanEntity(cpId, owner, dateTime, it) }
                 .toList()
@@ -44,15 +42,14 @@ class CreateCanService(private val canDao: CanDao,
 
     private fun createCan(awardId: String, dateTime: LocalDateTime): Can {
         return Can(
-                contract = CanContract(
-                        id = generationService.generateRandomUUID().toString(),
-                        date = dateTime,
-                        awardId = awardId,
-                        status = ContractStatus.PENDING,
-                        statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
-                        documents = null,
-                        amendment = null)
-        )
+                id = generationService.generateRandomUUID().toString(),
+                token = generationService.generateRandomUUID().toString(),
+                date = dateTime,
+                awardId = awardId,
+                status = ContractStatus.PENDING,
+                statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
+                documents = null,
+                amendment = null)
     }
 
     private fun createCanEntity(cpId: String,
@@ -61,13 +58,13 @@ class CreateCanService(private val canDao: CanDao,
                                 can: Can): CanEntity {
         return CanEntity(
                 cpId = cpId,
-                canId = UUID.fromString(can.contract.id),
-                token = generationService.generateRandomUUID(),
-                awardId = can.contract.awardId,
+                canId = UUID.fromString(can.id),
+                token = UUID.fromString(can.token),
+                awardId = can.awardId,
                 acId = null,
                 owner = owner,
-                status = can.contract.status.value,
-                statusDetails = can.contract.statusDetails.value,
+                status = can.status.value,
+                statusDetails = can.statusDetails.value,
                 createdDate = dateTime.toDate(),
                 jsonData = toJson(can)
         )
