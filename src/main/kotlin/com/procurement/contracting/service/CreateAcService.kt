@@ -134,7 +134,8 @@ class CreateAcService(private val acDao: AcDao,
                 awardId = entity.awardId,
                 status = ContractStatus.fromValue(entity.status),
                 statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null)
+                documents = null,
+                amendment = null)
         )
     }
 
