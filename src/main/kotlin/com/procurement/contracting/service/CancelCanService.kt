@@ -36,15 +36,15 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val can = toObject(Can::class.java, canEntity.jsonData)
 
-        if (can.contract.status != ContractStatus.PENDING && can.contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT) throw ErrorException(CAN_STATUS)
-        if (can.contract.status != ContractStatusDetails.ACTIVE && can.contract.statusDetails != ContractStatusDetails.EMPTY) throw ErrorException(CAN_STATUS)
+        if (can.status != ContractStatus.PENDING && can.statusDetails != ContractStatusDetails.CONTRACT_PROJECT) throw ErrorException(CAN_STATUS)
+        if (can.status != ContractStatusDetails.ACTIVE && can.statusDetails != ContractStatusDetails.EMPTY) throw ErrorException(CAN_STATUS)
 
-        can.contract.status = ContractStatus.CANCELLED
-        can.contract.statusDetails = ContractStatusDetails.EMPTY
-        can.contract.amendment = dto.contract.amendment
+        can.status = ContractStatus.CANCELLED
+        can.statusDetails = ContractStatusDetails.EMPTY
+        can.amendment = dto.contract.amendment
 
-        canEntity.status = can.contract.status.value
-        canEntity.statusDetails = can.contract.statusDetails.value
+        canEntity.status = can.status.value
+        canEntity.statusDetails = can.statusDetails.value
         canEntity.jsonData = toJson(can)
         var acCancel = false
         var contract: Contract? = null

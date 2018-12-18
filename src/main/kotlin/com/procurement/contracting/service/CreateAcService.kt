@@ -11,7 +11,10 @@ import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.AcEntity
 import com.procurement.contracting.model.entity.CanEntity
-import com.procurement.contracting.utils.*
+import com.procurement.contracting.utils.toDate
+import com.procurement.contracting.utils.toJson
+import com.procurement.contracting.utils.toLocalDateTime
+import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -71,11 +74,14 @@ class CreateAcService(private val acDao: AcDao,
 
             val canEntity = canEntities.asSequence().filter { it.awardId == awardDto.id }.firstOrNull()
                     ?: throw ErrorException(CANS_NOT_FOUND)
-            canEntity.status = ContractStatus.ACTIVE.value
-            canEntity.statusDetails = ContractStatusDetails.EMPTY.value
-            canEntity.acId = contract.id
-            val can = convertEntityToCanDto(canEntity)
+            val can = toObject(Can::class.java, canEntity.jsonData)
+            can.status = ContractStatus.ACTIVE
+            can.statusDetails = ContractStatusDetails.EMPTY
             cans.add(can)
+            canEntity.status = can.status.value
+            canEntity.statusDetails = can.statusDetails.value
+            canEntity.acId = contract.id
+            canEntity.jsonData = toJson(can)
 
             val acEntity = convertContractToEntity(
                     cpId,
@@ -124,18 +130,6 @@ class CreateAcService(private val acDao: AcDao,
                 unit = itemDto.unit,
                 relatedLot = itemDto.relatedLot,
                 deliveryAddress = null
-        )
-    }
-
-    private fun convertEntityToCanDto(entity: CanEntity): Can {
-        return Can(contract = CanContract(
-                id = entity.canId.toString(),
-                date = entity.createdDate.toLocal(),
-                awardId = entity.awardId,
-                status = ContractStatus.fromValue(entity.status),
-                statusDetails = ContractStatusDetails.fromValue(entity.statusDetails),
-                documents = null,
-                amendment = null)
         )
     }
 

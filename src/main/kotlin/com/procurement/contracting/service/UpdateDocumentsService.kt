@@ -40,7 +40,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val can = toObject(Can::class.java, canEntity.jsonData)
 
 
-        val canDocuments = can.contract.documents?.toMutableList() ?: mutableListOf()
+        val canDocuments = can.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
             validateRelatedLotInRq(dto, contractProcess)
             val newDocuments: ArrayList<DocumentContract> = arrayListOf()
@@ -64,10 +64,9 @@ class UpdateDocumentsService(private val canDao: CanDao,
             }
         }
 
-        can.contract.apply {
+        can.apply {
             documents = canDocuments
         }
-
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
 
@@ -115,8 +114,6 @@ class UpdateDocumentsService(private val canDao: CanDao,
             }
         }
         return newDocuments
-
-
     }
 
     private fun isNewDocumentsInRq(documents: List<DocumentContract>?): Boolean {
