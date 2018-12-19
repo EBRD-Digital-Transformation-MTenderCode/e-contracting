@@ -78,7 +78,7 @@ class CanDao(private val session: Session) {
         private const val CAN_TABLE = "contracting_can"
         private const val CP_ID = "cp_id"
         private const val CAN_ID = "can_id"
-        private const val TOKEN = "token"
+        private const val TOKEN = "token_entity"
         private const val AC_ID = "ac_id"
         private const val AWARD_ID = "award_id"
         private const val OWNER = "owner"
