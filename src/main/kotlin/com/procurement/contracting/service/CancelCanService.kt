@@ -51,7 +51,7 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
-            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
+//            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             contractProcess.contract.status = ContractStatus.CANCELLED
             contractProcess.contract.statusDetails = ContractStatusDetails.EMPTY
             acEntity.status = contractProcess.contract.status.value
