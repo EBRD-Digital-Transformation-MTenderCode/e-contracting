@@ -23,6 +23,8 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
+
+        validateDocumentTypeInRequest(dto.documents)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
@@ -31,21 +33,21 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+                        || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
         val can = toObject(Can::class.java, canEntity.jsonData)
 
         val canDocuments = can.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
             validateRelatedLotInRq(dto, contractProcess)
-            val newDocuments: ArrayList<DocumentAmedment> = arrayListOf()
+            val newDocuments: ArrayList<DocumentContract> = arrayListOf()
             dto.documents.forEach {
-                newDocuments.add(DocumentAmedment(
-                    id = it.id,
-                    documentType =it.documentType,
-                    title = it.title,
-                    description = it.description,
-                    relatedLots = it.relatedLots
+                newDocuments.add(DocumentContract(
+                        id = it.id,
+                        documentType = it.documentType,
+                        title = it.title,
+                        description = it.description,
+                        relatedLots = it.relatedLots
                 ))
                 canDocuments.addAll(newDocuments)
             }
@@ -64,10 +66,10 @@ class UpdateDocumentsService(private val canDao: CanDao,
         canDao.save(canEntity)
 
         return ResponseDto(data = UpdateDocumentsRs(
-            contract = UpdateDocumentContract(
-                id = canId,
-                documents = canDocuments
-            )
+                contract = UpdateDocumentContract(
+                        id = canId,
+                        documents = canDocuments
+                )
         ))
     }
 
@@ -83,36 +85,44 @@ class UpdateDocumentsService(private val canDao: CanDao,
             throw ErrorException(DOCS_RELATED_LOTS)
     }
 
-    private fun newDocumentsInRq(dtoDocuments: List<DocumentAmedment>, canDocuments: List<DocumentAmedment>): List<DocumentAmedment>? {
-        val newDocuments: ArrayList<DocumentAmedment> = arrayListOf()
+    private fun newDocumentsInRq(dtoDocuments: List<UpdateDocument>, canDocuments: List<DocumentContract>): List<DocumentContract>? {
+        val newDocuments: ArrayList<DocumentContract> = arrayListOf()
         val canDocumentsIds: ArrayList<String> = arrayListOf()
         canDocuments.forEach {
             canDocumentsIds.add(it.id)
         }
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
-                newDocuments.add(DocumentAmedment(
-                    id = it.id,
-                    documentType =  it.documentType,
-                    title = it.title,
-                    description = it.description,
-                    relatedLots = it.relatedLots
+                newDocuments.add(DocumentContract(
+                        id = it.id,
+                        documentType = it.documentType,
+                        title = it.title,
+                        description = it.description,
+                        relatedLots = it.relatedLots
                 ))
             }
         }
         return newDocuments
     }
 
-    private fun isNewDocumentsInRq(documents: List<DocumentAmedment>?): Boolean {
+    private fun isNewDocumentsInRq(documents: List<DocumentContract>?): Boolean {
         if (documents != null && documents.isNotEmpty()) return true
         return false
     }
 
-    private fun DocumentAmedment.update(documentDto: DocumentAmedment?) {
+    private fun DocumentContract.update(documentDto: UpdateDocument?) {
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
         }
     }
+
+    private fun validateDocumentTypeInRequest(documents: List<UpdateDocument>){
+        documents.forEach{
+            if(it.documentType!=DocumentTypeContract.EVALUATION_REPORT) throw ErrorException(ErrorType.DOCUMENTS_IS_NOT_EVALUATION_REPORTS)
+
+        }
+    }
+
 }
 
