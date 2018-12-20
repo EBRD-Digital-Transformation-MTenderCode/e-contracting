@@ -19,7 +19,7 @@ data class Can @JsonCreator constructor(
 
         var statusDetails: ContractStatusDetails,
 
-        var documents: List<DocumentContract>?,
+        var documents: List<DocumentAmedment>?,
 
         var amendment: Amendment?
 )

@@ -38,11 +38,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canDocuments = can.documents?.toMutableList() ?: mutableListOf()
         if (canDocuments.isEmpty()) {
             validateRelatedLotInRq(dto, contractProcess)
-            val newDocuments: ArrayList<DocumentContract> = arrayListOf()
+            val newDocuments: ArrayList<DocumentAmedment> = arrayListOf()
             dto.documents.forEach {
-                newDocuments.add(DocumentContract(
+                newDocuments.add(DocumentAmedment(
                     id = it.id,
-                    documentType = DocumentTypeContract.valueOf(it.documentType.value),
+                    documentType =it.documentType,
                     title = it.title,
                     description = it.description,
                     relatedLots = it.relatedLots
@@ -83,17 +83,17 @@ class UpdateDocumentsService(private val canDao: CanDao,
             throw ErrorException(DOCS_RELATED_LOTS)
     }
 
-    private fun newDocumentsInRq(dtoDocuments: List<UpdateDocument>, canDocuments: List<DocumentContract>): List<DocumentContract>? {
-        val newDocuments: ArrayList<DocumentContract> = arrayListOf()
+    private fun newDocumentsInRq(dtoDocuments: List<DocumentAmedment>, canDocuments: List<DocumentAmedment>): List<DocumentAmedment>? {
+        val newDocuments: ArrayList<DocumentAmedment> = arrayListOf()
         val canDocumentsIds: ArrayList<String> = arrayListOf()
         canDocuments.forEach {
             canDocumentsIds.add(it.id)
         }
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
-                newDocuments.add(DocumentContract(
+                newDocuments.add(DocumentAmedment(
                     id = it.id,
-                    documentType =  DocumentTypeContract.valueOf(it.documentType.value),
+                    documentType =  it.documentType,
                     title = it.title,
                     description = it.description,
                     relatedLots = it.relatedLots
@@ -103,12 +103,12 @@ class UpdateDocumentsService(private val canDao: CanDao,
         return newDocuments
     }
 
-    private fun isNewDocumentsInRq(documents: List<DocumentContract>?): Boolean {
+    private fun isNewDocumentsInRq(documents: List<DocumentAmedment>?): Boolean {
         if (documents != null && documents.isNotEmpty()) return true
         return false
     }
 
-    private fun DocumentContract.update(documentDto: UpdateDocument?) {
+    private fun DocumentAmedment.update(documentDto: DocumentAmedment?) {
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
