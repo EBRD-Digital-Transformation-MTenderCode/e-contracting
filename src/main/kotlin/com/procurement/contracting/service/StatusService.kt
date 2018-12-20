@@ -47,6 +47,4 @@ class StatusService(private val acDao: AcDao) {
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBid))
     }
-
-
 }
