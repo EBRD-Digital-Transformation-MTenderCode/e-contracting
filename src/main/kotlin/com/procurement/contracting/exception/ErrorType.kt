@@ -65,5 +65,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     MILESTONE("00.59", "Milestone not found."),
     MILESTONE_RELATED_PARTY("00.60", "Invalid milestone related party."),
     CAN_STATUS("00.61", "Invalid can status."),
-    DOCUMENTS_IS_NOT_EVALUATION_REPORTS("00.61","DocumentsType must be evaluationReports"),;
+    DOCUMENTS_IS_NOT_EVALUATION_REPORTS("00.61","DocumentsType must be evaluationReports"),
+    DOCUMENTS_TYPE_CANCEL_CAN("00.62","Invalid documents type in request");
 }
