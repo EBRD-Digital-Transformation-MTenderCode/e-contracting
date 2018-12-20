@@ -20,7 +20,6 @@ class CanDao(private val session: Session) {
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
                         .value(AWARD_ID, entity.awardId)
-                        .value(LOT_ID, entity.lotId)
                         .value(AC_ID, entity.acId)
                         .value(STATUS, entity.status)
                         .value(STATUS_DETAILS, entity.statusDetails)
@@ -44,7 +43,6 @@ class CanDao(private val session: Session) {
                             owner = row.getString(OWNER),
                             createdDate = row.getTimestamp(CREATED_DATE),
                             awardId = row.getString(AWARD_ID),
-                            lotId = row.getString(LOT_ID),
                             acId = row.getString(AC_ID),
                             status = row.getString(STATUS),
                             statusDetails = row.getString(STATUS_DETAILS),
@@ -70,7 +68,6 @@ class CanDao(private val session: Session) {
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
                     awardId = row.getString(AWARD_ID),
-                    lotId = row.getString(LOT_ID),
                     acId = row.getString(AC_ID),
                     status = row.getString(STATUS),
                     statusDetails = row.getString(STATUS_DETAILS),
@@ -85,7 +82,6 @@ class CanDao(private val session: Session) {
         private const val TOKEN = "token_entity"
         private const val AC_ID = "ac_id"
         private const val AWARD_ID = "award_id"
-        private const val LOT_ID = "lot_id"
         private const val OWNER = "owner"
         private const val CREATED_DATE = "created_date"
         private const val STATUS = "status"

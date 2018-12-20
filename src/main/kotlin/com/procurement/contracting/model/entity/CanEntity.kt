@@ -16,8 +16,6 @@ data class CanEntity(
 
         val awardId: String,
 
-        val lotId: String,
-
         var acId: String?,
 
         var status: String,

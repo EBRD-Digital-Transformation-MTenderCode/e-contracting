@@ -43,7 +43,6 @@ data class Context @JsonCreator constructor(
 
 enum class CommandType(private val value: String) {
 
-    CHECK_CAN("checkCan"),
     CREATE_CAN("createCAN"),
     CREATE_AC("createAC"),
     UPDATE_AC("updateAC"),

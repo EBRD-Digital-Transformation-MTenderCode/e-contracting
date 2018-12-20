@@ -11,9 +11,7 @@ data class CanCreate @JsonCreator constructor(
 
 data class AwardCanCreate @JsonCreator constructor(
 
-        val id: String,
-
-        val relatedLots: List<String>
+        val id: String
 )
 
 
