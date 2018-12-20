@@ -5,16 +5,10 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.CancelCanContractRs
-import com.procurement.contracting.model.dto.CancelCanRq
-import com.procurement.contracting.model.dto.CancelCanRs
-import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -30,6 +24,7 @@ class CancelCanService(private val canDao: CanDao,
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(CancelCanRq::class.java, cm.data)
+
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         if (canEntity.owner != owner) throw ErrorException(OWNER)
@@ -78,5 +73,6 @@ class CancelCanService(private val canDao: CanDao,
                     statusDetails = contract.statusDetails)
         } else null
     }
+
 }
 

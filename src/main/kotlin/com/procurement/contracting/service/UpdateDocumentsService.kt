@@ -8,15 +8,11 @@ import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Service
 class UpdateDocumentsService(private val canDao: CanDao,
@@ -27,10 +23,13 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
+
+        validateDocumentTypeInRequest(dto.documents)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
+
 
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
@@ -115,6 +114,13 @@ class UpdateDocumentsService(private val canDao: CanDao,
         if (documentDto != null) {
             this.title = documentDto.title
             this.description = documentDto.description
+        }
+    }
+
+    private fun validateDocumentTypeInRequest(documents: List<UpdateDocument>){
+        documents.forEach{
+            if(it.documentType!=DocumentTypeContract.EVALUATION_REPORT) throw ErrorException(ErrorType.DOCUMENTS_IS_NOT_EVALUATION_REPORTS)
+
         }
     }
 
