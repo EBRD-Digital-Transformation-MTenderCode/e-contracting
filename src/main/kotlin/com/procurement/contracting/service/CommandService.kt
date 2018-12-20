@@ -30,7 +30,7 @@ class CommandService(private val historyDao: HistoryDao,
         }
         val response = when (cm.command) {
             CommandType.CHECK_CAN -> canService.checkCan(cm)
-            CommandType.CREATE_CAN -> canService.createCAN(cm)
+            CommandType.CREATE_CAN -> canService.createCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
