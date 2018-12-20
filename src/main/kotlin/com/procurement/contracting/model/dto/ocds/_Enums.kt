@@ -184,7 +184,8 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     CONTRACT_SUMMARY("contractSummary"),
     CONFLICT_OF_INTEREST("conflictOfInterest"),
     CANCELLATION_DETAILS("cancellationDetails"),
-    BUYERS_RESPONSE_ADD("buyersResponseAdd");
+    BUYERS_RESPONSE_ADD("buyersResponseAdd"),
+    EVALUATION_REPORT("evaluationReports");
 
     override fun toString(): String {
         return this.value

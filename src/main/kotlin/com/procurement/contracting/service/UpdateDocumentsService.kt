@@ -8,15 +8,11 @@ import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Service
 class UpdateDocumentsService(private val canDao: CanDao,
@@ -32,9 +28,10 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
+
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                        || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+                || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
         val can = toObject(Can::class.java, canEntity.jsonData)
 
@@ -44,11 +41,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
             val newDocuments: ArrayList<DocumentContract> = arrayListOf()
             dto.documents.forEach {
                 newDocuments.add(DocumentContract(
-                        id = it.id,
-                        documentType = it.documentType,
-                        title = it.title,
-                        description = it.description,
-                        relatedLots = it.relatedLots
+                    id = it.id,
+                    documentType = DocumentTypeContract.valueOf(it.documentType.value),
+                    title = it.title,
+                    description = it.description,
+                    relatedLots = it.relatedLots
                 ))
                 canDocuments.addAll(newDocuments)
             }
@@ -67,10 +64,10 @@ class UpdateDocumentsService(private val canDao: CanDao,
         canDao.save(canEntity)
 
         return ResponseDto(data = UpdateDocumentsRs(
-                contract = UpdateDocumentContract(
-                        id = canId,
-                        documents = canDocuments
-                )
+            contract = UpdateDocumentContract(
+                id = canId,
+                documents = canDocuments
+            )
         ))
     }
 
@@ -95,11 +92,11 @@ class UpdateDocumentsService(private val canDao: CanDao,
         dtoDocuments.forEach {
             if (!canDocumentsIds.contains(it.id)) {
                 newDocuments.add(DocumentContract(
-                        id = it.id,
-                        documentType = it.documentType,
-                        title = it.title,
-                        description = it.description,
-                        relatedLots = it.relatedLots
+                    id = it.id,
+                    documentType =  DocumentTypeContract.valueOf(it.documentType.value),
+                    title = it.title,
+                    description = it.description,
+                    relatedLots = it.relatedLots
                 ))
             }
         }
@@ -117,6 +114,5 @@ class UpdateDocumentsService(private val canDao: CanDao,
             this.description = documentDto.description
         }
     }
-
 }
 
