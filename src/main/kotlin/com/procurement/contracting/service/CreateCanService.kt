@@ -47,7 +47,7 @@ class CreateCanService(private val canDao: CanDao,
 
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.asSequence().any { it.lotId == lotId && it.status != ContractStatus.CANCELLED.value }) {
-            throw ErrorException(ErrorType.CAN_STATUS)
+            throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
         }
         return ResponseDto(data = "ok")
     }
