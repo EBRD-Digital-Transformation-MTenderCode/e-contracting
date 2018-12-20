@@ -29,6 +29,7 @@ class CommandService(private val historyDao: HistoryDao,
             return toObject(ResponseDto::class.java, historyEntity.jsonData)
         }
         val response = when (cm.command) {
+            CommandType.CHECK_CAN -> canService.checkCan(cm)
             CommandType.CREATE_CAN -> canService.createCAN(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
@@ -44,7 +45,6 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.ACTIVATION_AC -> acService.activateAc(cm)
             CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
             CommandType.CANCEL_CAN -> cancelService.cancelCan(cm)
-            CommandType.CHECK_CAN -> statusService.checkCan(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
