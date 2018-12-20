@@ -25,7 +25,6 @@ class CancelCanService(private val canDao: CanDao,
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(CancelCanRq::class.java, cm.data)
 
-        validateDocumentTypeInRequest(dto.contract.amendment.documents)
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         if (canEntity.owner != owner) throw ErrorException(OWNER)
@@ -74,21 +73,6 @@ class CancelCanService(private val canDao: CanDao,
                     statusDetails = contract.statusDetails)
         } else null
     }
-    private fun validateDocumentTypeInRequest(documents: List<DocumentAmendment>){
-        documents.forEach{
-            if(!(it.documentType == DocumentTypeAmendment.CONTRACT_NOTICE
-                    ||it.documentType == DocumentTypeAmendment.CONTRACT_ARRANGEMENTS
-                    ||it.documentType == DocumentTypeAmendment.CONTRACT_SCHEDULE
-                    ||it.documentType == DocumentTypeAmendment.CONTRACT_ANNEXE
-                    ||it.documentType == DocumentTypeAmendment.CONTRACT_GUARANTEES
-                    ||it.documentType == DocumentTypeAmendment.SUB_CONTRACT
-                    ||it.documentType == DocumentTypeAmendment.ILLUSTRATION
-                    ||it.documentType == DocumentTypeAmendment.CONTRACT_SUMMARY
-                    ||it.documentType == DocumentTypeAmendment.CANCELLATION_DETAILS
-                    ||it.documentType == DocumentTypeAmendment.CONFLICT_OF_INTEREST
-                    )) throw ErrorException(ErrorType.DOCUMENTS_TYPE_CANCEL_CAN)
 
-        }
-    }
 }
 

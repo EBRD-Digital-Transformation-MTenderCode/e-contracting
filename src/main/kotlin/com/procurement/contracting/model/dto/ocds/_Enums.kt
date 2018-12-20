@@ -169,8 +169,7 @@ enum class DocumentTypeAmendment(@JsonValue val value: String) {
     ILLUSTRATION("illustration"),
     CONTRACT_SUMMARY("contractSummary"),
     CANCELLATION_DETAILS("cancellationDetails"),
-    CONFLICT_OF_INTEREST("conflictOfInterest"),
-    EVALUATION_REPORT("evaluationReports");
+    CONFLICT_OF_INTEREST("conflictOfInterest");
 
     override fun toString(): String {
         return this.value
@@ -179,21 +178,6 @@ enum class DocumentTypeAmendment(@JsonValue val value: String) {
 
 enum class DocumentTypeContract(@JsonValue val value: String) {
 
-    CONTRACT_NOTICE("contractNotice"),
-    COMPLETION_CERTIFICATE("completionCertificate"),
-    CONTRACT_DRAFT("contractDraft"),
-    CONTRACT_ARRANGEMENTS("contractArrangements"),
-    CONTRACT_SCHEDULE("contractSchedule"),
-    ENVIRONMENTAL_IMPACT("environmentalImpact"),
-    CONTRACT_ANNEXE("contractAnnexe"),
-    CONTRACT_GUARANTEES("contractGuarantees"),
-    SUB_CONTRACT("subContract"),
-    ILLUSTRATION("illustration"),
-    CONTRACT_SIGNED("contractSigned"),
-    CONTRACT_SUMMARY("contractSummary"),
-    CONFLICT_OF_INTEREST("conflictOfInterest"),
-    CANCELLATION_DETAILS("cancellationDetails"),
-    BUYERS_RESPONSE_ADD("buyersResponseAdd"),
     EVALUATION_REPORT("evaluationReports");
 
     override fun toString(): String {
