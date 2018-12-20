@@ -16,6 +16,7 @@ class CanDao(private val session: Session) {
                 insertInto(CAN_TABLE)
                         .value(CP_ID, entity.cpId)
                         .value(CAN_ID, entity.canId)
+                        .value(TOKEN, entity.token)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
                         .value(AWARD_ID, entity.awardId)
