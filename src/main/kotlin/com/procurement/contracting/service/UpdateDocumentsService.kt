@@ -24,6 +24,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
+        validateDocumentTypeInRequest(dto.documents)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
@@ -116,6 +117,12 @@ class UpdateDocumentsService(private val canDao: CanDao,
         }
     }
 
+    private fun validateDocumentTypeInRequest(documents: List<UpdateDocument>){
+        documents.forEach{
+            if(it.documentType!=DocumentTypeContract.EVALUATION_REPORT) throw ErrorException(ErrorType.DOCUMENTS_IS_NOT_EVALUATION_REPORTS)
+
+        }
+    }
 
 }
 
