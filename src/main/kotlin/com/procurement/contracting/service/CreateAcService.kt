@@ -12,6 +12,7 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
 import com.procurement.contracting.model.entity.AcEntity
+import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
@@ -44,6 +45,7 @@ class CreateAcService(private val acDao: AcDao,
         }
 
         val canEntities = canDao.findAllByCpId(cpId)
+        val updatedCanEntities = ArrayList<CanEntity>()
         val acId = generationService.newOcId(cpId)
         val cans = ArrayList<Can>()
         //BR-9.1.3
@@ -60,10 +62,11 @@ class CreateAcService(private val acDao: AcDao,
                 canEntity.statusDetails = can.statusDetails.value
                 canEntity.acId = acId
                 canEntity.jsonData = toJson(can)
-                canDao.save(canEntity)
+                updatedCanEntities.add(canEntity)
                 cans.add(can)
             }
         }
+        updatedCanEntities.asSequence().forEach{canDao.save(it)}
 
         val awardId = generationService.generateRandomUUID().toString()
         val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
