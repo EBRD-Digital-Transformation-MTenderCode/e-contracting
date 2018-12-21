@@ -4,8 +4,12 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.DOCS_RELATED_LOTS
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.UpdateDocumentContract
+import com.procurement.contracting.model.dto.UpdateDocumentsRq
+import com.procurement.contracting.model.dto.UpdateDocumentsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.*
@@ -21,59 +25,59 @@ class UpdateDocumentsService(private val canDao: CanDao,
     fun updateCanDocs(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
-
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
+        validateDocumentType(dto.documents)
 
-        validateDocumentTypeInRequest(dto.documents)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
-        val canAcOcId = canEntity.acId ?: throw ErrorException(CAN_AC_ID_NOT_FOUND)
-        val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
-        val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
-
-
-        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
-        if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                        || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
-
         val can = toObject(Can::class.java, canEntity.jsonData)
+        if (can.status != ContractStatus.ACTIVE && can.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CAN_STATUS)
 
-        val canDocuments = can.documents?.toMutableList() ?: mutableListOf()
-        if (canDocuments.isEmpty()) {
-            validateRelatedLotInRq(dto, contractProcess)
-            val newDocuments: ArrayList<DocumentContract> = arrayListOf()
-            dto.documents.forEach {
-                newDocuments.add(DocumentContract(
-                        id = it.id,
-                        documentType = it.documentType,
-                        title = it.title,
-                        description = it.description,
-                        relatedLots = it.relatedLots
-                ))
-                canDocuments.addAll(newDocuments)
-            }
-        } else {
-            val newDocs = newDocumentsInRq(dtoDocuments = dto.documents, canDocuments = canDocuments)
-            canDocuments.forEach { docDb -> docDb.update(dto.documents.firstOrNull { it.id == docDb.id }) }
-            if (isNewDocumentsInRq(newDocs)) {
-                validateRelatedLotInRq(dto, contractProcess)
-                canDocuments.addAll(newDocs!!)
-            }
+        if (canEntity.acId != null) {
+            val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
+            val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
+            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
+            if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
+                            || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+            validateDocsRelatedLot(dto, contractProcess)
         }
-        can.apply {
-            documents = canDocuments
-        }
+        can.documents = updateCanDocuments(dto, can)
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
-
-        return ResponseDto(data = UpdateDocumentsRs(
-                contract = UpdateDocumentContract(
-                        id = canId,
-                        documents = canDocuments
-                )
-        ))
+        return ResponseDto(
+                data = UpdateDocumentsRs(
+                        contract = UpdateDocumentContract(
+                                id = canId,
+                                documents = can.documents!!
+                        )
+                ))
     }
 
-    private fun validateRelatedLotInRq(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
+    private fun updateCanDocuments(dto: UpdateDocumentsRq, can: Can): List<DocumentContract>? {
+        val documentsDb = can.documents
+        val documentsDto = dto.documents
+        //validation
+        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        if (documentDtoIds.size != documentsDto.size) throw ErrorException(ErrorType.DOCUMENTS)
+        //update
+        return if (documentsDb != null) {
+            val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+            documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
+            val newDocumentsId = documentDtoIds - documentsDbIds
+            val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+            (documentsDb + newDocuments)
+        } else {
+            documentsDto
+        }
+    }
+
+    private fun DocumentContract.update(documentDto: DocumentContract?) {
+        if (documentDto != null) {
+            this.title = documentDto.title ?: this.title
+            this.description = documentDto.description ?: this.description
+        }
+    }
+
+    private fun validateDocsRelatedLot(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
         val relatedLots: MutableList<String> = mutableListOf()
         dto.documents.forEach {
             val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
@@ -85,41 +89,9 @@ class UpdateDocumentsService(private val canDao: CanDao,
             throw ErrorException(DOCS_RELATED_LOTS)
     }
 
-    private fun newDocumentsInRq(dtoDocuments: List<UpdateDocument>, canDocuments: List<DocumentContract>): List<DocumentContract>? {
-        val newDocuments: ArrayList<DocumentContract> = arrayListOf()
-        val canDocumentsIds: ArrayList<String> = arrayListOf()
-        canDocuments.forEach {
-            canDocumentsIds.add(it.id)
-        }
-        dtoDocuments.forEach {
-            if (!canDocumentsIds.contains(it.id)) {
-                newDocuments.add(DocumentContract(
-                        id = it.id,
-                        documentType = it.documentType,
-                        title = it.title,
-                        description = it.description,
-                        relatedLots = it.relatedLots
-                ))
-            }
-        }
-        return newDocuments
-    }
-
-    private fun isNewDocumentsInRq(documents: List<DocumentContract>?): Boolean {
-        if (documents != null && documents.isNotEmpty()) return true
-        return false
-    }
-
-    private fun DocumentContract.update(documentDto: UpdateDocument?) {
-        if (documentDto != null) {
-            this.title = documentDto.title
-            this.description = documentDto.description
-        }
-    }
-
-    private fun validateDocumentTypeInRequest(documents: List<UpdateDocument>){
-        documents.forEach{
-            if(it.documentType!=DocumentTypeContract.EVALUATION_REPORT) throw ErrorException(ErrorType.DOCUMENTS_IS_NOT_EVALUATION_REPORTS)
+    private fun validateDocumentType(documents: List<DocumentContract>) {
+        documents.forEach {
+            if (it.documentType != DocumentTypeContract.EVALUATION_REPORT) throw ErrorException(ErrorType.DOCUMENTS_IS_NOT_EVALUATION_REPORTS)
 
         }
     }
