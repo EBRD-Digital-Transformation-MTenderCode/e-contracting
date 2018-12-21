@@ -6,7 +6,7 @@ import com.procurement.contracting.model.dto.ocds.Can
 
 data class CanCreate @JsonCreator constructor(
 
-        val awards: List<AwardCanCreate>
+        val award: AwardCanCreate
 )
 
 data class AwardCanCreate @JsonCreator constructor(
@@ -18,5 +18,5 @@ data class AwardCanCreate @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CreateCanRs(
 
-        val cans: List<Can>?
+        val can: Can
 )

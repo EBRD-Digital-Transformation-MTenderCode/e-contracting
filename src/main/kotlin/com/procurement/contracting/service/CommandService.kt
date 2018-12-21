@@ -29,7 +29,8 @@ class CommandService(private val historyDao: HistoryDao,
             return toObject(ResponseDto::class.java, historyEntity.jsonData)
         }
         val response = when (cm.command) {
-            CommandType.CREATE_CAN -> canService.createCAN(cm)
+            CommandType.CHECK_CAN -> canService.checkCan(cm)
+            CommandType.CREATE_CAN -> canService.createCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()

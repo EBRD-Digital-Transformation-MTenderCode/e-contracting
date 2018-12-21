@@ -24,29 +24,36 @@ import java.util.*
 class CreateCanService(private val canDao: CanDao,
                        private val generationService: GenerationService) {
 
-    fun createCAN(cm: CommandMessage): ResponseDto {
+    fun createCan(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CanCreate::class.java, cm.data)
 
-        if (dto.awards.isEmpty()) return ResponseDto(data = CreateCanRs(listOf()))
-        val cans = dto.awards.asSequence()
-                .map { createCan(it.id, dateTime) }
-                .toList()
-        val canEntities = cans.asSequence()
-                .map { createCanEntity(cpId, owner, dateTime, it) }
-                .toList()
-        canEntities.asSequence().forEach { canDao.save(it) }
-        return ResponseDto(data = CreateCanRs(cans))
+        val can = createCan(dto.award.id, dto.award.relatedLots[0], dateTime)
+        val canEntity = createCanEntity(cpId, owner, dateTime, can)
+        canDao.save(canEntity)
+        return ResponseDto(data = CreateCanRs(can))
     }
 
-    private fun createCan(awardId: String, dateTime: LocalDateTime): Can {
+    fun checkCan(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
+
+        val canEntities = canDao.findAllByCpId(cpId)
+        if (canEntities.asSequence().any { it.lotId == lotId && it.status != ContractStatus.CANCELLED.value }) {
+            throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
+        }
+        return ResponseDto(data = "ok")
+    }
+
+    private fun createCan(awardId: String, lotId: String, dateTime: LocalDateTime): Can {
         return Can(
                 id = generationService.generateRandomUUID().toString(),
                 token = generationService.generateRandomUUID().toString(),
                 date = dateTime,
                 awardId = awardId,
+                lotId = lotId,
                 status = ContractStatus.PENDING,
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
                 documents = null,
@@ -62,6 +69,7 @@ class CreateCanService(private val canDao: CanDao,
                 canId = UUID.fromString(can.id),
                 token = UUID.fromString(can.token),
                 awardId = can.awardId,
+                lotId = can.lotId,
                 acId = null,
                 owner = owner,
                 status = can.status.value,
