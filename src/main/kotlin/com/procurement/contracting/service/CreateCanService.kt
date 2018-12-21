@@ -30,7 +30,7 @@ class CreateCanService(private val canDao: CanDao,
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CanCreate::class.java, cm.data)
 
-        val can = createCan(dto.award.id, dto.award.relatedLots[0], dateTime)
+        val can = createCan(dto.award.id, dto.award.relatedLot, dateTime)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
         return ResponseDto(data = CreateCanRs(can))

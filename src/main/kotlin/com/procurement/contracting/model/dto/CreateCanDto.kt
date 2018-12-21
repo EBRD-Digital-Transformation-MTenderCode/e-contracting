@@ -13,7 +13,7 @@ data class AwardCanCreate @JsonCreator constructor(
 
         val id: String,
 
-        val relatedLots: List<String>
+        val relatedLot: String
 )
 
 
