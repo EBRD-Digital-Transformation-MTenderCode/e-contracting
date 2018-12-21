@@ -21,7 +21,7 @@ data class Award @JsonCreator constructor(
 
         var value: ValueTax,
 
-        var items: List<Item>,
+        var items: HashSet<Item>,
 
         var documents: List<DocumentAward>?,
 
