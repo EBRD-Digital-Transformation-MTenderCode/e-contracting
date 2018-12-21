@@ -21,7 +21,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
     fun updateCanDocs(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
-
+        val token = cm.context.token ?: throw ErrorException(ErrorType.CONTEXT)
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
         validateDocumentTypeInRequest(dto.documents)
@@ -30,7 +30,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
         val acEntity = acDao.getByCpIdAndAcId(cpId, canAcOcId)
         val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
-
+        if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
         if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
                         || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
