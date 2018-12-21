@@ -19,6 +19,8 @@ data class Award @JsonCreator constructor(
 
         val relatedAwards: List<String>,
 
+        val relatedBid: String?,
+
         var value: ValueTax,
 
         var items: HashSet<Item>,
