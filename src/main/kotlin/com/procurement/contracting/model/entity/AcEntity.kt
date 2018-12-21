@@ -14,8 +14,6 @@ data class AcEntity(
 
         val createdDate: Date,
 
-        val canId: String,
-
         var status: String,
 
         var statusDetails: String,

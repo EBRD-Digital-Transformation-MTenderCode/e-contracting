@@ -8,20 +8,20 @@ import java.util.*
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
 
-        var planning: Planning?,
+        var planning: Planning? = null,
 
         val contract: Contract,
 
         val award: Award,
 
-        var buyer: OrganizationReferenceBuyer?,
+        var buyer: OrganizationReferenceBuyer? = null,
 
-        var funders: HashSet<OrganizationReference>?,
+        var funders: HashSet<OrganizationReference>? = null,
 
-        var payers: HashSet<OrganizationReference>?,
+        var payers: HashSet<OrganizationReference>? = null,
 
-        var treasuryBudgetSources: List<TreasuryBudgetSource>?,
+        var treasuryBudgetSources: List<TreasuryBudgetSource>? = null,
 
-        var treasuryData: TreasuryData?
+        var treasuryData: TreasuryData? = null
 
 )
