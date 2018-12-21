@@ -4,7 +4,7 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
-import com.procurement.contracting.model.dto.CanCreate
+import com.procurement.contracting.model.dto.AwardDto
 import com.procurement.contracting.model.dto.CreateCanRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
@@ -29,9 +29,9 @@ class CreateCanService(private val canDao: CanDao,
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
-        val dto = toObject(CanCreate::class.java, cm.data)
+        val dto = toObject(AwardDto::class.java, cm.data)
 
-        val can = createCan(dto.award.id, lotId, dateTime)
+        val can = createCan(dto.awardId, lotId, dateTime)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
         return ResponseDto(data = CreateCanRs(can))
@@ -44,6 +44,18 @@ class CreateCanService(private val canDao: CanDao,
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.asSequence().any { it.lotId == lotId && it.status != ContractStatus.CANCELLED.value }) {
             throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
+        }
+        return ResponseDto(data = "ok")
+    }
+
+    fun checkCanByAwardId(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val dto = toObject(AwardDto::class.java, cm.data)
+        val canEntities = canDao.findAllByCpId(cpId)
+        if (canEntities.asSequence().none { it.awardId == dto.awardId
+                        && it.status == ContractStatus.PENDING.value
+                        && it.statusDetails == ContractStatusDetails.ACTIVE.value}) {
+            throw ErrorException(ErrorType.CAN_STATUS)
         }
         return ResponseDto(data = "ok")
     }
