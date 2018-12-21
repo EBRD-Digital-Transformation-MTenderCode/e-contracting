@@ -19,11 +19,11 @@ data class Award @JsonCreator constructor(
 
         val relatedAwards: List<String>,
 
-        val relatedBid: String?,
+        val relatedBid: String? = null,
 
         var value: ValueTax,
 
-        var items: HashSet<Item>,
+        var items: List<Item>,
 
         var documents: List<DocumentAward>?,
 

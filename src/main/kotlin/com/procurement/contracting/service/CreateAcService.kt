@@ -95,7 +95,7 @@ class CreateAcService(private val acDao: AcDao,
                 value = ValueTax(
                         amount = amountSum,
                         currency = dto.awards[0].value.currency),
-                items = dto.contractedTender.items,
+                items = dto.contractedTender.items.toList(),
                 documents = awardDocuments,
                 suppliers = dto.awards[0].suppliers)
 
