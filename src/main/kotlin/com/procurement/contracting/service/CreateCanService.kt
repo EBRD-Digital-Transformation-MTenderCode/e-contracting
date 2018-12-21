@@ -31,7 +31,16 @@ class CreateCanService(private val canDao: CanDao,
         val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(AwardDto::class.java, cm.data)
 
-        val can = createCan(dto.awardId, lotId, dateTime)
+        val can = Can(
+                id = generationService.generateRandomUUID().toString(),
+                token = generationService.generateRandomUUID().toString(),
+                date = dateTime,
+                awardId = dto.awardId,
+                lotId = lotId,
+                status = ContractStatus.PENDING,
+                statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
+                documents = null,
+                amendment = null)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
         return ResponseDto(data = CreateCanRs(can))
@@ -58,19 +67,6 @@ class CreateCanService(private val canDao: CanDao,
             throw ErrorException(ErrorType.CAN_STATUS)
         }
         return ResponseDto(data = "ok")
-    }
-
-    private fun createCan(awardId: String, lotId: String, dateTime: LocalDateTime): Can {
-        return Can(
-                id = generationService.generateRandomUUID().toString(),
-                token = generationService.generateRandomUUID().toString(),
-                date = dateTime,
-                awardId = awardId,
-                lotId = lotId,
-                status = ContractStatus.PENDING,
-                statusDetails = ContractStatusDetails.CONTRACT_PROJECT,
-                documents = null,
-                amendment = null)
     }
 
     private fun createCanEntity(cpId: String,
