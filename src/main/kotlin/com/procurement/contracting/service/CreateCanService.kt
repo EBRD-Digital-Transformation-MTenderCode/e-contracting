@@ -4,8 +4,7 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
-import com.procurement.contracting.model.dto.AwardDto
-import com.procurement.contracting.model.dto.CreateCanRs
+import com.procurement.contracting.model.dto.*
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
@@ -69,6 +68,19 @@ class CreateCanService(private val canDao: CanDao,
         return ResponseDto(data = "ok")
     }
 
+    fun getAwards(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val dto = toObject(GetAwardsRq::class.java, cm.data)
+
+        val canEntities = canDao.findAllByCpId(cpId)
+        val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
+        val cans = canEntities.asSequence()
+                .filter { canIdsSet.contains(it.canId.toString()) }
+                .map { CanGetAwards(id = it.canId.toString(), awardId = it.awardId) }
+                .toList()
+        return ResponseDto(data = GetAwardsRs(cans))
+    }
+
     private fun createCanEntity(cpId: String,
                                 owner: String,
                                 dateTime: LocalDateTime,
@@ -87,4 +99,6 @@ class CreateCanService(private val canDao: CanDao,
                 jsonData = toJson(can)
         )
     }
+
+
 }

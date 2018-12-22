@@ -18,7 +18,6 @@ class AcDao(private val session: Session) {
                         .value(TOKEN, entity.token)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
-                        .value(CAN_ID, entity.canId)
                         .value(STATUS, entity.status)
                         .value(STATUS_DETAILS, entity.statusDetails)
                         .value(MPC, entity.mainProcurementCategory)
@@ -42,7 +41,6 @@ class AcDao(private val session: Session) {
                     token = row.getUUID(TOKEN),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
-                    canId = row.getString(CAN_ID),
                     status = row.getString(STATUS),
                     statusDetails = row.getString(STATUS_DETAILS),
                     mainProcurementCategory = row.getString(MPC),
@@ -65,7 +63,6 @@ class AcDao(private val session: Session) {
                     token = row.getUUID(TOKEN),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
-                    canId = row.getString(CAN_ID),
                     status = row.getString(STATUS),
                     statusDetails = row.getString(STATUS_DETAILS),
                     mainProcurementCategory = row.getString(MPC),
@@ -81,7 +78,6 @@ class AcDao(private val session: Session) {
         private const val CONTRACT_TABLE = "contracting_ac"
         private const val CP_ID = "cp_id"
         private const val AC_ID = "ac_id"
-        private const val CAN_ID = "can_id"
         private const val TOKEN = "token_entity"
         private const val OWNER = "owner"
         private const val CREATED_DATE = "created_date"

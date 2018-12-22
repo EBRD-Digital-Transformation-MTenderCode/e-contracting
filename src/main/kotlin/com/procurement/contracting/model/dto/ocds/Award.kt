@@ -11,13 +11,15 @@ data class Award @JsonCreator constructor(
 
         var date: LocalDateTime,
 
-        var description: String?,
+        var description: String? = null,
 
         var title: String? = null,
 
         val relatedLots: List<String>,
 
-        val relatedBid: String,
+        val relatedAwards: List<String>,
+
+        val relatedBid: String? = null,
 
         var value: ValueTax,
 

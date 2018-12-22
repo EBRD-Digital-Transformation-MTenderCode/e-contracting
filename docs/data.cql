@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS  ocds.contracting_ac (
     cp_id text,
     ac_id text,
     token_entity UUID,
-    can_id text,
     owner text,
     created_date timestamp,
     status text,

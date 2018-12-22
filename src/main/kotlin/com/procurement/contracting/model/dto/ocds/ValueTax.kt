@@ -15,7 +15,7 @@ data class ValueTax @JsonCreator constructor(
         val currency: String?,
 
         @JsonDeserialize(using = MoneyDeserializer::class)
-        val amountNet: BigDecimal?,
+        val amountNet: BigDecimal? = null,
 
-        val valueAddedTaxIncluded: Boolean?
+        val valueAddedTaxIncluded: Boolean? = null
 )

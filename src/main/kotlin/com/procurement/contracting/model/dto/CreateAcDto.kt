@@ -2,74 +2,36 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
-import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import com.procurement.contracting.model.dto.ocds.*
-import com.procurement.contracting.model.dto.ocds.Unit
-import java.math.BigDecimal
-import java.time.LocalDateTime
+
 
 data class CreateAcRq @JsonCreator constructor(
 
-        val activeAwards: List<AwardCreate>
+        val contracts: List<ContractCreateAc>,
+
+        val awards: List<Award>,
+
+        val contractedTender: GetDataForAcTender
 )
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class AwardCreate @JsonCreator constructor(
+data class ContractCreateAc @JsonCreator constructor(
 
-        val id: String,
-
-        var date: LocalDateTime,
-
-        var description: String?,
-
-        val relatedLots: List<String>,
-
-        val relatedBid: String,
-
-        var value: ValueCreate,
-
-        var items: List<ItemCreate>,
-
-        var documents: List<DocumentAward>?,
-
-        var suppliers: List<OrganizationReferenceSupplier>
+        var id: String
 )
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class ValueCreate @JsonCreator constructor(
+data class GetDataForAcTender @JsonCreator constructor(
 
-        @JsonDeserialize(using = MoneyDeserializer::class)
-        val amount: BigDecimal,
+        val mainProcurementCategory: MainProcurementCategory,
 
-        val currency: String
+        var items: HashSet<Item>
 )
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class ItemCreate @JsonCreator constructor(
-
-        val id: String,
-
-        val description: String?,
-
-        val classification: Classification,
-
-        val additionalClassifications: Set<Classification>?,
-
-        @JsonDeserialize(using = QuantityDeserializer::class)
-        val quantity: BigDecimal,
-
-        val unit: Unit,
-
-        val relatedLot: String
-)
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CreateAcRs(
 
-        val cans: List<Can>?,
+        val cans: List<Can>,
 
-        val contracts: List<Contract>?
+        val contract: Contract,
+
+        val contractedAward: Award
 )
