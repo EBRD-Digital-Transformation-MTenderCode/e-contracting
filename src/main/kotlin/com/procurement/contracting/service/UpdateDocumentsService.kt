@@ -38,8 +38,9 @@ class UpdateDocumentsService(private val canDao: CanDao,
             if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
                             || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
-            validateDocsRelatedLot(dto, contractProcess)
+            validateDocsRelatedLotContract(dto, contractProcess)
         }
+        validateDocsRelatedLotCan(dto,can)
         can.documents = updateCanDocuments(dto, can)
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
@@ -77,7 +78,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
         }
     }
 
-    private fun validateDocsRelatedLot(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
+    private fun validateDocsRelatedLotContract(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
         val relatedLots: MutableList<String> = mutableListOf()
         dto.documents.forEach {
             val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
@@ -86,6 +87,18 @@ class UpdateDocumentsService(private val canDao: CanDao,
             }
         }
         if (relatedLots.isNotEmpty() && !relatedLots.contains(contractProcess.award.relatedLots.first()))
+            throw ErrorException(DOCS_RELATED_LOTS)
+    }
+
+    private fun validateDocsRelatedLotCan(dto: UpdateDocumentsRq, can: Can) {
+        val relatedLots: MutableList<String> = mutableListOf()
+        dto.documents.forEach {
+            val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
+            if (relatedLot.isNotEmpty()) {
+                relatedLots.addAll(relatedLot)
+            }
+        }
+        if (relatedLots.isNotEmpty() && !relatedLots.contains(can.lotId))
             throw ErrorException(DOCS_RELATED_LOTS)
     }
 

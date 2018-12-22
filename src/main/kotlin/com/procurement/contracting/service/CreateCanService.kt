@@ -62,7 +62,7 @@ class CreateCanService(private val canDao: CanDao,
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.asSequence().none { it.awardId == dto.awardId
                         && it.status == ContractStatus.PENDING.value
-                        && it.statusDetails == ContractStatusDetails.ACTIVE.value}) {
+                        || it.status == ContractStatus.ACTIVE.value}) {
             throw ErrorException(ErrorType.CAN_STATUS)
         }
         return ResponseDto(data = "ok")
