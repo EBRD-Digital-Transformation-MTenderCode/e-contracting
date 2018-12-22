@@ -32,7 +32,7 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CHECK_CAN -> canService.checkCan(cm)
             CommandType.CHECK_CAN_BY_AWARD -> canService.checkCanByAwardId(cm)
             CommandType.CREATE_CAN -> canService.createCan(cm)
-            CommandType.GET_AWARDS -> canService.getAwards(cm)
+            CommandType.GET_CANS -> canService.getCans(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()

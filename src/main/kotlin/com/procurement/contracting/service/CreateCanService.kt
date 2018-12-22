@@ -68,7 +68,7 @@ class CreateCanService(private val canDao: CanDao,
         return ResponseDto(data = "ok")
     }
 
-    fun getAwards(cm: CommandMessage): ResponseDto {
+    fun getCans(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val dto = toObject(GetAwardsRq::class.java, cm.data)
 

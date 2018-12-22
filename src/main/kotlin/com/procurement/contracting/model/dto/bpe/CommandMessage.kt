@@ -46,7 +46,7 @@ enum class CommandType(private val value: String) {
     CHECK_CAN("checkCan"),
     CHECK_CAN_BY_AWARD("checkCanBiAwardId"),
     CREATE_CAN("createCan"),
-    GET_AWARDS("getAwards"),
+    GET_CANS("getCans"),
     CREATE_AC("createAC"),
     UPDATE_AC("updateAC"),
     GET_BUDGET_SOURCES("getActualBudgetSources"),
