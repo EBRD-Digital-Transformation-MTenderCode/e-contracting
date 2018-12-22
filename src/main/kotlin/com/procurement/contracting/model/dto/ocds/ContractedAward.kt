@@ -1,6 +1,7 @@
 package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 
@@ -19,8 +20,10 @@ data class ContractedAward @JsonCreator constructor(
 
         val relatedLots: List<String>,
 
+        @JsonIgnore
         val relatedBids: List<String>,
 
+        @JsonIgnore
         val relatedAwards: List<String>? = null,
 
         var items: List<Item>,
