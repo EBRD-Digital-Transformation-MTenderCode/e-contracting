@@ -66,13 +66,14 @@ class CreateAcService(private val acDao: AcDao,
                 cans.add(can)
             }
         }
-        updatedCanEntities.asSequence().forEach{canDao.save(it)}
+        updatedCanEntities.asSequence().forEach { canDao.save(it) }
 
         val awardId = generationService.generateRandomUUID().toString()
         val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
         val awardsLotsIdsSet = dto.awards.asSequence().map { it.relatedLots[0] }.toSet()
+        val awardsBidsIdsSet = dto.awards.asSequence().map { it.relatedBid }.toSet()
         val amountSum = dto.awards.asSequence()
-                .sumByDouble { it.value.amount!!.toDouble() }
+                .sumByDouble { it.value.amount.toDouble() }
                 .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val awardDocuments = ArrayList<DocumentAward>()
         dto.awards.forEach {
@@ -87,10 +88,11 @@ class CreateAcService(private val acDao: AcDao,
                 status = ContractStatus.PENDING,
                 statusDetails = ContractStatusDetails.CONTRACT_PROJECT)
 
-        val contractedAward = Award(
+        val contractedAward = ContractedAward(
                 id = awardId,
                 date = dateTime,
                 relatedLots = awardsLotsIdsSet.toList(),
+                relatedBids = awardsBidsIdsSet.toList(),
                 relatedAwards = awardsIdsSet.toList(),
                 value = ValueTax(
                         amount = amountSum,

@@ -12,7 +12,7 @@ data class ContractProcess @JsonCreator constructor(
 
         val contract: Contract,
 
-        val award: Award,
+        val award: ContractedAward,
 
         var buyer: OrganizationReferenceBuyer? = null,
 

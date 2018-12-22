@@ -33,5 +33,5 @@ data class CreateAcRs(
 
         val contract: Contract,
 
-        val contractedAward: Award
+        val contractedAward: ContractedAward
 )

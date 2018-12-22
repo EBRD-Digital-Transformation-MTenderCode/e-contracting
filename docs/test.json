@@ -1,42 +1,180 @@
 {
-  "id": "953d4480-139d-11e9-a503-29499be2e950",
-  "command": "cancelCan",
-  "context": {
-    "operationId": "5c0f692d-2657-45ba-800d-059f24bc6479",
-    "requestId": "953d4480-039d-11e9-a503-29499be2e950",
-    "cpid": "ocds-t1s2t3-MD-1545151279475",
-    "ocid": "ocds-t1s2t3-MD-1545151279475-EV-1545151279606",
-    "stage": "EV",
-    "prevStage": "EV",
-    "processType": "cancelCan",
-    "operationType": "cancelCan",
-    "phase": "awardedContractPreparation",
-    "owner": "445f6851-c908-407d-9b45-14b92f3e964b",
-    "country": "MD",
-    "language": "ro",
-    "pmd": "TEST_SV",
-    "token": "1ec108d2-a47b-48b5-8b03-e7010a7d0ec5",
-    "startDate": "2018-12-19T14:51:36Z",
-    "id": "1ec108d2-a47b-48b5-8b03-e7010a7d0ec5",
-    "timeStamp": 1545231096008,
-    "isAuction": false,
-    "awardCriteria": "priceOnly"
-  },
-  "data": {
-    "contract": {
-      "amendment": {
-        "rationale": "123",
-        "description": "123",
-        "documents": [
-          {
-            "documentType": "evaluationReports",
-            "id": "0650b35c-6b6b-44ef-a31b-6df29f2921e9-1543246087156",
-            "title": "123",
-            "description": "123"
-          }
-        ]
-      }
+  "contracts": [
+    {
+      "id": "49f5f225-6ced-464f-a26f-9c2f668e5957"
     }
-  },
-  "version": "0.0.1"
+  ],
+  "cans": [
+    {
+      "id": "49f5f225-6ced-464f-a26f-9c2f668e5957",
+      "awardId": "72d1aed1-05d8-11e9-9914-6784d710aa60"
+    }
+  ],
+  "awards": [
+    {
+      "token": "4b793cbc-6708-44ef-a00b-e0765f49564a",
+      "id": "72d1aed1-05d8-11e9-9914-6784d710aa60",
+      "date": "2018-12-22T10:59:43Z",
+      "description": "Good",
+      "status": "pending",
+      "statusDetails": "active",
+      "value": {
+        "amount": 160.00,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "ef1c5633-05d7-11e9-a163-956a38e0b362"
+      ],
+      "relatedBid": "3f931770-05d8-11e9-880e-2ba610f9df98",
+      "bidDate": "2018-12-22T10:56:34Z",
+      "suppliers": [
+        {
+          "id": "MD-IDNO-666688883",
+          "name": "Googleh555fhfgh55g12",
+          "identifier": {
+            "id": "666688883",
+            "scheme": "MD-IDNO",
+            "legalName": "Google Big Brother",
+            "uri": null
+          },
+          "address": {
+            "streetAddress": "123",
+            "postalCode": "21",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1000000",
+                "description": "Anenii Noi",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "CUATM",
+                "id": "1001000",
+                "description": "or.Anenii Noi",
+                "uri": "http://statistica.md"
+              }
+            }
+          },
+          "contactPoint": {
+            "name": "111",
+            "email": "222",
+            "telephone": "333",
+            "url": "444"
+          },
+          "details": {
+            "scale": "sme"
+          }
+        }
+      ],
+      "documents": [
+        {
+          "id": "90024df5-2d42-4329-8485-9c560bb3cfad-1545302181957",
+          "documentType": "awardNotice"
+        }
+      ]
+    }
+  ],
+  "contractedTender": {
+    "id": "ocds-t1s2t3-MD-1545476021984",
+    "classification": {
+      "scheme": "CPV",
+      "id": "66600000-6",
+      "description": "Servicii de trezorerie"
+    },
+    "procurementMethod": "open",
+    "procurementMethodDetails": "TEST Licitatia deschisa",
+    "mainProcurementCategory": "services",
+    "lots": [
+      {
+        "id": "ef1c5633-05d7-11e9-a163-956a38e0b362",
+        "title": "lot2",
+        "description": "looot2",
+        "status": "active",
+        "statusDetails": "awarded",
+        "value": {
+          "amount": 300.00,
+          "currency": "MDL"
+        },
+        "options": [
+          {
+            "hasOptions": false
+          }
+        ],
+        "recurrentProcurement": [
+          {
+            "isRecurrent": false
+          }
+        ],
+        "renewals": [
+          {
+            "hasRenewals": false
+          }
+        ],
+        "variants": [
+          {
+            "hasVariants": false
+          }
+        ],
+        "contractPeriod": {
+          "startDate": "2018-12-26T14:45:00Z",
+          "endDate": "2019-12-30T14:45:00Z"
+        },
+        "placeOfPerformance": {
+          "address": {
+            "streetAddress": "6666",
+            "postalCode": "666",
+            "addressDetails": {
+              "country": {
+                "scheme": "iso-alpha2",
+                "id": "MD",
+                "description": "MOLDOVA",
+                "uri": "http://reference.iatistandard.org"
+              },
+              "region": {
+                "scheme": "CUATM",
+                "id": "1000000",
+                "description": "Anenii Noi",
+                "uri": "http://statistica.md"
+              },
+              "locality": {
+                "scheme": "666",
+                "id": "666",
+                "description": "666"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "id": "ef1c5631-05d7-11e9-a163-956a38e0b362",
+        "description": "Проснувшись однажды утром после беспокойного сна, Грегор Замза обнаружил, что он у себя в постели превратился в страшное насекомое. Лежа на панцирнотвердой спине, он видел, стоило ему приподнять голову, свой коричневый, выпуклый, разделенный дугообразными чешуйками живот, на верхушке которого еле держалось готовое вот-вот окончательно сползти одеяло. Его многочисленные, убого тонкие по сравнению с остальным телом ножки беспомощно копошились у него перед глазами. «Что со мной случилось?» – подумал он. Это не было сном.",
+        "classification": {
+          "scheme": "CPV",
+          "id": "66600000-6",
+          "description": "Servicii de trezorerie"
+        },
+        "additionalClassifications": [
+          {
+            "scheme": "CPVS",
+            "id": "AB06-7",
+            "description": "Plastic"
+          }
+        ],
+        "quantity": 2.00,
+        "unit": {
+          "id": "86",
+          "name": "Milion metri patrati spatiu locativ"
+        },
+        "relatedLot": "ef1c5633-05d7-11e9-a163-956a38e0b362"
+      }
+    ]
+  }
 }

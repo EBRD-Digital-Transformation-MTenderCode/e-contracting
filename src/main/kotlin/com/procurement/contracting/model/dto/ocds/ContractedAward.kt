@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Award @JsonCreator constructor(
+data class ContractedAward @JsonCreator constructor(
 
         val id: String,
 
@@ -15,11 +15,15 @@ data class Award @JsonCreator constructor(
 
         var title: String? = null,
 
-        var value: Value,
+        var value: ValueTax,
 
         val relatedLots: List<String>,
 
-        val relatedBid: String,
+        val relatedBids: List<String>,
+
+        val relatedAwards: List<String>? = null,
+
+        var items: List<Item>,
 
         var documents: List<DocumentAward>?,
 

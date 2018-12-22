@@ -45,6 +45,6 @@ class StatusService(private val acDao: AcDao) {
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBid!!))
+        return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBids))
     }
 }

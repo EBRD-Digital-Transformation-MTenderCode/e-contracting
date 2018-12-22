@@ -141,5 +141,5 @@ data class UpdateAcRs @JsonCreator constructor(
 
         val contract: Contract,
 
-        val award: Award
+        val award: ContractedAward
 )
