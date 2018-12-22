@@ -31,6 +31,7 @@ class CreateAcService(private val acDao: AcDao,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
+        val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateAcRq::class.java, cm.data)
 
@@ -110,7 +111,7 @@ class CreateAcService(private val acDao: AcDao,
                 createdDate = dateTime.toDate(),
                 status = contract.status.value,
                 statusDetails = contract.statusDetails.value,
-                mainProcurementCategory = dto.contractedTender.mainProcurementCategory,
+                mainProcurementCategory = mainProcurementCategory,
                 language = language,
                 jsonData = toJson(contractProcess))
 
