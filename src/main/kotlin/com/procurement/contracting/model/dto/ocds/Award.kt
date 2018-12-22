@@ -17,7 +17,7 @@ data class Award @JsonCreator constructor(
 
         val relatedLots: List<String>,
 
-        val relatedAwards: List<String>,
+        val relatedAwards: List<String>? = null,
 
         val relatedBid: String? = null,
 

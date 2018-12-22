@@ -21,7 +21,7 @@ data class ContractCreateAc @JsonCreator constructor(
 
 data class GetDataForAcTender @JsonCreator constructor(
 
-        val mainProcurementCategory: MainProcurementCategory,
+        val mainProcurementCategory: String,
 
         var items: HashSet<Item>
 )
