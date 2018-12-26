@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto.ocds
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.procurement.contracting.model.dto.databinding.IntDeserializer
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import java.math.BigDecimal
 
@@ -37,7 +38,8 @@ data class Transaction @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ExecutionPeriod @JsonCreator constructor(
 
-        val durationInDays: Long
+        @JsonDeserialize(using = IntDeserializer::class)
+        val durationInDays: Int
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -487,6 +487,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun validateAwards(dto: UpdateAcRq, contractProcess: ContractProcess) {
         val award = dto.award
         if (award.id != contractProcess.contract.awardId) throw ErrorException(AWARD_ID) //VR-9.2.3
+        if (award.value.currency != contractProcess.award.value.currency) throw ErrorException(INVALID_AWARD_CURRENCY)
         // VR-9.2.10
         if (award.items.asSequence().any { it.unit.value.valueAddedTaxIncluded != award.value.valueAddedTaxIncluded }) {
             throw ErrorException(AWARD_VALUE)
