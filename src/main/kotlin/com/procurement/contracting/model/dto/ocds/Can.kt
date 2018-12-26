@@ -13,7 +13,7 @@ data class Can @JsonCreator constructor(
 
         var date: LocalDateTime?,
 
-        val awardId: String,
+        val awardId: String?,
 
         val lotId: String,
 

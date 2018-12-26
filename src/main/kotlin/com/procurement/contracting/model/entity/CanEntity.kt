@@ -14,7 +14,7 @@ data class CanEntity(
 
         val createdDate: Date,
 
-        val awardId: String,
+        val awardId: String?,
 
         val lotId: String,
 
