@@ -4,8 +4,7 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
-import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.*
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.CreateAcRq
 import com.procurement.contracting.model.dto.CreateAcRs
@@ -46,6 +45,7 @@ class CreateAcService(private val acDao: AcDao,
         }
 
         val canEntities = canDao.findAllByCpId(cpId)
+        if (canEntities.isEmpty()) throw ErrorException(CANS_NOT_FOUND)
         val updatedCanEntities = ArrayList<CanEntity>()
         val acId = generationService.newOcId(cpId)
         val cans = ArrayList<Can>()
@@ -63,6 +63,8 @@ class CreateAcService(private val acDao: AcDao,
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)
+            }else{
+                throw ErrorException(CAN_ID)
             }
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
