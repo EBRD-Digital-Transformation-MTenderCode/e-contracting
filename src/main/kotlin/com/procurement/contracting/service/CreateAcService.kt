@@ -4,6 +4,7 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.CreateAcRq
@@ -45,6 +46,7 @@ class CreateAcService(private val acDao: AcDao,
         }
 
         val canEntities = canDao.findAllByCpId(cpId)
+        if (canEntities.isEmpty()) throw ErrorException(CANS_NOT_FOUND)
         val updatedCanEntities = ArrayList<CanEntity>()
         val acId = generationService.newOcId(cpId)
         val cans = ArrayList<Can>()
@@ -56,9 +58,7 @@ class CreateAcService(private val acDao: AcDao,
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)
-                can.status = ContractStatus.ACTIVE
-                can.statusDetails = ContractStatusDetails.EMPTY
-                canEntity.status = can.status.value
+                can.statusDetails = ContractStatusDetails.ACTIVE
                 canEntity.statusDetails = can.statusDetails.value
                 canEntity.acId = acId
                 canEntity.jsonData = toJson(can)
