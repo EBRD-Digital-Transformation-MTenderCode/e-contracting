@@ -52,7 +52,7 @@ class CreateAcService(private val acDao: AcDao,
         val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
         for (canEntity in canEntities) {
             if (canIdsSet.contains(canEntity.canId.toString())) {
-                if (canEntity.status != ContractStatus.PENDING.value && canEntity.statusDetails != ContractStatusDetails.CONTRACT_PROJECT.value) {
+                if (!(canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.CONTRACT_PROJECT.value)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)

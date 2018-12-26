@@ -30,27 +30,31 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val can = toObject(Can::class.java, canEntity.jsonData)
-        if (can.status != ContractStatus.ACTIVE && can.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CAN_STATUS)
+        if (!
+            (can.status == ContractStatus.PENDING
+                &&
+                (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
+                    || can.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION))) throw ErrorException(ErrorType.CAN_STATUS)
 
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
             if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                            || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+                    || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
             validateDocsRelatedLotContract(dto, contractProcess)
         }
-        validateDocsRelatedLotCan(dto,can)
+        validateDocsRelatedLotCan(dto, can)
         can.documents = updateCanDocuments(dto, can)
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
         return ResponseDto(
-                data = UpdateDocumentsRs(
-                        contract = UpdateDocumentContract(
-                                id = canId,
-                                documents = can.documents!!
-                        )
-                ))
+            data = UpdateDocumentsRs(
+                contract = UpdateDocumentContract(
+                    id = canId,
+                    documents = can.documents!!
+                )
+            ))
     }
 
     private fun updateCanDocuments(dto: UpdateDocumentsRq, can: Can): List<DocumentContract>? {
