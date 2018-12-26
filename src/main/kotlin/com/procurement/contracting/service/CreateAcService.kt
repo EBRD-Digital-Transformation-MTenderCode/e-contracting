@@ -63,7 +63,7 @@ class CreateAcService(private val acDao: AcDao,
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)
-            }else{
+            } else {
                 throw ErrorException(CAN_ID)
             }
         }
@@ -81,7 +81,6 @@ class CreateAcService(private val acDao: AcDao,
             if (it.documents != null && it.documents!!.isNotEmpty())
                 awardDocuments.addAll(it.documents!!)
         }
-
         val contract = Contract(
                 id = acId,
                 token = generationService.generateRandomUUID().toString(),
@@ -99,7 +98,7 @@ class CreateAcService(private val acDao: AcDao,
                         amount = amountSum,
                         currency = dto.awards[0].value.currency),
                 items = dto.contractedTender.items.toList(),
-                documents = awardDocuments,
+                documents = if (awardDocuments.isNotEmpty()) awardDocuments else null,
                 suppliers = dto.awards[0].suppliers)
 
         val contractProcess = ContractProcess(
