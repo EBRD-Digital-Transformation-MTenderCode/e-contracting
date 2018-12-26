@@ -46,7 +46,6 @@ class CreateAcService(private val acDao: AcDao,
         }
 
         val canEntities = canDao.findAllByCpId(cpId)
-        if (canEntities.isEmpty()) throw ErrorException(CANS_NOT_FOUND)
         val updatedCanEntities = ArrayList<CanEntity>()
         val acId = generationService.newOcId(cpId)
         val cans = ArrayList<Can>()
