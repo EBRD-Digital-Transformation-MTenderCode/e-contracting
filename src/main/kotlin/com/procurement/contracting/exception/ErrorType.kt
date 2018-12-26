@@ -69,5 +69,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     DOCUMENTS_IS_NOT_EVALUATION_REPORTS("00.63","DocumentsType must be evaluationReports"),
     SUPPLIERS_ID("00.64", "More than one value in set of supplier id."),
     AWARD_CURRENCY("00.65", "More than one value in set of currency."),
-    CAN_ALREADY_USED("00.66",  "CAN has been used for AC generation");
+    CAN_ALREADY_USED("00.66",  "CAN has been used for AC generation"),
+    INVALID_AWARD_CURRENCY("00.67", "Invalid award currency."),;
 }
