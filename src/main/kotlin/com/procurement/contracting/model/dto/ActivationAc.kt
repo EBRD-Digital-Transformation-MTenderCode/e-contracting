@@ -8,8 +8,6 @@ import com.procurement.contracting.model.dto.ocds.Milestone
 
 data class ActivationAcRs @JsonCreator constructor(
 
-        val stageEnd: Boolean,
-
         val relatedLots: List<String>,
 
         val contract: ActivationContract,

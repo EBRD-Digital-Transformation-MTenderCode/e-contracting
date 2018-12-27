@@ -56,7 +56,6 @@ class ActivationAcService(private val acDao: AcDao,
         contractEntity.status = ContractStatus.ACTIVE.value
         contractEntity.statusDetails = ContractStatusDetails.EXECUTION.value
         acDao.save(contractEntity)
-        val stageEnd = !isAnyContractPending(cpId)
 
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.isEmpty()) throw ErrorException(CANS_NOT_FOUND)
@@ -77,7 +76,6 @@ class ActivationAcService(private val acDao: AcDao,
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
         val cansRs = cans.asSequence().map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
         return ResponseDto(data = ActivationAcRs(
-                stageEnd = stageEnd,
                 relatedLots = relatedLots,
                 contract = ActivationContract(
                         status = contractProcess.contract.status,
@@ -87,12 +85,6 @@ class ActivationAcService(private val acDao: AcDao,
                 cans = cansRs
 
         ))
-    }
-
-    private fun isAnyContractPending(cpId: String): Boolean {
-        val contractProcesses = acDao.getAllByCpId(cpId)
-        if (contractProcesses.isEmpty()) throw ErrorException(AC_NOT_FOUND)
-        return contractProcesses.asSequence().any { it.status == ContractStatus.PENDING.value }
     }
 
 }
