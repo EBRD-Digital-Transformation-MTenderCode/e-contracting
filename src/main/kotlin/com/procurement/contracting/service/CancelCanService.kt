@@ -40,11 +40,9 @@ class CancelCanService(private val canDao: CanDao,
                         || can.statusDetails == ContractStatusDetails.ACTIVE
                         || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL))
         ) throw ErrorException(CAN_STATUS)
-
         can.status = ContractStatus.CANCELLED
         can.statusDetails = ContractStatusDetails.EMPTY
         can.amendment = dto.contract.amendment
-
         canEntity.status = can.status.value
         canEntity.statusDetails = can.statusDetails.value
         canEntity.jsonData = toJson(can)
@@ -53,7 +51,6 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
-//            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             contractProcess.contract.status = ContractStatus.CANCELLED
             contractProcess.contract.statusDetails = ContractStatusDetails.EMPTY
             acEntity.status = contractProcess.contract.status.value
