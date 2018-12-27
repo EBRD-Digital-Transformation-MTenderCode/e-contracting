@@ -10,18 +10,29 @@ data class ActivationAcRs @JsonCreator constructor(
 
         val stageEnd: Boolean,
 
-        val lotId: String,
+        val relatedLots: List<String>,
 
-        val contract: ContractActivationAcRs
+        val contract: ActivationContract,
+
+        val cans: List<ActivationCan>
 )
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class ContractActivationAcRs @JsonCreator constructor(
+data class ActivationContract @JsonCreator constructor(
 
         var status: ContractStatus,
 
         var statusDetails: ContractStatusDetails,
 
         val milestones: HashSet<Milestone>?
+)
+
+data class ActivationCan @JsonCreator constructor(
+
+        val id: String,
+
+        var status: ContractStatus,
+
+        var statusDetails: ContractStatusDetails
 )
