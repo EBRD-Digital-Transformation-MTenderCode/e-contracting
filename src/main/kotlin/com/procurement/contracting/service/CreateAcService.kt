@@ -44,13 +44,17 @@ class CreateAcService(private val acDao: AcDao,
             throw ErrorException(ErrorType.AWARD_CURRENCY)
         }
 
-        val canEntities = canDao.findAllByCpId(cpId)
+        val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
+
+        val canEntities = canDao.findAllByCpId(cpId).filter {
+            canIdsSet.contains(it.canId.toString())
+        }.toList()
         if (canEntities.isEmpty()) throw ErrorException(CANS_NOT_FOUND)
         val updatedCanEntities = ArrayList<CanEntity>()
         val acId = generationService.newOcId(cpId)
         val cans = ArrayList<Can>()
         //BR-9.1.3
-        val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
+
         for (canEntity in canEntities) {
             if (canIdsSet.contains(canEntity.canId.toString())) {
                 if (!(canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.CONTRACT_PROJECT.value)) {
