@@ -92,6 +92,30 @@ class CreateCanService(private val canDao: CanDao,
         return ResponseDto(data = GetAwardsRs(cans))
     }
 
+
+    fun confirmationCan(cm: CommandMessage): ResponseDto {
+        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val token = cm.context.token ?: throw ErrorException(CONTEXT)
+        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val canId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
+        if (canEntity.owner != owner) throw ErrorException(ErrorType.OWNER)
+        if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
+        if (canEntity.status != ContractStatus.PENDING.value && canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value)
+            throw ErrorException(ErrorType.CAN_STATUS)
+        val can = toObject(Can::class.java, canEntity.jsonData)
+        can.status = ContractStatus.UNSUCCESSFUL
+        can.statusDetails = ContractStatusDetails.EMPTY
+        canEntity.status = can.status.value
+        canEntity.statusDetails = can.statusDetails.value
+        canEntity.jsonData = toJson(can)
+        canDao.save(canEntity)
+        return ResponseDto(data = ConfirmationCanRs(
+                cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
+                lotId = can.lotId))
+    }
+
+
     private fun createCanEntity(cpId: String,
                                 owner: String,
                                 dateTime: LocalDateTime,
