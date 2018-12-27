@@ -63,8 +63,6 @@ class CreateAcService(private val acDao: AcDao,
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)
-            } else {
-                throw ErrorException(CAN_ID)
             }
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
