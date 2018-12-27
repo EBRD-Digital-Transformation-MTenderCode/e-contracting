@@ -29,7 +29,6 @@ class CreateCanService(private val canDao: CanDao,
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(AwardDto::class.java, cm.data)
-
         val can = Can(
                 id = generationService.generateRandomUUID().toString(),
                 token = generationService.generateRandomUUID().toString(),
@@ -72,7 +71,6 @@ class CreateCanService(private val canDao: CanDao,
     fun getCans(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val dto = toObject(GetAwardsRq::class.java, cm.data)
-
         val canEntities = canDao.findAllByCpId(cpId)
         val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
         val cans = canEntities.asSequence()
