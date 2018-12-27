@@ -69,6 +69,7 @@ class CancelCanService(private val canDao: CanDao,
             data = CancelCanRs(
                 can = can,
                 acCancel = acCancel,
+                lotId = can.lotId,
                 contract = convertToContractDto(contract))
         )
     }
