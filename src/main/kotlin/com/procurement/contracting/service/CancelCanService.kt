@@ -35,11 +35,10 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val can = toObject(Can::class.java, canEntity.jsonData)
 
-        if (!
-            (can.status == ContractStatus.PENDING
-                &&
-                (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
-                    || can.statusDetails == ContractStatusDetails.ACTIVE))
+        if (!(can.status == ContractStatus.PENDING
+                        && (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
+                        || can.statusDetails == ContractStatusDetails.ACTIVE
+                        || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL))
         ) throw ErrorException(CAN_STATUS)
 
         can.status = ContractStatus.CANCELLED
@@ -66,19 +65,19 @@ class CancelCanService(private val canDao: CanDao,
         }
         canDao.save(canEntity)
         return ResponseDto(
-            data = CancelCanRs(
-                can = can,
-                acCancel = acCancel,
-                contract = convertToContractDto(contract))
+                data = CancelCanRs(
+                        can = can,
+                        acCancel = acCancel,
+                        contract = convertToContractDto(contract))
         )
     }
 
     private fun convertToContractDto(contract: Contract?): CancelCanContractRs? {
         return if (contract != null) {
             CancelCanContractRs(
-                id = contract.id,
-                status = contract.status,
-                statusDetails = contract.statusDetails)
+                    id = contract.id,
+                    status = contract.status,
+                    statusDetails = contract.statusDetails)
         } else null
     }
 
