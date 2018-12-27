@@ -33,6 +33,9 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.CHECK_CAN_BY_AWARD -> canService.checkCanByAwardId(cm)
             CommandType.CREATE_CAN -> canService.createCan(cm)
             CommandType.GET_CANS -> canService.getCans(cm)
+            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
+            CommandType.CANCEL_CAN -> cancelService.cancelCan(cm)
+            CommandType.CONFIRMATION_CAN -> canService.confirmationCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
@@ -45,8 +48,6 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
             CommandType.ACTIVATION_AC -> acService.activateAc(cm)
-            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
-            CommandType.CANCEL_CAN -> cancelService.cancelCan(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
