@@ -4,11 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.procurement.contracting.model.dto.ocds.Can
 
 data class CreateCanRq @JsonCreator constructor(
-    val awardingSuccess: Boolean,
-    val awardId: String?
+
+        val awardingSuccess: Boolean,
+
+        val awardId: String?
 )
 
 data class CreateCanRs(
-    val can: Can
+
+        val can: Can
 )
 

@@ -35,17 +35,14 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val can = toObject(Can::class.java, canEntity.jsonData)
 
-        if (!
-            (can.status == ContractStatus.PENDING
-                &&
-                (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
-                    || can.statusDetails == ContractStatusDetails.ACTIVE))
+        if (!(can.status == ContractStatus.PENDING
+                        && (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
+                        || can.statusDetails == ContractStatusDetails.ACTIVE
+                        || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL))
         ) throw ErrorException(CAN_STATUS)
-
         can.status = ContractStatus.CANCELLED
         can.statusDetails = ContractStatusDetails.EMPTY
         can.amendment = dto.contract.amendment
-
         canEntity.status = can.status.value
         canEntity.statusDetails = can.statusDetails.value
         canEntity.jsonData = toJson(can)
@@ -54,7 +51,6 @@ class CancelCanService(private val canDao: CanDao,
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
-//            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             contractProcess.contract.status = ContractStatus.CANCELLED
             contractProcess.contract.statusDetails = ContractStatusDetails.EMPTY
             acEntity.status = contractProcess.contract.status.value
@@ -77,9 +73,9 @@ class CancelCanService(private val canDao: CanDao,
     private fun convertToContractDto(contract: Contract?): CancelCanContractRs? {
         return if (contract != null) {
             CancelCanContractRs(
-                id = contract.id,
-                status = contract.status,
-                statusDetails = contract.statusDetails)
+                    id = contract.id,
+                    status = contract.status,
+                    statusDetails = contract.statusDetails)
         } else null
     }
 
