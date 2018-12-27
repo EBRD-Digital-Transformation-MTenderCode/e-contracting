@@ -7,7 +7,7 @@ import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 
 data class ConfirmationCanRs @JsonCreator constructor(
 
-        val can: ConfirmationCan,
+        val cans: List<ConfirmationCan>,
 
         val lotId: String
 )

@@ -100,7 +100,9 @@ class CreateCanService(private val canDao: CanDao,
         canEntity.statusDetails = can.statusDetails.value
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
-        return ResponseDto(data = ConfirmationCanRs(can = ConfirmationCan(can.id, can.status, can.statusDetails), lotId = can.lotId))
+        return ResponseDto(data = ConfirmationCanRs(
+                cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
+                lotId = can.lotId))
     }
 
 
