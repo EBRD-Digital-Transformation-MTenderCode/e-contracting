@@ -39,7 +39,8 @@ class CancelCanService(private val canDao: CanDao,
             (can.status == ContractStatus.PENDING
                 &&
                 (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
-                    || can.statusDetails == ContractStatusDetails.ACTIVE))
+                    || can.statusDetails == ContractStatusDetails.ACTIVE
+                    || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL))
         ) throw ErrorException(CAN_STATUS)
         can.status = ContractStatus.CANCELLED
         can.statusDetails = ContractStatusDetails.EMPTY
