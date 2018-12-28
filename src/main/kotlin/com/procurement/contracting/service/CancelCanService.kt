@@ -36,8 +36,7 @@ class CancelCanService(private val canDao: CanDao,
         val can = toObject(Can::class.java, canEntity.jsonData)
 
         if (!(can.status == ContractStatus.PENDING
-                        &&
-                        (can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
+                        &&(can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
                                 || can.statusDetails == ContractStatusDetails.ACTIVE
                                 || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL))
         ) throw ErrorException(CAN_STATUS)
