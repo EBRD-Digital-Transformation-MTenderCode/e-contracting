@@ -18,6 +18,7 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class CreateCanService(private val canDao: CanDao,
@@ -83,11 +84,16 @@ class CreateCanService(private val canDao: CanDao,
 
         val canEntities = canDao.findAllByCpId(cpId)
         val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
-        val cans = canEntities.asSequence()
-                .filter { canIdsSet.contains(it.canId.toString()) }
-                .map { CanGetAwards(id = it.canId.toString(), awardId = it.awardId!!) }
-                .toList()
-        return ResponseDto(data = GetAwardsRs(cans))
+        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.canId.toString()) }.toList()
+        val cansRs = ArrayList<CanGetAwards>()
+        for (canEntity in canEntitiesFiltered) {
+            if (canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value) {
+                cansRs.add(CanGetAwards(id = canEntity.canId.toString(), awardId = canEntity.awardId!!))
+            } else {
+                throw ErrorException(ErrorType.CAN_STATUS)
+            }
+        }
+        return ResponseDto(data = GetAwardsRs(cansRs))
     }
 
 
