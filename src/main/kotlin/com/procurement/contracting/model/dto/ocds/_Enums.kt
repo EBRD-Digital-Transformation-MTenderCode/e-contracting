@@ -209,6 +209,15 @@ enum class DocumentTypeBF(@JsonValue val value: String) {
     }
 }
 
+enum class DocumentTypeUpdateCan(@JsonValue val value: String) {
+
+    EVALUATION_REPORT("evaluationReports");
+
+    override fun toString(): String {
+        return this.value
+    }
+}
+
 enum class MilestoneType(@JsonValue val value: String) {
 
     DELIVERY("delivery"),
