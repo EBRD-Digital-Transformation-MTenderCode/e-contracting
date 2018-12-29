@@ -198,6 +198,17 @@ enum class DocumentTypeContract(@JsonValue val value: String) {
     override fun toString(): String {
         return this.value
     }
+    companion object {
+        private val CONSTANTS = HashMap<String, DocumentTypeContract>()
+
+        init {
+            DocumentTypeContract.values().forEach { CONSTANTS[it.value] = it }
+        }
+
+        fun fromValue(v: String): DocumentTypeContract {
+            return CONSTANTS[v] ?: throw EnumException(DocumentTypeContract::class.java.name, v, DocumentTypeContract.values().toString())
+        }
+    }
 }
 
 enum class DocumentTypeBF(@JsonValue val value: String) {
