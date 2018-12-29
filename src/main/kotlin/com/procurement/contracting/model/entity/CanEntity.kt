@@ -8,11 +8,15 @@ data class CanEntity(
 
         val canId: UUID,
 
+        val token: UUID,
+
         val owner: String,
 
         val createdDate: Date,
 
-        val awardId: String,
+        val awardId: String?,
+
+        val lotId: String,
 
         var acId: String?,
 

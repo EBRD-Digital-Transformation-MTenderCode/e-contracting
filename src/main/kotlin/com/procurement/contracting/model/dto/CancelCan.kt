@@ -27,6 +27,8 @@ data class CancelCanRs @JsonCreator constructor(
 
         val acCancel: Boolean,
 
+        val lotId: String,
+
         val contract: CancelCanContractRs?
 )
 

@@ -19,7 +19,8 @@ class CommandService(private val historyDao: HistoryDao,
                      private val treasuryAcService: TreasuryAcService,
                      private val signingAcService: SigningAcService,
                      private val acService: ActivationAcService,
-                     private val updateDocumentsService: UpdateDocumentsService) {
+                     private val updateDocumentsService: UpdateDocumentsService,
+                     private val cancelService: CancelCanService) {
 
 
     fun execute(cm: CommandMessage): ResponseDto {
@@ -28,7 +29,13 @@ class CommandService(private val historyDao: HistoryDao,
             return toObject(ResponseDto::class.java, historyEntity.jsonData)
         }
         val response = when (cm.command) {
-            CommandType.CREATE_CAN -> canService.createCAN(cm)
+            CommandType.CHECK_CAN -> canService.checkCan(cm)
+            CommandType.CHECK_CAN_BY_AWARD -> canService.checkCanByAwardId(cm)
+            CommandType.CREATE_CAN -> canService.createCan(cm)
+            CommandType.GET_CANS -> canService.getCans(cm)
+            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
+            CommandType.CANCEL_CAN -> cancelService.cancelCan(cm)
+            CommandType.CONFIRMATION_CAN -> canService.confirmationCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
@@ -41,7 +48,6 @@ class CommandService(private val historyDao: HistoryDao,
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_APPROVING_AC -> treasuryAcService.treasuryApprovingAC(cm)
             CommandType.ACTIVATION_AC -> acService.activateAc(cm)
-            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)

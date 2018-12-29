@@ -7,21 +7,21 @@ import java.time.LocalDateTime
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Can @JsonCreator constructor(
 
-        val contract: CanContract
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class CanContract @JsonCreator constructor(
-
         val id: String,
+
+        val token: String,
 
         var date: LocalDateTime?,
 
-        val awardId: String,
+        val awardId: String?,
+
+        val lotId: String,
 
         var status: ContractStatus,
 
         var statusDetails: ContractStatusDetails,
 
-        var documents: List<DocumentContract>?
+        var documents: List<DocumentContract>?,
+
+        var amendment: Amendment?
 )

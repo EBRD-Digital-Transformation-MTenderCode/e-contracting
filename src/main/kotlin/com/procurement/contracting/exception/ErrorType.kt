@@ -44,11 +44,11 @@ enum class ErrorType constructor(val code: String, val message: String) {
     MILESTONES_EMPTY("00.39", "Milestones must not be empty."),
     MILESTONE_ID("00.40", "Invalid milestone id."),
     INVALID_TR_RELATED_MILESTONES("00.41", "Invalid transaction related milestone id"),
-    INVALID_DOCS_RELATED_LOTS("00.44", "Invalid document related lot id"),
+    INVALID_DOCS_RELATED_LOTS("00.44", "Invalid document related lot id."),
     EMPTY_MILESTONE_RELATED_ITEM("00.45", "Milestone related item must not be empty."),
-    BUYER_NAME_IS_EMPTY("00.46", "Buyer name must be not null"),
-    BUYER_IS_EMPTY("00.47", "Buyer must be not null"),
-    ORGANIZATION_AUTHORITY_PERSON_INVALID("20.05", "person authority not found"),
+    BUYER_NAME_IS_EMPTY("00.46", "Buyer name must be not null."),
+    BUYER_IS_EMPTY("00.47", "Buyer must be not null."),
+    ORGANIZATION_AUTHORITY_PERSON_INVALID("20.05", "Person authority not found."),
     INVALID_REQUEST_ID("00.48", "invalid requestId."),
     INVALID_BUYER_ID("00.49", "invalid buyerId."),
     INVALID_RELATED_PERSON_ID("00.50", "invalid related person id."),
@@ -64,5 +64,11 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CONFIRMATION_REQUEST("00.59", "Confirmation request not found."),
     MILESTONE("00.59", "Milestone not found."),
     MILESTONE_RELATED_PARTY("00.60", "Invalid milestone related party."),
-    CAN_STATUS("00.61", "Invalid can status.");
+    CAN_STATUS("00.61", "Invalid can status."),
+    CAN_FOR_LOT_EXIST("00.62", "Can for lot already exist."),
+    DOCUMENTS_IS_NOT_EVALUATION_REPORTS("00.63", "DocumentsType must be evaluationReports"),
+    SUPPLIERS_ID("00.64", "More than one value in set of supplier id."),
+    AWARD_CURRENCY("00.65", "More than one value in set of currency."),
+    CAN_ALREADY_USED("00.66", "CAN has been used for AC generation"),
+    INVALID_AWARD_CURRENCY("00.67", "Invalid award currency."), ;
 }

@@ -12,7 +12,7 @@ data class Contract @JsonCreator constructor(
 
         val id: String,
 
-        var date: LocalDateTime?,
+        var date: LocalDateTime? = null,
 
         val awardId: String,
 
@@ -20,33 +20,33 @@ data class Contract @JsonCreator constructor(
 
         var statusDetails: ContractStatusDetails,
 
-        var title: String?,
+        var title: String? = null,
 
-        var description: String?,
+        var description: String? = null,
 
-        val extendsContractID: String?,
+        val extendsContractID: String? = null,
 
-        val budgetSource: List<BudgetSource>?,
+        val budgetSource: List<BudgetSource>? = null,
 
-        val classification: Classification?,
+        val classification: Classification? = null,
 
-        var period: Period?,
+        var period: Period? = null,
 
-        var value: ValueTax?,
+        var value: ValueTax? = null,
 
-        val items: List<Item>?,
+        val items: List<Item>? = null,
 
-        val dateSigned: LocalDateTime?,
+        val dateSigned: LocalDateTime? = null,
 
-        var documents: List<DocumentContract>?,
+        var documents: List<DocumentContract>? = null,
 
-        val relatedProcesses: List<RelatedProcess>?,
+        val relatedProcesses: List<RelatedProcess>? = null,
 
-        val amendments: List<Amendment>?,
+        val amendments: List<Amendment>? = null,
 
-        var milestones: HashSet<Milestone>?,
+        var milestones: HashSet<Milestone>? = null,
 
-        var confirmationRequests: HashSet<ConfirmationRequest>?,
+        var confirmationRequests: HashSet<ConfirmationRequest>? = null,
 
         var confirmationResponses: HashSet<ConfirmationResponse>? = null,
 
