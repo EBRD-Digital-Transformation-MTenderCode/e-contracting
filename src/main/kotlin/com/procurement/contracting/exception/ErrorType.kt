@@ -71,5 +71,5 @@ enum class ErrorType constructor(val code: String, val message: String) {
     AWARD_CURRENCY("00.65", "More than one value in set of currency."),
     CAN_ALREADY_USED("00.66", "CAN has been used for AC generation"),
     INVALID_AWARD_CURRENCY("00.67", "Invalid award currency."),
-    DUPLICATE_CAN_ID("00.66", "Duplicate CAN id.");
+    DUPLICATE_CAN_ID("00.68", "Duplicate CAN id.");
 }
