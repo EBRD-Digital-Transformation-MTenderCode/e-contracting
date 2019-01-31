@@ -55,8 +55,10 @@ class CreateAcService(
         }
 
         val idsOfCANs: Set<String> = dto.contracts.fold(initial = HashSet()) { acc, item ->
-            acc.add(item.id)
-            acc
+            if(acc.add(item.id))
+                acc
+            else
+                throw ErrorException(ErrorType.DUPLICATE_CAN_ID)
         }
         val canEntities = canDao.findAllByCpId(cpId)
         val canEntityIds: Set<String> = canEntities.fold(initial = HashSet()) { acc, item ->
