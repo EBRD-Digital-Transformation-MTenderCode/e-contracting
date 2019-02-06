@@ -8,6 +8,7 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.IssuingAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
@@ -29,8 +30,8 @@ class IssuingAcService(private val acDao: AcDao) {
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
-//        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
-//        if (contractProcess.contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION) throw ErrorException(CONTRACT_STATUS_DETAILS)
+        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
+        if (contractProcess.contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION) throw ErrorException(CONTRACT_STATUS_DETAILS)
 
         val relatedItemIds = contractProcess.planning!!.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
         val awardItemIds = contractProcess.award.items.asSequence().map { it.id }.toSet()
