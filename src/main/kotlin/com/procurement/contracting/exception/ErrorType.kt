@@ -6,7 +6,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     JSON_TYPE("00.00", "Invalid type: "),
     CANS_NOT_FOUND("00.01", "CANs not found."),
     CONTRACT_NOT_FOUND("00.02", "Contract not found."),
-    OWNER("00.03", "Invalid owner."),
+    INVALID_OWNER("00.03", "Invalid owner."),
     CAN_ID("00.04", "Invalid CAN id."),
     CONTRACT_ALREADY_CREATED("00.05", "Contract already created."),
     DOCUMENTS("00.06", "Documents are not valid"),

@@ -29,7 +29,7 @@ class ActivationAcService(private val acDao: AcDao,
         val startDate = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
 
         val contractEntity = acDao.getByCpIdAndAcId(cpId, ocId)
-        if (contractEntity.owner != owner) throw ErrorException(OWNER)
+        if (contractEntity.owner != owner) throw ErrorException(error = INVALID_OWNER)
         if (contractEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, contractEntity.jsonData)
 

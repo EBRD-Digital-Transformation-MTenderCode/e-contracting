@@ -34,7 +34,7 @@ class SigningAcService(private val acDao: AcDao,
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
-        if (entity.owner != owner) throw ErrorException(ErrorType.OWNER)
+        if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
         if (entity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
 
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
