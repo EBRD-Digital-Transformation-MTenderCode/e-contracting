@@ -31,7 +31,7 @@ class CancelCanService(private val canDao: CanDao,
         val dto = toObject(CancelCanRq::class.java, cm.data)
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
-        if (canEntity.owner != owner) throw ErrorException(OWNER)
+        if (canEntity.owner != owner) throw ErrorException(INVALID_OWNER)
         if (canEntity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val can = toObject(Can::class.java, canEntity.jsonData)
 
