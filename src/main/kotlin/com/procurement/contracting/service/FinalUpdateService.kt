@@ -190,7 +190,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedPerson = getAuthorityOrganizationPersonBuyer(buyer)
         val request = Request(id = template.id + documentId + "-" + relatedPerson.id,
                 title = template.requestTitle + relatedPerson.name,
-                description = template.description,
+                description = template.requestDescription,
                 relatedPerson = relatedPerson
         )
         val requestGroup = RequestGroup(
