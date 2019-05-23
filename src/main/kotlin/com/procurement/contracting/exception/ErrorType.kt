@@ -64,12 +64,15 @@ enum class ErrorType constructor(val code: String, val message: String) {
     CONFIRMATION_REQUEST("00.59", "Confirmation request not found."),
     MILESTONE("00.59", "Milestone not found."),
     MILESTONE_RELATED_PARTY("00.60", "Invalid milestone related party."),
-    CAN_STATUS("00.61", "Invalid can status."),
+    INVALID_CAN_STATUS("00.61", "CAN has an invalid status to perform this operation."),
     CAN_FOR_LOT_EXIST("00.62", "Can for lot already exist."),
     DOCUMENTS_IS_NOT_EVALUATION_REPORTS("00.63", "DocumentsType must be evaluationReports"),
     SUPPLIERS_ID("00.64", "More than one value in set of supplier id."),
     AWARD_CURRENCY("00.65", "More than one value in set of currency."),
     CAN_ALREADY_USED("00.66", "CAN has been used for AC generation"),
     INVALID_AWARD_CURRENCY("00.67", "Invalid award currency."),
-    DUPLICATE_CAN_ID("00.68", "Duplicate CAN id.");
+    INVALID_CAN_STATUS_DETAILS("00.68", "CAN has an invalid status details to perform this operation."),
+    DUPLICATE_CAN_ID("00.69", "Duplicate CAN id."),
+    INVALID_FORMAT_TOKEN("00.70", "Invalid format the Token."),
+    INVALID_FORMAT_CAN_ID("00.71", "Invalid format the CAN id.");
 }

@@ -26,7 +26,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val can = toObject(Can::class.java, canEntity.jsonData)
-        if (can.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CAN_STATUS)
+        if (can.status != ContractStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
 
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)

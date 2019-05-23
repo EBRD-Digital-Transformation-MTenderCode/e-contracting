@@ -1,0 +1,11 @@
+{
+  "cans": [
+    {
+      "id": "can-1",
+      "status": "pending",
+      "statusDetails": "empty"
+    }
+  ],
+  "acCancel": true,
+  "lotId": "lot-1"
+}

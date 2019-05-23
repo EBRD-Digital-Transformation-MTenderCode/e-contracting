@@ -1,0 +1,20 @@
+{
+  "id": "0dc181db-f5ae-4039-97c7-defcceef89a4",
+  "token": "2909bc16-82c7-4281-8f35-3f0bb13476b8",
+  "awardId": "award-id-0",
+  "lotId": "lot-id-0",
+  "date": "2011-06-05T17:59:00Z",
+  "status": "pending",
+  "statusDetails": "active",
+  "documents": [
+    {
+      "documentType": "completionCertificate",
+      "id": "can.document-0",
+      "title": "can.documents[0].title",
+      "description": "can.documents[0].description",
+      "relatedLots": [
+        "lot-id-0"
+      ]
+    }
+  ]
+}

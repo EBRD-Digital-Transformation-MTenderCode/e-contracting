@@ -1,0 +1,16 @@
+{
+  "contract": {
+    "amendment": {
+      "rationale": "lot-1",
+      "description": "request.contract.amendment.description",
+      "documents": [
+        {
+          "documentType": "contractNotice",
+          "id": "document-1",
+          "title": "request.contract.amendment.documents[0].title",
+          "description": "request.contract.amendment.documents[0].description"
+        }
+      ]
+    }
+  }
+}
