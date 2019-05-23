@@ -35,7 +35,7 @@ import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DatabaseTestConfiguration::class])
-class CassandraACRepositoryTest {
+class CassandraACRepositoryIT {
     companion object {
         private const val CPID = "cpid-1"
         private const val CONTRACT_ID = "contract-id"

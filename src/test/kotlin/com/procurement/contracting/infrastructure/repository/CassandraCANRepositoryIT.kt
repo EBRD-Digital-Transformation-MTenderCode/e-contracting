@@ -35,7 +35,7 @@ import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DatabaseTestConfiguration::class])
-class CassandraCANRepositoryTest {
+class CassandraCANRepositoryIT {
     companion object {
         private const val CPID = "cpid-1"
         private val TOKEN = UUID.randomUUID()
