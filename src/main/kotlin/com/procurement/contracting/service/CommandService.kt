@@ -10,7 +10,10 @@ import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANReques
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -30,6 +33,10 @@ class CommandService(
     private val updateDocumentsService: UpdateDocumentsService,
     private val cancelService: CancelCANService
 ) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(CommandService::class.java)
+    }
 
     fun execute(cm: CommandMessage): ResponseDto {
         var historyEntity = historyDao.getHistory(cm.id, cm.command.value())
@@ -66,7 +73,10 @@ class CommandService(
                         )
                     }
                 )
-                ResponseDto(data = cancelService.cancel(context = context, data = data))
+                val result = cancelService.cancel(context = context, data = data)
+                if(log.isDebugEnabled)
+                    log.debug("CANs were cancelled. Response: ${toJson(result)}")
+                ResponseDto(data = result)
             }
             CommandType.CONFIRMATION_CAN -> canService.confirmationCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
