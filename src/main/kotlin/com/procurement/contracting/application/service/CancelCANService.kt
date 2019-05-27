@@ -359,14 +359,33 @@ class CancelCANServiceImpl(
      * ELSE eContracting throws Exception;
      */
     private fun checkCANStatuses(can: CAN) {
-        if (can.status != ContractStatus.PENDING)
-            throw ErrorException(error = ErrorType.INVALID_CAN_STATUS)
+        when (can.status) {
+            ContractStatus.PENDING -> {
+                when (can.statusDetails) {
+                    ContractStatusDetails.CONTRACT_PROJECT,
+                    ContractStatusDetails.ACTIVE,
+                    ContractStatusDetails.UNSUCCESSFUL -> Unit
 
-        if (!(can.statusDetails == ContractStatusDetails.CONTRACT_PROJECT
-                || can.statusDetails == ContractStatusDetails.ACTIVE
-                || can.statusDetails == ContractStatusDetails.UNSUCCESSFUL)
-        )
-            throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
+                    ContractStatusDetails.CONTRACT_PREPARATION,
+                    ContractStatusDetails.APPROVED,
+                    ContractStatusDetails.SIGNED,
+                    ContractStatusDetails.VERIFICATION,
+                    ContractStatusDetails.VERIFIED,
+                    ContractStatusDetails.CANCELLED,
+                    ContractStatusDetails.COMPLETE,
+                    ContractStatusDetails.ISSUED,
+                    ContractStatusDetails.APPROVEMENT,
+                    ContractStatusDetails.EXECUTION,
+                    ContractStatusDetails.EMPTY -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
+                }
+            }
+
+            ContractStatus.ACTIVE,
+            ContractStatus.CANCELLED,
+            ContractStatus.COMPLETE,
+            ContractStatus.TERMINATED,
+            ContractStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS)
+        }
     }
 
     /**
@@ -378,13 +397,51 @@ class CancelCANServiceImpl(
      * ELSE eContracting throws Exception;
      */
     private fun checkContractStatuses(contract: Contract) {
-        if (contract.status != ContractStatus.PENDING)
-            throw ErrorException(error = ErrorType.CONTRACT_STATUS)
+        when (contract.status) {
+            ContractStatus.PENDING -> {
+                when (contract.statusDetails) {
+                    ContractStatusDetails.CONTRACT_PROJECT,
+                    ContractStatusDetails.CONTRACT_PREPARATION,
+                    ContractStatusDetails.ACTIVE,
+                    ContractStatusDetails.APPROVED,
+                    ContractStatusDetails.SIGNED,
+                    ContractStatusDetails.CANCELLED,
+                    ContractStatusDetails.COMPLETE,
+                    ContractStatusDetails.UNSUCCESSFUL,
+                    ContractStatusDetails.ISSUED,
+                    ContractStatusDetails.APPROVEMENT,
+                    ContractStatusDetails.EXECUTION,
+                    ContractStatusDetails.EMPTY -> Unit
 
-        if (!(contract.statusDetails == ContractStatusDetails.VERIFICATION
-                || contract.statusDetails == ContractStatusDetails.VERIFIED)
-        )
-            throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.VERIFICATION,
+                    ContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                }
+            }
+
+            ContractStatus.CANCELLED -> {
+                when (contract.statusDetails) {
+                    ContractStatusDetails.EMPTY -> Unit
+
+                    ContractStatusDetails.CONTRACT_PROJECT,
+                    ContractStatusDetails.CONTRACT_PREPARATION,
+                    ContractStatusDetails.ACTIVE,
+                    ContractStatusDetails.APPROVED,
+                    ContractStatusDetails.SIGNED,
+                    ContractStatusDetails.VERIFICATION,
+                    ContractStatusDetails.VERIFIED,
+                    ContractStatusDetails.CANCELLED,
+                    ContractStatusDetails.COMPLETE,
+                    ContractStatusDetails.UNSUCCESSFUL,
+                    ContractStatusDetails.ISSUED,
+                    ContractStatusDetails.APPROVEMENT,
+                    ContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                }
+            }
+
+            ContractStatus.ACTIVE,
+            ContractStatus.COMPLETE,
+            ContractStatus.TERMINATED,
+            ContractStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.CONTRACT_STATUS)
+        }
     }
 }
-
