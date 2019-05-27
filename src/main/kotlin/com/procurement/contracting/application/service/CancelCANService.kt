@@ -361,7 +361,7 @@ class CancelCANServiceImpl(
     private fun checkCANStatuses(can: CAN) {
         when (can.status) {
             ContractStatus.PENDING -> {
-                when (can.statusDetails) {
+                return when (can.statusDetails) {
                     ContractStatusDetails.CONTRACT_PROJECT,
                     ContractStatusDetails.ACTIVE,
                     ContractStatusDetails.UNSUCCESSFUL -> Unit
@@ -399,7 +399,7 @@ class CancelCANServiceImpl(
     private fun checkContractStatuses(contract: Contract) {
         when (contract.status) {
             ContractStatus.PENDING -> {
-                when (contract.statusDetails) {
+                return when (contract.statusDetails) {
                     ContractStatusDetails.CONTRACT_PROJECT,
                     ContractStatusDetails.CONTRACT_PREPARATION,
                     ContractStatusDetails.ACTIVE,
@@ -419,7 +419,7 @@ class CancelCANServiceImpl(
             }
 
             ContractStatus.CANCELLED -> {
-                when (contract.statusDetails) {
+                return when (contract.statusDetails) {
                     ContractStatusDetails.EMPTY -> Unit
 
                     ContractStatusDetails.CONTRACT_PROJECT,
