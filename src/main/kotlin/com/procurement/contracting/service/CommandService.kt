@@ -7,12 +7,12 @@ import com.procurement.contracting.dao.HistoryDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANRequest
+import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANResponse
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
@@ -74,9 +74,43 @@ class CommandService(
                     }
                 )
                 val result = cancelService.cancel(context = context, data = data)
-                if(log.isDebugEnabled)
-                    log.debug("CANs were cancelled. Response: ${toJson(result)}")
-                ResponseDto(data = result)
+                if (log.isDebugEnabled)
+                    log.debug("CANs were cancelled. Result: ${toJson(result)}")
+                val dataResponse = CancelCANResponse(
+                    cans = result.cans.map { can ->
+                        CancelCANResponse.CAN(
+                            id = can.id.toString(),
+                            status = can.status,
+                            statusDetails = can.statusDetails,
+                            amendment = can.amendment?.let { amendment ->
+                                CancelCANResponse.CAN.Amendment(
+                                    rationale = amendment.rationale,
+                                    description = amendment.description,
+                                    documents = amendment.documents?.map { document ->
+                                        CancelCANResponse.CAN.Amendment.Document(
+                                            id = document.id,
+                                            documentType = document.documentType,
+                                            title = document.title,
+                                            description = document.description
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    },
+                    contract = result.contract?.let { contract ->
+                        CancelCANResponse.Contract(
+                            id = contract.id,
+                            status = contract.status,
+                            statusDetails = contract.statusDetails
+                        )
+                    },
+                    acCancel = result.isCancelledAC,
+                    lotId = result.lotId
+                )
+                if (log.isDebugEnabled)
+                    log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
+                ResponseDto(data = dataResponse)
             }
             CommandType.CONFIRMATION_CAN -> canService.confirmationCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
