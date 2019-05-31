@@ -21,7 +21,14 @@ class CommandController(private val commandService: CommandService) {
 
     @PostMapping
     fun command(@RequestBody commandMessage: CommandMessage): ResponseEntity<ResponseDto> {
-        return ResponseEntity(commandService.execute(commandMessage), HttpStatus.OK)
+        if(log.isDebugEnabled)
+            log.debug("RECEIVED COMMAND: '$commandMessage'.")
+
+        val result = commandService.execute(commandMessage)
+
+        if(log.isDebugEnabled)
+            log.debug("RESPONSE ON COMMAND (${commandMessage.id}): '$result'.")
+        return ResponseEntity(result, HttpStatus.OK)
     }
 
     @ResponseBody
