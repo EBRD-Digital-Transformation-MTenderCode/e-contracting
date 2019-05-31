@@ -74,5 +74,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_CAN_STATUS_DETAILS("00.68", "CAN has an invalid status details to perform this operation."),
     DUPLICATE_CAN_ID("00.69", "Duplicate CAN id."),
     INVALID_FORMAT_TOKEN("00.70", "Invalid format the Token."),
-    INVALID_FORMAT_CAN_ID("00.71", "Invalid format the CAN id.");
+    INVALID_FORMAT_CAN_ID("00.71", "Invalid format the CAN id."),
+    PERSONES_IN_SUPPLIERS_IS_EMPTY("00.72", "The list of the persones in the suppliers is empty.");
 }

@@ -2,11 +2,66 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.exception.ErrorType.AWARD_ID
+import com.procurement.contracting.exception.ErrorType.AWARD_VALUE
+import com.procurement.contracting.exception.ErrorType.BA_ITEM_ID
+import com.procurement.contracting.exception.ErrorType.BF
+import com.procurement.contracting.exception.ErrorType.BS_CURRENCY
+import com.procurement.contracting.exception.ErrorType.CONFIRMATION_ITEM
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.CONTRACT_PERIOD
+import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
+import com.procurement.contracting.exception.ErrorType.DOCUMENTS
+import com.procurement.contracting.exception.ErrorType.EMPTY_MILESTONE_RELATED_ITEM
+import com.procurement.contracting.exception.ErrorType.INVALID_AWARD_CURRENCY
+import com.procurement.contracting.exception.ErrorType.INVALID_DOCS_RELATED_LOTS
+import com.procurement.contracting.exception.ErrorType.INVALID_OWNER
+import com.procurement.contracting.exception.ErrorType.INVALID_TOKEN
+import com.procurement.contracting.exception.ErrorType.INVALID_TR_RELATED_MILESTONES
+import com.procurement.contracting.exception.ErrorType.ITEM_AMOUNT
+import com.procurement.contracting.exception.ErrorType.ITEM_CURRENCY
+import com.procurement.contracting.exception.ErrorType.ITEM_ID
+import com.procurement.contracting.exception.ErrorType.MILESTONES_EMPTY
+import com.procurement.contracting.exception.ErrorType.MILESTONE_DUE_DATE
+import com.procurement.contracting.exception.ErrorType.MILESTONE_ID
+import com.procurement.contracting.exception.ErrorType.MILESTONE_RELATED_ITEMS
+import com.procurement.contracting.exception.ErrorType.MILESTONE_TYPE
+import com.procurement.contracting.exception.ErrorType.PERSONES
+import com.procurement.contracting.exception.ErrorType.PERSONES_IN_SUPPLIERS_IS_EMPTY
+import com.procurement.contracting.exception.ErrorType.PERSON_NOT_FOUND
+import com.procurement.contracting.exception.ErrorType.SUPPLIERS
+import com.procurement.contracting.exception.ErrorType.TRANSACTIONS
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.DetailsSupplierUpdate
+import com.procurement.contracting.model.dto.ItemUpdate
+import com.procurement.contracting.model.dto.OrganizationReferenceSupplierUpdate
+import com.procurement.contracting.model.dto.UpdateAcRq
+import com.procurement.contracting.model.dto.UpdateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.BusinessFunction
+import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
+import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.model.dto.ocds.DetailsSupplier
+import com.procurement.contracting.model.dto.ocds.DocumentAward
+import com.procurement.contracting.model.dto.ocds.DocumentBF
+import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.Item
+import com.procurement.contracting.model.dto.ocds.MainProcurementCategory
+import com.procurement.contracting.model.dto.ocds.Milestone
+import com.procurement.contracting.model.dto.ocds.MilestoneStatus
+import com.procurement.contracting.model.dto.ocds.MilestoneType
+import com.procurement.contracting.model.dto.ocds.OrganizationReferenceSupplier
+import com.procurement.contracting.model.dto.ocds.Period
+import com.procurement.contracting.model.dto.ocds.Person
+import com.procurement.contracting.model.dto.ocds.Planning
+import com.procurement.contracting.model.dto.ocds.RelatedParty
+import com.procurement.contracting.model.dto.ocds.RelatedPerson
+import com.procurement.contracting.model.dto.ocds.Request
+import com.procurement.contracting.model.dto.ocds.RequestGroup
+import com.procurement.contracting.model.dto.ocds.SourceType
+import com.procurement.contracting.model.dto.ocds.TransactionType
+import com.procurement.contracting.model.dto.ocds.ValueTax
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -30,6 +85,9 @@ class UpdateAcService(private val acDao: AcDao,
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
+
+        if(dto.award.suppliers.isEmpty())
+            throw ErrorException(error = PERSONES_IN_SUPPLIERS_IS_EMPTY)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
