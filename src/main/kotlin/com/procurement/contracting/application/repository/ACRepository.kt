@@ -7,10 +7,10 @@ import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 interface ACRepository {
     fun findBy(cpid: String, contractId: String): ACEntity?
 
-    fun cancellationAC(dataCancelAC: DataCancelAC)
+    fun saveCancelledAC(dataCancelledAC: DataCancelledAC)
 }
 
-data class DataCancelAC(
+data class DataCancelledAC(
     val id: String,
     val cpid: String,
     val status: ContractStatus,

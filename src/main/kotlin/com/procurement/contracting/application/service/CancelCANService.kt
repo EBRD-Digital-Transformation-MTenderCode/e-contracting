@@ -2,8 +2,9 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataCancelAC
 import com.procurement.contracting.application.repository.DataCancelCAN
+import com.procurement.contracting.application.repository.DataCancelledAC
+import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.CAN
@@ -46,17 +47,18 @@ data class CancelCANData(
 }
 
 data class CancelledCANData(
-    val cans: List<CAN>,
+    val cancelledCAN: CancelledCAN,
+    val relatedCANs: List<RelatedCAN>,
     val isCancelledAC: Boolean,
     val lotId: String,
     val contract: Contract?
 ) {
 
-    data class CAN(
+    data class CancelledCAN(
         val id: UUID,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails,
-        val amendment: Amendment?
+        val amendment: Amendment
     ) {
 
         data class Amendment(
@@ -73,6 +75,12 @@ data class CancelledCANData(
             )
         }
     }
+
+    data class RelatedCAN(
+        val id: UUID,
+        val status: ContractStatus,
+        val statusDetails: ContractStatusDetails
+    )
 
     data class Contract(
         val id: String,
@@ -126,9 +134,6 @@ class CancelCANServiceImpl(
      */
     override fun cancel(context: CancelCANContext, data: CancelCANData): CancelledCANData {
 
-        /**
-         * Begin processing the cancellation CAN
-         */
         val canEntity: CANEntity = canRepository.findBy(cpid = context.cpid, canId = context.canId)
             ?: throw ErrorException(ErrorType.CAN_NOT_FOUND)
 
@@ -143,34 +148,17 @@ class CancelCANServiceImpl(
         //VR-9.13.3
         checkCANStatuses(can)
 
-        val cansForResponse = mutableListOf<CancelledCANData.CAN>()
-
         val cancelledCAN: CAN = cancellingCAN(can = can, amendment = data.amendment)
-        val dataCancelCAN = DataCancelCAN(
-            id = can.id,
-            status = cancelledCAN.status,
-            statusDetails = cancelledCAN.statusDetails,
-            jsonData = toJson(cancelledCAN)
-        )
-        cansForResponse.add(element = generateCANResponse(can = cancelledCAN))
-        /**
-         * End processing the cancellation CAN
-         */
 
         /**
          * Begin processing a contract of the cancellation CAN & related CANs
          */
-        val dataCancelAC: DataCancelAC?
-        val contractForResponse: CancelledCANData.Contract?
-        val isCancelledAC: Boolean
-        val dataRelatedCANs = mutableListOf<DataCancelCAN>()
+        val cancelledContract: Contract?
+        val updatedContractProcess: ContractProcess?
+        val relatedCANs: List<CAN>
 
         if (canEntity.contractId != null) {
             val contractId: String = canEntity.contractId
-
-            /**
-             * Begin update contract
-             */
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
 
@@ -179,65 +167,62 @@ class CancelCANServiceImpl(
             //VR-9.13.4
             checkContractStatuses(contract = contractProcess.contract)
 
-            val cancelledContract = cancellingContract(contractProcess.contract)
-            val updatedContractProcess = contractProcess.copy(contract = cancelledContract)
-            dataCancelAC = DataCancelAC(
-                cpid = context.cpid,
-                id = cancelledContract.id,
-                status = cancelledContract.status,
-                statusDetails = cancelledContract.statusDetails,
-                jsonData = toJson(updatedContractProcess)
-            )
-            contractForResponse = generateContractResponse(cancelledContract)
-            isCancelledAC = true
-            /**
-             * End update contract
-             */
+            cancelledContract = cancellingContract(contractProcess.contract)
+            updatedContractProcess = contractProcess.copy(contract = cancelledContract)
 
-            /**
-             * Begin update related CANs
-             */
-            getRelatedCans(cpid = context.cpid, canId = can.id, contractId = contractId)
-                .forEach { relatedCANEntity ->
+            relatedCANs = getRelatedCans(cpid = context.cpid, canId = can.id, contractId = contractId)
+                .map { relatedCANEntity ->
                     val relatedCAN: CAN = toObject(CAN::class.java, relatedCANEntity.jsonData)
 
                     //BR-9.13.4
-                    val updatedRelatedCAN = settingStatusesRelatedCAN(relatedCAN)
-                    val dataRelatedCAN = DataCancelCAN(
-                        id = relatedCAN.id,
-                        status = updatedRelatedCAN.status,
-                        statusDetails = updatedRelatedCAN.statusDetails,
-                        jsonData = toJson(updatedRelatedCAN)
-                    )
-                    dataRelatedCANs.add(dataRelatedCAN)
-                    cansForResponse.add(element = generateCANResponse(can = updatedRelatedCAN))
+                    settingStatusesRelatedCAN(relatedCAN)
                 }
-
-            /**
-             * End update related CANs
-             */
+                .toList()
         } else {
-            contractForResponse = null
-            dataCancelAC = null
-            isCancelledAC = false
+            cancelledContract = null
+            updatedContractProcess = null
+            relatedCANs = emptyList()
         }
-        /**
-         * End processing a contract of the cancellation CAN & related CANs
-         */
 
-        if (dataCancelAC != null)
-            acRepository.cancellationAC(dataCancelAC = dataCancelAC)
+        val isCancelledAC = if (cancelledContract != null) {
+            acRepository.saveCancelledAC(
+                dataCancelledAC = DataCancelledAC(
+                    cpid = context.cpid,
+                    id = cancelledContract.id,
+                    status = cancelledContract.status,
+                    statusDetails = cancelledContract.statusDetails,
+                    jsonData = toJson(updatedContractProcess)
+                )
+            )
+            true
+        } else {
+            false
+        }
+
         canRepository.saveCancelledCANs(
             cpid = context.cpid,
-            dataCancelledCAN = dataCancelCAN,
-            dataRelatedCANs = dataRelatedCANs
+            dataCancelledCAN = DataCancelCAN(
+                id = can.id,
+                status = cancelledCAN.status,
+                statusDetails = cancelledCAN.statusDetails,
+                jsonData = toJson(cancelledCAN)
+            ),
+            dataRelatedCANs = relatedCANs.map { relatedCan ->
+                DataRelatedCAN(
+                    id = relatedCan.id,
+                    status = relatedCan.status,
+                    statusDetails = relatedCan.statusDetails,
+                    jsonData = toJson(relatedCan)
+                )
+            }
         )
 
         return CancelledCANData(
-            cans = cansForResponse,
+            cancelledCAN = generateCancelledCANResponse(cancelledCAN),
+            relatedCANs = generateRelatedCANsResponse(relatedCANs),
             isCancelledAC = isCancelledAC,
             lotId = can.lotId,
-            contract = contractForResponse
+            contract = generateContractResponse(cancelledContract)
         )
     }
 
@@ -251,16 +236,16 @@ class CancelCANServiceImpl(
             it.contractId == contractId && it.id != canId
         }
 
-    private fun generateCANResponse(can: CAN) = CancelledCANData.CAN(
-        id = can.id,
-        status = can.status,
-        statusDetails = can.statusDetails,
-        amendment = can.amendment?.let {
-            CancelledCANData.CAN.Amendment(
+    private fun generateCancelledCANResponse(cancelledCAN: CAN) = CancelledCANData.CancelledCAN(
+        id = cancelledCAN.id,
+        status = cancelledCAN.status,
+        statusDetails = cancelledCAN.statusDetails,
+        amendment = cancelledCAN.amendment!!.let {
+            CancelledCANData.CancelledCAN.Amendment(
                 rationale = it.rationale,
                 description = it.description,
                 documents = it.documents?.map { document ->
-                    CancelledCANData.CAN.Amendment.Document(
+                    CancelledCANData.CancelledCAN.Amendment.Document(
                         id = document.id,
                         documentType = document.documentType,
                         title = document.title,
@@ -271,11 +256,22 @@ class CancelCANServiceImpl(
         }
     )
 
-    private fun generateContractResponse(contract: Contract) = CancelledCANData.Contract(
-        id = contract.id,
-        status = contract.status,
-        statusDetails = contract.statusDetails
-    )
+    private fun generateRelatedCANsResponse(relatedCANs: List<CAN>): List<CancelledCANData.RelatedCAN> =
+        relatedCANs.map { relatedCAN ->
+            CancelledCANData.RelatedCAN(
+                id = relatedCAN.id,
+                status = relatedCAN.status,
+                statusDetails = relatedCAN.statusDetails
+            )
+        }
+
+    private fun generateContractResponse(contract: Contract?) = contract?.let {
+        CancelledCANData.Contract(
+            id = it.id,
+            status = it.status,
+            statusDetails = it.statusDetails
+        )
+    }
 
     private fun cancellingContract(contract: Contract): Contract {
         return contract.copy(

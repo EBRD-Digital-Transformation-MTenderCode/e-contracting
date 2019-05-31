@@ -16,6 +16,7 @@ import com.procurement.contracting.application.exception.repository.ReadEntityEx
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
+import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
@@ -158,7 +159,7 @@ class CassandraCANRepositoryIT {
         canRepository.saveCancelledCANs(
             cpid = CPID,
             dataCancelledCAN = dataCancelledCAN(),
-            dataRelatedCANs = dataCancelledRelatedCANs()
+            dataRelatedCANs = dataRelatedCANs()
         )
 
         val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
@@ -178,7 +179,7 @@ class CassandraCANRepositoryIT {
             canRepository.saveCancelledCANs(
                 cpid = CPID,
                 dataCancelledCAN = dataCancelledCAN(),
-                dataRelatedCANs = dataCancelledRelatedCANs()
+                dataRelatedCANs = dataRelatedCANs()
             )
         }
 
@@ -276,8 +277,8 @@ class CassandraCANRepositoryIT {
         jsonData = CAN_JSON_DATA_AFTER_CANCEL
     )
 
-    private fun dataCancelledRelatedCANs() = listOf(
-        DataCancelCAN(
+    private fun dataRelatedCANs() = listOf(
+        DataRelatedCAN(
             id = RELATED_CAN_ID,
             status = RELATED_CAN_STATUS_AFTER_CANCEL,
             statusDetails = RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL,

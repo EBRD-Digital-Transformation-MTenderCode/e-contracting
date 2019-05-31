@@ -14,7 +14,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.DataCancelAC
+import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.model.dto.ocds.ContractStatus
 import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
@@ -117,7 +117,7 @@ class CassandraACRepositoryIT {
     fun cancellationAC() {
         insertCancellationAC()
 
-        acRepository.cancellationAC(dataCancelAC = dataCancelAC())
+        acRepository.saveCancelledAC(dataCancelledAC = dataCancelAC())
 
         val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
 
@@ -134,7 +134,7 @@ class CassandraACRepositoryIT {
             .execute(any<BoundStatement>())
 
         val exception = assertThrows<SaveEntityException> {
-            acRepository.cancellationAC(dataCancelAC = dataCancelAC())
+            acRepository.saveCancelledAC(dataCancelledAC = dataCancelAC())
         }
         assertEquals("Error writing cancelled Contract.", exception.message)
     }
@@ -182,7 +182,7 @@ class CassandraACRepositoryIT {
         session.execute(rec)
     }
 
-    private fun dataCancelAC() = DataCancelAC(
+    private fun dataCancelAC() = DataCancelledAC(
         id = CONTRACT_ID,
         cpid = CPID,
         status = AC_STATUS_AFTER_CANCEL,

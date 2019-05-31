@@ -1,21 +1,19 @@
 {
-  "cans": [
-    {
-      "id": "can-1",
-      "status": "pending",
-      "statusDetails": "empty",
-      "amendment": {
-        "rationale": "response.cans[0].amendment.rationale",
-        "documents": [
-          {
-            "documentType": "contractNotice",
-            "id": "document-1",
-            "title": "response.cans[0].amendment.documents[0].title"
-          }
-        ]
-      }
+  "cancelledCan": {
+    "id": "can-1",
+    "status": "pending",
+    "statusDetails": "empty",
+    "amendment": {
+      "rationale": "response.cans[0].amendment.rationale",
+      "documents": [
+        {
+          "documentType": "contractNotice",
+          "id": "document-1",
+          "title": "response.cans[0].amendment.documents[0].title"
+        }
+      ]
     }
-  ],
+  },
   "acCancel": true,
   "lotId": "lot-1"
 }

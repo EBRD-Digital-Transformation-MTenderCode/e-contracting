@@ -1,7 +1,10 @@
 package com.procurement.contracting.application.service
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.AbstractArgumentConverter
 import com.procurement.contracting.application.repository.ACRepository
@@ -89,14 +92,13 @@ class CancelCANServiceTest {
         val data = data()
         val response = service.cancel(context = context(), data = data)
 
-        assertEquals(1, response.cans.size)
-        val canceledCAN = response.cans[0]
+        val canceledCAN = response.cancelledCAN
         assertEquals(cancellationCANEntity.id, canceledCAN.id)
         assertEquals(ContractStatus.CANCELLED, canceledCAN.status)
         assertEquals(ContractStatusDetails.EMPTY, canceledCAN.statusDetails)
 
         assertNotNull(canceledCAN.amendment)
-        val amendment = canceledCAN.amendment!!
+        val amendment = canceledCAN.amendment
         assertEquals(data.amendment.rationale, amendment.rationale)
         assertEquals(data.amendment.description, amendment.description)
         assertEquals(data.amendment.documents!!.size, amendment.documents!!.size)
@@ -111,6 +113,9 @@ class CancelCANServiceTest {
         assertEquals(false, response.isCancelledAC)
 
         assertNull(response.contract)
+
+        verify(acRepository, times(0)).saveCancelledAC(any())
+        verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
     @ParameterizedTest(name = "Contract - status: ''{0}'' & statusDetails: ''{1}''")
@@ -154,14 +159,13 @@ class CancelCANServiceTest {
         val data = data()
         val response = service.cancel(context = context(), data = data)
 
-        assertEquals(1, response.cans.size)
-        val canceledCAN = response.cans[0]
+        val canceledCAN = response.cancelledCAN
         assertEquals(cancellationCANEntity.id, canceledCAN.id)
         assertEquals(ContractStatus.CANCELLED, canceledCAN.status)
         assertEquals(ContractStatusDetails.EMPTY, canceledCAN.statusDetails)
 
         assertNotNull(canceledCAN.amendment)
-        val amendment = canceledCAN.amendment!!
+        val amendment = canceledCAN.amendment
         assertEquals(data.amendment.rationale, amendment.rationale)
         assertEquals(data.amendment.description, amendment.description)
         assertEquals(data.amendment.documents!!.size, amendment.documents!!.size)
@@ -180,6 +184,9 @@ class CancelCANServiceTest {
         assertEquals(CONTRACT_ID, contract.id)
         assertEquals(ContractStatus.CANCELLED, contract.status)
         assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
+
+        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
     @Test
@@ -209,15 +216,13 @@ class CancelCANServiceTest {
         assertEquals(ContractStatus.CANCELLED, contract.status)
         assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
 
-        assertEquals(2, response.cans.size)
+        val cancelledCAN = response.cancelledCAN
+        assertEquals(cancellationCAN.id, cancelledCAN.id)
+        assertEquals(ContractStatus.CANCELLED, cancelledCAN.status)
+        assertEquals(ContractStatusDetails.EMPTY, cancelledCAN.statusDetails)
 
-        val canceledCAN = response.cans[0]
-        assertEquals(cancellationCAN.id, canceledCAN.id)
-        assertEquals(ContractStatus.CANCELLED, canceledCAN.status)
-        assertEquals(ContractStatusDetails.EMPTY, canceledCAN.statusDetails)
-
-        assertNotNull(canceledCAN.amendment)
-        val amendment = canceledCAN.amendment!!
+        assertNotNull(cancelledCAN.amendment)
+        val amendment = cancelledCAN.amendment
         assertEquals(data.amendment.rationale, amendment.rationale)
         assertEquals(data.amendment.description, amendment.description)
         assertEquals(data.amendment.documents!!.size, amendment.documents!!.size)
@@ -228,12 +233,14 @@ class CancelCANServiceTest {
         assertEquals(data.amendment.documents!![0].title, documents[0].title)
         assertEquals(data.amendment.documents!![0].description, documents[0].description)
 
-        val firstRelatedCAN = response.cans[1]
+        assertEquals(1, response.relatedCANs.size)
+        val firstRelatedCAN = response.relatedCANs[0]
         assertEquals(firstOtherCAN.id, firstRelatedCAN.id)
         assertEquals(ContractStatus.PENDING, firstRelatedCAN.status)
         assertEquals(ContractStatusDetails.CONTRACT_PROJECT, firstRelatedCAN.statusDetails)
 
-        assertNull(firstRelatedCAN.amendment)
+        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
     @Test

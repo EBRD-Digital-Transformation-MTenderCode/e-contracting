@@ -77,17 +77,17 @@ class CommandService(
                 if (log.isDebugEnabled)
                     log.debug("CANs were cancelled. Result: ${toJson(result)}")
                 val dataResponse = CancelCANResponse(
-                    cans = result.cans.map { can ->
-                        CancelCANResponse.CAN(
+                    cancelledCAN = result.cancelledCAN.let { can ->
+                        CancelCANResponse.CancelledCAN(
                             id = can.id.toString(),
                             status = can.status,
                             statusDetails = can.statusDetails,
-                            amendment = can.amendment?.let { amendment ->
-                                CancelCANResponse.CAN.Amendment(
+                            amendment = can.amendment.let { amendment ->
+                                CancelCANResponse.CancelledCAN.Amendment(
                                     rationale = amendment.rationale,
                                     description = amendment.description,
                                     documents = amendment.documents?.map { document ->
-                                        CancelCANResponse.CAN.Amendment.Document(
+                                        CancelCANResponse.CancelledCAN.Amendment.Document(
                                             id = document.id,
                                             documentType = document.documentType,
                                             title = document.title,
@@ -96,6 +96,13 @@ class CommandService(
                                     }
                                 )
                             }
+                        )
+                    },
+                    relatedCANs = result.relatedCANs.map { relatedCAN ->
+                        CancelCANResponse.RelatedCAN(
+                            id = relatedCAN.id.toString(),
+                            status = relatedCAN.status,
+                            statusDetails = relatedCAN.statusDetails
                         )
                     },
                     contract = result.contract?.let { contract ->

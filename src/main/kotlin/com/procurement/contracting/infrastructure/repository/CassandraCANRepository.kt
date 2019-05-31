@@ -10,6 +10,7 @@ import com.procurement.contracting.application.exception.repository.ReadEntityEx
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
+import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.CANEntity
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -126,12 +127,12 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     override fun saveCancelledCANs(
         cpid: String,
         dataCancelledCAN: DataCancelCAN,
-        dataRelatedCANs: List<DataCancelCAN>
+        dataRelatedCANs: List<DataRelatedCAN>
     ) {
         val statements = BatchStatement().apply {
             add(statementForCancelCAN(cpid = cpid, dataCancelledCAN = dataCancelledCAN))
             for (dataRelatedCan in dataRelatedCANs) {
-                add(statementForCancelCAN(cpid = cpid, dataCancelledCAN = dataRelatedCan))
+                add(statementForRelatedCAN(cpid = cpid, dataCancelledCAN = dataRelatedCan))
             }
         }
 
@@ -141,6 +142,17 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     }
 
     private fun statementForCancelCAN(cpid: String, dataCancelledCAN: DataCancelCAN): Statement =
+        preparedCancelCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setUUID(columnCanId, dataCancelledCAN.id)
+                setString(columnContractId, null)
+                setString(columnStatus, dataCancelledCAN.status.toString())
+                setString(columnStatusDetails, dataCancelledCAN.statusDetails.toString())
+                setString(columnJsonData, dataCancelledCAN.jsonData)
+            }
+
+    private fun statementForRelatedCAN(cpid: String, dataCancelledCAN: DataRelatedCAN): Statement =
         preparedCancelCQL.bind()
             .apply {
                 setString(columnCpid, cpid)

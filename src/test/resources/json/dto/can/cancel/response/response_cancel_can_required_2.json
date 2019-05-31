@@ -1,14 +1,12 @@
 {
-  "cans": [
-    {
-      "id": "can-1",
-      "status": "pending",
-      "statusDetails": "empty",
-      "amendment": {
-        "rationale": "response.cans[0].amendment.rationale"
-      }
+  "cancelledCan": {
+    "id": "can-1",
+    "status": "pending",
+    "statusDetails": "empty",
+    "amendment": {
+      "rationale": "response.cans[0].amendment.rationale"
     }
-  ],
+  },
   "acCancel": true,
   "lotId": "lot-1"
 }

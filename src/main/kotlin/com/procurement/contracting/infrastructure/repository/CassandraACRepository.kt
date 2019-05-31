@@ -7,7 +7,7 @@ import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.DataCancelAC
+import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.domain.entity.ACEntity
 import org.springframework.stereotype.Repository
 
@@ -89,14 +89,14 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         jsonData = row.getString(columnJsonData)
     )
 
-    override fun cancellationAC(dataCancelAC: DataCancelAC) {
+    override fun saveCancelledAC(dataCancelledAC: DataCancelledAC) {
         val statements = preparedCancelCQL.bind()
             .apply {
-                setString(columnCpid, dataCancelAC.cpid)
-                setString(columnContractId, dataCancelAC.id)
-                setString(columnStatus, dataCancelAC.status.toString())
-                setString(columnStatusDetails, dataCancelAC.statusDetails.toString())
-                setString(columnJsonData, dataCancelAC.jsonData)
+                setString(columnCpid, dataCancelledAC.cpid)
+                setString(columnContractId, dataCancelledAC.id)
+                setString(columnStatus, dataCancelledAC.status.toString())
+                setString(columnStatusDetails, dataCancelledAC.statusDetails.toString())
+                setString(columnJsonData, dataCancelledAC.jsonData)
             }
 
         saveCancelledAC(statements)
