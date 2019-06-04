@@ -23,7 +23,7 @@ class StatusService(private val acDao: AcDao) {
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
-        if (entity.owner != owner) throw ErrorException(OWNER)
+        if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         val contract = contractProcess.contract

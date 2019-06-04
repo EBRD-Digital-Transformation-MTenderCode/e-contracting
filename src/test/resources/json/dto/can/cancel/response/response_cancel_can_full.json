@@ -1,0 +1,33 @@
+{
+  "cancelledCan": {
+    "id": "can-1",
+    "status": "pending",
+    "statusDetails": "empty",
+    "amendment": {
+      "rationale": "response.cans[0].amendment.rationale",
+      "description": "response.cans[0].amendment.description",
+      "documents": [
+        {
+          "documentType": "contractNotice",
+          "id": "document-1",
+          "title": "response.cans[0].amendment.documents[0].title",
+          "description": "response.cans[0].amendment.documents[0].description"
+        }
+      ]
+    }
+  },
+  "relatedCans": [
+    {
+      "id": "can-2",
+      "status": "pending",
+      "statusDetails": "empty"
+    }
+  ],
+  "acCancel": true,
+  "lotId": "lot-1",
+  "contract": {
+    "id": "contract-1",
+    "status": "cancelled",
+    "statusDetails": "empty"
+  }
+}

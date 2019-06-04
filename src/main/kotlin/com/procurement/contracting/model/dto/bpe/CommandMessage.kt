@@ -113,11 +113,11 @@ fun getExceptionResponseDto(exception: Exception): ResponseDto {
             )))
 }
 
-fun getErrorExceptionResponseDto(error: ErrorException, id: String? = null): ResponseDto {
+fun getErrorExceptionResponseDto(exception: ErrorException, id: String? = null): ResponseDto {
     return ResponseDto(
             errors = listOf(ResponseErrorDto(
-                    code = "400.09." + error.code,
-                    description = error.msg
+                    code = "400.09." + exception.error.code,
+                    description = exception.message
             )),
             id = id)
 }

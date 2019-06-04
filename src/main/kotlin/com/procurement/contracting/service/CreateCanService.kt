@@ -73,7 +73,7 @@ class CreateCanService(private val canDao: CanDao,
                     it.awardId == dto.awardId
                             && it.status == ContractStatus.PENDING.value
                 }) {
-            throw ErrorException(ErrorType.CAN_STATUS)
+            throw ErrorException(ErrorType.INVALID_CAN_STATUS)
         }
         return ResponseDto(data = "ok")
     }
@@ -90,7 +90,7 @@ class CreateCanService(private val canDao: CanDao,
             if (canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value) {
                 cansRs.add(CanGetAwards(id = canEntity.canId.toString(), awardId = canEntity.awardId!!))
             } else {
-                throw ErrorException(ErrorType.CAN_STATUS)
+                throw ErrorException(ErrorType.INVALID_CAN_STATUS)
             }
         }
         return ResponseDto(data = GetAwardsRs(cansRs))
@@ -103,10 +103,10 @@ class CreateCanService(private val canDao: CanDao,
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val canId = cm.context.id ?: throw ErrorException(CONTEXT)
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
-        if (canEntity.owner != owner) throw ErrorException(ErrorType.OWNER)
+        if (canEntity.owner != owner) throw ErrorException(error = ErrorType.INVALID_OWNER)
         if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
         if (canEntity.status != ContractStatus.PENDING.value && canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value)
-            throw ErrorException(ErrorType.CAN_STATUS)
+            throw ErrorException(ErrorType.INVALID_CAN_STATUS)
         val can = toObject(Can::class.java, canEntity.jsonData)
         can.status = ContractStatus.UNSUCCESSFUL
         can.statusDetails = ContractStatusDetails.EMPTY
