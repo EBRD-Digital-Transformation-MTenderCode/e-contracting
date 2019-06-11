@@ -86,7 +86,10 @@ class UpdateAcService(private val acDao: AcDao,
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
-        if(dto.award.suppliers.isEmpty())
+        val isEmptyPersones = dto.award.suppliers.any {
+            it.persones.isEmpty()
+        }
+        if (isEmptyPersones)
             throw ErrorException(error = PERSONES_IN_SUPPLIERS_IS_EMPTY)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
