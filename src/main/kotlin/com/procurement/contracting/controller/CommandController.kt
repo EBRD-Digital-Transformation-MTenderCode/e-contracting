@@ -4,6 +4,8 @@ import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.model.dto.bpe.*
 import com.procurement.contracting.service.CommandService
+import com.procurement.contracting.utils.toJson
+import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,15 +22,16 @@ class CommandController(private val commandService: CommandService) {
     }
 
     @PostMapping
-    fun command(@RequestBody commandMessage: CommandMessage): ResponseEntity<ResponseDto> {
-        if(log.isDebugEnabled)
-            log.debug("RECEIVED COMMAND: '$commandMessage'.")
+    fun command(@RequestBody requestBody: String): ResponseEntity<ResponseDto> {
+        if (log.isDebugEnabled)
+            log.debug("RECEIVED COMMAND: '$requestBody'.")
+        val cm: CommandMessage = toObject(CommandMessage::class.java, requestBody)
 
-        val result = commandService.execute(commandMessage)
+        val response = commandService.execute(cm)
 
-        if(log.isDebugEnabled)
-            log.debug("RESPONSE ON COMMAND (${commandMessage.id}): '$result'.")
-        return ResponseEntity(result, HttpStatus.OK)
+        if (log.isDebugEnabled)
+            log.debug("RESPONSE (operation-id: '${cm.context.operationId}'): '${toJson(response)}'.")
+        return ResponseEntity(response, HttpStatus.OK)
     }
 
     @ResponseBody
