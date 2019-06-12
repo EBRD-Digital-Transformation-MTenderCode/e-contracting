@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.AWARD_ID
 import com.procurement.contracting.exception.ErrorType.AWARD_VALUE
 import com.procurement.contracting.exception.ErrorType.BA_ITEM_ID
@@ -31,6 +32,12 @@ import com.procurement.contracting.exception.ErrorType.PERSONES_IN_SUPPLIERS_IS_
 import com.procurement.contracting.exception.ErrorType.PERSON_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.SUPPLIERS
 import com.procurement.contracting.exception.ErrorType.TRANSACTIONS
+import com.procurement.contracting.exception.ErrorType.BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY
+import com.procurement.contracting.exception.ErrorType.DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY
+import com.procurement.contracting.exception.ErrorType.MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
+import com.procurement.contracting.exception.ErrorType.BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
+import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
+import com.procurement.contracting.model.dto.AwardUpdate
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.DetailsSupplierUpdate
 import com.procurement.contracting.model.dto.ItemUpdate
@@ -86,11 +93,7 @@ class UpdateAcService(private val acDao: AcDao,
         val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
-        val isEmptyPersones = dto.award.suppliers.any {
-            it.persones.isEmpty()
-        }
-        if (isEmptyPersones)
-            throw ErrorException(error = PERSONES_IN_SUPPLIERS_IS_EMPTY)
+        checkAwardSupplierPersones(dto.award)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
@@ -134,6 +137,68 @@ class UpdateAcService(private val acDao: AcDao,
                 planning = contractProcess.planning!!,
                 contract = contractProcess.contract,
                 award = contractProcess.award))
+    }
+
+    /**
+     * VR-9.2.29
+     */
+    private fun checkAwardSupplierPersones(award: AwardUpdate) {
+        if (award.suppliers.any { it.persones.isEmpty() })
+            throw ErrorException(error = PERSONES_IN_SUPPLIERS_IS_EMPTY)
+
+        award.suppliers.forEach { supplier ->
+            checkAwardSupplierDetailsMainEconomicActivities(supplier.details)
+            checkAwardSupplierDetailsBankAccounts(supplier.details)
+            checkAwardSupplierAdditionalIdentifiers(supplier)
+
+            supplier.persones.forEach { person ->
+                checkAwardSupplierPersonBusinessFunction(person)
+            }
+        }
+    }
+
+    /**
+     * VR-9.2.30
+     */
+    private fun checkAwardSupplierPersonBusinessFunction(person: Person) {
+        if (person.businessFunctions.isEmpty())
+            throw ErrorException(error = BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY)
+
+        person.businessFunctions.forEach {
+            checkAwardSupplierPersonBusinessFunctionDocuments(it)
+        }
+    }
+
+    /**
+     * VR-9.2.31
+     */
+    private fun checkAwardSupplierPersonBusinessFunctionDocuments(businessFunction: BusinessFunction) {
+        if (businessFunction.documents.isEmpty())
+            throw ErrorException(error = DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY)
+    }
+
+    /**
+     * VR-9.2.32
+     */
+    private fun checkAwardSupplierDetailsMainEconomicActivities(details: DetailsSupplierUpdate) {
+        if (details.mainEconomicActivities.isEmpty())
+            throw ErrorException(error = MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING)
+    }
+
+    /**
+     * VR-9.2.33
+     */
+    private fun checkAwardSupplierDetailsBankAccounts(details: DetailsSupplierUpdate) {
+        if (details.bankAccounts.isEmpty())
+            throw ErrorException(error = BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING)
+    }
+
+    /**
+     * VR-9.2.34
+     */
+    private fun checkAwardSupplierAdditionalIdentifiers(supplier: OrganizationReferenceSupplierUpdate) {
+        if (supplier.additionalIdentifiers.isEmpty())
+            throw ErrorException(error = ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING)
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
