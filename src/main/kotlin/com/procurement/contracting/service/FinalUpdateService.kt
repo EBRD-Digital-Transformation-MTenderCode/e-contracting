@@ -4,6 +4,7 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.Document
 import com.procurement.contracting.model.dto.FinalUpdateAcRq
@@ -214,7 +215,7 @@ class FinalUpdateService(private val acDao: AcDao,
             if (id != null)
                 return RelatedPerson(id = person.identifier.id, name = person.name)
         }
-        throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
+        throw ErrorException(INVALID_BUSINESS_FUNCTIONS_TYPE)
     }
 
 }
