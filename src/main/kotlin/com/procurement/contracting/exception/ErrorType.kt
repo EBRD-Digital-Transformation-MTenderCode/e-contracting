@@ -77,9 +77,9 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_FORMAT_CAN_ID("00.71", "Invalid format the CAN id."),
     PERSONES_IN_SUPPLIERS_IS_EMPTY("00.72", "The list of the persones in the suppliers is empty."),
     BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY("00.73", "The list of the business functions in the supplier is empty or missing."),
-    DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY("00.73", "The list of the documents in the business function is empty or missing."),
-    MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("20.06", "The list of the main economic activities in the details of the supplier is empty or missing."),
-    BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("20.06", "The list of the bank accounts in the details of the supplier is empty or missing."),
-    ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("20.07", "The list of the additional identifiers in the supplier is empty or missing."),
-    INVALID_BUSINESS_FUNCTIONS_TYPE("20.08", "A person with a business function type 'authority' should be used for the confirmation request.");
+    DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY("00.74", "The list of the documents in the business function is empty or missing."),
+    MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("00.75", "The list of the main economic activities in the details of the supplier is empty or missing."),
+    BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("00.76", "The list of the bank accounts in the details of the supplier is empty or missing."),
+    ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("00.77", "The list of the additional identifiers in the supplier is empty or missing."),
+    INVALID_BUSINESS_FUNCTIONS_TYPE("00.78", "A person with a business function type 'authority' should be used for the confirmation request.");
 }
