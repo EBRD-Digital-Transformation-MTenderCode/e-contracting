@@ -37,6 +37,7 @@ import com.procurement.contracting.exception.ErrorType.DOCUMENTS_IN_BUSINESS_FUN
 import com.procurement.contracting.exception.ErrorType.MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
+import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.model.dto.AwardUpdate
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.DetailsSupplierUpdate
@@ -94,6 +95,7 @@ class UpdateAcService(private val acDao: AcDao,
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
         checkAwardSupplierPersones(dto.award)
+        checkAwardSupplierPersonesBusinessFunctionsType(dto.award)
 
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
@@ -199,6 +201,22 @@ class UpdateAcService(private val acDao: AcDao,
     private fun checkAwardSupplierAdditionalIdentifiers(supplier: OrganizationReferenceSupplierUpdate) {
         if (supplier.additionalIdentifiers.isEmpty())
             throw ErrorException(error = ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING)
+    }
+
+    /**
+     * VR-9.2.35
+     */
+    private fun checkAwardSupplierPersonesBusinessFunctionsType(award: AwardUpdate) {
+        award.suppliers.forEach { supplier ->
+            supplier.persones.forEach { person ->
+                person.businessFunctions.forEach { businessFunction ->
+                    if (businessFunction.type == "authority")
+                        return
+                }
+            }
+        }
+
+        throw ErrorException(error = INVALID_BUSINESS_FUNCTIONS_TYPE)
     }
 
     private fun updateContractValue(dto: UpdateAcRq): ValueTax {
