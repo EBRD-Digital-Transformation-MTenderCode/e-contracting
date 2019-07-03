@@ -5,7 +5,8 @@ import com.procurement.contracting.exception.EnumException
 
 enum class MilestoneStatus(@JsonValue val value: String) {
     SCHEDULED("scheduled"),
-    MET("met");
+    MET("met"),
+    NOT_MET("notMet");
 
     override fun toString(): String {
         return this.value
