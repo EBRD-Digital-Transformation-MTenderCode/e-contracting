@@ -1,8 +1,8 @@
 package com.procurement.contracting.application.repository
 
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import java.util.*
 
 interface CANRepository {

@@ -2,14 +2,22 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.DOCS_RELATED_LOTS
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.DocumentUpdate
+import com.procurement.contracting.model.dto.UpdateDocumentContract
+import com.procurement.contracting.model.dto.UpdateDocumentsRq
+import com.procurement.contracting.model.dto.UpdateDocumentsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.Can
+import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -73,7 +81,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
             documentsContract.add(
                 DocumentContract(
                     id = it.id,
-                    documentType = DocumentTypeContract.fromValue(it.documentType.toString()),
+                    documentType = DocumentTypeContract.fromString(it.documentType.toString()),
                     title = it.title,
                     description = it.description,
                     relatedLots = it.relatedLots,

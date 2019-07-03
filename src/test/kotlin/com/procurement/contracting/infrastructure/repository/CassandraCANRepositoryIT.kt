@@ -18,8 +18,8 @@ import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

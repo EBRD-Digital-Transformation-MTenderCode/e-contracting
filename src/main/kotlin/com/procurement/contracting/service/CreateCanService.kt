@@ -1,6 +1,8 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
@@ -15,8 +17,6 @@ import com.procurement.contracting.model.dto.GetAwardsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
@@ -47,15 +47,15 @@ class CreateCanService(private val canDao: CanDao,
             statusDetails = ContractStatusDetails.UNSUCCESSFUL
         }
         val can = Can(
-                id = generationService.generateRandomUUID().toString(),
-                token = generationService.generateRandomUUID().toString(),
-                date = dateTime,
-                awardId = canAwardId,
-                lotId = lotId,
-                status = ContractStatus.PENDING,
-                statusDetails = statusDetails,
-                documents = null,
-                amendment = null)
+            id = generationService.generateRandomUUID().toString(),
+            token = generationService.generateRandomUUID().toString(),
+            date = dateTime,
+            awardId = canAwardId,
+            lotId = lotId,
+            status = ContractStatus.PENDING,
+            statusDetails = statusDetails,
+            documents = null,
+            amendment = null)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
         return ResponseDto(data = CreateCanRs(can))

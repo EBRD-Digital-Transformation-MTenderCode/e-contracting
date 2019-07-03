@@ -2,9 +2,9 @@ package com.procurement.contracting.infrastructure.dto.can.cancel
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 
 data class CancelCANResponse(
     @field:JsonProperty("cancelledCan") @param:JsonProperty("cancelledCan") val cancelledCAN: CancelledCAN,

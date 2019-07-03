@@ -16,9 +16,9 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.domain.entity.ACEntity
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.MainProcurementCategory
+import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

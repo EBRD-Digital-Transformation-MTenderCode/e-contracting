@@ -1,8 +1,8 @@
 package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 
 
 data class ConfirmationCanRs @JsonCreator constructor(
@@ -14,9 +14,9 @@ data class ConfirmationCanRs @JsonCreator constructor(
 
 data class ConfirmationCan @JsonCreator constructor(
 
-        val id: String,
+    val id: String,
 
-        var status: ContractStatus,
+    var status: ContractStatus,
 
-        var statusDetails: ContractStatusDetails
+    var statusDetails: ContractStatusDetails
 )

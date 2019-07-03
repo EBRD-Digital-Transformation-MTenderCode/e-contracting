@@ -8,13 +8,13 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.CAN
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentTypeAmendment
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service

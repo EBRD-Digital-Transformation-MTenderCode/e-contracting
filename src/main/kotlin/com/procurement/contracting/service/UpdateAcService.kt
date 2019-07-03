@@ -1,20 +1,30 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
+import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.AWARD_ID
 import com.procurement.contracting.exception.ErrorType.AWARD_VALUE
+import com.procurement.contracting.exception.ErrorType.BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.BA_ITEM_ID
 import com.procurement.contracting.exception.ErrorType.BF
 import com.procurement.contracting.exception.ErrorType.BS_CURRENCY
+import com.procurement.contracting.exception.ErrorType.BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY
 import com.procurement.contracting.exception.ErrorType.CONFIRMATION_ITEM
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.CONTRACT_PERIOD
 import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
 import com.procurement.contracting.exception.ErrorType.DOCUMENTS
+import com.procurement.contracting.exception.ErrorType.DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY
 import com.procurement.contracting.exception.ErrorType.EMPTY_MILESTONE_RELATED_ITEM
 import com.procurement.contracting.exception.ErrorType.INVALID_AWARD_CURRENCY
+import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.exception.ErrorType.INVALID_DOCS_RELATED_LOTS
 import com.procurement.contracting.exception.ErrorType.INVALID_OWNER
 import com.procurement.contracting.exception.ErrorType.INVALID_TOKEN
@@ -22,6 +32,7 @@ import com.procurement.contracting.exception.ErrorType.INVALID_TR_RELATED_MILEST
 import com.procurement.contracting.exception.ErrorType.ITEM_AMOUNT
 import com.procurement.contracting.exception.ErrorType.ITEM_CURRENCY
 import com.procurement.contracting.exception.ErrorType.ITEM_ID
+import com.procurement.contracting.exception.ErrorType.MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.MILESTONES_EMPTY
 import com.procurement.contracting.exception.ErrorType.MILESTONE_DUE_DATE
 import com.procurement.contracting.exception.ErrorType.MILESTONE_ID
@@ -32,12 +43,6 @@ import com.procurement.contracting.exception.ErrorType.PERSONES_IN_SUPPLIERS_IS_
 import com.procurement.contracting.exception.ErrorType.PERSON_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.SUPPLIERS
 import com.procurement.contracting.exception.ErrorType.TRANSACTIONS
-import com.procurement.contracting.exception.ErrorType.BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY
-import com.procurement.contracting.exception.ErrorType.DOCUMENTS_IN_BUSINESS_FUNCTION_IN_PERSON_IN_SUPPLIER_IS_EMPTY
-import com.procurement.contracting.exception.ErrorType.MAIN_ECONOMIC_ACTIVITIES_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
-import com.procurement.contracting.exception.ErrorType.BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
-import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
-import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.model.dto.AwardUpdate
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.DetailsSupplierUpdate
@@ -49,16 +54,12 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.BusinessFunction
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.dto.ocds.DetailsSupplier
 import com.procurement.contracting.model.dto.ocds.DocumentAward
 import com.procurement.contracting.model.dto.ocds.DocumentBF
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.model.dto.ocds.Item
-import com.procurement.contracting.model.dto.ocds.MainProcurementCategory
 import com.procurement.contracting.model.dto.ocds.Milestone
-import com.procurement.contracting.model.dto.ocds.MilestoneStatus
-import com.procurement.contracting.model.dto.ocds.MilestoneType
 import com.procurement.contracting.model.dto.ocds.OrganizationReferenceSupplier
 import com.procurement.contracting.model.dto.ocds.Period
 import com.procurement.contracting.model.dto.ocds.Person
@@ -67,8 +68,6 @@ import com.procurement.contracting.model.dto.ocds.RelatedParty
 import com.procurement.contracting.model.dto.ocds.RelatedPerson
 import com.procurement.contracting.model.dto.ocds.Request
 import com.procurement.contracting.model.dto.ocds.RequestGroup
-import com.procurement.contracting.model.dto.ocds.SourceType
-import com.procurement.contracting.model.dto.ocds.TransactionType
 import com.procurement.contracting.model.dto.ocds.ValueTax
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
@@ -91,7 +90,7 @@ class UpdateAcService(private val acDao: AcDao,
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
-        val mpc = MainProcurementCategory.fromValue(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
+        val mpc = MainProcurementCategory.fromString(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
         checkAwardSupplierPersones(dto.award)
@@ -387,7 +386,7 @@ class UpdateAcService(private val acDao: AcDao,
             //set
             for (confRequest in confRequestDto) {
                 when (confRequest.source) {
-                    SourceType.BUYER -> {
+                    ConfirmationRequestSource.BUYER -> {
                         confRequest.id = buyerTemplate.id + confRequest.relatedItem
                         confRequest.description = buyerTemplate.description
                         confRequest.title = buyerTemplate.title
@@ -405,7 +404,7 @@ class UpdateAcService(private val acDao: AcDao,
                                 )
                         )
                     }
-                    SourceType.TENDERER -> {
+                    ConfirmationRequestSource.TENDERER -> {
                         confRequest.id = tendererTemplate.id + confRequest.relatedItem
                         confRequest.description = tendererTemplate.description
                         confRequest.title = tendererTemplate.title
@@ -423,7 +422,7 @@ class UpdateAcService(private val acDao: AcDao,
                                 )
                         )
                     }
-                    SourceType.APPROVE_BODY -> {
+                    ConfirmationRequestSource.APPROVE_BODY -> {
                         TODO()
                     }
                 }

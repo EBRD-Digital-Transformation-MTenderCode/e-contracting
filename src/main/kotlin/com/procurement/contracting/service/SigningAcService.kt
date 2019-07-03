@@ -1,19 +1,49 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
+import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.*
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.exception.ErrorType.BUDGET_ALLOCATION
+import com.procurement.contracting.exception.ErrorType.BUYER_NAME_IS_EMPTY
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.INVALID_BUYER_ID
+import com.procurement.contracting.exception.ErrorType.INVALID_CONFIRMATION_REQUEST_DATE
+import com.procurement.contracting.exception.ErrorType.INVALID_OWNER
+import com.procurement.contracting.exception.ErrorType.INVALID_RELATED_PERSON_ID
+import com.procurement.contracting.exception.ErrorType.INVALID_REQUEST_ID
+import com.procurement.contracting.exception.ErrorType.INVALID_SUPPLIER_ID
+import com.procurement.contracting.exception.ErrorType.TREASURY_BUDGET_SOURCES
+import com.procurement.contracting.model.dto.BuyerSigningRs
+import com.procurement.contracting.model.dto.ConfirmationResponseRq
+import com.procurement.contracting.model.dto.ContractProcess
+import com.procurement.contracting.model.dto.ProceedResponseRq
+import com.procurement.contracting.model.dto.SupplierSigningRs
+import com.procurement.contracting.model.dto.TreasuryBudgetSourceSupplierSigning
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
+import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
+import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
+import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.Milestone
+import com.procurement.contracting.model.dto.ocds.OrganizationReferenceBuyer
+import com.procurement.contracting.model.dto.ocds.OrganizationReferenceSupplier
+import com.procurement.contracting.model.dto.ocds.RelatedPerson
+import com.procurement.contracting.model.dto.ocds.Request
+import com.procurement.contracting.model.dto.ocds.RequestGroup
+import com.procurement.contracting.model.dto.ocds.Verification
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
-import java.util.HashSet
+import java.util.*
 import kotlin.collections.ArrayList
 
 @Service
@@ -81,12 +111,12 @@ class SigningAcService(private val acDao: AcDao,
         confirmationRequests.add(confirmationRequest)
 
         val document = DocumentContract(
-                id = dto.confirmationResponse.value.verification.first().value,
-                documentType = DocumentTypeContract.CONTRACT_SIGNED,
-                relatedConfirmations = mutableListOf(confirmationResponse.id),
-                title = null,
-                description = null,
-                relatedLots = null
+            id = dto.confirmationResponse.value.verification.first().value,
+            documentType = DocumentTypeContract.CONTRACT_SIGNED,
+            relatedConfirmations = mutableListOf(confirmationResponse.id),
+            title = null,
+            description = null,
+            relatedLots = null
         )
 
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
@@ -156,12 +186,12 @@ class SigningAcService(private val acDao: AcDao,
         confirmationResponses.add(confirmationResponse)
 
         val document = DocumentContract(
-                id = dto.confirmationResponse.value.verification.first().value,
-                documentType = DocumentTypeContract.CONTRACT_SIGNED,
-                relatedConfirmations = mutableListOf(confirmationResponse.id),
-                title = null,
-                description = null,
-                relatedLots = null
+            id = dto.confirmationResponse.value.verification.first().value,
+            documentType = DocumentTypeContract.CONTRACT_SIGNED,
+            relatedConfirmations = mutableListOf(confirmationResponse.id),
+            title = null,
+            description = null,
+            relatedLots = null
         )
         val documents = contractProcess.contract.documents?.toMutableList() ?: mutableListOf()
         documents.add(document)
@@ -250,9 +280,9 @@ class SigningAcService(private val acDao: AcDao,
         )
 
         val verification = Verification(
-                type = ConfirmationResponseType.DOCUMENT,
-                value = dto.value.verification.first().value,
-                rationale = templateRationale
+            type = ConfirmationResponseType.DOCUMENT,
+            value = dto.value.verification.first().value,
+            rationale = templateRationale
         )
 
         val buyerName = buyer.name ?: throw ErrorException(BUYER_NAME_IS_EMPTY)
@@ -358,14 +388,14 @@ class SigningAcService(private val acDao: AcDao,
                 requests = hashSetOf(request)
         )
         return ConfirmationRequest(
-                id = template.id + verificationValue,
-                relatedItem = verificationValue,
-                source = SourceType.TENDERER,
-                type = template.type,
-                title = template.title,
-                description = template.description,
-                relatesTo = template.relatesTo,
-                requestGroups = hashSetOf(requestGroup))
+            id = template.id + verificationValue,
+            relatedItem = verificationValue,
+            source = ConfirmationRequestSource.TENDERER,
+            type = template.type,
+            title = template.title,
+            description = template.description,
+            relatesTo = template.relatesTo,
+            requestGroups = hashSetOf(requestGroup))
     }
 
     private fun generateApproveBodyConfirmationRequest(confirmationResponse: ConfirmationResponse): ConfirmationRequest {
@@ -385,7 +415,7 @@ class SigningAcService(private val acDao: AcDao,
         return ConfirmationRequest(
                 id = "cs-approveBody-confirmation-on-$relatedItem",
                 relatedItem = relatedItem,
-                source = SourceType.APPROVE_BODY,
+                source = ConfirmationRequestSource.APPROVE_BODY,
                 type = "outsideAction",
                 title = "Document approving",
                 description = "TEST",

@@ -1,15 +1,20 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.exception.ErrorType.BA_ITEM_ID
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS
+import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
+import com.procurement.contracting.exception.ErrorType.INVALID_OWNER
+import com.procurement.contracting.exception.ErrorType.INVALID_TOKEN
 import com.procurement.contracting.model.dto.ContractIssuingAcRs
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.IssuingAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
