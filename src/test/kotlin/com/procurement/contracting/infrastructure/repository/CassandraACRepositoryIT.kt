@@ -136,7 +136,7 @@ class CassandraACRepositoryIT {
         val exception = assertThrows<SaveEntityException> {
             acRepository.saveCancelledAC(dataCancelledAC = dataCancelAC())
         }
-        assertEquals("Error writing cancelled Contract.", exception.message)
+        assertEquals("Error writing cancelled contract.", exception.message)
     }
 
     private fun createKeyspace() {
