@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.model
+package com.procurement.contracting.domain.model.can
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty

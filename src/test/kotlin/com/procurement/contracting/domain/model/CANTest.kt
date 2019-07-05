@@ -1,5 +1,6 @@
 package com.procurement.contracting.domain.model
 
+import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
 import org.junit.jupiter.api.Test
 

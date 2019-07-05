@@ -4,7 +4,7 @@ import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
-import com.procurement.contracting.domain.model.CAN
+import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
