@@ -8,6 +8,14 @@ interface ACRepository {
     fun findBy(cpid: String, contractId: String): ACEntity?
 
     fun saveCancelledAC(dataCancelledAC: DataCancelledAC)
+
+    fun updateStatusesAC(
+        cpid: String,
+        id: String,
+        status: ContractStatus,
+        statusDetails: ContractStatusDetails,
+        jsonData: String
+    )
 }
 
 data class DataCancelledAC(

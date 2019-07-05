@@ -23,7 +23,7 @@ data class ActivationContract @JsonCreator constructor(
 
     var statusDetails: ContractStatusDetails,
 
-    val milestones: HashSet<Milestone>?
+    val milestones: MutableList<Milestone>?
 )
 
 data class ActivationCan @JsonCreator constructor(

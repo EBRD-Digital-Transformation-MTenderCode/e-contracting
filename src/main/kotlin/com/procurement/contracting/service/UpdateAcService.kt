@@ -256,19 +256,19 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
-    private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): HashSet<Milestone>? {
+    private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): MutableList<Milestone>? {
         val milestonesDto = dto.contract.milestones
-        val milestonesDb = contractProcess.contract.milestones ?: hashSetOf()
+        val milestonesDb = contractProcess.contract.milestones ?: mutableListOf()
         val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
         val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
         val updatedMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in milestonesDtoIds }
                 .map { milestoneDb -> milestoneDb.update(milestonesDto.first { it.id == milestoneDb.id }) }
-                .toMutableSet()
+                .toSet()
         val newMilestones = processNewMilestonesIdSet(dto, contractProcess, newMilestonesIds)
         return if (updatedMilestonesDb.isNotEmpty()) {
-            (updatedMilestonesDb + newMilestones).toHashSet()
+            (updatedMilestonesDb + newMilestones).toMutableList()
         } else {
             newMilestones
         }
@@ -283,10 +283,10 @@ class UpdateAcService(private val acDao: AcDao,
         return this
     }
 
-    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>): HashSet<Milestone> {
+    private fun processNewMilestonesIdSet(dto: UpdateAcRq, contractProcess: ContractProcess, newMilestonesIds: Set<String>): MutableList<Milestone> {
         val milestonesDto = dto.contract.milestones
         val transactions = dto.planning.implementation.transactions
-        val newMilestones = HashSet<Milestone>()
+        val newMilestones = mutableListOf<Milestone>()
         milestonesDto.asSequence()
                 .filter { it.id in newMilestonesIds }
                 .forEach { milestone ->
@@ -360,7 +360,7 @@ class UpdateAcService(private val acDao: AcDao,
                                            documents: List<DocumentContract>?,
                                            country: String,
                                            pmd: String,
-                                           language: String): HashSet<ConfirmationRequest>? {
+                                           language: String): MutableList<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         if (confRequestDto != null) {
             //validation
@@ -392,10 +392,10 @@ class UpdateAcService(private val acDao: AcDao,
                         confRequest.title = buyerTemplate.title
                         confRequest.type = buyerTemplate.type
                         confRequest.relatesTo = buyerTemplate.relatesTo
-                        confRequest.requestGroups = setOf(
+                        confRequest.requestGroups = listOf(
                                 RequestGroup(
                                         id = buyerTemplate.id + confRequest.relatedItem + "-" + dto.buyer.id,
-                                        requests = setOf(Request(
+                                        requests = listOf(Request(
                                                 id = buyerTemplate.id + confRequest.relatedItem + "-" + buyerAuthority.id,
                                                 title = buyerTemplate.requestTitle + buyerAuthority.name,
                                                 description = buyerTemplate.requestDescription,
@@ -410,10 +410,10 @@ class UpdateAcService(private val acDao: AcDao,
                         confRequest.title = tendererTemplate.title
                         confRequest.type = tendererTemplate.type
                         confRequest.relatesTo = tendererTemplate.relatesTo
-                        confRequest.requestGroups = setOf(
+                        confRequest.requestGroups = listOf(
                                 RequestGroup(
                                         id = tendererTemplate.id + confRequest.relatedItem + "-" + awardSupplier.id,
-                                        requests = setOf(Request(
+                                        requests = listOf(Request(
                                                 relatedPerson = tendererAuthority,
                                                 id = tendererTemplate.id + confRequest.relatedItem + "-" + tendererAuthority.id,
                                                 title = tendererTemplate.requestTitle + tendererAuthority.name,

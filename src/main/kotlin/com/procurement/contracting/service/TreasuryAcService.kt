@@ -1,5 +1,5 @@
 package com.procurement.contracting.service
-
+/*
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
@@ -23,6 +23,7 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
+
 
 @Service
 class TreasuryAcService(private val acDao: AcDao) {
@@ -98,3 +99,4 @@ class TreasuryAcService(private val acDao: AcDao) {
         return ResponseDto(data = TreasuryAcRs(contractProcess.contract))
     }
 }
+*/

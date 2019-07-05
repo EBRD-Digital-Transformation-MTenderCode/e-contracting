@@ -46,11 +46,11 @@ data class Contract @JsonCreator constructor(
 
     val amendments: List<Amendment>? = null,
 
-    var milestones: HashSet<Milestone>? = null,
+    var milestones: MutableList<Milestone>? = null,
 
-    var confirmationRequests: HashSet<ConfirmationRequest>? = null,
+    var confirmationRequests: MutableList<ConfirmationRequest>? = null,
 
-    var confirmationResponses: HashSet<ConfirmationResponse>? = null,
+    var confirmationResponses: MutableList<ConfirmationResponse>? = null,
 
     var agreedMetrics: LinkedList<AgreedMetric>? = null
 )

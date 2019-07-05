@@ -60,7 +60,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)
         val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
 
-        val milestones = contractProcess.contract.milestones?.toHashSet() ?: hashSetOf()
+        val milestones = contractProcess.contract.milestones ?: mutableListOf()
         milestones.add(buyerMilestone)
         milestones.add(supplierMilestone)
         milestones.add(activationMilestone)
@@ -71,7 +71,7 @@ class FinalUpdateService(private val acDao: AcDao,
         }
         contractProcess.contract.milestones = milestones
 
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests ?: mutableListOf()
         val confirmationRequestBuyer = generateBuyerConfirmationRequest(buyer, country, pmd, language, dto.documents.first().id)
         confirmationRequests.add(confirmationRequestBuyer)
         contractProcess.contract.confirmationRequests = confirmationRequests
@@ -211,7 +211,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
         val requestGroup = RequestGroup(
                 id = template.id + documentId + "-" + buyer.identifier?.id,
-                requests = hashSetOf(request)
+                requests = listOf(request)
         )
         return ConfirmationRequest(
             id = template.id + documentId,
@@ -221,7 +221,8 @@ class FinalUpdateService(private val acDao: AcDao,
             title = template.title,
             description = template.description,
             relatesTo = template.relatesTo,
-            requestGroups = hashSetOf(requestGroup))
+            requestGroups = listOf(requestGroup)
+        )
     }
 
     private fun getAuthorityOrganizationPersonBuyer(buyer: OrganizationReferenceBuyer): RelatedPerson {

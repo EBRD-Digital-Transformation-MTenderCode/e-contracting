@@ -10,6 +10,8 @@ interface CANRepository {
     fun findBy(cpid: String): List<CANEntity>
 
     fun saveCancelledCANs(cpid: String, dataCancelledCAN: DataCancelCAN, dataRelatedCANs: List<DataRelatedCAN>)
+
+    fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>)
 }
 
 data class DataCancelCAN(
@@ -20,6 +22,13 @@ data class DataCancelCAN(
 )
 
 data class DataRelatedCAN(
+    val id: UUID,
+    val status: ContractStatus,
+    val statusDetails: ContractStatusDetails,
+    val jsonData: String
+)
+
+data class DataStatusesCAN(
     val id: UUID,
     val status: ContractStatus,
     val statusDetails: ContractStatusDetails,

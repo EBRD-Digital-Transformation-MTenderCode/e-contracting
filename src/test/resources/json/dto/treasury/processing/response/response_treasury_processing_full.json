@@ -1,0 +1,113 @@
+{
+  "contract": {
+    "id": "",
+    "date": "2019-12-31T10:45:00Z",
+    "awardId": "",
+    "status": "pending",
+    "statusDetails": "verified",
+    "title": "",
+    "description": "",
+    "period": {
+      "startDate": "2019-11-30T14:45:00Z",
+      "endDate": "2019-12-31T10:45:00Z"
+    },
+    "documents": [
+      {
+        "documentType": "completionCertificate",
+        "id": "document[0].id",
+        "title": "document[0].title",
+        "description": "document[0].description",
+        "relatedLots": [
+          "lot-1"
+        ],
+        "relatedConfirmations": [
+          "cs-buyer-confirmation-on-document.id-relatedPerson.id"
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "milestones[0].id",
+        "relatedItems": [
+          "milestones[0].relatedItems[0]"
+        ],
+        "status": "notMet",
+        "additionalInformation": "milestones[0].additionalInformation",
+        "dueDate": "2019-10-29T16:51:00Z",
+        "title": "Signature by the Buyer",
+        "type": "approval",
+        "description": "milestones[0].description",
+        "dateModified": "2019-11-15T16:51:00Z",
+        "dateMet": "2019-11-21T13:51:00Z",
+        "relatedParties": [
+          {
+            "id": "milestone[0].relatedParties[0].id",
+            "name": "milestone[0].relatedParties[0].name"
+          }
+        ]
+      }
+    ],
+    "confirmationRequests": [
+      {
+        "id": "cs-tenderer-confirmation-on-document.id",
+        "type": "digitalSignature",
+        "title": "confirmationRequests[0].title",
+        "description": "confirmationRequests[0].description",
+        "relatesTo": "document",
+        "relatedItem": "document.id",
+        "source": "tenderer",
+        "requestGroups": [
+          {
+            "id": "confirmationRequests[0].requestGroups[0].id",
+            "requests": [
+              {
+                "id": "confirmationRequests[0].requestGroups[0].requests[0].id",
+                "title": "confirmationRequests[0].requestGroups[0].requests[0].title",
+                "description": "confirmationRequests[0].requestGroups[0].requests[0].description",
+                "relatedPerson": {
+                  "id": "confirmationRequests[0].requestGroups[0].requests[0].relatedPerson.id",
+                  "name": "confirmationRequests[0].requestGroups[0].requests[0].relatedPerson.name"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "confirmationResponses": [
+      {
+        "id": "confirmationResponses[0].id",
+        "value": {
+          "name": "confirmationResponses[0].value.name",
+          "id": "confirmationResponses[0].value.id",
+          "date": "2019-10-29T16:51:00Z",
+          "relatedPerson": {
+            "id": "confirmationResponses[0].value.relatedPerson.id",
+            "name": "confirmationResponses[0].value.relatedPerson.name"
+          },
+          "verification": [
+            {
+              "type": "code",
+              "value": "confirmationResponses[0].value.verification.value",
+              "rationale": "confirmationResponses[0].value.verification.rationale"
+            }
+          ]
+        },
+        "request": "confirmationResponses[0].request"
+      }
+    ],
+    "value": {
+      "amount": 1000.21,
+      "currency": "MDL",
+      "amountNet": 1256.00,
+      "valueAddedTaxIncluded": true
+    }
+  },
+  "cans": [
+    {
+      "id": "712e34c8-5fb5-49e7-b768-6f0c971162a1",
+      "status": "active",
+      "statusDetails": "approved"
+    }
+  ]
+}

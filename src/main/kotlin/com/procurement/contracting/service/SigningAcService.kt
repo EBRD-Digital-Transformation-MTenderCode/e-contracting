@@ -43,8 +43,6 @@ import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Service
 class SigningAcService(private val acDao: AcDao,
@@ -96,7 +94,7 @@ class SigningAcService(private val acDao: AcDao,
                 relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
-        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
+        val confirmationResponses = contractProcess.contract.confirmationResponses ?: mutableListOf()
         confirmationResponses.add(confirmationResponse)
 
         val supplier = contractProcess.award.suppliers.first()
@@ -107,7 +105,7 @@ class SigningAcService(private val acDao: AcDao,
                 language = language,
                 verificationValue = dto.confirmationResponse.value.verification.first().value
         )
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests ?: mutableListOf()
         confirmationRequests.add(confirmationRequest)
 
         val document = DocumentContract(
@@ -182,7 +180,7 @@ class SigningAcService(private val acDao: AcDao,
                 relatedPerson = getAuthorityOrganizationPerson(contractProcess, requestId),
                 requestId = requestId
         )
-        val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
+        val confirmationResponses = contractProcess.contract.confirmationResponses ?: mutableListOf()
         confirmationResponses.add(confirmationResponse)
 
         val document = DocumentContract(
@@ -208,7 +206,7 @@ class SigningAcService(private val acDao: AcDao,
 
         var treasuryValidation = false
         val treasuryBudgetSourcesRs = ArrayList<TreasuryBudgetSourceSupplierSigning>()
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests ?: mutableListOf()
         if (isApproveBodyValidationPresent(contractProcess.contract.milestones)) {
             val confirmationRequest = generateApproveBodyConfirmationRequest(confirmationResponse
 
@@ -243,7 +241,7 @@ class SigningAcService(private val acDao: AcDao,
         return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract))
     }
 
-    private fun isApproveBodyValidationPresent(milestones: HashSet<Milestone>?): Boolean {
+    private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
         return milestones?.asSequence()?.any { it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION } ?: false
     }
 
@@ -385,7 +383,7 @@ class SigningAcService(private val acDao: AcDao,
         )
         val requestGroup = RequestGroup(
                 id = template.id + verificationValue + "-" + supplier.identifier.id,
-                requests = hashSetOf(request)
+                requests = listOf(request)
         )
         return ConfirmationRequest(
             id = template.id + verificationValue,
@@ -395,7 +393,7 @@ class SigningAcService(private val acDao: AcDao,
             title = template.title,
             description = template.description,
             relatesTo = template.relatesTo,
-            requestGroups = hashSetOf(requestGroup))
+            requestGroups = listOf(requestGroup))
     }
 
     private fun generateApproveBodyConfirmationRequest(confirmationResponse: ConfirmationResponse): ConfirmationRequest {
@@ -410,7 +408,7 @@ class SigningAcService(private val acDao: AcDao,
         )
         val requestGroup = RequestGroup(
                 id = "TEST",
-                requests = hashSetOf(request)
+                requests = listOf(request)
         )
         return ConfirmationRequest(
                 id = "cs-approveBody-confirmation-on-$relatedItem",
@@ -420,7 +418,7 @@ class SigningAcService(private val acDao: AcDao,
                 title = "Document approving",
                 description = "TEST",
                 relatesTo = "document",
-                requestGroups = hashSetOf(requestGroup))
+                requestGroups = listOf(requestGroup))
     }
 
     private fun getAuthorityOrganizationPersonSupplierForBuyerStep(supplier: OrganizationReferenceSupplier): RelatedPerson {
@@ -432,7 +430,7 @@ class SigningAcService(private val acDao: AcDao,
                     return RelatedPerson(id = person.identifier.id, name = person.name)
             }
         }
-        throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
+        throw ErrorException(BUYER_NAME_IS_EMPTY)
     }
 
 }

@@ -372,7 +372,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
                     ContractStatusDetails.EXECUTION,
-                    ContractStatusDetails.EMPTY -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
+                    ContractStatusDetails.EMPTY,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
                 }
             }
 
@@ -410,7 +411,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.EMPTY -> Unit
 
                     ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.VERIFIED,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 
@@ -430,7 +432,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.UNSUCCESSFUL,
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.EXECUTION,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 

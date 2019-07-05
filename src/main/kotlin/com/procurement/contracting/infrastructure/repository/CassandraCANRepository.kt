@@ -11,6 +11,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
+import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -76,11 +77,22 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                   AND $columnCanId=?
                IF EXISTS
             """
+
+        private const val UPDATE_STATUSES_CQL = """
+               UPDATE $keySpace.$tableName
+                  SET $columnStatus=?,
+                      $columnStatusDetails=?,
+                      $columnJsonData=?
+                WHERE $columnCpid=?
+                AND   $columnCanId=?
+               IF EXISTS
+            """
     }
 
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
+    private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
 
     override fun findBy(cpid: String, canId: UUID): CANEntity? {
         val query = preparedFindByCpidAndCanIdCQL.bind()
@@ -167,5 +179,33 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         session.execute(statement)
     } catch (exception: Exception) {
         throw SaveEntityException(message = "Error writing cancelled CAN(s).", cause = exception)
+    }
+
+    override fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>) {
+        val statements = BatchStatement().apply {
+            for (can in cans) {
+                add(statementForUpdateStatusesCAN(cpid = cpid, can = can))
+            }
+        }
+
+        val result = updateStatusesCANs(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
+    }
+
+    private fun statementForUpdateStatusesCAN(cpid: String, can: DataStatusesCAN): Statement =
+        preparedUpdateStatusesCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setUUID(columnCanId, can.id)
+                setString(columnStatus, can.status.value)
+                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnJsonData, can.jsonData)
+            }
+
+    private fun updateStatusesCANs(statement: BatchStatement): ResultSet = try {
+        session.execute(statement)
+    } catch (exception: Exception) {
+        throw SaveEntityException(message = "Error writing updated statuses CAN(s).", cause = exception)
     }
 }

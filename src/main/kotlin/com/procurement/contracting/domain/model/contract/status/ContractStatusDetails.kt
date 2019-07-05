@@ -17,7 +17,8 @@ enum class ContractStatusDetails(@JsonValue val value: String) {
     ISSUED("issued"),
     APPROVEMENT("approvement"),
     EXECUTION("execution"),
-    EMPTY("empty");
+    EMPTY("empty"),
+    TREASURY_REJECTION("treasuryRejection");
 
     override fun toString(): String {
         return this.value
