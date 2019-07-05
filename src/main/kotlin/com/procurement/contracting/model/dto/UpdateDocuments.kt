@@ -2,8 +2,8 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.document.type.DocumentTypeUpdateCan
 import com.procurement.contracting.model.dto.ocds.DocumentContract
-import com.procurement.contracting.model.dto.ocds.DocumentTypeUpdateCan
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UpdateDocumentsRq @JsonCreator constructor(

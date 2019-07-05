@@ -2,15 +2,22 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
+import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.INVALID_OWNER
+import com.procurement.contracting.exception.ErrorType.INVALID_TOKEN
 import com.procurement.contracting.model.dto.ActivationAcRs
 import com.procurement.contracting.model.dto.ActivationCan
 import com.procurement.contracting.model.dto.ActivationContract
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime

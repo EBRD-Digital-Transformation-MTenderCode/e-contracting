@@ -85,7 +85,7 @@ data class BankAccount @JsonCreator constructor(
 
         val accountIdentification: AccountIdentifier,
 
-        val additionalAccountIdentifiers: Set<AccountIdentifier>
+        val additionalAccountIdentifiers: Set<AccountIdentifier>?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

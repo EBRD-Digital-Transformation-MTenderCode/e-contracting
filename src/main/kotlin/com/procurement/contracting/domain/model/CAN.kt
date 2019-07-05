@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentTypeAmendment
-import com.procurement.contracting.model.dto.ocds.DocumentTypeContract
 import java.time.LocalDateTime
 import java.util.*
 

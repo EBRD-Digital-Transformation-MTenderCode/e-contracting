@@ -56,7 +56,7 @@ data class ContractUpdate @JsonCreator constructor(
 
         val milestones: HashSet<Milestone>,
 
-        val confirmationRequests: HashSet<ConfirmationRequest>?,
+        val confirmationRequests: MutableList<ConfirmationRequest>?,
 
         val agreedMetrics: LinkedList<AgreedMetric>
 )

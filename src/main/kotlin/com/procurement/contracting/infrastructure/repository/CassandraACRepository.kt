@@ -7,8 +7,9 @@ import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -53,10 +54,21 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                   AND $columnContractId=?
                IF EXISTS
             """
+
+        private const val UPDATE_STATUSES_CQL = """
+               UPDATE $keySpace.$tableName
+                  SET $columnStatus=?, 
+                      $columnStatusDetails=?,
+                      $columnJsonData=?
+                WHERE $columnCpid=?
+                  AND $columnContractId=?
+               IF EXISTS
+            """
     }
 
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
+    private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
 
     override fun findBy(cpid: String, contractId: String): ACEntity? {
         val query = preparedFindByCpidAndCanIdCQL.bind()
@@ -89,14 +101,20 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         jsonData = row.getString(columnJsonData)
     )
 
-    override fun saveCancelledAC(dataCancelledAC: DataCancelledAC) {
+    override fun saveCancelledAC(
+        cpid: String,
+        id: String,
+        status: ContractStatus,
+        statusDetails: ContractStatusDetails,
+        jsonData: String
+    ) {
         val statements = preparedCancelCQL.bind()
             .apply {
-                setString(columnCpid, dataCancelledAC.cpid)
-                setString(columnContractId, dataCancelledAC.id)
-                setString(columnStatus, dataCancelledAC.status.toString())
-                setString(columnStatusDetails, dataCancelledAC.statusDetails.toString())
-                setString(columnJsonData, dataCancelledAC.jsonData)
+                setString(columnCpid, cpid)
+                setString(columnContractId, id)
+                setString(columnStatus, status.toString())
+                setString(columnStatusDetails, statusDetails.toString())
+                setString(columnJsonData, jsonData)
             }
 
         saveCancelledAC(statements)
@@ -105,6 +123,31 @@ class CassandraACRepository(private val session: Session) : ACRepository {
     private fun saveCancelledAC(statement: BoundStatement): ResultSet = try {
         session.execute(statement)
     } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing cancelled Contract.", cause = exception)
+        throw SaveEntityException(message = "Error writing cancelled contract.", cause = exception)
+    }
+
+    override fun updateStatusesAC(
+        cpid: String,
+        id: String,
+        status: ContractStatus,
+        statusDetails: ContractStatusDetails,
+        jsonData: String
+    ) {
+        val statements = preparedUpdateStatusesCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setString(columnContractId, id)
+                setString(columnStatus, status.toString())
+                setString(columnStatusDetails, statusDetails.toString())
+                setString(columnJsonData, jsonData)
+            }
+
+        updateStatusesAC(statements)
+    }
+
+    private fun updateStatusesAC(statement: BoundStatement): ResultSet = try {
+        session.execute(statement)
+    } catch (exception: Exception) {
+        throw SaveEntityException(message = "Error writing updated contract.", cause = exception)
     }
 }

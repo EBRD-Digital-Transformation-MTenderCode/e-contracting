@@ -1,0 +1,82 @@
+{
+  "contract": {
+    "id": "",
+    "date": "2019-12-31T10:45:00Z",
+    "awardId": "",
+    "status": "pending",
+    "statusDetails": "verified",
+    "title": "",
+    "description": "",
+    "period": {
+      "startDate": "2019-11-30T14:45:00Z",
+      "endDate": "2019-12-31T10:45:00Z"
+    },
+    "documents": [
+      {
+        "documentType": "completionCertificate",
+        "id": "document[0].id"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "milestones[0].id",
+        "status": "notMet",
+        "title": "Signature by the Buyer",
+        "type": "approval",
+        "description": "milestones[0].description",
+        "relatedParties": [
+          {
+            "id": "milestone[0].relatedParties[0].id",
+            "name": "milestone[0].relatedParties[0].name"
+          }
+        ]
+      }
+    ],
+    "confirmationRequests": [
+      {
+        "id": "cs-tenderer-confirmation-on-document.id",
+        "type": "digitalSignature",
+        "title": "confirmationRequests[0].title",
+        "description": "confirmationRequests[0].description",
+        "relatesTo": "document",
+        "relatedItem": "document.id",
+        "source": "tenderer",
+        "requestGroups": [
+          {
+            "id": "confirmationRequests[0].requestGroups[0].id",
+            "requests": [
+              {
+                "id": "confirmationRequests[0].requestGroups[0].requests[0].id",
+                "title": "confirmationRequests[0].requestGroups[0].requests[0].title",
+                "description": "confirmationRequests[0].requestGroups[0].requests[0].description"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "confirmationResponses": [
+      {
+        "id": "confirmationResponses[0].id",
+        "value": {
+          "name": "confirmationResponses[0].value.name",
+          "id": "confirmationResponses[0].value.id",
+          "date": "2019-10-29T16:51:00Z",
+          "verification": [
+            {
+              "type": "code",
+              "value": "confirmationResponses[0].value.verification.value"
+            }
+          ]
+        },
+        "request": "confirmationResponses[0].request"
+      }
+    ],
+    "value": {
+      "amount": 1000.21,
+      "currency": "MDL",
+      "amountNet": 1256.00,
+      "valueAddedTaxIncluded": true
+    }
+  }
+}

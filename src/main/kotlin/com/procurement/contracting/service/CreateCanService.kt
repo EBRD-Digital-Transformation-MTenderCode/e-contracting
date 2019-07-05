@@ -1,15 +1,22 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
-import com.procurement.contracting.model.dto.*
+import com.procurement.contracting.model.dto.AwardDto
+import com.procurement.contracting.model.dto.CanGetAwards
+import com.procurement.contracting.model.dto.ConfirmationCan
+import com.procurement.contracting.model.dto.ConfirmationCanRs
+import com.procurement.contracting.model.dto.CreateCanRq
+import com.procurement.contracting.model.dto.CreateCanRs
+import com.procurement.contracting.model.dto.GetAwardsRq
+import com.procurement.contracting.model.dto.GetAwardsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
@@ -40,15 +47,15 @@ class CreateCanService(private val canDao: CanDao,
             statusDetails = ContractStatusDetails.UNSUCCESSFUL
         }
         val can = Can(
-                id = generationService.generateRandomUUID().toString(),
-                token = generationService.generateRandomUUID().toString(),
-                date = dateTime,
-                awardId = canAwardId,
-                lotId = lotId,
-                status = ContractStatus.PENDING,
-                statusDetails = statusDetails,
-                documents = null,
-                amendment = null)
+            id = generationService.generateRandomUUID().toString(),
+            token = generationService.generateRandomUUID().toString(),
+            date = dateTime,
+            awardId = canAwardId,
+            lotId = lotId,
+            status = ContractStatus.PENDING,
+            statusDetails = statusDetails,
+            documents = null,
+            amendment = null)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
         return ResponseDto(data = CreateCanRs(can))
@@ -96,7 +103,6 @@ class CreateCanService(private val canDao: CanDao,
         return ResponseDto(data = GetAwardsRs(cansRs))
     }
 
-
     fun confirmationCan(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -105,18 +111,24 @@ class CreateCanService(private val canDao: CanDao,
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         if (canEntity.owner != owner) throw ErrorException(error = ErrorType.INVALID_OWNER)
         if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
-        if (canEntity.status != ContractStatus.PENDING.value && canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value)
+
+        if (canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.UNSUCCESSFUL.value) {
+            val can = toObject(Can::class.java, canEntity.jsonData)
+            can.status = ContractStatus.UNSUCCESSFUL
+            can.statusDetails = ContractStatusDetails.EMPTY
+
+            canEntity.status = can.status.value
+            canEntity.statusDetails = can.statusDetails.value
+            canEntity.jsonData = toJson(can)
+            canDao.save(canEntity)
+            return ResponseDto(
+                data = ConfirmationCanRs(
+                    cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
+                    lotId = can.lotId
+                )
+            )
+        } else
             throw ErrorException(ErrorType.INVALID_CAN_STATUS)
-        val can = toObject(Can::class.java, canEntity.jsonData)
-        can.status = ContractStatus.UNSUCCESSFUL
-        can.statusDetails = ContractStatusDetails.EMPTY
-        canEntity.status = can.status.value
-        canEntity.statusDetails = can.statusDetails.value
-        canEntity.jsonData = toJson(can)
-        canDao.save(canEntity)
-        return ResponseDto(data = ConfirmationCanRs(
-                cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
-                lotId = can.lotId))
     }
 
 

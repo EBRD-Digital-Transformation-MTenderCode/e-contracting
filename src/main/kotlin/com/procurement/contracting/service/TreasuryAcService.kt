@@ -1,17 +1,29 @@
 package com.procurement.contracting.service
-
+/*
 import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
+import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType.*
+import com.procurement.contracting.exception.ErrorType.CONFIRMATION_REQUEST
+import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.MILESTONE
+import com.procurement.contracting.exception.ErrorType.MILESTONE_RELATED_PARTY
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.TreasuryAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
+import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
+import com.procurement.contracting.model.dto.ocds.TreasuryData
+import com.procurement.contracting.model.dto.ocds.Verification
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
+
 
 @Service
 class TreasuryAcService(private val acDao: AcDao) {
@@ -34,7 +46,7 @@ class TreasuryAcService(private val acDao: AcDao) {
         val confirmationResponses = contractProcess.contract.confirmationResponses?.toHashSet() ?: hashSetOf()
 
         val confirmationRequest = contractProcess.contract.confirmationRequests?.asSequence()
-                ?.firstOrNull { it.source == SourceType.APPROVE_BODY }
+                ?.firstOrNull { it.source == ConfirmationRequestSource.APPROVE_BODY }
                 ?: throw ErrorException(CONFIRMATION_REQUEST)
         val request = confirmationRequest.requestGroups?.firstOrNull()?.requests?.firstOrNull()
                 ?: throw ErrorException(CONFIRMATION_REQUEST)
@@ -45,9 +57,9 @@ class TreasuryAcService(private val acDao: AcDao) {
         val milestoneRelatedParty = milestone.relatedParties?.first() ?: throw ErrorException(MILESTONE_RELATED_PARTY)
 
         val verification = Verification(
-                type = ConfirmationResponseType.CODE,
-                value = treasuryData.status,
-                rationale = treasuryData.descr
+            type = ConfirmationResponseType.CODE,
+            value = treasuryData.status,
+            rationale = treasuryData.descr
         )
 
         val confirmationResponseValue = ConfirmationResponseValue(
@@ -87,3 +99,4 @@ class TreasuryAcService(private val acDao: AcDao) {
         return ResponseDto(data = TreasuryAcRs(contractProcess.contract))
     }
 }
+*/

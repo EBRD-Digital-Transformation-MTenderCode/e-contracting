@@ -2,6 +2,8 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
@@ -13,8 +15,6 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
 import com.procurement.contracting.model.dto.ocds.ContractedAward
 import com.procurement.contracting.model.dto.ocds.DocumentAward
 import com.procurement.contracting.model.dto.ocds.ValueTax

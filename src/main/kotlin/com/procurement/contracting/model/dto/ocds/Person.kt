@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Person @JsonCreator constructor(
@@ -32,11 +33,11 @@ data class BusinessFunction @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class DocumentBF @JsonCreator constructor(
 
-        val id: String,
+    val id: String,
 
-        val documentType: DocumentTypeBF,
+    val documentType: DocumentTypeBF,
 
-        var title: String,
+    var title: String,
 
-        var description: String?
+    var description: String?
 )

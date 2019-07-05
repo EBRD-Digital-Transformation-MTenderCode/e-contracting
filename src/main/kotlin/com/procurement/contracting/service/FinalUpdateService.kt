@@ -1,16 +1,32 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
+import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
+import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
+import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.Document
 import com.procurement.contracting.model.dto.FinalUpdateAcRq
 import com.procurement.contracting.model.dto.FinalUpdateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.ResponseDto
-import com.procurement.contracting.model.dto.ocds.*
+import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
+import com.procurement.contracting.model.dto.ocds.DocumentContract
+import com.procurement.contracting.model.dto.ocds.Milestone
+import com.procurement.contracting.model.dto.ocds.OrganizationReferenceBuyer
+import com.procurement.contracting.model.dto.ocds.OrganizationReferenceSupplier
+import com.procurement.contracting.model.dto.ocds.RelatedParty
+import com.procurement.contracting.model.dto.ocds.RelatedPerson
+import com.procurement.contracting.model.dto.ocds.Request
+import com.procurement.contracting.model.dto.ocds.RequestGroup
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -44,7 +60,7 @@ class FinalUpdateService(private val acDao: AcDao,
         val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)
         val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
 
-        val milestones = contractProcess.contract.milestones?.toHashSet() ?: hashSetOf()
+        val milestones = contractProcess.contract.milestones ?: mutableListOf()
         milestones.add(buyerMilestone)
         milestones.add(supplierMilestone)
         milestones.add(activationMilestone)
@@ -55,7 +71,7 @@ class FinalUpdateService(private val acDao: AcDao,
         }
         contractProcess.contract.milestones = milestones
 
-        val confirmationRequests = contractProcess.contract.confirmationRequests?.toHashSet() ?: hashSetOf()
+        val confirmationRequests = contractProcess.contract.confirmationRequests ?: mutableListOf()
         val confirmationRequestBuyer = generateBuyerConfirmationRequest(buyer, country, pmd, language, dto.documents.first().id)
         confirmationRequests.add(confirmationRequestBuyer)
         contractProcess.contract.confirmationRequests = confirmationRequests
@@ -72,11 +88,11 @@ class FinalUpdateService(private val acDao: AcDao,
         val newDocuments = documentsDto.asSequence()
                 .map {
                     DocumentContract(
-                            id = it.id,
-                            documentType = DocumentTypeContract.CONTRACT_SIGNED,
-                            title = null,
-                            description = null,
-                            relatedLots = null)
+                        id = it.id,
+                        documentType = DocumentTypeContract.CONTRACT_SIGNED,
+                        title = null,
+                        description = null,
+                        relatedLots = null)
                 }
                 .toList()
         return if (documentsDb != null && documentsDb.isNotEmpty()) (documentsDb + newDocuments)
@@ -95,16 +111,16 @@ class FinalUpdateService(private val acDao: AcDao,
                 ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         return Milestone(
-                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
-                status = MilestoneStatus.SCHEDULED,
-                type = MilestoneType.APPROVAL,
-                subtype = MilestoneSubType.BUYERS_APPROVAL,
-                relatedItems = null,
-                additionalInformation = null,
-                dueDate = LocalDateTime.now(),
-                relatedParties = relatedParties
+            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            title = template.title,
+            description = template.description,
+            status = MilestoneStatus.SCHEDULED,
+            type = MilestoneType.APPROVAL,
+            subtype = MilestoneSubType.BUYERS_APPROVAL,
+            relatedItems = null,
+            additionalInformation = null,
+            dueDate = LocalDateTime.now(),
+            relatedParties = relatedParties
         )
     }
 
@@ -119,16 +135,16 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = supplier.id, name = supplier.name))
 
         return Milestone(
-                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
-                status = MilestoneStatus.SCHEDULED,
-                type = MilestoneType.APPROVAL,
-                subtype = MilestoneSubType.SUPPLIERS_APPROVAL,
-                relatedItems = null,
-                additionalInformation = null,
-                dueDate = LocalDateTime.now(),
-                relatedParties = relatedParties
+            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            title = template.title,
+            description = template.description,
+            status = MilestoneStatus.SCHEDULED,
+            type = MilestoneType.APPROVAL,
+            subtype = MilestoneSubType.SUPPLIERS_APPROVAL,
+            relatedItems = null,
+            additionalInformation = null,
+            dueDate = LocalDateTime.now(),
+            relatedParties = relatedParties
         )
     }
 
@@ -144,16 +160,16 @@ class FinalUpdateService(private val acDao: AcDao,
                 ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         return Milestone(
-                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
-                status = MilestoneStatus.SCHEDULED,
-                type = MilestoneType.APPROVAL,
-                subtype = MilestoneSubType.CONTRACT_ACTIVATION,
-                relatedItems = null,
-                additionalInformation = null,
-                dueDate = LocalDateTime.now(),
-                relatedParties = relatedParties
+            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            title = template.title,
+            description = template.description,
+            status = MilestoneStatus.SCHEDULED,
+            type = MilestoneType.APPROVAL,
+            subtype = MilestoneSubType.CONTRACT_ACTIVATION,
+            relatedItems = null,
+            additionalInformation = null,
+            dueDate = LocalDateTime.now(),
+            relatedParties = relatedParties
         )
     }
 
@@ -168,16 +184,16 @@ class FinalUpdateService(private val acDao: AcDao,
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = "approveBodyId", name = "approveBodyName"))
 
         return Milestone(
-                id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
-                title = template.title,
-                description = template.description,
-                status = MilestoneStatus.SCHEDULED,
-                type = MilestoneType.APPROVAL,
-                subtype = MilestoneSubType.APPROVE_BODY_VALIDATION,
-                relatedItems = null,
-                additionalInformation = null,
-                dueDate = LocalDateTime.now(),
-                relatedParties = relatedParties
+            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            title = template.title,
+            description = template.description,
+            status = MilestoneStatus.SCHEDULED,
+            type = MilestoneType.APPROVAL,
+            subtype = MilestoneSubType.APPROVE_BODY_VALIDATION,
+            relatedItems = null,
+            additionalInformation = null,
+            dueDate = LocalDateTime.now(),
+            relatedParties = relatedParties
         )
     }
 
@@ -195,17 +211,18 @@ class FinalUpdateService(private val acDao: AcDao,
         )
         val requestGroup = RequestGroup(
                 id = template.id + documentId + "-" + buyer.identifier?.id,
-                requests = hashSetOf(request)
+                requests = listOf(request)
         )
         return ConfirmationRequest(
-                id = template.id + documentId,
-                relatedItem = documentId,
-                source = SourceType.BUYER,
-                type = template.type,
-                title = template.title,
-                description = template.description,
-                relatesTo = template.relatesTo,
-                requestGroups = hashSetOf(requestGroup))
+            id = template.id + documentId,
+            relatedItem = documentId,
+            source = ConfirmationRequestSource.BUYER,
+            type = template.type,
+            title = template.title,
+            description = template.description,
+            relatesTo = template.relatesTo,
+            requestGroups = listOf(requestGroup)
+        )
     }
 
     private fun getAuthorityOrganizationPersonBuyer(buyer: OrganizationReferenceBuyer): RelatedPerson {
@@ -214,7 +231,7 @@ class FinalUpdateService(private val acDao: AcDao,
             if (id != null)
                 return RelatedPerson(id = person.identifier.id, name = person.name)
         }
-        throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)
+        throw ErrorException(INVALID_BUSINESS_FUNCTIONS_TYPE)
     }
 
 }

@@ -17,9 +17,10 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
+import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -48,20 +49,23 @@ class CassandraCANRepositoryIT {
         private const val RELATED_CAN_LOT_ID = "lot-id-2"
 
         private val CAN_ID = UUID.randomUUID()
-        private val CAN_STATUS_BEFORE_CANCEL = ContractStatus.PENDING
+        private val CAN_STATUS = ContractStatus.PENDING
         private val CAN_STATUS_AFTER_CANCEL = ContractStatus.CANCELLED
-        private val CAN_STATUS_DETAILS_BEFORE_CANCEL = ContractStatusDetails.VERIFIED
+        private val CAN_STATUS_AFTER_UPDATE = ContractStatus.COMPLETE
+        private val CAN_STATUS_DETAILS = ContractStatusDetails.VERIFIED
         private val CAN_STATUS_DETAILS_AFTER_CANCEL = ContractStatusDetails.EMPTY
-        private const val CAN_JSON_DATA_BEFORE_CANCEL = """ {"can": "data"} """
-        private const val CAN_JSON_DATA_AFTER_CANCEL = """ {"can": "canceled data"} """
+        private val CAN_STATUS_DETAILS_AFTER_UPDATE = ContractStatusDetails.APPROVED
+        private const val JSON_DATA_CAN = """ {"can": "data"} """
+        private const val JSON_DATA_CANCELLED_CAN = """ {"can": "canceled data"} """
+        private const val JSON_DATA_UPDATED_CAN = """ {"can": "updated data"} """
 
         private val RELATED_CAN_ID = UUID.randomUUID()
-        private val RELATED_CAN_STATUS_BEFORE_CANCEL = ContractStatus.PENDING
+        private val RELATED_CAN_STATUS = ContractStatus.PENDING
         private val RELATED_CAN_STATUS_AFTER_CANCEL = ContractStatus.CANCELLED
-        private val RELATED_CAN_STATUS_DETAILS_BEFORE_CANCEL = ContractStatus.PENDING
+        private val RELATED_CAN_STATUS_DETAILS = ContractStatusDetails.ACTIVE
         private val RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL = ContractStatusDetails.CONTRACT_PROJECT
-        private const val RELATED_CAN_JSON_DATA_BEFORE_CANCEL = """ {"related": "data"} """
-        private const val RELATED_CAN_JSON_DATA_AFTER_CANCEL = """ {"related": "canceled data"} """
+        private const val JSON_DATA_RELATED_CAN = """ {"related": "data"} """
+        private const val JSON_DATA_CANCELLED_RELATED_CAN = """ {"related": "canceled data"} """
     }
 
     @Autowired
@@ -97,7 +101,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun findByCPIDAndCANId() {
-        insertCancellationCAN()
+        insertCAN()
 
         val actualFundedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
 
@@ -113,7 +117,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun findByCPID() {
-        insertCancellationCAN()
+        insertCAN()
         insertRelatedCAN()
 
         val actualFundedCANs: List<CANEntity> = canRepository.findBy(cpid = CPID)
@@ -139,7 +143,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorRead() {
-        insertCancellationCAN()
+        insertCAN()
 
         doThrow(RuntimeException())
             .whenever(session)
@@ -153,7 +157,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun saveCancelledCANs() {
-        insertCancellationCAN()
+        insertCAN()
         insertRelatedCAN()
 
         canRepository.saveCancelledCANs(
@@ -173,7 +177,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorSaveUnknownCANs() {
-        insertCancellationCAN()
+        insertCAN()
 
         val exception = assertThrows<SaveEntityException> {
             canRepository.saveCancelledCANs(
@@ -191,7 +195,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorSaveCancelledCANs() {
-        insertCancellationCAN()
+        insertCAN()
 
         doThrow(RuntimeException())
             .whenever(session)
@@ -205,6 +209,67 @@ class CassandraCANRepositoryIT {
             )
         }
         assertEquals("Error writing cancelled CAN(s).", exception.message)
+    }
+
+    @Test
+    fun saveUpdatedStatusesCANs() {
+        insertCAN()
+
+        val updatedCan = DataStatusesCAN(
+            id = CAN_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
+
+        val actualCANEntity: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+
+        val expectedCANEntity = expectedUpdatedCAN()
+
+        assertNotNull(actualCANEntity)
+        assertEquals(expectedCANEntity, actualCANEntity)
+    }
+
+    @Test
+    fun errorSaveUpdatedStatusesUnknownCANs() {
+        val updatedCan = DataStatusesCAN(
+            id = CAN_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        val exception = assertThrows<SaveEntityException> {
+            canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
+        }
+
+        assertEquals(
+            "An error occurred when writing a record(s) of the CAN(s) by cpid '$CPID' from the database.",
+            exception.message
+        )
+    }
+
+    @Test
+    fun errorSaveUpdatedStatusesCANs() {
+        insertCAN()
+
+        doThrow(RuntimeException())
+            .whenever(session)
+            .execute(any<BatchStatement>())
+
+        val updatedCan = DataStatusesCAN(
+            id = CAN_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        val exception = assertThrows<SaveEntityException> {
+            canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
+        }
+        assertEquals("Error writing updated statuses CAN(s).", exception.message)
     }
 
     private fun createKeyspace() {
@@ -236,45 +301,42 @@ class CassandraCANRepositoryIT {
         )
     }
 
-    private fun insertCancellationCAN() {
+    private fun insertCAN(
+        canId: UUID = CAN_ID,
+        lotId: String = CAN_LOT_ID,
+        status: ContractStatus = CAN_STATUS,
+        statusDetails: ContractStatusDetails = CAN_STATUS_DETAILS,
+        jsonData: String = JSON_DATA_CAN
+    ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
             .value("cp_id", CPID)
-            .value("can_id", CAN_ID)
+            .value("can_id", canId)
             .value("token_entity", TOKEN)
             .value("owner", OWNER)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID)
-            .value("lot_id", CAN_LOT_ID)
+            .value("lot_id", lotId)
             .value("ac_id", CONTRACT_ID)
-            .value("status", CAN_STATUS_BEFORE_CANCEL.toString())
-            .value("status_details", CAN_STATUS_DETAILS_BEFORE_CANCEL.toString())
-            .value("json_data", CAN_JSON_DATA_BEFORE_CANCEL)
+            .value("status", status.toString())
+            .value("status_details", statusDetails.toString())
+            .value("json_data", jsonData)
 
         session.execute(rec)
     }
 
-    private fun insertRelatedCAN() {
-        val rec = QueryBuilder.insertInto("ocds", "contracting_can")
-            .value("cp_id", CPID)
-            .value("can_id", RELATED_CAN_ID)
-            .value("token_entity", TOKEN)
-            .value("owner", OWNER)
-            .value("created_date", CREATE_DATE.toCassandraTimestamp())
-            .value("award_id", AWARD_ID)
-            .value("lot_id", RELATED_CAN_LOT_ID)
-            .value("ac_id", CONTRACT_ID)
-            .value("status", RELATED_CAN_STATUS_BEFORE_CANCEL.toString())
-            .value("status_details", RELATED_CAN_STATUS_DETAILS_BEFORE_CANCEL.toString())
-            .value("json_data", RELATED_CAN_JSON_DATA_BEFORE_CANCEL)
-
-        session.execute(rec)
-    }
+    private fun insertRelatedCAN() = insertCAN(
+        canId = RELATED_CAN_ID,
+        lotId = RELATED_CAN_LOT_ID,
+        status = RELATED_CAN_STATUS,
+        statusDetails = RELATED_CAN_STATUS_DETAILS,
+        jsonData = JSON_DATA_RELATED_CAN
+    )
 
     private fun dataCancelledCAN() = DataCancelCAN(
         id = CAN_ID,
         status = CAN_STATUS_AFTER_CANCEL,
         statusDetails = CAN_STATUS_DETAILS_AFTER_CANCEL,
-        jsonData = CAN_JSON_DATA_AFTER_CANCEL
+        jsonData = JSON_DATA_CANCELLED_CAN
     )
 
     private fun dataRelatedCANs() = listOf(
@@ -282,63 +344,73 @@ class CassandraCANRepositoryIT {
             id = RELATED_CAN_ID,
             status = RELATED_CAN_STATUS_AFTER_CANCEL,
             statusDetails = RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL,
-            jsonData = RELATED_CAN_JSON_DATA_AFTER_CANCEL
+            jsonData = JSON_DATA_CANCELLED_RELATED_CAN
         )
     )
 
-    private fun expectedFundedCAN() = CANEntity(
-        cpid = CPID,
+    private fun expectedFundedCAN() = expectedCAN(
         id = CAN_ID,
-        token = TOKEN,
-        owner = OWNER,
-        createdDate = CREATE_DATE,
-        awardId = AWARD_ID,
         lotId = CAN_LOT_ID,
         contractId = CONTRACT_ID,
-        status = CAN_STATUS_BEFORE_CANCEL.toString(),
-        statusDetails = CAN_STATUS_DETAILS_BEFORE_CANCEL.toString(),
-        jsonData = CAN_JSON_DATA_BEFORE_CANCEL
+        status = CAN_STATUS,
+        statusDetails = CAN_STATUS_DETAILS,
+        jsonData = JSON_DATA_CAN
     )
 
-    private fun expectedFundedRelatedCAN() = CANEntity(
-        cpid = CPID,
+    private fun expectedFundedRelatedCAN() = expectedCAN(
         id = RELATED_CAN_ID,
-        token = TOKEN,
-        owner = OWNER,
-        createdDate = CREATE_DATE,
-        awardId = AWARD_ID,
         lotId = RELATED_CAN_LOT_ID,
         contractId = CONTRACT_ID,
-        status = RELATED_CAN_STATUS_BEFORE_CANCEL.toString(),
-        statusDetails = RELATED_CAN_STATUS_DETAILS_BEFORE_CANCEL.toString(),
-        jsonData = RELATED_CAN_JSON_DATA_BEFORE_CANCEL
+        status = RELATED_CAN_STATUS,
+        statusDetails = RELATED_CAN_STATUS_DETAILS,
+        jsonData = JSON_DATA_RELATED_CAN
     )
 
-    private fun expectedCancelledCAN() = CANEntity(
-        cpid = CPID,
+    private fun expectedCancelledCAN() = expectedCAN(
         id = CAN_ID,
-        token = TOKEN,
-        owner = OWNER,
-        createdDate = CREATE_DATE,
-        awardId = AWARD_ID,
         lotId = CAN_LOT_ID,
         contractId = null,
-        status = CAN_STATUS_AFTER_CANCEL.toString(),
-        statusDetails = CAN_STATUS_DETAILS_AFTER_CANCEL.toString(),
-        jsonData = CAN_JSON_DATA_AFTER_CANCEL
+        status = CAN_STATUS_AFTER_CANCEL,
+        statusDetails = CAN_STATUS_DETAILS_AFTER_CANCEL,
+        jsonData = JSON_DATA_CANCELLED_CAN
     )
 
-    private fun expectedCancelledRelatedCAN() = CANEntity(
-        cpid = CPID,
+    private fun expectedCancelledRelatedCAN() = expectedCAN(
         id = RELATED_CAN_ID,
+        lotId = RELATED_CAN_LOT_ID,
+        contractId = null,
+        status = RELATED_CAN_STATUS_AFTER_CANCEL,
+        statusDetails = RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL,
+        jsonData = JSON_DATA_CANCELLED_RELATED_CAN
+    )
+
+    private fun expectedUpdatedCAN() = expectedCAN(
+        id = CAN_ID,
+        lotId = CAN_LOT_ID,
+        contractId = CONTRACT_ID,
+        status = CAN_STATUS_AFTER_UPDATE,
+        statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+        jsonData = JSON_DATA_UPDATED_CAN
+    )
+
+    private fun expectedCAN(
+        id: UUID,
+        lotId: String,
+        contractId: String?,
+        status: ContractStatus,
+        statusDetails: ContractStatusDetails,
+        jsonData: String
+    ) = CANEntity(
+        cpid = CPID,
+        id = id,
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
         awardId = AWARD_ID,
-        lotId = RELATED_CAN_LOT_ID,
-        contractId = null,
-        status = RELATED_CAN_STATUS_AFTER_CANCEL.toString(),
-        statusDetails = RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL.toString(),
-        jsonData = RELATED_CAN_JSON_DATA_AFTER_CANCEL
+        lotId = lotId,
+        contractId = contractId,
+        status = status.toString(),
+        statusDetails = statusDetails.toString(),
+        jsonData = jsonData
     )
 }

@@ -12,13 +12,13 @@ import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.CAN
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.json.loadJson
 import com.procurement.contracting.model.dto.ContractProcess
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentTypeAmendment
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -114,7 +114,7 @@ class CancelCANServiceTest {
 
         assertNull(response.contract)
 
-        verify(acRepository, times(0)).saveCancelledAC(any())
+        verify(acRepository, times(0)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
@@ -185,7 +185,7 @@ class CancelCANServiceTest {
         assertEquals(ContractStatus.CANCELLED, contract.status)
         assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
 
-        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
@@ -239,7 +239,7 @@ class CancelCANServiceTest {
         assertEquals(ContractStatus.PENDING, firstRelatedCAN.status)
         assertEquals(ContractStatusDetails.CONTRACT_PROJECT, firstRelatedCAN.statusDetails)
 
-        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
@@ -506,9 +506,9 @@ class CancelCANServiceTest {
 }
 
 class StatusConverter : AbstractArgumentConverter<ContractStatus>() {
-    override fun converting(source: String): ContractStatus = ContractStatus.fromValue(source)
+    override fun converting(source: String): ContractStatus = ContractStatus.fromString(source)
 }
 
 class StatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
-    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.fromValue(source)
+    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.fromString(source)
 }

@@ -3,18 +3,17 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
-import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.CAN
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ocds.Contract
-import com.procurement.contracting.model.dto.ocds.ContractStatus
-import com.procurement.contracting.model.dto.ocds.ContractStatusDetails
-import com.procurement.contracting.model.dto.ocds.DocumentTypeAmendment
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -186,13 +185,11 @@ class CancelCANServiceImpl(
 
         val isCancelledAC = if (cancelledContract != null) {
             acRepository.saveCancelledAC(
-                dataCancelledAC = DataCancelledAC(
-                    cpid = context.cpid,
-                    id = cancelledContract.id,
-                    status = cancelledContract.status,
-                    statusDetails = cancelledContract.statusDetails,
-                    jsonData = toJson(updatedContractProcess)
-                )
+                cpid = context.cpid,
+                id = cancelledContract.id,
+                status = cancelledContract.status,
+                statusDetails = cancelledContract.statusDetails,
+                jsonData = toJson(updatedContractProcess)
             )
             true
         } else {
@@ -372,7 +369,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
                     ContractStatusDetails.EXECUTION,
-                    ContractStatusDetails.EMPTY -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
+                    ContractStatusDetails.EMPTY,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
                 }
             }
 
@@ -410,7 +408,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.EMPTY -> Unit
 
                     ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.VERIFIED,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 
@@ -430,7 +429,8 @@ class CancelCANServiceImpl(
                     ContractStatusDetails.UNSUCCESSFUL,
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.EXECUTION,
+                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 

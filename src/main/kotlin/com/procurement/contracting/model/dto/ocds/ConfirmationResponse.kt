@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
