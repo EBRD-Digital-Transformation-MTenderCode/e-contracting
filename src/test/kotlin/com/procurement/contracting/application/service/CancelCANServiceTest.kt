@@ -114,7 +114,7 @@ class CancelCANServiceTest {
 
         assertNull(response.contract)
 
-        verify(acRepository, times(0)).saveCancelledAC(any())
+        verify(acRepository, times(0)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
@@ -185,7 +185,7 @@ class CancelCANServiceTest {
         assertEquals(ContractStatus.CANCELLED, contract.status)
         assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
 
-        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 
@@ -239,7 +239,7 @@ class CancelCANServiceTest {
         assertEquals(ContractStatus.PENDING, firstRelatedCAN.status)
         assertEquals(ContractStatusDetails.CONTRACT_PROJECT, firstRelatedCAN.statusDetails)
 
-        verify(acRepository, times(1)).saveCancelledAC(any())
+        verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
     }
 

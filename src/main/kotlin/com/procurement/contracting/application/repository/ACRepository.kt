@@ -7,7 +7,13 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatusDe
 interface ACRepository {
     fun findBy(cpid: String, contractId: String): ACEntity?
 
-    fun saveCancelledAC(dataCancelledAC: DataCancelledAC)
+    fun saveCancelledAC(
+        cpid: String,
+        id: String,
+        status: ContractStatus,
+        statusDetails: ContractStatusDetails,
+        jsonData: String
+    )
 
     fun updateStatusesAC(
         cpid: String,
@@ -17,11 +23,3 @@ interface ACRepository {
         jsonData: String
     )
 }
-
-data class DataCancelledAC(
-    val id: String,
-    val cpid: String,
-    val status: ContractStatus,
-    val statusDetails: ContractStatusDetails,
-    val jsonData: String
-)

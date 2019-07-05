@@ -14,7 +14,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -120,7 +119,13 @@ class CassandraACRepositoryIT {
     fun cancellationAC() {
         insertAC()
 
-        acRepository.saveCancelledAC(dataCancelledAC = dataCancelAC())
+        acRepository.saveCancelledAC(
+            cpid = CPID,
+            id = CONTRACT_ID,
+            status = AC_STATUS_AFTER_CANCEL,
+            statusDetails = AC_STATUS_DETAILS_AFTER_CANCEL,
+            jsonData = JSON_DATA_CANCELLED_AC
+        )
 
         val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
 
@@ -139,7 +144,13 @@ class CassandraACRepositoryIT {
             .execute(any<BoundStatement>())
 
         val exception = assertThrows<SaveEntityException> {
-            acRepository.saveCancelledAC(dataCancelledAC = dataCancelAC())
+            acRepository.saveCancelledAC(
+                cpid = CPID,
+                id = CONTRACT_ID,
+                status = AC_STATUS_AFTER_CANCEL,
+                statusDetails = AC_STATUS_DETAILS_AFTER_CANCEL,
+                jsonData = JSON_DATA_CANCELLED_AC
+            )
         }
         assertEquals("Error writing cancelled contract.", exception.message)
     }
@@ -230,14 +241,6 @@ class CassandraACRepositoryIT {
             .value("token_entity", TOKEN)
         session.execute(rec)
     }
-
-    private fun dataCancelAC() = DataCancelledAC(
-        id = CONTRACT_ID,
-        cpid = CPID,
-        status = AC_STATUS_AFTER_CANCEL,
-        statusDetails = AC_STATUS_DETAILS_AFTER_CANCEL,
-        jsonData = JSON_DATA_CANCELLED_AC
-    )
 
     private fun expectedFundedAC() = ACEntity(
         cpid = CPID,

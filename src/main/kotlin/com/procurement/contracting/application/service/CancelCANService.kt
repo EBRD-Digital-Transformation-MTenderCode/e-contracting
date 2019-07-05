@@ -3,7 +3,6 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
-import com.procurement.contracting.application.repository.DataCancelledAC
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
@@ -186,13 +185,11 @@ class CancelCANServiceImpl(
 
         val isCancelledAC = if (cancelledContract != null) {
             acRepository.saveCancelledAC(
-                dataCancelledAC = DataCancelledAC(
-                    cpid = context.cpid,
-                    id = cancelledContract.id,
-                    status = cancelledContract.status,
-                    statusDetails = cancelledContract.statusDetails,
-                    jsonData = toJson(updatedContractProcess)
-                )
+                cpid = context.cpid,
+                id = cancelledContract.id,
+                status = cancelledContract.status,
+                statusDetails = cancelledContract.statusDetails,
+                jsonData = toJson(updatedContractProcess)
             )
             true
         } else {
