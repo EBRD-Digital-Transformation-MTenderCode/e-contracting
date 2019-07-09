@@ -7,6 +7,8 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -55,8 +57,8 @@ data class CancelledCANData(
 
     data class CancelledCAN(
         val id: UUID,
-        val status: ContractStatus,
-        val statusDetails: ContractStatusDetails,
+        val status: CANStatus,
+        val statusDetails: CANStatusDetails,
         val amendment: Amendment
     ) {
 
@@ -77,8 +79,8 @@ data class CancelledCANData(
 
     data class RelatedCAN(
         val id: UUID,
-        val status: ContractStatus,
-        val statusDetails: ContractStatusDetails
+        val status: CANStatus,
+        val statusDetails: CANStatusDetails
     )
 
     data class Contract(
@@ -289,8 +291,8 @@ class CancelCANServiceImpl(
              *
              * eContracting sets CAN.status == "cancelled" && CAN.statusDetails value == "empty" and saves them to DB;
              */
-            status = ContractStatus.CANCELLED,
-            statusDetails = ContractStatusDetails.EMPTY,
+            status = CANStatus.CANCELLED,
+            statusDetails = CANStatusDetails.EMPTY,
 
             /**
              * BR-9.13.1(4.d)
@@ -317,7 +319,7 @@ class CancelCANServiceImpl(
      */
     private fun settingStatusesRelatedCAN(can: CAN): CAN {
         return can.copy(
-            statusDetails = ContractStatusDetails.CONTRACT_PROJECT
+            statusDetails = CANStatusDetails.CONTRACT_PROJECT
         )
     }
 
@@ -353,32 +355,20 @@ class CancelCANServiceImpl(
      */
     private fun checkCANStatuses(can: CAN) {
         when (can.status) {
-            ContractStatus.PENDING -> {
+            CANStatus.PENDING -> {
                 return when (can.statusDetails) {
-                    ContractStatusDetails.CONTRACT_PROJECT,
-                    ContractStatusDetails.ACTIVE,
-                    ContractStatusDetails.UNSUCCESSFUL -> Unit
+                    CANStatusDetails.CONTRACT_PROJECT,
+                    CANStatusDetails.ACTIVE,
+                    CANStatusDetails.UNSUCCESSFUL -> Unit
 
-                    ContractStatusDetails.CONTRACT_PREPARATION,
-                    ContractStatusDetails.APPROVED,
-                    ContractStatusDetails.SIGNED,
-                    ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED,
-                    ContractStatusDetails.CANCELLED,
-                    ContractStatusDetails.COMPLETE,
-                    ContractStatusDetails.ISSUED,
-                    ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION,
-                    ContractStatusDetails.EMPTY,
-                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
+                    CANStatusDetails.EMPTY,
+                    CANStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS_DETAILS)
                 }
             }
 
-            ContractStatus.ACTIVE,
-            ContractStatus.CANCELLED,
-            ContractStatus.COMPLETE,
-            ContractStatus.TERMINATED,
-            ContractStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS)
+            CANStatus.ACTIVE,
+            CANStatus.CANCELLED,
+            CANStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.INVALID_CAN_STATUS)
         }
     }
 
@@ -396,20 +386,16 @@ class CancelCANServiceImpl(
                 return when (contract.statusDetails) {
                     ContractStatusDetails.CONTRACT_PROJECT,
                     ContractStatusDetails.CONTRACT_PREPARATION,
-                    ContractStatusDetails.ACTIVE,
                     ContractStatusDetails.APPROVED,
                     ContractStatusDetails.SIGNED,
-                    ContractStatusDetails.CANCELLED,
-                    ContractStatusDetails.COMPLETE,
-                    ContractStatusDetails.UNSUCCESSFUL,
+
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
                     ContractStatusDetails.EXECUTION,
                     ContractStatusDetails.EMPTY -> Unit
 
                     ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED,
-                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 
@@ -419,18 +405,13 @@ class CancelCANServiceImpl(
 
                     ContractStatusDetails.CONTRACT_PROJECT,
                     ContractStatusDetails.CONTRACT_PREPARATION,
-                    ContractStatusDetails.ACTIVE,
                     ContractStatusDetails.APPROVED,
                     ContractStatusDetails.SIGNED,
                     ContractStatusDetails.VERIFICATION,
                     ContractStatusDetails.VERIFIED,
-                    ContractStatusDetails.CANCELLED,
-                    ContractStatusDetails.COMPLETE,
-                    ContractStatusDetails.UNSUCCESSFUL,
                     ContractStatusDetails.ISSUED,
                     ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION,
-                    ContractStatusDetails.TREASURY_REJECTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    ContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 

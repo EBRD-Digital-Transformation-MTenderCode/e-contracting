@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
@@ -34,7 +35,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
         val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
         val can = toObject(Can::class.java, canEntity.jsonData)
-        if (can.status != ContractStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
+        if (can.status != CANStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
 
         if (canEntity.acId != null) {
             val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)

@@ -1,8 +1,8 @@
 package com.procurement.contracting.application.repository
 
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import java.util.*
 
 interface CANRepository {
@@ -16,21 +16,21 @@ interface CANRepository {
 
 data class DataCancelCAN(
     val id: UUID,
-    val status: ContractStatus,
-    val statusDetails: ContractStatusDetails,
+    val status: CANStatus,
+    val statusDetails: CANStatusDetails,
     val jsonData: String
 )
 
 data class DataRelatedCAN(
     val id: UUID,
-    val status: ContractStatus,
-    val statusDetails: ContractStatusDetails,
+    val status: CANStatus,
+    val statusDetails: CANStatusDetails,
     val jsonData: String
 )
 
 data class DataStatusesCAN(
     val id: UUID,
-    val status: ContractStatus,
-    val statusDetails: ContractStatusDetails,
+    val status: CANStatus,
+    val statusDetails: CANStatusDetails,
     val jsonData: String
 )

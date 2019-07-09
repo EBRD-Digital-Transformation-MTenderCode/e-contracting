@@ -12,6 +12,8 @@ import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -71,8 +73,8 @@ class CancelCANServiceTest {
         "pending, unsuccessful"
     )
     fun cancelCANWithoutContract(
-        @ConvertWith(StatusConverter::class) canStatus: ContractStatus,
-        @ConvertWith(StatusDetailsConverter::class) canStatusDetails: ContractStatusDetails
+        @ConvertWith(CANStatusConverter::class) canStatus: CANStatus,
+        @ConvertWith(CANStatusDetailsConverter::class) canStatusDetails: CANStatusDetails
     ) {
         val cancellationCANEntity = canEntity(
             can = cancellationCAN.copy(
@@ -94,8 +96,8 @@ class CancelCANServiceTest {
 
         val canceledCAN = response.cancelledCAN
         assertEquals(cancellationCANEntity.id, canceledCAN.id)
-        assertEquals(ContractStatus.CANCELLED, canceledCAN.status)
-        assertEquals(ContractStatusDetails.EMPTY, canceledCAN.statusDetails)
+        assertEquals(CANStatus.CANCELLED, canceledCAN.status)
+        assertEquals(CANStatusDetails.EMPTY, canceledCAN.statusDetails)
 
         assertNotNull(canceledCAN.amendment)
         val amendment = canceledCAN.amendment
@@ -122,12 +124,8 @@ class CancelCANServiceTest {
     @CsvSource(
         "pending, contractProject",
         "pending, contractPreparation",
-        "pending, active",
         "pending, approved",
         "pending, signed",
-        "pending, cancelled",
-        "pending, complete",
-        "pending, unsuccessful",
         "pending, issued",
         "pending, approvement",
         "pending, execution",
@@ -135,8 +133,8 @@ class CancelCANServiceTest {
         "cancelled, empty"
     )
     fun cancelCANWithContractWithoutRelatedCANs(
-        @ConvertWith(StatusConverter::class) contractStatus: ContractStatus,
-        @ConvertWith(StatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
+        @ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus,
+        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
@@ -161,8 +159,8 @@ class CancelCANServiceTest {
 
         val canceledCAN = response.cancelledCAN
         assertEquals(cancellationCANEntity.id, canceledCAN.id)
-        assertEquals(ContractStatus.CANCELLED, canceledCAN.status)
-        assertEquals(ContractStatusDetails.EMPTY, canceledCAN.statusDetails)
+        assertEquals(CANStatus.CANCELLED, canceledCAN.status)
+        assertEquals(CANStatusDetails.EMPTY, canceledCAN.statusDetails)
 
         assertNotNull(canceledCAN.amendment)
         val amendment = canceledCAN.amendment
@@ -218,8 +216,8 @@ class CancelCANServiceTest {
 
         val cancelledCAN = response.cancelledCAN
         assertEquals(cancellationCAN.id, cancelledCAN.id)
-        assertEquals(ContractStatus.CANCELLED, cancelledCAN.status)
-        assertEquals(ContractStatusDetails.EMPTY, cancelledCAN.statusDetails)
+        assertEquals(CANStatus.CANCELLED, cancelledCAN.status)
+        assertEquals(CANStatusDetails.EMPTY, cancelledCAN.statusDetails)
 
         assertNotNull(cancelledCAN.amendment)
         val amendment = cancelledCAN.amendment
@@ -236,8 +234,8 @@ class CancelCANServiceTest {
         assertEquals(1, response.relatedCANs.size)
         val firstRelatedCAN = response.relatedCANs[0]
         assertEquals(firstOtherCAN.id, firstRelatedCAN.id)
-        assertEquals(ContractStatus.PENDING, firstRelatedCAN.status)
-        assertEquals(ContractStatusDetails.CONTRACT_PROJECT, firstRelatedCAN.statusDetails)
+        assertEquals(CANStatus.PENDING, firstRelatedCAN.status)
+        assertEquals(CANStatusDetails.CONTRACT_PROJECT, firstRelatedCAN.statusDetails)
 
         verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
@@ -298,11 +296,9 @@ class CancelCANServiceTest {
     @CsvSource(
         "active",
         "cancelled",
-        "complete",
-        "terminated",
         "unsuccessful"
     )
-    fun invalidCANStatus(@ConvertWith(StatusConverter::class) canStatus: ContractStatus) {
+    fun invalidCANStatus(@ConvertWith(CANStatusConverter::class) canStatus: CANStatus) {
         val cancellationCANEntity = canEntity(
             can = cancellationCAN.copy(
                 status = canStatus
@@ -327,21 +323,12 @@ class CancelCANServiceTest {
 
     @ParameterizedTest(name = "CAN - status: ''{0}'' & status details: ''{1}''")
     @CsvSource(
-        "pending, contractPreparation",
-        "pending, approved",
-        "pending, signed",
-        "pending, verification",
-        "pending, verified",
-        "pending, cancelled",
-        "pending, complete",
-        "pending, issued",
-        "pending, approvement",
-        "pending, execution",
-        "pending, empty"
+        "pending, empty",
+        "pending, treasuryRejection"
     )
     fun invalidCANStatusDetails(
-        @ConvertWith(StatusConverter::class) canStatus: ContractStatus,
-        @ConvertWith(StatusDetailsConverter::class) canStatusDetails: ContractStatusDetails
+        @ConvertWith(CANStatusConverter::class) canStatus: CANStatus,
+        @ConvertWith(CANStatusDetailsConverter::class) canStatusDetails: CANStatusDetails
     ) {
         val cancellationCANEntity = canEntity(
             can = cancellationCAN.copy(
@@ -373,7 +360,7 @@ class CancelCANServiceTest {
         "terminated",
         "unsuccessful"
     )
-    fun invalidContractStatus(@ConvertWith(StatusConverter::class) contractStatus: ContractStatus) {
+    fun invalidContractStatus(@ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(cancellationCANEntity)
@@ -404,21 +391,17 @@ class CancelCANServiceTest {
         "pending, verified",
         "cancelled, contractProject",
         "cancelled, contractPreparation",
-        "cancelled, active",
         "cancelled, approved",
         "cancelled, signed",
         "cancelled, verification",
         "cancelled, verified",
-        "cancelled, cancelled",
-        "cancelled, complete",
-        "cancelled, unsuccessful",
         "cancelled, issued",
         "cancelled, approvement",
         "cancelled, execution"
     )
     fun invalidContractStatusDetails(
-        @ConvertWith(StatusConverter::class) contractStatus: ContractStatus,
-        @ConvertWith(StatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
+        @ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus,
+        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
@@ -505,10 +488,18 @@ class CancelCANServiceTest {
     )
 }
 
-class StatusConverter : AbstractArgumentConverter<ContractStatus>() {
+class CANStatusConverter : AbstractArgumentConverter<CANStatus>() {
+    override fun converting(source: String): CANStatus = CANStatus.fromString(source)
+}
+
+class CANStatusDetailsConverter : AbstractArgumentConverter<CANStatusDetails>() {
+    override fun converting(source: String): CANStatusDetails = CANStatusDetails.fromString(source)
+}
+
+class ContractStatusConverter : AbstractArgumentConverter<ContractStatus>() {
     override fun converting(source: String): ContractStatus = ContractStatus.fromString(source)
 }
 
-class StatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
+class ContractStatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
     override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.fromString(source)
 }

@@ -2,6 +2,8 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
@@ -71,8 +73,8 @@ class ActivationAcService(private val acDao: AcDao,
         for (canEntity in canEntities) {
             if (canEntity.acId == contractEntity.acId) {
                 val can = toObject(Can::class.java, canEntity.jsonData)
-                can.status = ContractStatus.ACTIVE
-                can.statusDetails = ContractStatusDetails.EMPTY
+                can.status = CANStatus.ACTIVE
+                can.statusDetails = CANStatusDetails.EMPTY
                 canEntity.status = can.status.value
                 canEntity.statusDetails = can.statusDetails.value
                 canEntity.jsonData = toJson(can)

@@ -19,8 +19,8 @@ import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -49,21 +49,21 @@ class CassandraCANRepositoryIT {
         private const val RELATED_CAN_LOT_ID = "lot-id-2"
 
         private val CAN_ID = UUID.randomUUID()
-        private val CAN_STATUS = ContractStatus.PENDING
-        private val CAN_STATUS_AFTER_CANCEL = ContractStatus.CANCELLED
-        private val CAN_STATUS_AFTER_UPDATE = ContractStatus.COMPLETE
-        private val CAN_STATUS_DETAILS = ContractStatusDetails.VERIFIED
-        private val CAN_STATUS_DETAILS_AFTER_CANCEL = ContractStatusDetails.EMPTY
-        private val CAN_STATUS_DETAILS_AFTER_UPDATE = ContractStatusDetails.APPROVED
+        private val CAN_STATUS = CANStatus.PENDING
+        private val CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
+        private val CAN_STATUS_AFTER_UPDATE = CANStatus.UNSUCCESSFUL
+        private val CAN_STATUS_DETAILS = CANStatusDetails.ACTIVE
+        private val CAN_STATUS_DETAILS_AFTER_CANCEL = CANStatusDetails.EMPTY
+        private val CAN_STATUS_DETAILS_AFTER_UPDATE = CANStatusDetails.TREASURY_REJECTION
         private const val JSON_DATA_CAN = """ {"can": "data"} """
         private const val JSON_DATA_CANCELLED_CAN = """ {"can": "canceled data"} """
         private const val JSON_DATA_UPDATED_CAN = """ {"can": "updated data"} """
 
         private val RELATED_CAN_ID = UUID.randomUUID()
-        private val RELATED_CAN_STATUS = ContractStatus.PENDING
-        private val RELATED_CAN_STATUS_AFTER_CANCEL = ContractStatus.CANCELLED
-        private val RELATED_CAN_STATUS_DETAILS = ContractStatusDetails.ACTIVE
-        private val RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL = ContractStatusDetails.CONTRACT_PROJECT
+        private val RELATED_CAN_STATUS = CANStatus.PENDING
+        private val RELATED_CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
+        private val RELATED_CAN_STATUS_DETAILS = CANStatusDetails.ACTIVE
+        private val RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL = CANStatusDetails.CONTRACT_PROJECT
         private const val JSON_DATA_RELATED_CAN = """ {"related": "data"} """
         private const val JSON_DATA_CANCELLED_RELATED_CAN = """ {"related": "canceled data"} """
     }
@@ -304,8 +304,8 @@ class CassandraCANRepositoryIT {
     private fun insertCAN(
         canId: UUID = CAN_ID,
         lotId: String = CAN_LOT_ID,
-        status: ContractStatus = CAN_STATUS,
-        statusDetails: ContractStatusDetails = CAN_STATUS_DETAILS,
+        status: CANStatus = CAN_STATUS,
+        statusDetails: CANStatusDetails = CAN_STATUS_DETAILS,
         jsonData: String = JSON_DATA_CAN
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
@@ -397,8 +397,8 @@ class CassandraCANRepositoryIT {
         id: UUID,
         lotId: String,
         contractId: String?,
-        status: ContractStatus,
-        statusDetails: ContractStatusDetails,
+        status: CANStatus,
+        statusDetails: CANStatusDetails,
         jsonData: String
     ) = CANEntity(
         cpid = CPID,

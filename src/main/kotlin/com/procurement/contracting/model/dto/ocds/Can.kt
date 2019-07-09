@@ -2,8 +2,8 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,9 +19,9 @@ data class Can @JsonCreator constructor(
 
         val lotId: String,
 
-        var status: ContractStatus,
+        var status: CANStatus,
 
-        var statusDetails: ContractStatusDetails,
+        var statusDetails: CANStatusDetails,
 
         var documents: List<DocumentContract>?,
 

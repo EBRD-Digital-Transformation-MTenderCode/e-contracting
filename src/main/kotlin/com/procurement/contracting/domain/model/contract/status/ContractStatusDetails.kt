@@ -6,19 +6,14 @@ import com.procurement.contracting.exception.EnumException
 enum class ContractStatusDetails(@JsonValue val value: String) {
     CONTRACT_PROJECT("contractProject"),
     CONTRACT_PREPARATION("contractPreparation"),
-    ACTIVE("active"),
     APPROVED("approved"),
     SIGNED("signed"),
     VERIFICATION("verification"),
     VERIFIED("verified"),
-    CANCELLED("cancelled"),
-    COMPLETE("complete"),
-    UNSUCCESSFUL("unsuccessful"),
     ISSUED("issued"),
     APPROVEMENT("approvement"),
     EXECUTION("execution"),
-    EMPTY("empty"),
-    TREASURY_REJECTION("treasuryRejection");
+    EMPTY("empty");
 
     override fun toString(): String {
         return this.value

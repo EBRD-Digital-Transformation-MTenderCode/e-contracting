@@ -1,8 +1,8 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
@@ -38,13 +38,13 @@ class CreateCanService(private val canDao: CanDao,
         val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateCanRq::class.java, cm.data)
 
-        val statusDetails: ContractStatusDetails
+        val statusDetails: CANStatusDetails
         var canAwardId: String? = null
         if (dto.awardingSuccess) {
-            statusDetails = ContractStatusDetails.CONTRACT_PROJECT
+            statusDetails = CANStatusDetails.CONTRACT_PROJECT
             canAwardId = dto.awardId
         } else {
-            statusDetails = ContractStatusDetails.UNSUCCESSFUL
+            statusDetails = CANStatusDetails.UNSUCCESSFUL
         }
         val can = Can(
             id = generationService.generateRandomUUID().toString(),
@@ -52,7 +52,7 @@ class CreateCanService(private val canDao: CanDao,
             date = dateTime,
             awardId = canAwardId,
             lotId = lotId,
-            status = ContractStatus.PENDING,
+            status = CANStatus.PENDING,
             statusDetails = statusDetails,
             documents = null,
             amendment = null)
@@ -66,7 +66,7 @@ class CreateCanService(private val canDao: CanDao,
         val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
 
         val canEntities = canDao.findAllByCpId(cpId)
-        if (canEntities.asSequence().any { it.lotId == lotId && it.status != ContractStatus.CANCELLED.value }) {
+        if (canEntities.asSequence().any { it.lotId == lotId && it.status != CANStatus.CANCELLED.value }) {
             throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
         }
         return ResponseDto(data = "ok")
@@ -78,7 +78,7 @@ class CreateCanService(private val canDao: CanDao,
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.asSequence().none {
                     it.awardId == dto.awardId
-                            && it.status == ContractStatus.PENDING.value
+                            && it.status == CANStatus.PENDING.value
                 }) {
             throw ErrorException(ErrorType.INVALID_CAN_STATUS)
         }
@@ -94,7 +94,7 @@ class CreateCanService(private val canDao: CanDao,
         val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.canId.toString()) }.toList()
         val cansRs = ArrayList<CanGetAwards>()
         for (canEntity in canEntitiesFiltered) {
-            if (canEntity.statusDetails != ContractStatusDetails.UNSUCCESSFUL.value) {
+            if (canEntity.statusDetails != CANStatusDetails.UNSUCCESSFUL.value) {
                 cansRs.add(CanGetAwards(id = canEntity.canId.toString(), awardId = canEntity.awardId!!))
             } else {
                 throw ErrorException(ErrorType.INVALID_CAN_STATUS)
@@ -112,10 +112,10 @@ class CreateCanService(private val canDao: CanDao,
         if (canEntity.owner != owner) throw ErrorException(error = ErrorType.INVALID_OWNER)
         if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
 
-        if (canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.UNSUCCESSFUL.value) {
+        if (canEntity.status == CANStatus.PENDING.value && canEntity.statusDetails == CANStatusDetails.UNSUCCESSFUL.value) {
             val can = toObject(Can::class.java, canEntity.jsonData)
-            can.status = ContractStatus.UNSUCCESSFUL
-            can.statusDetails = ContractStatusDetails.EMPTY
+            can.status = CANStatus.UNSUCCESSFUL
+            can.statusDetails = CANStatusDetails.EMPTY
 
             canEntity.status = can.status.value
             canEntity.statusDetails = can.statusDetails.value

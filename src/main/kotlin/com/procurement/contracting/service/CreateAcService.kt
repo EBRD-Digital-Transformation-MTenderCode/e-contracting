@@ -2,6 +2,8 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
@@ -75,11 +77,11 @@ class CreateAcService(
 
         for (canEntity in canEntities) {
             if (idsOfCANs.contains(canEntity.canId.toString())) {
-                if (!(canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.CONTRACT_PROJECT.value)) {
+                if (!(canEntity.status == CANStatus.PENDING.value && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT.value)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)
-                can.statusDetails = ContractStatusDetails.ACTIVE
+                can.statusDetails = CANStatusDetails.ACTIVE
                 canEntity.statusDetails = can.statusDetails.value
                 canEntity.acId = acId
                 canEntity.jsonData = toJson(can)
