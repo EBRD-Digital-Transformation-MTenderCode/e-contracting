@@ -1,0 +1,113 @@
+{
+  "token": "f9e0c87a-8ed6-47d7-950c-7a166efa8e1c",
+  "cans": [
+    {
+      "id": "cans[0].id",
+      "status": "active",
+      "statusDetails": "unsuccessful"
+    }
+  ],
+  "contract": {
+    "id": "contract.id",
+    "awardId": "f4a86a2e-ee3d-45bb-aae2-622cc3457585",
+    "status": "pending",
+    "statusDetails": "empty"
+  },
+  "contractedAward": {
+    "id": "0bf967dc-0060-4773-84fe-477e509a2738",
+    "date": "2018-12-22T10:59:43Z",
+    "value": {
+      "amount": 125.05,
+      "currency": "MDL"
+    },
+    "relatedLots": [
+      "47dc67ff-d6ec-4306-b428-cbe066c0fe54"
+    ],
+    "suppliers": [
+      {
+        "id": "contractedAward.suppliers[0].id",
+        "name": "contractedAward.suppliers[0].name",
+        "identifier": {
+          "scheme": "contractedAward.suppliers[0].identifier.scheme",
+          "id": "contractedAward.suppliers[0].identifier.id",
+          "legalName": "contractedAward.suppliers[0].identifier.legalName",
+          "uri": "contractedAward.suppliers[0].identifier.uri"
+        },
+        "additionalIdentifiers": [
+          {
+            "scheme": "contractedAward.suppliers[0].additionalIdentifiers.scheme",
+            "id": "contractedAward.suppliers[0].additionalIdentifiers.id",
+            "legalName": "contractedAward.suppliers[0].additionalIdentifiers.legalName",
+            "uri": "contractedAward.suppliers[0].additionalIdentifiers.uri"
+          }
+        ],
+        "address": {
+          "streetAddress": "contractedAward.suppliers[0].address.streetAddress",
+          "postalCode": "contractedAward.suppliers[0].address.postalCode",
+          "addressDetails": {
+            "country": {
+              "scheme": "contractedAward.suppliers[0].address.addressDetails.country.scheme",
+              "id": "contractedAward.suppliers[0].address.addressDetails.country.id",
+              "description": "contractedAward.suppliers[0].address.addressDetails.country.description",
+              "uri": "contractedAward.suppliers[0].address.addressDetails.country.uri"
+            },
+            "region": {
+              "scheme": "contractedAward.suppliers[0].address.addressDetails.region.scheme",
+              "id": "contractedAward.suppliers[0].address.addressDetails.region.id",
+              "description": "contractedAward.suppliers[0].address.addressDetails.region.description",
+              "uri": "contractedAward.suppliers[0].address.addressDetails.region.uri"
+            },
+            "locality": {
+              "scheme": "contractedAward.suppliers[0].address.addressDetails.locality.scheme",
+              "id": "contractedAward.suppliers[0].address.addressDetails.locality.id",
+              "description": "contractedAward.suppliers[0].address.addressDetails.locality.description",
+              "uri": "contractedAward.suppliers[0].address.addressDetails.locality.uri"
+            }
+          }
+        },
+        "contactPoint": {
+          "name": "contractedAward.suppliers[0].contactPoint.name",
+          "email": "contractedAward.suppliers[0].contactPoint.email",
+          "telephone": "contractedAward.suppliers[0].contactPoint.telephone",
+          "faxNumber": "contractedAward.suppliers[0].contactPoint.faxNumber",
+          "url": "contractedAward.suppliers[0].contactPoint.url"
+        }
+      }
+    ],
+    "items": [
+      {
+        "id": "6b0fbf4e-102d-49fc-8f9e-3d525db5412c",
+        "classification": {
+          "scheme": "CPV",
+          "description": "contractedAward.items[0].classification.description",
+          "id": "contractedAward.items[0].classification.id"
+        },
+        "additionalClassifications": [
+          {
+            "scheme": "contractedAward.items[0].additionalClassifications.scheme",
+            "description": "contractedAward.items[0].additionalClassifications.description",
+            "id": "contractedAward.items[0].additionalClassifications.id"
+          }
+        ],
+        "quantity": 10.908,
+        "unit": {
+          "id": "043db4c2-2257-4cc4-90cc-46b5593f0cb3",
+          "name": "contractedAward.items[0].unit.name"
+        },
+        "description": "contractedAward.items[0].description",
+        "relatedLot": "b2f8b998-ef79-4acc-a26a-c60ee1c1424a"
+      }
+    ],
+    "documents": [
+      {
+        "documentType": "contractSchedule",
+        "id": "1e1d9568-5fb6-4839-a9c8-b6e148baf6a3",
+        "title": "contractedAward.documents[0].documentType",
+        "description": "contractedAward.documents[0].description",
+        "relatedLots": [
+          "de44d2f7-458c-40a6-97a7-7f6cedd18e1c"
+        ]
+      }
+    ]
+  }
+}
