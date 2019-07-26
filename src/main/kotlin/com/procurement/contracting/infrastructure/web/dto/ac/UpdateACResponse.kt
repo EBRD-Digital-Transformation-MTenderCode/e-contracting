@@ -168,7 +168,7 @@ data class UpdateACResponse (
                     @field:JsonProperty("relatedPerson") @param:JsonProperty("relatedPerson") val relatedPerson: RelatedPerson
                 ) {
                     data class RelatedPerson(
-                        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+                        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
                         @field:JsonProperty("name") @param:JsonProperty("name") val name: String
                     )
                 }
