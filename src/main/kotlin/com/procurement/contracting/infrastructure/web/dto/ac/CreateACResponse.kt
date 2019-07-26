@@ -9,12 +9,12 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
-import com.procurement.contracting.infrastructure.amount.Amount3Deserializer
-import com.procurement.contracting.infrastructure.amount.Amount3Serializer
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
+import com.procurement.contracting.infrastructure.quantity.QuantitySerializer
+import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -147,8 +147,8 @@ data class CreateACResponse(
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @field:JsonProperty("additionalClassifications") @param:JsonProperty("additionalClassifications") val additionalClassifications: List<AdditionalClassification>?,
 
-            @JsonDeserialize(using = Amount3Deserializer::class)
-            @JsonSerialize(using = Amount3Serializer::class)
+            @JsonDeserialize(using = QuantityDeserializer::class)
+            @JsonSerialize(using = QuantitySerializer::class)
             @field:JsonProperty("quantity") @param:JsonProperty("quantity") val quantity: BigDecimal,
 
             @field:JsonProperty("unit") @param:JsonProperty("unit") val unit: Unit,
