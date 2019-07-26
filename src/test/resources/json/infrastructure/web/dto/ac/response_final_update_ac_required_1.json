@@ -1,0 +1,53 @@
+{
+  "contracts": {
+    "id": "contracts.id",
+    "date": "2018-12-26T14:45:00Z",
+    "awardID": "8cc29f8c-6a9b-4b02-8390-e4c2d1b6ca45",
+    "status": "pending",
+    "statusDetails": "approved",
+    "title": "contracts.title",
+    "description": "contracts.description",
+    "period": {
+      "startDate": "2018-12-26T14:45:00Z",
+      "endDate": "2019-12-30T14:45:00Z"
+    },
+    "documents": [{
+      "documentType": "environmentalImpact",
+      "id": "f1ae2606-4ac5-4756-be9d-34649430990a"
+    }],
+    "milestones": [{
+      "id": "approval-relatedparties.id",
+      "status": "scheduled",
+      "title": "Signature by the Buyer",
+      "type": "approval",
+      "description": "contract.milestones.description",
+      "relatedParties": [{
+        "id": "contract.milestones.relatedParties.id",
+        "name": "contract.milestones.relatedParties.name"
+      }]
+    }],
+    "confirmationRequests": [{
+      "id": "cs-tenderer-confirmation-on-document.id",
+      "type": "digitalSignature",
+      "title": "contract.confirmationRequests[0].title",
+      "description": "contract.confirmationRequests[0].description",
+      "relatesTo": "document",
+      "relatedItem": "378d10bb-ae1e-40c2-a81d-8d33513999f4",
+      "source": "tenderer",
+      "requestGroups": [{
+        "id": "cs-tenderer-confirmation-on-document.id-tenderer.identifier.id",
+        "requests": [{
+          "id": "cs-tenderer-confirmation-on-document.id-tenderer.identifier.id-relatedPerson.id",
+          "title": "parties[role:supplier].persones[role:authority].name",
+          "description": "contract.confirmationRequests[0].requestGroups[0].requests.description"
+        }]
+      }]
+    }],
+    "value": {
+      "amount": 123.84,
+      "currency": "MDL",
+      "amountNet": 854.39,
+      "valueAddedTaxincluded": true
+    }
+  }
+}
