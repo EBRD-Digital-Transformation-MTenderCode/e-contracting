@@ -1,0 +1,481 @@
+{
+  "planning": {
+    "implementation": {
+      "transactions": [
+        {
+          "id": "ed230d1e-93cb-4d76-8b8f-686d0728b65f",
+          "type": "advance",
+          "value": {
+            "amount": 20000.54,
+            "currency": "MDL"
+          },
+          "executionPeriod": {
+            "durationInDays": 12
+          }
+        }
+      ]
+    },
+    "budget": {
+      "description": "planning.budget.description",
+      "budgetAllocation": [
+        {
+          "budgetBreakdownID": "planning.budget.budgetAllocation[0].budgetBreakdownID",
+          "period": {
+            "startDate": "2018-12-26T14:45:00Z",
+            "endDate": "2019-12-30T14:45:00Z"
+          },
+          "amount": 123.78,
+          "relatedItem": "8cc29f8c-6a9b-4b02-8390-e4c2d1b6ca45"
+        }
+      ],
+      "budgetSource": [
+        {
+          "budgetBreakdownID": "planning.budget.budgetSource.budgetBreakdownID",
+          "amount": 202.09,
+          "currency": "MDL"
+        }
+      ]
+    }
+  },
+  "contract": {
+    "title": "contract.title",
+    "description": "contract.description",
+    "period": {
+      "startDate": "2018-12-26T14:45:00Z",
+      "endDate": "2019-12-30T14:45:00Z"
+    },
+    "documents": [
+      {
+        "documentType": "environmentalImpact",
+        "id": "f1ae2606-4ac5-4756-be9d-34649430990a",
+        "relatedLots": [
+          "88f724b3-9c4d-437c-8142-3de4b9963ebc"
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "approval-re1atedparties.id",
+        "type": "approval",
+        "relatedItems": [
+          "5c21e816-6a3b-4860-a1bd-db582019e0cb"
+        ],
+        "additionalInformation": "contract.milestones.additionalInformation",
+        "dueDate": "2019-12-30T14:45:00Z",
+        "title": "contract.milestones.title",
+        "description": "contract.milestones.description"
+      }
+    ],
+    "agreedMetrics": [
+      {
+        "id": "cc-general",
+        "observations": [
+          {
+            "id": "cc-general-1-1",
+            "measure": 5
+          }
+        ]
+      }
+    ]
+  },
+  "award": {
+    "id": "54b23bad-9fc5-4c2c-ba2b-f5be809927bb",
+    "suppliers": [
+      {
+        "id": "award.suppliers[0].id",
+        "additionalIdentifiers": [
+          {
+            "scheme": "MD-SRJE",
+            "id": "award.suppliers[0].additionalIdentifiers.id",
+            "legalName": "award.suppliers[0].additionalIdentifiers.legalName",
+            "uri": "award.suppliers[0].additionalIdentifiers.uri"
+          }
+        ],
+        "persones": [
+          {
+            "title": "award.suppliers[0].persones[0].uri",
+            "name": "award.suppliers[0].persones[0].name",
+            "identifier": {
+              "scheme": "award.suppliers[0].persones[0].identifier.scheme",
+              "id": "award.suppliers[0].persones[0].identifier.id",
+              "uri": "award.suppliers[0].persones[0].identifier.uri"
+            },
+            "businessFunctions": [
+              {
+                "id": "award.suppliers[0].persones[0].businessFunctions.id",
+                "type": "authority",
+                "jobTitle": "Chief Executive Officer",
+                "period": {
+                  "startDate": "2019-12-30T14:45:00Z"
+                },
+                "documents": [
+                  {
+                    "id": "65dd373c-9083-4636-ac71-cf42f53a977c",
+                    "documentType": "regulatoryDocument",
+                    "title": "award.suppliers[0].persones[0].businessFunctions[0].documents[0].title"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "details": {
+          "typeOfSupplier": "award.suppliers[0].details[0].details.typeOfSupplier",
+          "mainEconomicActivities": [
+            "award.suppliers[0].details[0].details.mainEconomicActivities"
+          ],
+          "scale": "sme",
+          "permits": [
+            {
+              "scheme": "SRLE",
+              "id": "award.suppliers[0].details[0].details.permits[0].id",
+              "url": "award.suppliers[0].details[0].details.permits[0].url",
+              "permitDetails": {
+                "issuedBy": {
+                  "id": "award.suppliers[0].details[0].details.permits[0].permitDetails.issuedBy.id",
+                  "name": "award.suppliers[0].details[0].details.permits[0].permitDetails.issuedBy.name"
+                },
+                "issuedThought": {
+                  "id": "award.suppliers[0].details[0].details.permits[0].permitDetails.issuedThought.id",
+                  "name": "award.suppliers[0].details[0].details.permits[0].permitDetails.issuedThought.name"
+                },
+                "validityPeriod": {
+                  "startDate": "2018-12-20T00:00:00Z"
+                }
+              }
+            }
+          ],
+          "bankAccounts": [
+            {
+              "description": "award.suppliers[0].details[0].details.bankAccounts[0].description",
+              "bankName": "award.suppliers[0].details[0].details.bankAccounts[0].bankName",
+              "address": {
+                "streetAddress": "award.suppliers[0].details[0].details.bankAccounts[0].address.streetAddress",
+                "postalCode": "award.suppliers[0].details[0].details.bankAccounts[0].address.postalCode",
+                "addressDetails": {
+                  "country": {
+                    "scheme": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.country.scheme",
+                    "id": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.country.id",
+                    "description": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.country.description",
+                    "uri": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.country.uri"
+                  },
+                  "region": {
+                    "scheme": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.region.scheme",
+                    "id": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.region.id",
+                    "description": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.region.description",
+                    "uri": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.region.uri"
+                  },
+                  "locality": {
+                    "scheme": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.locality.scheme",
+                    "id": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.locality.id",
+                    "description": "award.suppliers[0].details[0].details.bankAccounts[0].address.addressDetails.locality.description"
+                  }
+                }
+              },
+              "identifier": {
+                "scheme": "UA-MFO",
+                "id": "300711"
+              },
+              "accountIdentification": {
+                "scheme": "IBAN",
+                "id": "2600000625637"
+              }
+            }
+          ],
+          "legalForm": {
+            "scheme": "award.suppliers[0].details[0].details.legalForm.scheme",
+            "id": "award.suppliers[0].details[0].details.legalForm.id",
+            "description": "award.suppliers[0].details[0].details.legalForm.description"
+          }
+        }
+      }
+    ],
+    "documents": [
+      {
+        "documentType": "conflictOfInterest",
+        "id": "435c9918-d572-4660-a84f-1227cb68771d"
+      }
+    ],
+    "value": {
+      "amount": 101.20,
+      "currency": "MDL",
+      "amountNet": 400.90,
+      "valueAddedTaxIncluded": true
+    },
+    "items": [
+      {
+        "id": "5698095e-0710-45f2-9056-4677d42fe27d",
+        "quantity": 500.890,
+        "unit": {
+          "value": {
+            "amount": 200.02,
+            "amountNet": 200.05,
+            "valueAddedTaxIncluded": true,
+            "currency": "MDL"
+          }
+        },
+        "deliveryAddress": {
+          "streetAddress": "award.items[0].deliveryAddress.streetAddress",
+          "postalCode": "award.items[0].deliveryAddress.postalCode",
+          "addressDetails": {
+            "country": {
+              "scheme": "award.items[0].deliveryAddress.addressDetails.country.scheme",
+              "id": "award.items[0].deliveryAddress.addressDetails.country.id",
+              "description": "award.items[0].deliveryAddress.addressDetails.country.description",
+              "uri": "award.items[0].deliveryAddress.addressDetails.country.uri"
+            },
+            "region": {
+              "scheme": "award.items[0].deliveryAddress.addressDetails.region.scheme",
+              "id": "award.items[0].deliveryAddress.addressDetails.region.id",
+              "description": "award.items[0].deliveryAddress.addressDetails.region.description",
+              "uri": "award.items[0].deliveryAddress.addressDetails.region.uri"
+            },
+            "locality": {
+              "scheme": "award.items[0].deliveryAddress.addressDetails.locality.scheme",
+              "id": "award.items[0].deliveryAddress.addressDetails.locality.id",
+              "description": "award.items[0].deliveryAddress.addressDetails.locality.description"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "buyer": {
+    "id": "buyer.id",
+    "name": "buyer.name",
+    "identifier": {
+      "id": "buyer.identifier.id",
+      "scheme": "buyer.identifier.scheme",
+      "legalName": "buyer.identifier.legalName",
+      "uri": "buyer.identifier.uri"
+    },
+    "address": {
+      "streetAddress": "buyer.address.streetAddress",
+      "postalCode": "buyer.address.postalCode",
+      "addressDetails": {
+        "country": {
+          "scheme": "buyer.address.addressDetails.country.scheme",
+          "id": "buyer.address.addressDetails.country.id",
+          "description": "buyer.address.addressDetails.country.description",
+          "uri": "buyer.address.addressDetails.country.uri"
+        },
+        "region": {
+          "scheme": "buyer.address.addressDetails.region.scheme",
+          "id": "buyer.address.addressDetails.region.id",
+          "description": "buyer.address.addressDetails.region.description",
+          "uri": "buyer.address.addressDetails.region.uri"
+        },
+        "locality": {
+          "scheme": "buyer.address.addressDetails.locality.scheme",
+          "id": "buyer.address.addressDetails.locality.id",
+          "description": "buyer.address.addressDetails.locality.description"
+        }
+      }
+    },
+    "contactPoint": {
+      "name": "buyer.contactPoint.name",
+      "email": "buyer.contactPoint.email",
+      "telephone": "buyer.contactPoint.telephone"
+    },
+    "additionalIdentifiers": [
+      {
+        "scheme": "MD-SRJE",
+        "id": "buyer.additionalIdentifiers.id",
+        "legalName": "buyer.additionalIdentifiers.legalName"
+      }
+    ],
+    "persones": [
+      {
+        "title": "buyer.persones[0].title",
+        "name": "buyer.persones[0].name",
+        "identifier": {
+          "scheme": "buyer.persones[0].identifier.scheme",
+          "id": "buyer.persones[0].identifier.id",
+          "uri": "buyer.persones[0].identifier.uri"
+        },
+        "businessFunctions": [
+          {
+            "id": "buyer.persones[0].businessFunctions.id",
+            "type": "authority",
+            "jobTitle": "Chief Executive Officer",
+            "period": {
+              "startDate": "2018-12-15T00:00:00Z"
+            },
+            "documents": [
+              {
+                "id": "03985d70-f452-4b64-8cb4-571469775311",
+                "documentType": "regulatoryDocument",
+                "title": "buyer.persones[0].businessFunctions[0].documents[0].title"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "details": {
+      "typeOfBuyer": "buyer.details[0].typeOfBuyer",
+      "mainGeneralActivity": "buyer.details[0].mainGeneralActivity",
+      "mainSectoralActivity": "buyer.details[0].mainSectoralActivity",
+      "permits": [
+        {
+          "scheme": "SRLE",
+          "id": "buyer.details[0].permits[0].id",
+          "url": "buyer.details[0].permits[0].url",
+          "permitDetails": {
+            "issuedBy": {
+              "id": "buyer.details[0].permits[0].permitDetails.issuedBy.id",
+              "name": "buyer.details[0].permits[0].permitDetails.issuedBy.name"
+            },
+            "issuedThought": {
+              "id": "buyer.details[0].permits[0].permitDetails.issuedThought.id",
+              "name": "buyer.details[0].permits[0].permitDetails.issuedThought.name"
+            },
+            "validityPeriod": {
+              "startDate": "2019-11-29T14:45:00Z"
+            }
+          }
+        }
+      ],
+      "bankAccounts": [
+        {
+          "description": "buyer.details[0].bankAccounts[0].description",
+          "bankName": "buyer.details[0].bankAccounts[0].bankName",
+          "address": {
+            "streetAddress": "buyer.details[0].bankAccounts[0].address.streetAddress",
+            "postalCode": "buyer.details[0].bankAccounts[0].address.postalCode",
+            "addressDetails": {
+              "country": {
+                "scheme": "buyer.details[0].bankAccounts[0].address.addressDetails.country.scheme",
+                "id": "buyer.details[0].bankAccounts[0].address.addressDetails.country.id",
+                "description": "buyer.details[0].bankAccounts[0].address.addressDetails.country.description",
+                "uri": "buyer.details[0].bankAccounts[0].address.addressDetails.country.uri"
+              },
+              "region": {
+                "scheme": "buyer.details[0].bankAccounts[0].address.addressDetails.region.description",
+                "id": "buyer.details[0].bankAccounts[0].address.addressDetails.region.id",
+                "description": "buyer.details[0].bankAccounts[0].address.addressDetails.region.description",
+                "uri": "buyer.details[0].bankAccounts[0].address.addressDetails.region.uri"
+              },
+              "locality": {
+                "scheme": "buyer.details[0].bankAccounts[0].address.addressDetails.locality.scheme",
+                "id": "buyer.details[0].bankAccounts[0].address.addressDetails.locality.id",
+                "description": "buyer.details[0].bankAccounts[0].address.addressDetails.locality.description"
+              }
+            }
+          },
+          "identifier": {
+            "scheme": "MD-BANKS",
+            "id": "300711"
+          },
+          "accountIdentification": {
+            "scheme": "MD-IBAN",
+            "id": "2600000625637"
+          },
+          "additionalAccountIdentifiers": [
+            {
+              "scheme": "MD-SETTLEMENT",
+              "id": "buyer.details[0].bankAccounts[0].additionalAccountIdentifiers.id"
+            }
+          ]
+        }
+      ],
+      "legalForm": {
+        "scheme": "buyer.details[0].legalForm.scheme",
+        "id": "buyer.details[0].legalForm.id",
+        "description": "buyer.details[0].legalForm.description"
+      }
+    }
+  },
+  "funder": [
+    {
+      "id": "funder.id",
+      "name": "funder.name",
+      "identifier": {
+        "id": "funder.identifier.id",
+        "scheme": "funder.identifier.scheme",
+        "legalName": "funder.identifier.legalName"
+      },
+      "address": {
+        "streetAddress": "funder.address.streetAddress",
+        "postalCode": "funder.address.postalCode",
+        "addressDetails": {
+          "country": {
+            "scheme": "funder.address.addressDetails.country.scheme",
+            "id": "funder.address.addressDetails.country.id",
+            "description": "funder.address.addressDetails.country.description",
+            "uri": "funder.address.addressDetails.country.uri"
+          },
+          "region": {
+            "scheme": "funder.address.addressDetails.region.scheme",
+            "id": "funder.address.addressDetails.region.id",
+            "description": "funder.address.addressDetails.region.description",
+            "uri": "funder.address.addressDetails.region.uri"
+          },
+          "locality": {
+            "scheme": "funder.address.addressDetails.locality.scheme",
+            "id": "funder.address.addressDetails.locality.id",
+            "description": "funder.address.addressDetails.locality.description"
+          }
+        }
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "funder.additionalIdentifiers.id",
+          "scheme": "funder.additionalIdentifiers.scheme",
+          "legalName": "funder.additionalIdentifiers.legalName"
+        }
+      ],
+      "contactPoint": {
+        "name": "funder.contactPoint.name",
+        "email": "funder.contactPoint.email",
+        "telephone": "funder.contactPoint.telephone"
+      }
+    }
+  ],
+  "payer": [
+    {
+      "id": "payer.id",
+      "name": "payer.name",
+      "identifier": {
+        "id": "payer.identifier.id",
+        "scheme": "payer.identifier.scheme",
+        "legalName": "payer.identifier.legalName"
+      },
+      "address": {
+        "streetAddress": "payer.address.streetAddress",
+        "postalCode": "payer.address.postalCode",
+        "addressDetails": {
+          "country": {
+            "scheme": "payer.address.addressDetails.country.scheme",
+            "id": "payer.address.addressDetails.country.id",
+            "description": "payer.address.addressDetails.country.description",
+            "uri": "payer.address.addressDetails.country.uri"
+          },
+          "region": {
+            "scheme": "payer.address.addressDetails.region.description",
+            "id": "payer.address.addressDetails.region.id",
+            "description": "payer.address.addressDetails.region.description",
+            "uri": "payer.address.addressDetails.region.uri"
+          },
+          "locality": {
+            "scheme": "payer.address.addressDetails.locality.description",
+            "id": "payer.address.addressDetails.locality.id",
+            "description": "payer.address.addressDetails.locality.description"
+          }
+        }
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "payer.additionalIdentifiers.id",
+          "scheme": "payer.additionalIdentifiers.scheme",
+          "legalName": "payer.additionalIdentifiers.legalName"
+        }
+      ],
+      "contactPoint": {
+        "name": "payer.contactPoint.name",
+        "email": "payer.contactPoint.email",
+        "telephone": "payer.contactPoint.telephone"
+      }
+    }
+  ]
+}
