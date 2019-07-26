@@ -15,7 +15,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-class CreateACRequest(
+data class CreateACRequest(
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>,
     @field:JsonProperty("awards") @param:JsonProperty("awards") val awards: List<Award>,
     @field:JsonProperty("contractedTender") @param:JsonProperty("contractedTender") val contractedTender: ContractedTender

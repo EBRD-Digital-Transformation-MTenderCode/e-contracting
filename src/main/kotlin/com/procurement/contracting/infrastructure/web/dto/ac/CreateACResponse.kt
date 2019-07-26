@@ -19,7 +19,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-class CreateACResponse(
+data class CreateACResponse(
     @field:JsonProperty("token") @param:JsonProperty("token") val token: UUID,
     @field:JsonProperty("cans") @param:JsonProperty("cans") val cans: List<Can>,
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
