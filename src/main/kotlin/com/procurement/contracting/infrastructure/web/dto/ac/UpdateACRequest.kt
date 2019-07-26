@@ -10,10 +10,10 @@ import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
-import com.procurement.contracting.infrastructure.amount.Amount3Deserializer
-import com.procurement.contracting.infrastructure.amount.Amount3Serializer
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
+import com.procurement.contracting.infrastructure.quantity.QuantitySerializer
+import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -383,8 +383,8 @@ data class UpdateACRequest (
         data class Item(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
 
-            @JsonDeserialize(using = Amount3Deserializer::class)
-            @JsonSerialize(using = Amount3Serializer::class)
+            @JsonDeserialize(using = QuantityDeserializer::class)
+            @JsonSerialize(using = QuantitySerializer::class)
             @field:JsonProperty("quantity") @param:JsonProperty("quantity") val quantity: BigDecimal,
 
             @field:JsonProperty("unit") @param:JsonProperty("unit") val unit: Unit,
