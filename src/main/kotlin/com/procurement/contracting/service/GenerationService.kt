@@ -27,4 +27,8 @@ class GenerationService {
     fun newOcId(cpId: String): String {
         return cpId + "-AC-" + (milliNowUTC() + Random().nextInt())
     }
+
+    fun canId(): UUID = UUID.randomUUID()
+
+    fun token(): UUID = UUID.randomUUID()
 }
