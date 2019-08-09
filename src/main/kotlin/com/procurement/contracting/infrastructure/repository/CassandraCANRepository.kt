@@ -87,12 +87,31 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 AND   $columnCanId=?
                IF EXISTS
             """
+
+        private const val SAVE_NEW_CAN_CQL = """
+               INSERT INTO $keySpace.$tableName(
+                           $columnCpid,
+                           $columnCanId,
+                           $columnToken,
+                           $columnOwner,
+                           $columnCreatedDate,
+                           $columnAwardId,
+                           $columnLotId,
+                           $columnContractId,
+                           $columnStatus,
+                           $columnStatusDetails,
+                           $columnJsonData
+               )
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+               IF NOT EXISTS
+            """
     }
 
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
+    private val preparedSaveNewCANCQL = session.prepare(SAVE_NEW_CAN_CQL)
 
     override fun findBy(cpid: String, canId: UUID): CANEntity? {
         val query = preparedFindByCpidAndCanIdCQL.bind()
@@ -207,5 +226,32 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         session.execute(statement)
     } catch (exception: Exception) {
         throw SaveEntityException(message = "Error writing updated statuses CAN(s).", cause = exception)
+    }
+
+    override fun saveNewCAN(cpid: String, entity: CANEntity) {
+        val statement = preparedSaveNewCANCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setUUID(columnCanId, entity.id)
+                setUUID(columnToken, entity.token)
+                setString(columnOwner, entity.owner)
+                setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
+                setString(columnAwardId, entity.awardId)
+                setString(columnLotId, entity.lotId)
+                setString(columnContractId, entity.contractId)
+                setString(columnStatus, entity.status)
+                setString(columnStatusDetails, entity.statusDetails)
+                setString(columnJsonData, entity.jsonData)
+            }
+
+        val result = saveNewCAN(statement)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of new CAN by cpid '$cpid' and lot id '${entity.lotId}' and award id '${entity.awardId}' to the database. Record is already.")
+    }
+
+    private fun saveNewCAN(statement: BoundStatement): ResultSet = try {
+        session.execute(statement)
+    } catch (exception: Exception) {
+        throw SaveEntityException(message = "Error writing new CAN.", cause = exception)
     }
 }

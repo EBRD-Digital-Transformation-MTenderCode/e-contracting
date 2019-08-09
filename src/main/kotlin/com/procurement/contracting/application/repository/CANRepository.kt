@@ -9,6 +9,8 @@ interface CANRepository {
     fun findBy(cpid: String, canId: UUID): CANEntity?
     fun findBy(cpid: String): List<CANEntity>
 
+    fun saveNewCAN(cpid: String, entity: CANEntity)
+
     fun saveCancelledCANs(cpid: String, dataCancelledCAN: DataCancelCAN, dataRelatedCANs: List<DataRelatedCAN>)
 
     fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>)
