@@ -1,0 +1,10 @@
+{
+  "token": "1a5366f8-031a-475d-9f0a-ee4d09574105",
+  "can": {
+    "id": "56069b2c-e680-40ae-bf86-a23701fea848",
+    "lotId": "cb00c2be-fc70-483e-973d-f69abac98aa0",
+    "date": "2019-01-01T10:00:00Z",
+    "status": "pending",
+    "statusDetails": "contractProject"
+  }
+}
