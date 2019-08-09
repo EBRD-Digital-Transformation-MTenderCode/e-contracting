@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.utils.toLocalDateTime
+import java.time.LocalDateTime
+import java.util.*
 
 data class CommandMessage @JsonCreator constructor(
 
@@ -19,6 +23,33 @@ data class CommandMessage @JsonCreator constructor(
 
         val version: ApiVersion
 )
+
+val CommandMessage.cpid: String
+    get() = this.context.cpid
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'cpid' attribute in context.")
+
+val CommandMessage.ocid: String
+    get() = this.context.ocid
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'ocid' attribute in context.")
+
+val CommandMessage.startDate: LocalDateTime
+    get() = this.context.startDate?.toLocalDateTime()
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'startDate' attribute in context.")
+
+val CommandMessage.owner: String
+    get() = this.context.owner
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
+
+val CommandMessage.lotId: UUID
+    get() = this.context.id
+        ?.let { id ->
+            try {
+                UUID.fromString(id)
+            } catch (exception: Exception) {
+                throw ErrorException(error = ErrorType.INVALID_FORMAT_LOT_ID)
+            }
+        }
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'lotId' attribute in context.")
 
 data class Context @JsonCreator constructor(
         val operationId: String,
