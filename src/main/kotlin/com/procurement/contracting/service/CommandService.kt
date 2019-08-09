@@ -3,6 +3,9 @@ package com.procurement.contracting.service
 import com.procurement.contracting.application.service.CancelCANContext
 import com.procurement.contracting.application.service.CancelCANData
 import com.procurement.contracting.application.service.CancelCANService
+import com.procurement.contracting.application.service.can.CANService
+import com.procurement.contracting.application.service.can.CreateCANContext
+import com.procurement.contracting.application.service.can.CreateCANData
 import com.procurement.contracting.application.service.treasury.TreasureProcessingContext
 import com.procurement.contracting.application.service.treasury.TreasureProcessingData
 import com.procurement.contracting.application.service.treasury.TreasuryProcessing
@@ -11,11 +14,18 @@ import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANRequest
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANResponse
+import com.procurement.contracting.infrastructure.dto.can.create.CreateCANRequest
+import com.procurement.contracting.infrastructure.dto.can.create.CreateCANResponse
 import com.procurement.contracting.infrastructure.dto.treasury.TreasureProcessingRequest
 import com.procurement.contracting.infrastructure.dto.treasury.TreasureProcessingResponse
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
+import com.procurement.contracting.model.dto.bpe.cpid
+import com.procurement.contracting.model.dto.bpe.lotId
+import com.procurement.contracting.model.dto.bpe.ocid
+import com.procurement.contracting.model.dto.bpe.owner
+import com.procurement.contracting.model.dto.bpe.startDate
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -27,7 +37,7 @@ import java.util.*
 @Service
 class CommandService(
     private val historyDao: HistoryDao,
-    private val canService: CreateCanService,
+    private val createCanService: CreateCanService,
     private val createAcService: CreateAcService,
     private val updateAcService: UpdateAcService,
     private val issuingAcService: IssuingAcService,
@@ -38,7 +48,8 @@ class CommandService(
     private val acService: ActivationAcService,
     private val updateDocumentsService: UpdateDocumentsService,
     private val cancelService: CancelCANService,
-    private val treasuryProcessing: TreasuryProcessing
+    private val treasuryProcessing: TreasuryProcessing,
+    private val canService: CANService
 ) {
 
     companion object {
@@ -51,10 +62,46 @@ class CommandService(
             return toObject(ResponseDto::class.java, historyEntity.jsonData)
         }
         val response = when (cm.command) {
-            CommandType.CHECK_CAN -> canService.checkCan(cm)
-            CommandType.CHECK_CAN_BY_AWARD -> canService.checkCanByAwardId(cm)
-            CommandType.CREATE_CAN -> canService.createCan(cm)
-            CommandType.GET_CANS -> canService.getCans(cm)
+            CommandType.CHECK_CAN -> createCanService.checkCan(cm)
+            CommandType.CHECK_CAN_BY_AWARD -> createCanService.checkCanByAwardId(cm)
+            CommandType.CREATE_CAN -> {
+                val context = CreateCANContext(
+                    cpid = cm.cpid,
+                    ocid = cm.ocid,
+                    owner = cm.owner,
+                    startDate = cm.startDate,
+                    lotId = cm.lotId
+                )
+                val request = toObject(CreateCANRequest::class.java, cm.data)
+                val createCANData = CreateCANData(
+                    award = request.award?.let { award ->
+                        CreateCANData.Award(
+                            id = award.id
+                        )
+                    }
+                )
+                val result = canService.create(context = context, data = createCANData)
+                if (log.isDebugEnabled)
+                    log.debug("CAN was create. Result: ${toJson(result)}")
+
+                val dataResponse = CreateCANResponse(
+                    token = result.token,
+                    can = result.can.let { can ->
+                        CreateCANResponse.CAN(
+                            id = can.id,
+                            awardId = can.awardId,
+                            lotId = can.lotId,
+                            date = can.date,
+                            status = can.status,
+                            statusDetails = can.statusDetails
+                        )
+                    }
+                )
+                if (log.isDebugEnabled)
+                    log.debug("CAN was create. Response: ${toJson(dataResponse)}")
+                ResponseDto(data = dataResponse)
+            }
+            CommandType.GET_CANS -> createCanService.getCans(cm)
             CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
             CommandType.CANCEL_CAN -> {
                 val context = CancelCANContext(
@@ -126,7 +173,7 @@ class CommandService(
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
                 ResponseDto(data = dataResponse)
             }
-            CommandType.CONFIRMATION_CAN -> canService.confirmationCan(cm)
+            CommandType.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
             CommandType.CREATE_AC -> createAcService.createAC(cm)
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
