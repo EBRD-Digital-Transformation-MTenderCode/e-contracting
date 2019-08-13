@@ -69,7 +69,7 @@ class CANServiceImpl(
             token = can.token,
             can = CreatedCANData.CAN(
                 id = can.id,
-                awardId = UUID.fromString(can.awardId),
+                awardId = can.awardId?.let { UUID.fromString(it) },
                 lotId = UUID.fromString(can.lotId),
                 date = can.date,
                 status = can.status,
