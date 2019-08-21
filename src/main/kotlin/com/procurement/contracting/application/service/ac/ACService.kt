@@ -117,8 +117,8 @@ class ACServiceImpl(
             token = UUID.fromString(contract.token),
             owner = context.owner,
             createdDate = context.startDate,
-            status = contract.status.value,
-            statusDetails = contract.statusDetails.value,
+            status = contract.status,
+            statusDetails = contract.statusDetails,
             mainProcurementCategory = data.contractedTender.mainProcurementCategory,
             language = context.language,
             jsonData = toJson(contractProcess)

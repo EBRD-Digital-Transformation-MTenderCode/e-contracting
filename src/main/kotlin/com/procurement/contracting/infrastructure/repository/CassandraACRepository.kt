@@ -113,8 +113,8 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         token = row.getUUID(columnToken),
         owner = row.getString(columnOwner),
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        status = row.getString(columnStatus),
-        statusDetails = row.getString(columnStatusDetails),
+        status = ContractStatus.fromString(row.getString(columnStatus)),
+        statusDetails = ContractStatusDetails.fromString(row.getString(columnStatusDetails)),
         mainProcurementCategory = MainProcurementCategory.fromString(row.getString(columnMPC)),
         language = row.getString(columnLanguage),
         jsonData = row.getString(columnJsonData)
@@ -128,8 +128,8 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                 setUUID(columnToken, entity.token)
                 setString(columnOwner, entity.owner)
                 setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnStatus, entity.status)
-                setString(columnStatusDetails, entity.statusDetails)
+                setString(columnStatus, entity.status.value)
+                setString(columnStatusDetails, entity.statusDetails.value)
                 setString(columnMPC, entity.mainProcurementCategory.value)
                 setString(columnLanguage, entity.language)
                 setString(columnJsonData, entity.jsonData)

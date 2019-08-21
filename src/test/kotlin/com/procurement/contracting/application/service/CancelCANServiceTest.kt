@@ -482,8 +482,8 @@ class CancelCANServiceTest {
         token = UUID.fromString(contractProcess.contract.token),
         owner = OWNER,
         createdDate = contractProcess.contract.date!!,
-        status = contractProcess.contract.status.toString(),
-        statusDetails = contractProcess.contract.statusDetails.toString(),
+        status = contractProcess.contract.status,
+        statusDetails = contractProcess.contract.statusDetails,
         mainProcurementCategory = MPC,
         language = "RO",
         jsonData = toJson(contractProcess)

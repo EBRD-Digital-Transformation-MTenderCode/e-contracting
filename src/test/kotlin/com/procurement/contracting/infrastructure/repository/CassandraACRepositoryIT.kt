@@ -302,8 +302,8 @@ class CassandraACRepositoryIT {
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
-        status = AC_STATUS.toString(),
-        statusDetails = AC_STATUS_DETAILS.toString(),
+        status = AC_STATUS,
+        statusDetails = AC_STATUS_DETAILS,
         mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = JSON_DATA
@@ -331,8 +331,8 @@ class CassandraACRepositoryIT {
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
-        status = status.toString(),
-        statusDetails = statusDetails.toString(),
+        status = status,
+        statusDetails = statusDetails,
         mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = jsonData
