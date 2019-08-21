@@ -39,6 +39,7 @@ class CreateAcService(
     private val generationService: GenerationService
 ) {
 
+    @Deprecated(message = "Use method create in ACService.", level = DeprecationLevel.ERROR)
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
