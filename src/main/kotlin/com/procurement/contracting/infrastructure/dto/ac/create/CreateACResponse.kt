@@ -8,27 +8,30 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
+import com.procurement.contracting.infrastructure.quantity.QuantityDeserializer
+import com.procurement.contracting.infrastructure.quantity.QuantitySerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
 data class CreateACResponse(
     @field:JsonProperty("token") @param:JsonProperty("token") val token: UUID,
-    @field:JsonProperty("cans") @param:JsonProperty("cans") val cans: List<Can>,
+    @field:JsonProperty("cans") @param:JsonProperty("cans") val cans: List<CAN>,
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
     @field:JsonProperty("contractedAward") @param:JsonProperty("contractedAward") val contractedAward: ContractedAward
 ) {
 
-    data class Can(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+    data class CAN(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: CANStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: CANStatusDetails
     )
 
     data class Contract(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: UUID,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails
@@ -142,7 +145,9 @@ data class CreateACResponse(
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @field:JsonProperty("additionalClassifications") @param:JsonProperty("additionalClassifications") val additionalClassifications: List<AdditionalClassification>?,
 
-            @field:JsonProperty("quantity") @param:JsonProperty("quantity") val quantity: Double,
+            @JsonDeserialize(using = QuantityDeserializer::class)
+            @JsonSerialize(using = QuantitySerializer::class)
+            @field:JsonProperty("quantity") @param:JsonProperty("quantity") val quantity: BigDecimal,
             @field:JsonProperty("unit") @param:JsonProperty("unit") val unit: Unit,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
             @field:JsonProperty("relatedLot") @param:JsonProperty("relatedLot") val relatedLot: String
@@ -167,7 +172,7 @@ data class CreateACResponse(
         }
 
         data class Document(
-            @field:JsonProperty("documentType") @param:JsonProperty("documentType") val documentType: String,
+            @field:JsonProperty("documentType") @param:JsonProperty("documentType") val documentType: DocumentTypeAward,
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
             @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
