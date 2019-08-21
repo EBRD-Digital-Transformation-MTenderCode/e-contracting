@@ -55,12 +55,7 @@
       "documents": [
         {
           "documentType": "awardNotice",
-          "id": "awards[0].documents[0].id",
-          "title": "awards[0].documents[0].title",
-          "description": "awards[0].documents[0].description",
-          "relatedLots": [
-            "43a00c2a-d34c-4c7b-ac7c-62164ea64d43"
-          ]
+          "id": "awards[0].documents[0].id"
         }
       ]
     }

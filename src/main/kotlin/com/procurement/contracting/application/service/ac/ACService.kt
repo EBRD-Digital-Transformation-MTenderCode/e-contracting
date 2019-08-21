@@ -446,7 +446,7 @@ class ACServiceImpl(
                 documentType = document.documentType,
                 title = document.title,
                 description = document.description,
-                relatedLots = document.relatedLots.toList()
+                relatedLots = document.relatedLots?.toList()
             )
         }
         .toList()
