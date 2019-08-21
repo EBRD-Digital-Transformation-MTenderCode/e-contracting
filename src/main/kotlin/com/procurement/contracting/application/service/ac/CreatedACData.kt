@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -116,7 +117,7 @@ data class CreatedACData(
         }
 
         data class Item(
-            val id: String,
+            val id: ItemId,
             val classification: Classification,
             val additionalClassifications: List<AdditionalClassification>?,
             val quantity: BigDecimal,

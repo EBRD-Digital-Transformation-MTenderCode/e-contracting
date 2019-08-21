@@ -5,9 +5,9 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
-import java.util.*
 
 data class CreateACData(
     val cans: List<CAN>,
@@ -116,7 +116,7 @@ data class CreateACData(
     ) {
 
         data class Item(
-            val id: UUID,
+            val id: ItemId,
             val classification: Classification,
             val additionalClassifications: List<AdditionalClassification>?,
             val quantity: BigDecimal,

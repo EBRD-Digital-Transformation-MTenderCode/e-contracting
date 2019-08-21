@@ -29,7 +29,7 @@
       {
         "id": "milestones[0].id",
         "relatedItems": [
-          "milestones[0].relatedItems[0]"
+          "69d43aff-e2da-437b-a5e1-cfcdc13114a8"
         ],
         "status": "notMet",
         "additionalInformation": "milestones[0].additionalInformation",

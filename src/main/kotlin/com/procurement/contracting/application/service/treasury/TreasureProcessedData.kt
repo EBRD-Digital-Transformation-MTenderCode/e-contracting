@@ -11,12 +11,12 @@ import com.procurement.contracting.domain.model.confirmation.response.Confirmati
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class TreasureProcessedData(
     val contract: Contract,
@@ -54,7 +54,7 @@ data class TreasureProcessedData(
 
         data class Milestone(
             val id: String,
-            val relatedItems: List<String>?,
+            val relatedItems: List<ItemId>?,
             val status: MilestoneStatus,
             val additionalInformation: String?,
             val dueDate: LocalDateTime?,

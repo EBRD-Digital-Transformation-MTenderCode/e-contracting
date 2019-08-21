@@ -398,7 +398,7 @@ class ACServiceImpl(
     private fun generateItems(items: List<CreateACData.ContractedTender.Item>): List<Item> = items.asSequence()
         .map { item ->
             Item(
-                id = item.id.toString(),
+                id = item.id,
                 classification = item.classification.let { classification ->
                     Classification(
                         scheme = classification.scheme,

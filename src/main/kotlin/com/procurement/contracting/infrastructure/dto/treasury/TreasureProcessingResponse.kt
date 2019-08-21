@@ -15,6 +15,7 @@ import com.procurement.contracting.domain.model.confirmation.response.Confirmati
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
@@ -24,7 +25,6 @@ import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class TreasureProcessingResponse(
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
@@ -83,7 +83,7 @@ data class TreasureProcessingResponse(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @field:JsonProperty("relatedItems") @param:JsonProperty("relatedItems") val relatedItems: List<String>?,
+            @field:JsonProperty("relatedItems") @param:JsonProperty("relatedItems") val relatedItems: List<ItemId>?,
 
             @field:JsonProperty("status") @param:JsonProperty("status") val status: MilestoneStatus,
 
