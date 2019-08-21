@@ -30,5 +30,7 @@ class GenerationService {
 
     fun canId(): UUID = UUID.randomUUID()
 
+    fun awardId(): UUID = UUID.randomUUID()
+
     fun token(): UUID = UUID.randomUUID()
 }
