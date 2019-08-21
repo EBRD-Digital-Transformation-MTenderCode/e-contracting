@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 
 data class CreateACData(
@@ -35,7 +36,7 @@ data class CreateACData(
         )
 
         data class Supplier(
-            val id: String,
+            val id: OrganizationId,
             val name: String,
             val identifier: Identifier,
             val additionalIdentifiers: List<AdditionalIdentifier>?,

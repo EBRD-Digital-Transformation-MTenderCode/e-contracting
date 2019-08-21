@@ -13,6 +13,7 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatusDe
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.quantity.QuantityDeserializer
@@ -60,7 +61,7 @@ data class CreateACResponse(
         )
 
         data class Supplier(
-            @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+            @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
             @field:JsonProperty("name") @param:JsonProperty("name") val name: String,
             @field:JsonProperty("identifier") @param:JsonProperty("identifier") val identifier: Identifier,
 

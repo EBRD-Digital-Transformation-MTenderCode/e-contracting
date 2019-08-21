@@ -15,6 +15,7 @@ import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -66,7 +67,7 @@ data class TreasureProcessedData(
             val relatedParties: List<RelatedParty>
         ) {
             data class RelatedParty(
-                val id: String,
+                val id: OrganizationId,
                 val name: String
             )
         }
@@ -109,7 +110,7 @@ data class TreasureProcessedData(
         ) {
 
             data class Value(
-                val id: String,
+                val id: OrganizationId,
                 val name: String,
                 val date: LocalDateTime,
                 val relatedPerson: RelatedPerson?,

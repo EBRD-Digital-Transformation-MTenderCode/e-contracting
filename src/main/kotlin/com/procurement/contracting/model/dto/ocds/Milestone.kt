@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,7 +40,7 @@ data class Milestone @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class RelatedParty @JsonCreator constructor(
 
-    val id: String,
+    val id: OrganizationId,
 
     val name: String
 )

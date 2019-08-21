@@ -157,7 +157,7 @@ class ACServiceImpl(
                 relatedLots = contractedAward.relatedLots.toList(),
                 suppliers = contractedAward.suppliers.map { supplier ->
                     CreatedACData.ContractedAward.Supplier(
-                        id = UUID.fromString(supplier.id),
+                        id = supplier.id,
                         name = supplier.name,
                         identifier = supplier.identifier.let { identifier ->
                             CreatedACData.ContractedAward.Supplier.Identifier(

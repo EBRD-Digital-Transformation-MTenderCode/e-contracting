@@ -19,6 +19,7 @@ import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
@@ -112,7 +113,7 @@ data class TreasureProcessingResponse(
             @field:JsonProperty("relatedParties") @param:JsonProperty("relatedParties") val relatedParties: List<RelatedParty>
         ) {
             data class RelatedParty(
-                @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+                @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
                 @field:JsonProperty("name") @param:JsonProperty("name") val name: String
             )
         }
@@ -157,7 +158,7 @@ data class TreasureProcessingResponse(
         ) {
 
             data class Value(
-                @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+                @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
                 @field:JsonProperty("name") @param:JsonProperty("name") val name: String,
 
                 @JsonDeserialize(using = JsonDateTimeDeserializer::class)

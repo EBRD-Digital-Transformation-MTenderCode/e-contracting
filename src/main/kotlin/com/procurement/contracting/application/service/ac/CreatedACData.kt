@@ -9,6 +9,7 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatusDe
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -49,7 +50,7 @@ data class CreatedACData(
         )
 
         data class Supplier(
-            val id: UUID,
+            val id: OrganizationId,
             val name: String,
             val identifier: Identifier,
             val additionalIdentifiers: List<AdditionalIdentifier>?,

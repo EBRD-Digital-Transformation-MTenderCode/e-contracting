@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.item.ItemId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.model.dto.databinding.BooleansDeserializer
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
@@ -127,7 +128,7 @@ data class TreasuryBudgetSource @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OrganizationReferenceSupplierUpdate @JsonCreator constructor(
 
-    var id: String,
+    var id: OrganizationId,
 
     val additionalIdentifiers: HashSet<Identifier>,
 

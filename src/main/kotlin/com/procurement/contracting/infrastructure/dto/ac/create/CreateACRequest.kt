@@ -11,12 +11,12 @@ import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.quantity.QuantityDeserializer
 import com.procurement.contracting.infrastructure.quantity.QuantitySerializer
 import java.math.BigDecimal
-import java.util.*
 
 data class CreateACRequest(
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val cans: List<CAN>,
@@ -49,7 +49,7 @@ data class CreateACRequest(
         )
 
         data class Supplier(
-            @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+            @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
             @field:JsonProperty("name") @param:JsonProperty("name") val name: String,
             @field:JsonProperty("identifier") @param:JsonProperty("identifier") val identifier: Identifier,
 
