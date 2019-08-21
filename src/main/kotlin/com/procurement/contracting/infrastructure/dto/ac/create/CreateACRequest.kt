@@ -14,13 +14,13 @@ import java.math.BigDecimal
 import java.util.*
 
 data class CreateACRequest(
-    @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>,
+    @field:JsonProperty("contracts") @param:JsonProperty("contracts") val cans: List<CAN>,
     @field:JsonProperty("awards") @param:JsonProperty("awards") val awards: List<Award>,
     @field:JsonProperty("contractedTender") @param:JsonProperty("contractedTender") val contractedTender: ContractedTender
 ) {
 
-    data class Contract(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String
+    data class CAN(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID
     )
 
     data class Award(
