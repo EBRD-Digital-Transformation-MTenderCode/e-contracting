@@ -139,8 +139,8 @@ class CreateAcService(
             token = UUID.fromString(contract.token!!),
             owner = owner,
             createdDate = dateTime.toDate(),
-            status = contract.status.value,
-            statusDetails = contract.statusDetails.value,
+            status = contract.status,
+            statusDetails = contract.statusDetails,
             mainProcurementCategory = mainProcurementCategory,
             language = language,
             jsonData = toJson(contractProcess)

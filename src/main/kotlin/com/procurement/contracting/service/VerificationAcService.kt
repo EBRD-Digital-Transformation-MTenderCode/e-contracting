@@ -28,7 +28,7 @@ class VerificationAcService(private val acDao: AcDao) {
 
         contractProcess.contract.statusDetails = ContractStatusDetails.VERIFICATION
 
-        entity.statusDetails = ContractStatusDetails.VERIFICATION.toString()
+        entity.statusDetails = ContractStatusDetails.VERIFICATION
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = VerificationAcRs(ContractVerifiedAcRs(contractProcess.contract.statusDetails)))

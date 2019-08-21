@@ -62,8 +62,8 @@ class ActivationAcService(private val acDao: AcDao,
         val relatedLots = contractProcess.award.relatedLots
 
         contractEntity.jsonData = toJson(contractProcess)
-        contractEntity.status = ContractStatus.ACTIVE.value
-        contractEntity.statusDetails = ContractStatusDetails.EXECUTION.value
+        contractEntity.status = ContractStatus.ACTIVE
+        contractEntity.statusDetails = ContractStatusDetails.EXECUTION
         acDao.save(contractEntity)
 
         val canEntities = canDao.findAllByCpId(cpId)
