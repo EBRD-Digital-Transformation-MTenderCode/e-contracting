@@ -4,6 +4,7 @@ import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
@@ -36,7 +37,7 @@ class CreateCanService(private val canDao: CanDao,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
-        val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateCanRq::class.java, cm.data)
 
         val statusDetails: CANStatusDetails
@@ -64,7 +65,7 @@ class CreateCanService(private val canDao: CanDao,
 
     fun checkCan(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val lotId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
 
         val canEntities = canDao.findAllByCpId(cpId)
         if (canEntities.asSequence().any { it.lotId == lotId && it.status != CANStatus.CANCELLED.value }) {

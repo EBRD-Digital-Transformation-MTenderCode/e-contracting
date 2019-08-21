@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
@@ -51,7 +52,7 @@ data class CancelledCANData(
     val cancelledCAN: CancelledCAN,
     val relatedCANs: List<RelatedCAN>,
     val isCancelledAC: Boolean,
-    val lotId: String,
+    val lotId: LotId,
     val contract: Contract?
 ) {
 

@@ -10,6 +10,7 @@ import com.procurement.contracting.domain.model.confirmation.response.Confirmati
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import java.math.BigDecimal
@@ -46,7 +47,7 @@ data class TreasureProcessedData(
             val id: String,
             val title: String?,
             val description: String?,
-            val relatedLots: List<String>?,
+            val relatedLots: List<LotId>?,
             val relatedConfirmations: List<String>?
         )
 

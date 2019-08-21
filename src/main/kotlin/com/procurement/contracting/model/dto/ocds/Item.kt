@@ -2,24 +2,25 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Item @JsonCreator constructor(
 
-        val id: String,
+    val id: String,
 
-        val description: String?,
+    val description: String?,
 
-        val classification: Classification,
+    val classification: Classification,
 
-        val additionalClassifications: Set<Classification>?,
+    val additionalClassifications: Set<Classification>?,
 
-        var quantity: BigDecimal,
+    var quantity: BigDecimal,
 
-        val unit: Unit,
+    val unit: Unit,
 
-        val relatedLot: String,
+    val relatedLot: LotId,
 
-        var deliveryAddress: Address?
+    var deliveryAddress: Address?
 )

@@ -70,7 +70,7 @@ class CANServiceImpl(
             can = CreatedCANData.CAN(
                 id = can.id,
                 awardId = can.awardId,
-                lotId = UUID.fromString(can.lotId),
+                lotId = can.lotId,
                 date = can.date,
                 status = can.status,
                 statusDetails = can.statusDetails
@@ -83,7 +83,7 @@ class CANServiceImpl(
             id = generationService.canId(),
             token = generationService.token(),
             awardId = data.award!!.id,
-            lotId = context.lotId.toString(),
+            lotId = context.lotId,
             date = context.startDate,
             //BR-9.14.2
             status = CANStatus.PENDING,
@@ -99,7 +99,7 @@ class CANServiceImpl(
             id = generationService.canId(),
             token = generationService.token(),
             awardId = null,
-            lotId = context.lotId.toString(),
+            lotId = context.lotId,
             date = context.startDate,
             //BR-9.14.3
             status = CANStatus.PENDING,

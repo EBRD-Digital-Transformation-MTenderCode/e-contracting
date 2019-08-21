@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.quantity.QuantityDeserializer
@@ -26,7 +27,7 @@ data class CreateACRequest(
     data class Award(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
         @field:JsonProperty("value") @param:JsonProperty("value") val value: Value,
-        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<UUID>,
+        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @field:JsonProperty("relatedBid") @param:JsonProperty("relatedBid") val relatedBid: UUID?,
@@ -127,7 +128,7 @@ data class CreateACRequest(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
             @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
-            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<UUID>
+            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>
         )
     }
 
@@ -149,7 +150,7 @@ data class CreateACRequest(
 
             @field:JsonProperty("unit") @param:JsonProperty("unit") val unit: Unit,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
-            @field:JsonProperty("relatedLot") @param:JsonProperty("relatedLot") val relatedLot: UUID
+            @field:JsonProperty("relatedLot") @param:JsonProperty("relatedLot") val relatedLot: LotId
         ) {
 
             data class Classification(

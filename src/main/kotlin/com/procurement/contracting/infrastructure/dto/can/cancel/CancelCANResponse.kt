@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.lot.LotId
 
 data class CancelCANResponse(
     @field:JsonProperty("cancelledCan") @param:JsonProperty("cancelledCan") val cancelledCAN: CancelledCAN,
@@ -15,7 +16,7 @@ data class CancelCANResponse(
     @field:JsonProperty("relatedCans") @param:JsonProperty("relatedCans") val relatedCANs: List<RelatedCAN>?,
 
     @field:JsonProperty("acCancel") @param:JsonProperty("acCancel") val acCancel: Boolean,
-    @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: String,
+    @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: LotId,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract?

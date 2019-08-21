@@ -2,7 +2,7 @@
   "id": "e16104b1-a7fc-4459-bd43-aa763506511e",
   "token": "df50ed44-4efe-4d62-a698-de2d53e3afea",
   "awardId": "1a14b017-c746-4551-a669-05be889ca131",
-  "lotId": "lot-id-2",
+  "lotId": "7a7280c7-b90c-4791-ade6-2fa2763a03a4",
   "date": "2011-06-12T17:59:00Z",
   "status": "pending",
   "statusDetails": "active",
@@ -13,7 +13,7 @@
       "title": "can.documents[0].title",
       "description": "can.documents[0].description",
       "relatedLots": [
-        "lot-id-2"
+        "7a7280c7-b90c-4791-ade6-2fa2763a03a4"
       ]
     }
   ]

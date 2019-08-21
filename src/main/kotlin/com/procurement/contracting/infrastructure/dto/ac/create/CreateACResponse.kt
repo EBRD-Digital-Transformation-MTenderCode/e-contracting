@@ -10,6 +10,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.quantity.QuantityDeserializer
@@ -42,7 +43,7 @@ data class CreateACResponse(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: AwardId,
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
         @field:JsonProperty("value") @param:JsonProperty("value") val value: Value,
-        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<UUID>,
+        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>,
         @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier>,
         @field:JsonProperty("items") @param:JsonProperty("items") val items: List<Item>,
         @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>
@@ -151,7 +152,7 @@ data class CreateACResponse(
             @field:JsonProperty("quantity") @param:JsonProperty("quantity") val quantity: BigDecimal,
             @field:JsonProperty("unit") @param:JsonProperty("unit") val unit: Unit,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
-            @field:JsonProperty("relatedLot") @param:JsonProperty("relatedLot") val relatedLot: String
+            @field:JsonProperty("relatedLot") @param:JsonProperty("relatedLot") val relatedLot: LotId
         ) {
 
             data class Classification(
@@ -177,7 +178,7 @@ data class CreateACResponse(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
             @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
-            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<String>
+            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>
         )
     }
 }

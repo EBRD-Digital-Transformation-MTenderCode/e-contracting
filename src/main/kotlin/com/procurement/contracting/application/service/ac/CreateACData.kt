@@ -2,6 +2,7 @@ package com.procurement.contracting.application.service.ac
 
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
 import java.util.*
 
@@ -18,7 +19,7 @@ data class CreateACData(
     data class Award(
         val id: UUID,
         val value: Value,
-        val relatedLots: List<UUID>,
+        val relatedLots: List<LotId>,
         val relatedBid: UUID?,
 
         val suppliers: List<Supplier>,
@@ -102,7 +103,7 @@ data class CreateACData(
             val id: String,
             val title: String,
             val description: String,
-            val relatedLots: List<UUID>
+            val relatedLots: List<LotId>
         )
     }
 
@@ -118,7 +119,7 @@ data class CreateACData(
             val quantity: BigDecimal,
             val unit: Unit,
             val description: String,
-            val relatedLot: UUID
+            val relatedLot: LotId
         ) {
 
             data class Classification(

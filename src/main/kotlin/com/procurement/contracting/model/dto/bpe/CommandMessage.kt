@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
@@ -45,7 +46,7 @@ val CommandMessage.pmd: ProcurementMethod
     get() = this.context.pmd?.let { ProcurementMethod.fromString(it) }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'pmd' attribute in context.")
 
-val CommandMessage.lotId: UUID
+val CommandMessage.lotId: LotId
     get() = this.context.id
         ?.let { id ->
             try {

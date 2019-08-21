@@ -18,6 +18,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.json.loadJson
@@ -41,7 +42,7 @@ class CancelCANServiceTest {
         private val CAN_TOKEN: UUID = UUID.fromString("2909bc16-82c7-4281-8f35-3f0bb13476b8")
         private const val OWNER = "owner-1"
         private val CAN_ID: UUID = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
-        private const val LOT_ID: String = "lot-id-0"
+        private val LOT_ID: LotId = UUID.fromString("f02720a6-de85-4a50-aa3d-e9348f1669dc")
         private const val CONTRACT_ID: String = "contract-id-1"
         private val MPC = MainProcurementCategory.SERVICES
 

@@ -1,6 +1,7 @@
 package com.procurement.contracting.model.entity
 
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.lot.LotId
 import java.util.*
 
 data class CanEntity(
@@ -17,7 +18,7 @@ data class CanEntity(
 
     val awardId: AwardId?,
 
-    val lotId: String,
+    val lotId: LotId,
 
     var acId: String?,
 

@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -34,7 +35,7 @@ data class CreatedACData(
         val id: AwardId,
         val date: LocalDateTime,
         val value: Value,
-        val relatedLots: List<UUID>,
+        val relatedLots: List<LotId>,
         val suppliers: List<Supplier>,
         val items: List<Item>,
         val documents: List<Document>
@@ -120,7 +121,7 @@ data class CreatedACData(
             val quantity: BigDecimal,
             val unit: Unit,
             val description: String,
-            val relatedLot: String
+            val relatedLot: LotId
         ) {
 
             data class Classification(
@@ -146,7 +147,7 @@ data class CreatedACData(
             val id: String,
             val title: String,
             val description: String,
-            val relatedLots: List<String>
+            val relatedLots: List<LotId>
         )
     }
 }

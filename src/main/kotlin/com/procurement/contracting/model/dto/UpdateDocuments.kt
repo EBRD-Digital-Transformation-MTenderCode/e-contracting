@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.document.type.DocumentTypeUpdateCan
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,7 +23,7 @@ data class DocumentUpdate @JsonCreator constructor(
 
     var description: String?,
 
-    var relatedLots: List<String>?,
+    var relatedLots: List<LotId>?,
 
     var relatedConfirmations: List<String>? = null
 )

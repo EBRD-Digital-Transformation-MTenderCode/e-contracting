@@ -18,7 +18,7 @@
         "title": "document[0].title",
         "description": "document[0].description",
         "relatedLots": [
-          "lot-1"
+          "8bb59dc5-9816-475b-a18e-71c570875edd"
         ],
         "relatedConfirmations": [
           "cs-buyer-confirmation-on-document.id-relatedPerson.id"

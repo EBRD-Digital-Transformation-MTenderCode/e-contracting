@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,7 +19,7 @@ data class Can @JsonCreator constructor(
 
     val awardId: AwardId?,
 
-    val lotId: String,
+    val lotId: LotId,
 
     var status: CANStatus,
 

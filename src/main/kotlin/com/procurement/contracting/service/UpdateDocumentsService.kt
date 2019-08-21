@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
@@ -101,7 +102,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
     }
 
     private fun validateDocsRelatedLotContract(dto: UpdateDocumentsRq, contractProcess: ContractProcess) {
-        val relatedLots: MutableList<String> = mutableListOf()
+        val relatedLots: MutableList<LotId> = mutableListOf()
         dto.documents.forEach {
             val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
             if (relatedLot.isNotEmpty()) {
@@ -113,7 +114,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
     }
 
     private fun validateDocsRelatedLotCan(dto: UpdateDocumentsRq, can: Can) {
-        val relatedLots: MutableList<String> = mutableListOf()
+        val relatedLots: MutableList<LotId> = mutableListOf()
         dto.documents.forEach {
             val relatedLot = it.relatedLots?.toMutableList() ?: mutableListOf()
             if (relatedLot.isNotEmpty()) {

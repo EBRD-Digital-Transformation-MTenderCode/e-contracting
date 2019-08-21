@@ -11,6 +11,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
@@ -151,7 +152,7 @@ class ACServiceImpl(
                         currency = value.currency!!
                     )
                 },
-                relatedLots = contractedAward.relatedLots.map { UUID.fromString(it) },
+                relatedLots = contractedAward.relatedLots.toList(),
                 suppliers = contractedAward.suppliers.map { supplier ->
                     CreatedACData.ContractedAward.Supplier(
                         id = UUID.fromString(supplier.id),
@@ -355,12 +356,9 @@ class ACServiceImpl(
         )
     }
 
-    private fun generateRelatedLots(awards: List<CreateACData.Award>) = awards.asSequence()
+    private fun generateRelatedLots(awards: List<CreateACData.Award>): List<LotId> = awards.asSequence()
         .flatMap { award ->
             award.relatedLots.asSequence()
-        }
-        .map { id ->
-            id.toString()
         }
         .distinct()
         .toList()
@@ -426,7 +424,7 @@ class ACServiceImpl(
                     )
                 },
                 description = item.description,
-                relatedLot = item.relatedLot.toString(),
+                relatedLot = item.relatedLot,
                 deliveryAddress = null
             )
         }
@@ -445,7 +443,7 @@ class ACServiceImpl(
                 documentType = document.documentType,
                 title = document.title,
                 description = document.description,
-                relatedLots = document.relatedLots.map { it.toString() }
+                relatedLots = document.relatedLots.toList()
             )
         }
         .toList()

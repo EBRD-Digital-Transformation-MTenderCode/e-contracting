@@ -22,6 +22,7 @@ import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -46,8 +47,8 @@ class CassandraCANRepositoryIT {
         private val CREATE_DATE = LocalDateTime.now()
         private const val CONTRACT_ID = "ac-id-1"
         private val AWARD_ID: AwardId = UUID.randomUUID()
-        private const val CAN_LOT_ID = "lot-id-1"
-        private const val RELATED_CAN_LOT_ID = "lot-id-2"
+        private val CAN_LOT_ID: LotId = UUID.fromString("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")
+        private val RELATED_CAN_LOT_ID: LotId = UUID.fromString("db503a04-780a-49fb-839d-7836a49fa28c")
 
         private val CAN_ID = UUID.randomUUID()
         private val CAN_STATUS = CANStatus.PENDING
@@ -367,7 +368,7 @@ class CassandraCANRepositoryIT {
 
     private fun insertCAN(
         canId: UUID = CAN_ID,
-        lotId: String = CAN_LOT_ID,
+        lotId: LotId = CAN_LOT_ID,
         status: CANStatus = CAN_STATUS,
         statusDetails: CANStatusDetails = CAN_STATUS_DETAILS,
         jsonData: String = JSON_DATA_CAN
@@ -379,7 +380,7 @@ class CassandraCANRepositoryIT {
             .value("owner", OWNER)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
-            .value("lot_id", lotId)
+            .value("lot_id", lotId.toString())
             .value("ac_id", CONTRACT_ID)
             .value("status", status.toString())
             .value("status_details", statusDetails.toString())
@@ -459,7 +460,7 @@ class CassandraCANRepositoryIT {
 
     private fun createCANEntity(
         id: UUID,
-        lotId: String,
+        lotId: LotId,
         awardId: AwardId = AWARD_ID,
         contractId: String?,
         status: CANStatus,

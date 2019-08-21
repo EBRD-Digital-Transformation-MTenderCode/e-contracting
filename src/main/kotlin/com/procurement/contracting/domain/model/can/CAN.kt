@@ -9,6 +9,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
 import java.time.LocalDateTime
@@ -20,7 +21,7 @@ data class CAN(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId?,
-    @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: String,
+    @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: LotId,
 
     @JsonDeserialize(using = JsonDateTimeDeserializer::class)
     @JsonSerialize(using = JsonDateTimeSerializer::class)
@@ -65,6 +66,6 @@ data class CAN(
         @field:JsonProperty("description") @param:JsonProperty("description") val description: String?,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<String>?
+        @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>?
     )
 }
