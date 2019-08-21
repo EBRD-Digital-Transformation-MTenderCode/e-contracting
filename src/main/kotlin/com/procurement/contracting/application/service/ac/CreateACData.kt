@@ -47,14 +47,14 @@ data class CreateACData(
                 val scheme: String,
                 val id: String,
                 val legalName: String,
-                val uri: String
+                val uri: String?
             )
 
             data class AdditionalIdentifier(
                 val scheme: String,
                 val id: String,
                 val legalName: String,
-                val uri: String
+                val uri: String?
             )
 
             data class Address(

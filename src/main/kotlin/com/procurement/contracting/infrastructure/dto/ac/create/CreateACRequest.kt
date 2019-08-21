@@ -104,7 +104,9 @@ data class CreateACRequest(
                 @field:JsonProperty("scheme") @param:JsonProperty("scheme") val scheme: String,
                 @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
                 @field:JsonProperty("legalName") @param:JsonProperty("legalName") val legalName: String,
-                @field:JsonProperty("uri") @param:JsonProperty("uri") val uri: String
+
+                @JsonInclude(JsonInclude.Include.NON_NULL)
+                @field:JsonProperty("uri") @param:JsonProperty("uri") val uri: String?
             )
 
             data class ContactPoint(
@@ -123,7 +125,9 @@ data class CreateACRequest(
                 @field:JsonProperty("scheme") @param:JsonProperty("scheme") val scheme: String,
                 @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
                 @field:JsonProperty("legalName") @param:JsonProperty("legalName") val legalName: String,
-                @field:JsonProperty("uri") @param:JsonProperty("uri") val uri: String
+
+                @JsonInclude(JsonInclude.Include.NON_NULL)
+                @field:JsonProperty("uri") @param:JsonProperty("uri") val uri: String?
             )
         }
 

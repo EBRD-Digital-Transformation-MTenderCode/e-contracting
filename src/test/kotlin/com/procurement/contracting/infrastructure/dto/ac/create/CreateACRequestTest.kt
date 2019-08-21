@@ -14,4 +14,9 @@ class CreateACRequestTest : AbstractDTOTestBase<CreateACRequest>(CreateACRequest
     fun required1() {
         testBindingAndMapping("json/dto/ac/create/request/request_create_ac_required_1.json")
     }
+
+    @Test
+    fun required2() {
+        testBindingAndMapping("json/dto/ac/create/request/request_create_ac_required_2.json")
+    }
 }

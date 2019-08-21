@@ -23,13 +23,6 @@
             "id": "awards[0].suppliers[0].identifier.id",
             "legalName": "awards[0].suppliers[0].identifier.legalName"
           },
-          "additionalIdentifiers": [
-            {
-              "scheme": "awards[0].suppliers[0].additionalIdentifiers[0].scheme",
-              "id": "awards[0].suppliers[0].additionalIdentifiers[0].id",
-              "legalName": "awards[0].suppliers[0].additionalIdentifiers[0].legalName"
-            }
-          ],
           "address": {
             "streetAddress": "awards[0].suppliers[0].address.streetAddress",
             "addressDetails": {
