@@ -75,8 +75,8 @@ class ActivationAcService(private val acDao: AcDao,
                 val can = toObject(Can::class.java, canEntity.jsonData)
                 can.status = CANStatus.ACTIVE
                 can.statusDetails = CANStatusDetails.EMPTY
-                canEntity.status = can.status.value
-                canEntity.statusDetails = can.statusDetails.value
+                canEntity.status = can.status
+                canEntity.statusDetails = can.statusDetails
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)

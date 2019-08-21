@@ -473,8 +473,8 @@ class CancelCANServiceTest {
             awardId = can.awardId,
             lotId = can.lotId,
             contractId = contractID,
-            status = can.status.toString(),
-            statusDetails = can.statusDetails.toString(),
+            status = can.status,
+            statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
 

@@ -106,8 +106,8 @@ class ACServiceImpl(
         val updatedCANsEntities = updatedCANS.keys.map { entity ->
             DataStatusesCAN(
                 id = entity.id,
-                status = CANStatus.fromString(entity.status),
-                statusDetails = CANStatusDetails.fromString(entity.statusDetails),
+                status = entity.status,
+                statusDetails = entity.statusDetails,
                 jsonData = entity.jsonData
             )
         }
@@ -281,9 +281,9 @@ class ACServiceImpl(
      */
     private fun checkStatuses(entities: List<CANEntity>) {
         entities.forEach { entity ->
-            when (CANStatus.fromString(entity.status)) {
+            when (entity.status) {
                 CANStatus.PENDING -> {
-                    when (CANStatusDetails.fromString(entity.statusDetails)) {
+                    when (entity.statusDetails) {
                         CANStatusDetails.CONTRACT_PROJECT -> Unit
                         CANStatusDetails.ACTIVE,
                         CANStatusDetails.UNSUCCESSFUL,
@@ -305,7 +305,7 @@ class ACServiceImpl(
                 val updatedCAN = can.copy(statusDetails = CANStatusDetails.ACTIVE)
 
                 val updatedEntity = entity.copy(
-                    statusDetails = updatedCAN.statusDetails.value,
+                    statusDetails = updatedCAN.statusDetails,
                     jsonData = toJson(updatedCAN)
                 )
                 put(updatedEntity, updatedCAN)

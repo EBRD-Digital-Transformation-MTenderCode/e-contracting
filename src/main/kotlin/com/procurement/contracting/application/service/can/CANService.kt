@@ -59,8 +59,8 @@ class CANServiceImpl(
             awardId = can.awardId,
             lotId = can.lotId,
             contractId = null,
-            status = can.status.value,
-            statusDetails = can.statusDetails.value,
+            status = can.status,
+            statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
         canRepository.saveNewCAN(cpid = context.cpid, entity = canEntity)

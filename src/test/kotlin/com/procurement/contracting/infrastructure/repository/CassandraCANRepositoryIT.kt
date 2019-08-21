@@ -476,8 +476,8 @@ class CassandraCANRepositoryIT {
         awardId = awardId,
         lotId = lotId,
         contractId = contractId,
-        status = status.toString(),
-        statusDetails = statusDetails.toString(),
+        status = status,
+        statusDetails = statusDetails,
         jsonData = jsonData
     )
 }

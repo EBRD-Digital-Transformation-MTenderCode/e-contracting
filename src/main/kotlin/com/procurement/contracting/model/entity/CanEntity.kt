@@ -2,6 +2,8 @@ package com.procurement.contracting.model.entity
 
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
 import java.util.*
 
@@ -23,9 +25,9 @@ data class CanEntity(
 
     var acId: String?,
 
-    var status: String,
+    var status: CANStatus,
 
-    var statusDetails: String,
+    var statusDetails: CANStatusDetails,
 
     var jsonData: String
 )

@@ -79,12 +79,12 @@ class CreateAcService(
 
         for (canEntity in canEntities) {
             if (idsOfCANs.contains(canEntity.canId)) {
-                if (!(canEntity.status == CANStatus.PENDING.value && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT.value)) {
+                if (!(canEntity.status == CANStatus.PENDING && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)
                 can.statusDetails = CANStatusDetails.ACTIVE
-                canEntity.statusDetails = can.statusDetails.value
+                canEntity.statusDetails = can.statusDetails
                 canEntity.acId = acId
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)

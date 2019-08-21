@@ -14,6 +14,8 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -151,8 +153,8 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         awardId = UUID.fromString(row.getString(columnAwardId)),
         lotId = UUID.fromString(row.getString(columnLotId)),
         contractId = row.getString(columnContractId),
-        status = row.getString(columnStatus),
-        statusDetails = row.getString(columnStatusDetails),
+        status = CANStatus.fromString(row.getString(columnStatus)),
+        statusDetails = CANStatusDetails.fromString(row.getString(columnStatusDetails)),
         jsonData = row.getString(columnJsonData)
     )
 
@@ -240,8 +242,8 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnAwardId, entity.awardId.toString())
                 setString(columnLotId, entity.lotId.toString())
                 setString(columnContractId, entity.contractId)
-                setString(columnStatus, entity.status)
-                setString(columnStatusDetails, entity.statusDetails)
+                setString(columnStatus, entity.status.value)
+                setString(columnStatusDetails, entity.statusDetails.value)
                 setString(columnJsonData, entity.jsonData)
             }
 
