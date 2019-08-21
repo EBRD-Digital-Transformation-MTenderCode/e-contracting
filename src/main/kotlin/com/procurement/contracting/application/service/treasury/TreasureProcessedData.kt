@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service.treasury
 
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
@@ -23,7 +24,7 @@ data class TreasureProcessedData(
     data class Contract(
         val id: String,
         val date: LocalDateTime,
-        val awardId: String,
+        val awardId: AwardId,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails,
         val title: String,

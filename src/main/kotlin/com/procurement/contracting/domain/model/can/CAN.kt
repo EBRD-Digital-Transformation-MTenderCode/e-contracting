@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -18,7 +19,7 @@ data class CAN(
     @field:JsonProperty("token") @param:JsonProperty("token") val token: UUID,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: String?,
+    @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId?,
     @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: String,
 
     @JsonDeserialize(using = JsonDateTimeDeserializer::class)

@@ -138,12 +138,12 @@ class ACServiceImpl(
             },
             contract = CreatedACData.Contract(
                 id = contract.id,
-                awardId = UUID.fromString(contract.awardId),
+                awardId = contract.awardId,
                 status = contract.status,
                 statusDetails = contract.statusDetails
             ),
             contractedAward = CreatedACData.ContractedAward(
-                id = UUID.fromString(contractedAward.id),
+                id = contractedAward.id,
                 date = contractedAward.date,
                 value = contractedAward.value.let { value ->
                     CreatedACData.ContractedAward.Value(
@@ -333,7 +333,7 @@ class ACServiceImpl(
      */
     private fun generateContractedAward(context: CreateACContext, data: CreateACData): ContractedAward =
         ContractedAward(
-            id = generationService.awardId().toString(),
+            id = generationService.awardId(),
             date = context.startDate,
             relatedLots = generateRelatedLots(awards = data.awards),
             relatedBids = generateRelatedBids(context = context, awards = data.awards),

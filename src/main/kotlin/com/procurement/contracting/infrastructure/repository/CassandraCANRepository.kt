@@ -147,7 +147,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         token = row.getUUID(columnToken),
         owner = row.getString(columnOwner),
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        awardId = row.getString(columnAwardId),
+        awardId = UUID.fromString(row.getString(columnAwardId)),
         lotId = row.getString(columnLotId),
         contractId = row.getString(columnContractId),
         status = row.getString(columnStatus),
@@ -236,7 +236,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setUUID(columnToken, entity.token)
                 setString(columnOwner, entity.owner)
                 setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnAwardId, entity.awardId)
+                setString(columnAwardId, entity.awardId.toString())
                 setString(columnLotId, entity.lotId)
                 setString(columnContractId, entity.contractId)
                 setString(columnStatus, entity.status)

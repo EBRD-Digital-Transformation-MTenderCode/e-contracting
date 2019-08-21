@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -32,13 +33,13 @@ data class CreateACResponse(
 
     data class Contract(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
-        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: UUID,
+        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails
     )
 
     data class ContractedAward(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: AwardId,
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
         @field:JsonProperty("value") @param:JsonProperty("value") val value: Value,
         @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<UUID>,

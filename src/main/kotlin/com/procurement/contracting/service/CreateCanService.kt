@@ -1,6 +1,7 @@
 package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.exception.ErrorException
@@ -39,7 +40,7 @@ class CreateCanService(private val canDao: CanDao,
         val dto = toObject(CreateCanRq::class.java, cm.data)
 
         val statusDetails: CANStatusDetails
-        var canAwardId: String? = null
+        var canAwardId: AwardId? = null
         if (dto.awardingSuccess) {
             statusDetails = CANStatusDetails.CONTRACT_PROJECT
             canAwardId = dto.awardId

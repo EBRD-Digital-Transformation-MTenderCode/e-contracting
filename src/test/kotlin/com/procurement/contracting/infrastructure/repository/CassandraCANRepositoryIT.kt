@@ -19,6 +19,7 @@ import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import org.junit.jupiter.api.AfterEach
@@ -44,7 +45,7 @@ class CassandraCANRepositoryIT {
         private const val OWNER = "owner-1"
         private val CREATE_DATE = LocalDateTime.now()
         private const val CONTRACT_ID = "ac-id-1"
-        private val AWARD_ID = UUID.randomUUID()
+        private val AWARD_ID: AwardId = UUID.randomUUID()
         private const val CAN_LOT_ID = "lot-id-1"
         private const val RELATED_CAN_LOT_ID = "lot-id-2"
 
@@ -285,7 +286,6 @@ class CassandraCANRepositoryIT {
 
         canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
 
-
         val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
 
         assertNotNull(actualCancelledCAN)
@@ -460,7 +460,7 @@ class CassandraCANRepositoryIT {
     private fun createCANEntity(
         id: UUID,
         lotId: String,
-        awardId: UUID = AWARD_ID,
+        awardId: AwardId = AWARD_ID,
         contractId: String?,
         status: CANStatus,
         statusDetails: CANStatusDetails,
@@ -471,7 +471,7 @@ class CassandraCANRepositoryIT {
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
-        awardId = awardId.toString(),
+        awardId = awardId,
         lotId = lotId,
         contractId = contractId,
         status = status.toString(),

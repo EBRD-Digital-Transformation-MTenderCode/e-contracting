@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service.ac
 
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -24,13 +25,13 @@ data class CreatedACData(
 
     data class Contract(
         val id: String,
-        val awardId: UUID,
+        val awardId: AwardId,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails
     )
 
     data class ContractedAward(
-        val id: UUID,
+        val id: AwardId,
         val date: LocalDateTime,
         val value: Value,
         val relatedLots: List<UUID>,

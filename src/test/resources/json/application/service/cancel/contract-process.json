@@ -3,14 +3,14 @@
     "token": "aa958614-2a2e-40fe-b3eb-2607b973b00e",
     "id": "contract-id-1",
     "date": "2011-06-05T17:59:00Z",
-    "awardId": "award-id-1",
+    "awardId": "a6bbbbe1-1ebd-44ff-aebe-46abaec3d326",
     "status": "pending",
     "statusDetails": "execution",
     "title": "contract.title",
     "description": "contract.description"
   },
   "award": {
-    "id": "award-id-1",
+    "id": "a6bbbbe1-1ebd-44ff-aebe-46abaec3d326",
     "date": "2011-05-21T13:15:00Z",
     "value": {
 

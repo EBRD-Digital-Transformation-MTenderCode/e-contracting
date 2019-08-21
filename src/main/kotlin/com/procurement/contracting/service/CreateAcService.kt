@@ -92,7 +92,7 @@ class CreateAcService(
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
 
-        val awardId = generationService.generateRandomUUID().toString()
+        val awardId = generationService.awardId()
         val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
         val awardsLotsIdsSet = dto.awards.asSequence().map { it.relatedLots[0] }.toSet()
         val awardsBidsIdsSet = dto.awards.asSequence().map { it.relatedBid }.toSet()

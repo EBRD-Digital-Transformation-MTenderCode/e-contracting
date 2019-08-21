@@ -1,5 +1,6 @@
 package com.procurement.contracting.domain.entity
 
+import com.procurement.contracting.domain.model.award.AwardId
 import java.time.LocalDateTime
 import java.util.*
 
@@ -9,7 +10,7 @@ data class CANEntity(
     val token: UUID,
     val owner: String,
     val createdDate: LocalDateTime,
-    val awardId: String?,
+    val awardId: AwardId?,
     val lotId: String,
     val contractId: String?,
     val status: String,

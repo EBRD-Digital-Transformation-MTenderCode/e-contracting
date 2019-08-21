@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.model.dto.databinding.BooleansDeserializer
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
 import com.procurement.contracting.model.dto.databinding.QuantityDeserializer
@@ -30,7 +31,7 @@ data class UpdateAcRq @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AwardUpdate @JsonCreator constructor(
 
-        val id: String,
+        val id: AwardId,
 
         var description: String?,
 

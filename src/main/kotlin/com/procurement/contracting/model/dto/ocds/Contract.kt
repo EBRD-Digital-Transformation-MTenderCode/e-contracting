@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import java.time.LocalDateTime
@@ -16,7 +17,7 @@ data class Contract @JsonCreator constructor(
 
     var date: LocalDateTime? = null,
 
-    val awardId: String,
+    val awardId: AwardId,
 
     var status: ContractStatus,
 

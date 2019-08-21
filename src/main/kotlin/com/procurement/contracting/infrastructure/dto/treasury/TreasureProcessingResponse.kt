@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
@@ -37,7 +38,7 @@ data class TreasureProcessingResponse(
         @JsonSerialize(using = JsonDateTimeSerializer::class)
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
-        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: String,
+        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails,
         @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
