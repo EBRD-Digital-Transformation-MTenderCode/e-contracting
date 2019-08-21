@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.lot.LotId
@@ -26,7 +27,7 @@ data class CreateACRequest(
     )
 
     data class Award(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: AwardId,
         @field:JsonProperty("value") @param:JsonProperty("value") val value: Value,
         @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>,
 

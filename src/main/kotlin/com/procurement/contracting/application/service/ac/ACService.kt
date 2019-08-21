@@ -6,6 +6,7 @@ import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -363,8 +364,8 @@ class ACServiceImpl(
         .distinct()
         .toList()
 
-    private fun generateRelatedAwards(awards: List<CreateACData.Award>): List<String> = awards.map { award ->
-        award.id.toString()
+    private fun generateRelatedAwards(awards: List<CreateACData.Award>): List<AwardId> = awards.map { award ->
+        award.id
     }
 
     private fun generateRelatedBids(context: CreateACContext, awards: List<CreateACData.Award>) = when (context.pmd) {

@@ -23,7 +23,7 @@ data class ContractedAward @JsonCreator constructor(
 
     val relatedBids: List<String>,
 
-    val relatedAwards: List<String>? = null,
+    val relatedAwards: List<AwardId>? = null,
 
     var items: List<Item>,
 
