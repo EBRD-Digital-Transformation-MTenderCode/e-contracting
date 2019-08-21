@@ -13,9 +13,9 @@ enum class MainProcurementCategory(@JsonValue val value: String) {
     }
 
     companion object {
-        private val CONSTANTS: Map<String, MainProcurementCategory> = values().associateBy { it.value }
+        private val CONSTANTS: Map<String, MainProcurementCategory> = values().associateBy { it.value.toUpperCase() }
 
-        fun fromString(value: String): MainProcurementCategory = CONSTANTS[value]
+        fun fromString(value: String): MainProcurementCategory = CONSTANTS[value.toUpperCase()]
             ?: throw EnumException(
                 enumType = MainProcurementCategory::class.java.name,
                 value = value,
