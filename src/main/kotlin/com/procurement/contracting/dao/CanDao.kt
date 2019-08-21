@@ -2,6 +2,7 @@ package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder.*
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.entity.CanEntity
@@ -15,7 +16,7 @@ class CanDao(private val session: Session) {
         val insert =
                 insertInto(CAN_TABLE)
                         .value(CP_ID, entity.cpId)
-                        .value(CAN_ID, entity.canId)
+                        .value(CAN_ID, entity.canId.toString())
                         .value(TOKEN, entity.token)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
@@ -54,12 +55,12 @@ class CanDao(private val session: Session) {
         return entities
     }
 
-    fun getByCpIdAndCanId(cpId: String, canId: UUID): CanEntity {
+    fun getByCpIdAndCanId(cpId: String, canId: CANId): CanEntity {
         val query = select()
                 .all()
                 .from(CAN_TABLE)
                 .where(eq(CP_ID, cpId))
-                .and(eq(CAN_ID, canId))
+                .and(eq(CAN_ID, canId.toString()))
                 .limit(1)
         val row = session.execute(query).one()
         return if (row != null)

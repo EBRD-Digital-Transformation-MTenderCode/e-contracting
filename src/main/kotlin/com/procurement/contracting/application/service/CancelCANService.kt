@@ -7,6 +7,7 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -26,7 +27,7 @@ data class CancelCANContext(
     val cpid: String,
     val token: UUID,
     val owner: String,
-    val canId: UUID
+    val canId: CANId
 )
 
 data class CancelCANData(
@@ -57,7 +58,7 @@ data class CancelledCANData(
 ) {
 
     data class CancelledCAN(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails,
         val amendment: Amendment
@@ -79,7 +80,7 @@ data class CancelledCANData(
     }
 
     data class RelatedCAN(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails
     )
@@ -228,7 +229,7 @@ class CancelCANServiceImpl(
 
     private fun getRelatedCans(
         cpid: String,
-        canId: UUID,
+        canId: CANId,
         contractId: String
     ): Sequence<CANEntity> = canRepository.findBy(cpid = cpid)
         .asSequence()

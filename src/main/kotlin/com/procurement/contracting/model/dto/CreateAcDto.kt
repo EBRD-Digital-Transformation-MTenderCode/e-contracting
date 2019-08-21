@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.model.dto.ocds.*
 
 
@@ -16,7 +17,7 @@ data class CreateAcRq @JsonCreator constructor(
 
 data class ContractCreateAc @JsonCreator constructor(
 
-        var id: String
+        var id: CANId
 )
 
 data class GetDataForAcTender @JsonCreator constructor(

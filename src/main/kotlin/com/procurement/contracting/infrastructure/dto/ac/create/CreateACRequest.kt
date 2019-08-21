@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
@@ -21,7 +22,7 @@ data class CreateACRequest(
 ) {
 
     data class CAN(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId
     )
 
     data class Award(

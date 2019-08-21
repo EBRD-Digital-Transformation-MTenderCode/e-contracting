@@ -13,6 +13,7 @@ import com.procurement.contracting.application.service.treasury.TreasureProcessi
 import com.procurement.contracting.application.service.treasury.TreasureProcessingData
 import com.procurement.contracting.application.service.treasury.TreasuryProcessing
 import com.procurement.contracting.dao.HistoryDao
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.dto.ac.create.CreateACRequest
@@ -140,7 +141,7 @@ class CommandService(
                 val dataResponse = CancelCANResponse(
                     cancelledCAN = result.cancelledCAN.let { can ->
                         CancelCANResponse.CancelledCAN(
-                            id = can.id.toString(),
+                            id = can.id,
                             status = can.status,
                             statusDetails = can.statusDetails,
                             amendment = can.amendment.let { amendment ->
@@ -161,7 +162,7 @@ class CommandService(
                     },
                     relatedCANs = result.relatedCANs.map { relatedCAN ->
                         CancelCANResponse.RelatedCAN(
-                            id = relatedCAN.id.toString(),
+                            id = relatedCAN.id,
                             status = relatedCAN.status,
                             statusDetails = relatedCAN.statusDetails
                         )
@@ -645,7 +646,7 @@ class CommandService(
     private fun getOwner(cm: CommandMessage): String = cm.context.owner
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
 
-    private fun getCANId(cm: CommandMessage): UUID = cm.context.id
+    private fun getCANId(cm: CommandMessage): CANId = cm.context.id
         ?.let { id ->
             try {
                 UUID.fromString(id)

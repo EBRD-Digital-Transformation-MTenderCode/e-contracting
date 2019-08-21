@@ -20,6 +20,7 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
@@ -50,7 +51,7 @@ class CassandraCANRepositoryIT {
         private val CAN_LOT_ID: LotId = UUID.fromString("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")
         private val RELATED_CAN_LOT_ID: LotId = UUID.fromString("db503a04-780a-49fb-839d-7836a49fa28c")
 
-        private val CAN_ID = UUID.randomUUID()
+        private val CAN_ID: CANId = UUID.randomUUID()
         private val CAN_STATUS = CANStatus.PENDING
         private val CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
         private val CAN_STATUS_AFTER_UPDATE = CANStatus.UNSUCCESSFUL
@@ -61,7 +62,7 @@ class CassandraCANRepositoryIT {
         private const val JSON_DATA_CANCELLED_CAN = """ {"can": "canceled data"} """
         private const val JSON_DATA_UPDATED_CAN = """ {"can": "updated data"} """
 
-        private val RELATED_CAN_ID = UUID.randomUUID()
+        private val RELATED_CAN_ID: CANId = UUID.randomUUID()
         private val RELATED_CAN_STATUS = CANStatus.PENDING
         private val RELATED_CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
         private val RELATED_CAN_STATUS_DETAILS = CANStatusDetails.ACTIVE
@@ -367,7 +368,7 @@ class CassandraCANRepositoryIT {
     }
 
     private fun insertCAN(
-        canId: UUID = CAN_ID,
+        canId: CANId = CAN_ID,
         lotId: LotId = CAN_LOT_ID,
         status: CANStatus = CAN_STATUS,
         statusDetails: CANStatusDetails = CAN_STATUS_DETAILS,
@@ -459,7 +460,7 @@ class CassandraCANRepositoryIT {
     )
 
     private fun createCANEntity(
-        id: UUID,
+        id: CANId,
         lotId: LotId,
         awardId: AwardId = AWARD_ID,
         contractId: String?,

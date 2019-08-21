@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.CanDao
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
@@ -49,7 +50,7 @@ class CreateCanService(private val canDao: CanDao,
             statusDetails = CANStatusDetails.UNSUCCESSFUL
         }
         val can = Can(
-            id = generationService.generateRandomUUID().toString(),
+            id = generationService.canId(),
             token = generationService.generateRandomUUID().toString(),
             date = dateTime,
             awardId = canAwardId,
@@ -92,12 +93,12 @@ class CreateCanService(private val canDao: CanDao,
         val dto = toObject(GetAwardsRq::class.java, cm.data)
 
         val canEntities = canDao.findAllByCpId(cpId)
-        val canIdsSet = dto.contracts.asSequence().map { it.id }.toSet()
-        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.canId.toString()) }.toList()
+        val canIdsSet: Set<CANId> = dto.contracts.asSequence().map { it.id }.toSet()
+        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.canId) }.toList()
         val cansRs = ArrayList<CanGetAwards>()
         for (canEntity in canEntitiesFiltered) {
             if (canEntity.statusDetails != CANStatusDetails.UNSUCCESSFUL.value) {
-                cansRs.add(CanGetAwards(id = canEntity.canId.toString(), awardId = canEntity.awardId!!))
+                cansRs.add(CanGetAwards(id = canEntity.canId, awardId = canEntity.awardId!!))
             } else {
                 throw ErrorException(ErrorType.INVALID_CAN_STATUS)
             }
@@ -109,8 +110,8 @@ class CreateCanService(private val canDao: CanDao,
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val canId = cm.context.id ?: throw ErrorException(CONTEXT)
-        val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
+        val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
+        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
         if (canEntity.owner != owner) throw ErrorException(error = ErrorType.INVALID_OWNER)
         if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
 
@@ -140,7 +141,7 @@ class CreateCanService(private val canDao: CanDao,
                                 can: Can): CanEntity {
         return CanEntity(
                 cpId = cpId,
-                canId = UUID.fromString(can.id),
+                canId = can.id,
                 token = UUID.fromString(can.token),
                 awardId = can.awardId,
                 lotId = can.lotId,

@@ -1,6 +1,7 @@
 package com.procurement.contracting.application.service.treasury
 
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
@@ -137,7 +138,7 @@ data class TreasureProcessedData(
     }
 
     data class Can(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails
     )

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
@@ -18,7 +19,7 @@ data class CreateCANResponse(
     @field:JsonProperty("can") @param:JsonProperty("can") val can: CAN
 ) {
     data class CAN(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId?,

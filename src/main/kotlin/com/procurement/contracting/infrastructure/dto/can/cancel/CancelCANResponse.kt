@@ -2,6 +2,7 @@ package com.procurement.contracting.infrastructure.dto.can.cancel
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -23,7 +24,7 @@ data class CancelCANResponse(
 ) {
 
     data class CancelledCAN(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: CANStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: CANStatusDetails,
         @field:JsonProperty("amendment") @param:JsonProperty("amendment") val amendment: Amendment
@@ -52,7 +53,7 @@ data class CancelCANResponse(
     }
 
     data class RelatedCAN(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: CANStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: CANStatusDetails
     )

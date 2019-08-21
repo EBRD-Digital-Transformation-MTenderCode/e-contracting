@@ -1,6 +1,7 @@
 package com.procurement.contracting.application.service.ac
 
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.lot.LotId
 import java.math.BigDecimal
@@ -13,7 +14,7 @@ data class CreateACData(
 ) {
 
     data class CAN(
-        val id: UUID
+        val id: CANId
     )
 
     data class Award(

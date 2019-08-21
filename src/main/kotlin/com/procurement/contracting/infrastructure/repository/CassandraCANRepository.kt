@@ -13,6 +13,7 @@ import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.can.CANId
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -113,7 +114,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
     private val preparedSaveNewCANCQL = session.prepare(SAVE_NEW_CAN_CQL)
 
-    override fun findBy(cpid: String, canId: UUID): CANEntity? {
+    override fun findBy(cpid: String, canId: CANId): CANEntity? {
         val query = preparedFindByCpidAndCanIdCQL.bind()
             .apply {
                 setString(columnCpid, cpid)

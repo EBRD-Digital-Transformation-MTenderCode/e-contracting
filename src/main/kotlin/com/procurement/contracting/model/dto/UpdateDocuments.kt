@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeUpdateCan
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.model.dto.ocds.DocumentContract
@@ -37,6 +38,6 @@ data class UpdateDocumentsRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class UpdateDocumentContract @JsonCreator constructor(
 
-    val id: String,
+    val id: CANId,
     val documents: List<DocumentContract>
 )

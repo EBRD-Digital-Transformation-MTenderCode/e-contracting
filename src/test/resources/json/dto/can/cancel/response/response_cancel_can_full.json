@@ -1,6 +1,6 @@
 {
   "cancelledCan": {
-    "id": "can-1",
+    "id": "85a4765a-935a-4cb8-aa68-a438295cdc14",
     "status": "pending",
     "statusDetails": "empty",
     "amendment": {
@@ -18,7 +18,7 @@
   },
   "relatedCans": [
     {
-      "id": "can-2",
+      "id": "eef62ffe-652c-4e4f-a5ac-ba4a0fda5c9e",
       "status": "pending",
       "statusDetails": "empty"
     }

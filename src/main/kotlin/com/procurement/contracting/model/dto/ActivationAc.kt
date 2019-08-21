@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -31,7 +32,7 @@ data class ActivationContract @JsonCreator constructor(
 
 data class ActivationCan @JsonCreator constructor(
 
-    val id: String,
+    val id: CANId,
 
     var status: CANStatus,
 

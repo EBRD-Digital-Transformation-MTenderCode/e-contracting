@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.datastax.driver.core.utils.UUIDs
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.utils.milliNowUTC
 import org.springframework.stereotype.Service
 import java.util.*
@@ -29,7 +30,7 @@ class GenerationService {
         return cpId + "-AC-" + (milliNowUTC() + Random().nextInt())
     }
 
-    fun canId(): UUID = UUID.randomUUID()
+    fun canId(): CANId = UUID.randomUUID()
 
     fun awardId(): AwardId = UUID.randomUUID()
 

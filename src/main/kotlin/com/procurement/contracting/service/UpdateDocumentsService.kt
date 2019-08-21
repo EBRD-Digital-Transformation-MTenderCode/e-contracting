@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
@@ -31,10 +32,10 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
     fun updateCanDocs(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val canId = cm.context.id ?: throw ErrorException(CONTEXT)
+        val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
-        val canEntity = canDao.getByCpIdAndCanId(cpId, UUID.fromString(canId))
+        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
         val can = toObject(Can::class.java, canEntity.jsonData)
         if (can.status != CANStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
 

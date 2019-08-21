@@ -13,6 +13,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -41,7 +42,7 @@ class CancelCANServiceTest {
         private const val CPID = "cpid-1"
         private val CAN_TOKEN: UUID = UUID.fromString("2909bc16-82c7-4281-8f35-3f0bb13476b8")
         private const val OWNER = "owner-1"
-        private val CAN_ID: UUID = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
+        private val CAN_ID: CANId = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
         private val LOT_ID: LotId = UUID.fromString("f02720a6-de85-4a50-aa3d-e9348f1669dc")
         private const val CONTRACT_ID: String = "contract-id-1"
         private val MPC = MainProcurementCategory.SERVICES
@@ -435,7 +436,7 @@ class CancelCANServiceTest {
         cpid: String = CPID,
         token: UUID = CAN_TOKEN,
         owner: String = OWNER,
-        canId: UUID = CAN_ID
+        canId: CANId = CAN_ID
     ): CancelCANContext {
         return CancelCANContext(
             cpid = cpid,

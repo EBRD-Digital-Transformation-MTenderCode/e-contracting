@@ -2,6 +2,7 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -57,15 +58,15 @@ class CreateAcService(
             throw ErrorException(ErrorType.AWARD_CURRENCY)
         }
 
-        val idsOfCANs: Set<String> = dto.contracts.fold(initial = HashSet()) { acc, item ->
+        val idsOfCANs: Set<CANId> = dto.contracts.fold(initial = HashSet()) { acc, item ->
             if(acc.add(item.id))
                 acc
             else
                 throw ErrorException(ErrorType.DUPLICATE_CAN_ID)
         }
         val canEntities = canDao.findAllByCpId(cpId)
-        val canEntityIds: Set<String> = canEntities.fold(initial = HashSet()) { acc, item ->
-            acc.add(item.canId.toString())
+        val canEntityIds: Set<CANId> = canEntities.fold(initial = HashSet()) { acc, item ->
+            acc.add(item.canId)
             acc
         }
         val isValidCANIds = idsOfCANs.all { canEntityIds.contains(it) }
@@ -77,7 +78,7 @@ class CreateAcService(
         //BR-9.1.3
 
         for (canEntity in canEntities) {
-            if (idsOfCANs.contains(canEntity.canId.toString())) {
+            if (idsOfCANs.contains(canEntity.canId)) {
                 if (!(canEntity.status == CANStatus.PENDING.value && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT.value)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }

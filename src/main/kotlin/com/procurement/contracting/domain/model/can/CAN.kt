@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class CAN(
-    @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+    @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId,
     @field:JsonProperty("token") @param:JsonProperty("token") val token: UUID,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

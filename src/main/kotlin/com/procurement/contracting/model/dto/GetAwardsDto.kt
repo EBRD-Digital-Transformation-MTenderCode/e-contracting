@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 
 data class GetAwardsRq @JsonCreator constructor(
 
@@ -10,7 +11,7 @@ data class GetAwardsRq @JsonCreator constructor(
 
 data class ContractGetAwards @JsonCreator constructor(
 
-    var id: String
+    var id: CANId
 )
 
 data class GetAwardsRs @JsonCreator constructor(
@@ -20,7 +21,7 @@ data class GetAwardsRs @JsonCreator constructor(
 
 data class CanGetAwards @JsonCreator constructor(
 
-    val id: String,
+    val id: CANId,
 
     val awardId: AwardId
 )
