@@ -421,7 +421,7 @@ class CommandService(
                                     id = document.id,
                                     title = document.title,
                                     description = document.description,
-                                    relatedLots = document.relatedLots.toList()
+                                    relatedLots = document.relatedLots?.toList()
                                 )
                             },
                             items = contractedAward.items.map { item ->

@@ -148,9 +148,9 @@ data class CreatedACData(
         data class Document(
             val documentType: DocumentTypeAward,
             val id: String,
-            val title: String,
-            val description: String,
-            val relatedLots: List<LotId>
+            val title: String?,
+            val description: String?,
+            val relatedLots: List<LotId>?
         )
     }
 }

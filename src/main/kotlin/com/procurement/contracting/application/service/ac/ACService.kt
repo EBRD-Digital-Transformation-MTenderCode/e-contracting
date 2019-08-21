@@ -224,9 +224,9 @@ class ACServiceImpl(
                     CreatedACData.ContractedAward.Document(
                         documentType = document.documentType,
                         id = document.id,
-                        title = document.title!!,
-                        description = document.description!!,
-                        relatedLots = document.relatedLots!!.toList()
+                        title = document.title,
+                        description = document.description,
+                        relatedLots = document.relatedLots?.toList()
                     )
                 },
                 items = contractedAward.items.map { item ->

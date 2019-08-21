@@ -179,9 +179,15 @@ data class CreateACResponse(
         data class Document(
             @field:JsonProperty("documentType") @param:JsonProperty("documentType") val documentType: DocumentTypeAward,
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
-            @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
-            @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
-            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>
+
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @field:JsonProperty("title") @param:JsonProperty("title") val title: String?,
+
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @field:JsonProperty("description") @param:JsonProperty("description") val description: String?,
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>?
         )
     }
 }
