@@ -24,7 +24,7 @@ class GenerationService {
         return generateTimeBasedUUID().toString()
     }
 
-    fun newOcId(cpId: String): String {
+    fun contractId(cpId: String): String {
         return cpId + "-AC-" + (milliNowUTC() + Random().nextInt())
     }
 

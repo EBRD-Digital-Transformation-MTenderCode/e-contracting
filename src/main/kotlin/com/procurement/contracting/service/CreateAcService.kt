@@ -71,7 +71,7 @@ class CreateAcService(
         if (!isValidCANIds) throw ErrorException(CANS_NOT_FOUND)
 
         val updatedCanEntities = ArrayList<CanEntity>()
-        val acId = generationService.newOcId(cpId)
+        val acId = generationService.contractId(cpId)
         val cans = ArrayList<Can>()
         //BR-9.1.3
 
