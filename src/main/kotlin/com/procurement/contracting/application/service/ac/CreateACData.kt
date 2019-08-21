@@ -2,6 +2,7 @@ package com.procurement.contracting.application.service.ac
 
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.lot.LotId
@@ -22,7 +23,7 @@ data class CreateACData(
         val id: AwardId,
         val value: Value,
         val relatedLots: List<LotId>,
-        val relatedBid: UUID?,
+        val relatedBid: BidId?,
 
         val suppliers: List<Supplier>,
         val documents: List<Document>

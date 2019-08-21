@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -368,30 +369,31 @@ class ACServiceImpl(
         award.id
     }
 
-    private fun generateRelatedBids(context: CreateACContext, awards: List<CreateACData.Award>) = when (context.pmd) {
-        ProcurementMethod.OT,
-        ProcurementMethod.TEST_OT,
-        ProcurementMethod.SV,
-        ProcurementMethod.TEST_SV,
-        ProcurementMethod.MV,
-        ProcurementMethod.TEST_MV -> {
-            awards.map { award ->
-                award.relatedBid!!.toString()
+    private fun generateRelatedBids(context: CreateACContext, awards: List<CreateACData.Award>): List<BidId> =
+        when (context.pmd) {
+            ProcurementMethod.OT,
+            ProcurementMethod.TEST_OT,
+            ProcurementMethod.SV,
+            ProcurementMethod.TEST_SV,
+            ProcurementMethod.MV,
+            ProcurementMethod.TEST_MV -> {
+                awards.map { award ->
+                    award.relatedBid!!
+                }
+            }
+            ProcurementMethod.RT,
+            ProcurementMethod.TEST_RT,
+            ProcurementMethod.FA,
+            ProcurementMethod.TEST_FA,
+            ProcurementMethod.OP,
+            ProcurementMethod.TEST_OP,
+            ProcurementMethod.DA,
+            ProcurementMethod.TEST_DA,
+            ProcurementMethod.NP,
+            ProcurementMethod.TEST_NP -> {
+                emptyList()
             }
         }
-        ProcurementMethod.RT,
-        ProcurementMethod.TEST_RT,
-        ProcurementMethod.FA,
-        ProcurementMethod.TEST_FA,
-        ProcurementMethod.OP,
-        ProcurementMethod.TEST_OP,
-        ProcurementMethod.DA,
-        ProcurementMethod.TEST_DA,
-        ProcurementMethod.NP,
-        ProcurementMethod.TEST_NP -> {
-            emptyList()
-        }
-    }
 
     private fun generateItems(items: List<CreateACData.ContractedTender.Item>): List<Item> = items.asSequence()
         .map { item ->

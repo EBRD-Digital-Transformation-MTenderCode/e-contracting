@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.lot.LotId
@@ -32,7 +33,7 @@ data class CreateACRequest(
         @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        @field:JsonProperty("relatedBid") @param:JsonProperty("relatedBid") val relatedBid: UUID?,
+        @field:JsonProperty("relatedBid") @param:JsonProperty("relatedBid") val relatedBid: BidId?,
 
         @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier>,
         @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>

@@ -3,6 +3,7 @@ package com.procurement.contracting.model.dto.ocds
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.lot.LotId
 import java.time.LocalDateTime
 
@@ -21,7 +22,7 @@ data class Award @JsonCreator constructor(
 
     val relatedLots: List<LotId>,
 
-    val relatedBid: String,
+    val relatedBid: BidId,
 
     var documents: List<DocumentAward>?,
 
