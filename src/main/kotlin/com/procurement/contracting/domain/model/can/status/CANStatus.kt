@@ -14,9 +14,9 @@ enum class CANStatus(@JsonValue val value: String) {
     }
 
     companion object {
-        private val CONSTANTS: Map<String, CANStatus> = values().associateBy { it.value }
+        private val CONSTANTS: Map<String, CANStatus> = values().associateBy { it.value.toUpperCase() }
 
-        fun fromString(value: String): CANStatus = CONSTANTS[value]
+        fun fromString(value: String): CANStatus = CONSTANTS[value.toUpperCase()]
             ?: throw EnumException(
                 enumType = CANStatus::class.java.name,
                 value = value,
