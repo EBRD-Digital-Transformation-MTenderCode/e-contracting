@@ -304,7 +304,7 @@ class CassandraACRepositoryIT {
         createdDate = CREATE_DATE,
         status = AC_STATUS.toString(),
         statusDetails = AC_STATUS_DETAILS.toString(),
-        mainProcurementCategory = MPC.toString(),
+        mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = JSON_DATA
     )
@@ -333,7 +333,7 @@ class CassandraACRepositoryIT {
         createdDate = CREATE_DATE,
         status = status.toString(),
         statusDetails = statusDetails.toString(),
-        mainProcurementCategory = MPC.toString(),
+        mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = jsonData
     )

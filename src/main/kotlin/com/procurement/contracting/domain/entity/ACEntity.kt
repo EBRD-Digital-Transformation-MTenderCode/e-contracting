@@ -1,5 +1,6 @@
 package com.procurement.contracting.domain.entity
 
+import com.procurement.contracting.domain.model.MainProcurementCategory
 import java.time.LocalDateTime
 import java.util.*
 
@@ -11,7 +12,7 @@ data class ACEntity(
     val createdDate: LocalDateTime,
     var status: String,
     var statusDetails: String,
-    val mainProcurementCategory: String,
+    val mainProcurementCategory: MainProcurementCategory,
     val language: String,
     var jsonData: String
 )

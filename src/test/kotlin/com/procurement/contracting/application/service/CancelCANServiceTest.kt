@@ -11,6 +11,7 @@ import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -42,6 +43,7 @@ class CancelCANServiceTest {
         private val CAN_ID: UUID = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
         private const val LOT_ID: String = "lot-id-0"
         private const val CONTRACT_ID: String = "contract-id-1"
+        private val MPC = MainProcurementCategory.SERVICES
 
         private val cancellationCAN =
             toObject(CAN::class.java, loadJson("json/application/service/cancel/cancellation-can.json"))
@@ -482,7 +484,7 @@ class CancelCANServiceTest {
         createdDate = contractProcess.contract.date!!,
         status = contractProcess.contract.status.toString(),
         statusDetails = contractProcess.contract.statusDetails.toString(),
-        mainProcurementCategory = "",
+        mainProcurementCategory = MPC,
         language = "RO",
         jsonData = toJson(contractProcess)
     )

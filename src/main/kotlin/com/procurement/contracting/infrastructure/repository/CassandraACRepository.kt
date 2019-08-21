@@ -8,6 +8,7 @@ import com.procurement.contracting.application.exception.repository.ReadEntityEx
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.springframework.stereotype.Repository
@@ -114,7 +115,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
         status = row.getString(columnStatus),
         statusDetails = row.getString(columnStatusDetails),
-        mainProcurementCategory = row.getString(columnMPC),
+        mainProcurementCategory = MainProcurementCategory.fromString(row.getString(columnMPC)),
         language = row.getString(columnLanguage),
         jsonData = row.getString(columnJsonData)
     )
@@ -129,7 +130,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                 setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
                 setString(columnStatus, entity.status)
                 setString(columnStatusDetails, entity.statusDetails)
-                setString(columnMPC, entity.mainProcurementCategory)
+                setString(columnMPC, entity.mainProcurementCategory.value)
                 setString(columnLanguage, entity.language)
                 setString(columnJsonData, entity.jsonData)
             }

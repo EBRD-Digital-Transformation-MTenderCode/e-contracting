@@ -119,7 +119,7 @@ class ACServiceImpl(
             createdDate = context.startDate,
             status = contract.status.value,
             statusDetails = contract.statusDetails.value,
-            mainProcurementCategory = data.contractedTender.mainProcurementCategory.toString(),
+            mainProcurementCategory = data.contractedTender.mainProcurementCategory,
             language = context.language,
             jsonData = toJson(contractProcess)
         )
