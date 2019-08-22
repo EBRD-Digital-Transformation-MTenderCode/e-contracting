@@ -14,6 +14,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
@@ -87,6 +88,12 @@ class ACServiceImpl(
      *   d. token;
      */
     override fun create(context: CreateACContext, data: CreateACData): CreatedACData {
+        //VR-9.1.1
+        checkSuppliersId(data = data)
+
+        //VR-9.1.2
+        checkAwardCurrency(data = data)
+
         val entities: List<CANEntity> = loadCANs(cpid = context.cpid, cans = data.cans)
 
         //VR-9.1.3
@@ -269,6 +276,50 @@ class ACServiceImpl(
             .filter { entity ->
                 cansIds.contains(entity.id)
             }
+    }
+
+    /**
+     * VR-9.1.1 Supplier.ID (Award)
+     *
+     * eContracting checks Award.Supplier.ID in all award objects from Request:
+     * a. IF award.supplier.ID is the same for every Award object from Request (one value in formed set of Supplier.ID)
+     *    validation is successful;
+     * b. ELSE (more than one value in set of Supplier.ID)
+     *    eContracting throws Exception;
+     */
+    private fun checkSuppliersId(data: CreateACData) {
+        val uniqueSuppliersIds = mutableSetOf<OrganizationId>()
+        data.awards.asSequence()
+            .flatMap { award ->
+                award.suppliers
+                    .asSequence()
+                    .map { supplier ->
+                        supplier.id
+                    }
+            }
+            .forEach { supplierId ->
+                if (!uniqueSuppliersIds.add(supplierId))
+                    throw ErrorException(error = ErrorType.SUPPLIERS_ID)
+            }
+    }
+
+    /**
+     * VR-9.1.2 Value.Currency (Award)
+     *
+     * eContracting checks Award.Value.Currency in all award objects from Request:
+     * a. IF award.value.currency is the same for every Award object from Request (one value in formed set of Currency)
+     *    validation is successful;
+     * b. ELSE (more than one value in set of Currency)
+     *    eContracting throws Exception;
+     */
+    private fun checkAwardCurrency(data: CreateACData) {
+        val currencies: Set<String> = data.awards.asSequence()
+            .map { award ->
+                award.value.currency
+            }
+            .toSet()
+
+        if (currencies.size != 1) throw ErrorException(error = ErrorType.AWARD_CURRENCY)
     }
 
     /**
