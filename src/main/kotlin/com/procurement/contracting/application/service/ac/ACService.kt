@@ -14,7 +14,6 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
-import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
@@ -288,8 +287,7 @@ class ACServiceImpl(
      *    eContracting throws Exception;
      */
     private fun checkSuppliersId(data: CreateACData) {
-        val uniqueSuppliersIds = mutableSetOf<OrganizationId>()
-        data.awards.asSequence()
+        val uniqueSuppliersIds = data.awards.asSequence()
             .flatMap { award ->
                 award.suppliers
                     .asSequence()
@@ -297,10 +295,8 @@ class ACServiceImpl(
                         supplier.id
                     }
             }
-            .forEach { supplierId ->
-                if (!uniqueSuppliersIds.add(supplierId))
-                    throw ErrorException(error = ErrorType.SUPPLIERS_ID)
-            }
+            .toSet()
+        if (uniqueSuppliersIds.size != 1) throw ErrorException(error = ErrorType.SUPPLIERS_ID)
     }
 
     /**
