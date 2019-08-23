@@ -65,7 +65,7 @@ class CanDao(private val session: Session) {
             .all()
             .from(CAN_TABLE)
             .where(eq(CP_ID, cpId))
-            .and(eq(CAN_ID, canId.toString()))
+            .and(eq(CAN_ID, canId))
             .limit(1)
         val row = session.execute(query).one()
         return if (row != null)
