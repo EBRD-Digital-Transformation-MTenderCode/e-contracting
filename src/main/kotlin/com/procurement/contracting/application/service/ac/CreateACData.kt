@@ -27,7 +27,7 @@ data class CreateACData(
         val relatedBid: BidId?,
 
         val suppliers: List<Supplier>,
-        val documents: List<Document>
+        val documents: List<Document>?
     ) {
 
         data class Value(

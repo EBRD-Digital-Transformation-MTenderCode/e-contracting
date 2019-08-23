@@ -482,7 +482,7 @@ class ACServiceImpl(
 
     private fun generateDocuments(awards: List<CreateACData.Award>): List<DocumentAward> = awards.asSequence()
         .flatMap { award ->
-            award.documents.asSequence()
+            award.documents?.asSequence() ?: emptySequence()
         }
         .distinctBy { document ->
             document.id

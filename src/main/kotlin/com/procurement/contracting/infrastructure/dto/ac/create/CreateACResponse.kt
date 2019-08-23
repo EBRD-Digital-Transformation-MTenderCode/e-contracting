@@ -49,6 +49,8 @@ data class CreateACResponse(
         @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>,
         @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier>,
         @field:JsonProperty("items") @param:JsonProperty("items") val items: List<Item>,
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>
     ) {
 

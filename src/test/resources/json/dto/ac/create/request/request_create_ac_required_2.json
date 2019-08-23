@@ -51,12 +51,6 @@
             "telephone": "awards[0].suppliers[0].contactPoint.telephone"
           }
         }
-      ],
-      "documents": [
-        {
-          "documentType": "awardNotice",
-          "id": "awards[0].documents[0].id"
-        }
       ]
     }
   ],

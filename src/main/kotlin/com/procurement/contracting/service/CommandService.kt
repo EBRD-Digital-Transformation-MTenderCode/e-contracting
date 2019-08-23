@@ -273,7 +273,7 @@ class CommandService(
                                     }
                                 )
                             },
-                            documents = award.documents.map { document ->
+                            documents = award.documents?.map { document ->
                                 CreateACData.Award.Document(
                                     documentType = document.documentType,
                                     id = document.id,
@@ -415,7 +415,7 @@ class CommandService(
                                     }
                                 )
                             },
-                            documents = contractedAward.documents.map { document ->
+                            documents = contractedAward.documents?.map { document ->
                                 CreateACResponse.ContractedAward.Document(
                                     documentType = document.documentType,
                                     id = document.id,

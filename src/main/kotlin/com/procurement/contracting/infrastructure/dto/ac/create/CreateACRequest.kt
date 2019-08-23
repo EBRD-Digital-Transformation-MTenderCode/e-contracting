@@ -37,7 +37,9 @@ data class CreateACRequest(
         @field:JsonProperty("relatedBid") @param:JsonProperty("relatedBid") val relatedBid: BidId?,
 
         @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier>,
-        @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>?
     ) {
 
         data class Value(
