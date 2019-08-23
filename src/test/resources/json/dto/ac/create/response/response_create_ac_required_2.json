@@ -77,12 +77,6 @@
         "description": "contractedTender.items[0].description",
         "relatedLot": "43a00c2a-d34c-4c7b-ac7c-62164ea64d43"
       }
-    ],
-    "documents": [
-      {
-        "documentType": "awardNotice",
-        "id": "awards[0].documents[0].id"
-      }
     ]
   }
 }

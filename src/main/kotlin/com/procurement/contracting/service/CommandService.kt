@@ -415,7 +415,7 @@ class CommandService(
                                     }
                                 )
                             },
-                            documents = contractedAward.documents?.map { document ->
+                            documents = contractedAward.documents.map { document ->
                                 CreateACResponse.ContractedAward.Document(
                                     documentType = document.documentType,
                                     id = document.id,
