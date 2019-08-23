@@ -4,7 +4,6 @@ import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
-import java.util.*
 
 interface CANRepository {
     fun findBy(cpid: String, canId: CANId): CANEntity?
@@ -15,6 +14,8 @@ interface CANRepository {
     fun saveCancelledCANs(cpid: String, dataCancelledCAN: DataCancelCAN, dataRelatedCANs: List<DataRelatedCAN>)
 
     fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>)
+
+    fun relateContract(cpid: String, cans: List<RelatedContract>)
 }
 
 data class DataCancelCAN(
@@ -33,6 +34,14 @@ data class DataRelatedCAN(
 
 data class DataStatusesCAN(
     val id: CANId,
+    val status: CANStatus,
+    val statusDetails: CANStatusDetails,
+    val jsonData: String
+)
+
+data class RelatedContract(
+    val id: CANId,
+    val contractId: String,
     val status: CANStatus,
     val statusDetails: CANStatusDetails,
     val jsonData: String

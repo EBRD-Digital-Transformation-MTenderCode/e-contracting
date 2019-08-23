@@ -18,6 +18,7 @@ import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
+import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
@@ -104,7 +105,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun findByCPIDAndCANId() {
-        insertCAN()
+        insertCANWithContract()
 
         val actualFundedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
 
@@ -120,7 +121,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun findByCPID() {
-        insertCAN()
+        insertCANWithContract()
         insertRelatedCAN()
 
         val actualFundedCANs: List<CANEntity> = canRepository.findBy(cpid = CPID)
@@ -146,7 +147,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorRead() {
-        insertCAN()
+        insertCANWithContract()
 
         doThrow(RuntimeException())
             .whenever(session)
@@ -160,7 +161,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun saveCancelledCANs() {
-        insertCAN()
+        insertCANWithContract()
         insertRelatedCAN()
 
         canRepository.saveCancelledCANs(
@@ -180,7 +181,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorSaveUnknownCANs() {
-        insertCAN()
+        insertCANWithContract()
 
         val exception = assertThrows<SaveEntityException> {
             canRepository.saveCancelledCANs(
@@ -198,7 +199,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorSaveCancelledCANs() {
-        insertCAN()
+        insertCANWithContract()
 
         doThrow(RuntimeException())
             .whenever(session)
@@ -216,7 +217,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun saveUpdatedStatusesCANs() {
-        insertCAN()
+        insertCANWithContract()
 
         val updatedCan = DataStatusesCAN(
             id = CAN_ID,
@@ -256,7 +257,7 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun errorSaveUpdatedStatusesCANs() {
-        insertCAN()
+        insertCANWithContract()
 
         doThrow(RuntimeException())
             .whenever(session)
@@ -273,6 +274,68 @@ class CassandraCANRepositoryIT {
             canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
         }
         assertEquals("Error writing updated statuses CAN(s).", exception.message)
+    }
+
+    @Test
+    fun saveCANsWithRelatedContract() {
+        insertCANWithoutContract()
+
+        val relatedContract = RelatedContract(
+            id = CAN_ID,
+            contractId = CONTRACT_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
+
+        val actualCANEntity: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+        assertNotNull(actualCANEntity)
+        val expectedCANEntity = expectedUpdatedCAN()
+        assertEquals(expectedCANEntity, actualCANEntity)
+    }
+
+    @Test
+    fun errorSaveUnknownCANsWithRelatedContract() {
+        val relatedContract = RelatedContract(
+            id = CAN_ID,
+            contractId = CONTRACT_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        val exception = assertThrows<SaveEntityException> {
+            canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
+        }
+
+        assertEquals(
+            "An error occurred when writing a record(s) of the CAN(s) by cpid '$CPID' from the database.",
+            exception.message
+        )
+    }
+
+    @Test
+    fun errorSaveCANsWithRelatedContract() {
+        insertCANWithoutContract()
+
+        doThrow(RuntimeException())
+            .whenever(session)
+            .execute(any<BatchStatement>())
+
+        val relatedContract = RelatedContract(
+            id = CAN_ID,
+            contractId = CONTRACT_ID,
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+
+        val exception = assertThrows<SaveEntityException> {
+            canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
+        }
+        assertEquals("Error writing updated CAN(s) with related Contract.", exception.message)
     }
 
     @Test
@@ -367,7 +430,7 @@ class CassandraCANRepositoryIT {
         )
     }
 
-    private fun insertCAN(
+    private fun insertCANWithContract(
         canId: CANId = CAN_ID,
         lotId: LotId = CAN_LOT_ID,
         status: CANStatus = CAN_STATUS,
@@ -390,7 +453,29 @@ class CassandraCANRepositoryIT {
         session.execute(rec)
     }
 
-    private fun insertRelatedCAN() = insertCAN(
+    private fun insertCANWithoutContract(
+        canId: CANId = CAN_ID,
+        lotId: LotId = CAN_LOT_ID,
+        status: CANStatus = CAN_STATUS,
+        statusDetails: CANStatusDetails = CAN_STATUS_DETAILS,
+        jsonData: String = JSON_DATA_CAN
+    ) {
+        val rec = QueryBuilder.insertInto("ocds", "contracting_can")
+            .value("cp_id", CPID)
+            .value("can_id", canId)
+            .value("token_entity", TOKEN)
+            .value("owner", OWNER)
+            .value("created_date", CREATE_DATE.toCassandraTimestamp())
+            .value("award_id", AWARD_ID.toString())
+            .value("lot_id", lotId.toString())
+            .value("status", status.toString())
+            .value("status_details", statusDetails.toString())
+            .value("json_data", jsonData)
+
+        session.execute(rec)
+    }
+
+    private fun insertRelatedCAN() = insertCANWithContract(
         canId = RELATED_CAN_ID,
         lotId = RELATED_CAN_LOT_ID,
         status = RELATED_CAN_STATUS,

@@ -2,7 +2,7 @@ package com.procurement.contracting.application.service.ac
 
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataStatusesCAN
+import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
@@ -98,22 +98,23 @@ class ACServiceImpl(
         //VR-9.1.3
         checkStatuses(entities)
 
-        val updatedCANS: Map<CANEntity, CAN> = updateCans(entities)
-
         //BR-9.1.12
         val contractedAward = generateContractedAward(context = context, data = data)
 
         //BR-9.1.13
-        val contract = generateContract(cpid = context.cpid, contractedAward = contractedAward)
+        val contract: Contract = generateContract(cpid = context.cpid, contractedAward = contractedAward)
 
         val contractProcess = ContractProcess(
             contract = contract,
             award = contractedAward
         )
 
+        val updatedCANS: Map<CANEntity, CAN> = updateCans(entities = entities, contract = contract)
+
         val updatedCANsEntities = updatedCANS.keys.map { entity ->
-            DataStatusesCAN(
+            RelatedContract(
                 id = entity.id,
+                contractId = entity.contractId!!,
                 status = entity.status,
                 statusDetails = entity.statusDetails,
                 jsonData = entity.jsonData
@@ -133,7 +134,7 @@ class ACServiceImpl(
             jsonData = toJson(contractProcess)
         )
 
-        canRepository.updateStatusesCANs(cpid = context.cpid, cans = updatedCANsEntities)
+        canRepository.relateContract(cpid = context.cpid, cans = updatedCANsEntities)
         acRepository.saveNew(acEntity)
 
         return CreatedACData(
@@ -347,13 +348,15 @@ class ACServiceImpl(
         }
     }
 
-    private fun updateCans(entities: List<CANEntity>): Map<CANEntity, CAN> {
+    private fun updateCans(entities: List<CANEntity>, contract: Contract): Map<CANEntity, CAN> {
         return mutableMapOf<CANEntity, CAN>().apply {
+            val contractId = contract.id
             for (entity in entities) {
                 val can = toObject(CAN::class.java, entity.jsonData)
                 val updatedCAN = can.copy(statusDetails = CANStatusDetails.ACTIVE)
 
                 val updatedEntity = entity.copy(
+                    contractId = contractId,
                     statusDetails = updatedCAN.statusDetails,
                     jsonData = toJson(updatedCAN)
                 )

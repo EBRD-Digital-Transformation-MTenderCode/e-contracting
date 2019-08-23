@@ -12,6 +12,7 @@ import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
+import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -91,6 +92,17 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                IF EXISTS
             """
 
+        private const val RELATE_CONTRACT_CQL = """
+               UPDATE $keySpace.$tableName
+                  SET $columnContractId=?,
+                      $columnStatus=?,
+                      $columnStatusDetails=?,
+                      $columnJsonData=?
+                WHERE $columnCpid=?
+                AND   $columnCanId=?
+               IF EXISTS
+            """
+
         private const val SAVE_NEW_CAN_CQL = """
                INSERT INTO $keySpace.$tableName(
                            $columnCpid,
@@ -114,6 +126,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
+    private val preparedRelateContractCQL = session.prepare(RELATE_CONTRACT_CQL)
     private val preparedSaveNewCANCQL = session.prepare(SAVE_NEW_CAN_CQL)
 
     override fun findBy(cpid: String, canId: CANId): CANEntity? {
@@ -229,6 +242,35 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         session.execute(statement)
     } catch (exception: Exception) {
         throw SaveEntityException(message = "Error writing updated statuses CAN(s).", cause = exception)
+    }
+
+    override fun relateContract(cpid: String, cans: List<RelatedContract>) {
+        val statements = BatchStatement().apply {
+            for (can in cans) {
+                add(statementForRelateContract(cpid = cpid, can = can))
+            }
+        }
+
+        val result = relateContract(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
+    }
+
+    private fun statementForRelateContract(cpid: String, can: RelatedContract): Statement =
+        preparedRelateContractCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setUUID(columnCanId, can.id)
+                setString(columnContractId, can.contractId)
+                setString(columnStatus, can.status.value)
+                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnJsonData, can.jsonData)
+            }
+
+    private fun relateContract(statement: BatchStatement): ResultSet = try {
+        session.execute(statement)
+    } catch (exception: Exception) {
+        throw SaveEntityException(message = "Error writing updated CAN(s) with related Contract.", cause = exception)
     }
 
     override fun saveNewCAN(cpid: String, entity: CANEntity) {
