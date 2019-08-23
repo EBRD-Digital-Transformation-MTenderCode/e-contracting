@@ -20,6 +20,7 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -101,7 +102,9 @@ class CancelCANServiceImpl(
     private val canRepository: CANRepository,
     private val acRepository: ACRepository
 ) : CancelCANService {
-
+    companion object {
+        private val log = LoggerFactory.getLogger(CancelCANService::class.java)
+    }
     /**
      * 1. Validates value of token parameter from context of Request by rule VR-9.13.1;
      *
@@ -164,7 +167,7 @@ class CancelCANServiceImpl(
             val contractId: String = canEntity.contractId
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
-
+            log.debug("Founded AC with id '$contractId' for cancelling.")
             val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
             //VR-9.13.4
@@ -188,6 +191,7 @@ class CancelCANServiceImpl(
         }
 
         val isCancelledAC = if (cancelledContract != null) {
+            log.debug("Saving cancelled AC by cpid '${context.cpid}' with id '${cancelledContract.id}' (status '${cancelledContract.status}', status details '${cancelledContract.statusDetails}')")
             acRepository.saveCancelledAC(
                 cpid = context.cpid,
                 id = cancelledContract.id,
