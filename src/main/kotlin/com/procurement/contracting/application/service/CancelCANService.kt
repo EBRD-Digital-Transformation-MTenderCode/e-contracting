@@ -165,6 +165,7 @@ class CancelCANServiceImpl(
 
         if (canEntity.contractId != null) {
             val contractId: String = canEntity.contractId
+            log.debug("CAN with id '${context.canId}' has related AC with id '$contractId'.")
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
             log.debug("Founded AC with id '$contractId' for cancelling.")
@@ -185,6 +186,7 @@ class CancelCANServiceImpl(
                 }
                 .toList()
         } else {
+            log.debug("CAN with id '${context.canId}' without AC.")
             cancelledContract = null
             updatedContractProcess = null
             relatedCANs = emptyList()
