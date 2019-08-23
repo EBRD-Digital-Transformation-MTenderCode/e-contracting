@@ -20,7 +20,7 @@ class CanDao(private val session: Session) {
         val insert =
             insertInto(CAN_TABLE)
                 .value(CP_ID, entity.cpId)
-                .value(CAN_ID, entity.canId.toString())
+                .value(CAN_ID, entity.canId)
                 .value(TOKEN, entity.token)
                 .value(OWNER, entity.owner)
                 .value(CREATED_DATE, entity.createdDate)
