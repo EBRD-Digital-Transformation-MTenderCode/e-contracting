@@ -162,7 +162,9 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                 setString(columnJsonData, jsonData)
             }
 
-        saveCancelledAC(statements)
+        val result = saveCancelledAC(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save cancelled AC by cpid '$cpid' and id '$id' with status '$status' and status details '$statusDetails' to the database. Record is not exists.")
     }
 
     private fun saveCancelledAC(statement: BoundStatement): ResultSet = try {
