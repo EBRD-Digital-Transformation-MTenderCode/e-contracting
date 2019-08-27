@@ -281,7 +281,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setUUID(columnToken, entity.token)
                 setString(columnOwner, entity.owner)
                 setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnAwardId, entity.awardId.toString())
+                setString(columnAwardId, entity.awardId?.toString())
                 setString(columnLotId, entity.lotId.toString())
                 setString(columnContractId, entity.contractId)
                 setString(columnStatus, entity.status.value)
