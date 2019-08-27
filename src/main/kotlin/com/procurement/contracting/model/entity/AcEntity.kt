@@ -1,26 +1,28 @@
 package com.procurement.contracting.model.entity
 
+import com.procurement.contracting.domain.model.contract.status.ContractStatus
+import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import java.util.*
 
 data class AcEntity(
 
-        val cpId: String,
+    val cpId: String,
 
-        var acId: String,
+    var acId: String,
 
-        val token: UUID,
+    val token: UUID,
 
-        val owner: String,
+    val owner: String,
 
-        val createdDate: Date,
+    val createdDate: Date,
 
-        var status: String,
+    var status: ContractStatus,
 
-        var statusDetails: String,
+    var statusDetails: ContractStatusDetails,
 
-        val mainProcurementCategory: String,
+    val mainProcurementCategory: String,
 
-        val language: String,
+    val language: String,
 
-        var jsonData: String
+    var jsonData: String
 )

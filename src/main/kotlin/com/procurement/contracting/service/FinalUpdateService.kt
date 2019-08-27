@@ -77,7 +77,7 @@ class FinalUpdateService(private val acDao: AcDao,
         contractProcess.contract.confirmationRequests = confirmationRequests
 
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
-        entity.statusDetails = ContractStatusDetails.APPROVEMENT.toString()
+        entity.statusDetails = ContractStatusDetails.APPROVEMENT
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = FinalUpdateAcRs(contractProcess.contract))

@@ -7,6 +7,8 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatusDe
 interface ACRepository {
     fun findBy(cpid: String, contractId: String): ACEntity?
 
+    fun saveNew(entity: ACEntity)
+
     fun saveCancelledAC(
         cpid: String,
         id: String,

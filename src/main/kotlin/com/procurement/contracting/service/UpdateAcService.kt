@@ -4,8 +4,10 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
@@ -349,10 +351,10 @@ class UpdateAcService(private val acDao: AcDao,
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
-        val relatedItemIds = milestonesDto.asSequence()
+        val relatedItemIds: Set<ItemId> = milestonesDto.asSequence()
                 .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM) }
                 .toSet()
-        val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
+        val awardItemIds: Set<ItemId> = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
 
@@ -475,8 +477,8 @@ class UpdateAcService(private val acDao: AcDao,
         val suppliersDb = contractProcess.award.suppliers
         val suppliersDto = dto.award.suppliers
         //validation
-        val suppliersDbIds = suppliersDb.asSequence().map { it.id }.toSet()
-        val suppliersDtoIds = suppliersDto.asSequence().map { it.id }.toSet()
+        val suppliersDbIds: Set<OrganizationId> = suppliersDb.asSequence().map { it.id }.toSet()
+        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.asSequence().map { it.id }.toSet()
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
         if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)

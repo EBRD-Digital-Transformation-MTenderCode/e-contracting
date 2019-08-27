@@ -4,7 +4,9 @@ import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
-import com.procurement.contracting.domain.model.CAN
+import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
@@ -198,7 +200,7 @@ class TreasuryProcessingImpl(
         val updatedCANs = canRepository.findBy(context.cpid).asSequence()
             .filter {
                 it.contractId == context.ocid
-                    && ContractStatus.fromString(it.status) == ContractStatus.PENDING
+                    && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
                 can.copy(
@@ -207,7 +209,7 @@ class TreasuryProcessingImpl(
                      *
                      * eContracting sets CAN.statusDetails value == "contractProject" and saves it to DB;
                      */
-                    statusDetails = ContractStatusDetails.CONTRACT_PROJECT
+                    statusDetails = CANStatusDetails.CONTRACT_PROJECT
                 )
             }
             .toList()
@@ -285,7 +287,7 @@ class TreasuryProcessingImpl(
         val updatedCANs = canRepository.findBy(context.cpid).asSequence()
             .filter {
                 it.contractId == context.ocid
-                    && ContractStatus.fromString(it.status) == ContractStatus.PENDING
+                    && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
                 can.copy(
@@ -296,8 +298,8 @@ class TreasuryProcessingImpl(
                      * CAN.status value == "unsuccessful" and saves it to DB;
                      * CAN.statusDetails value == "treasuryRejection" and saves it to DB;
                      */
-                    status = ContractStatus.UNSUCCESSFUL,
-                    statusDetails = ContractStatusDetails.TREASURY_REJECTION
+                    status = CANStatus.UNSUCCESSFUL,
+                    statusDetails = CANStatusDetails.TREASURY_REJECTION
                 )
             }
             .toList()
@@ -553,12 +555,9 @@ class TreasuryProcessingImpl(
      *     throws Exception;
      */
     fun checkStatusAndStatusDetails(acEntity: ACEntity) {
-        val status = ContractStatus.fromString(acEntity.status)
-        val statusDetails = ContractStatusDetails.fromString(acEntity.statusDetails)
-
-        if (status != ContractStatus.PENDING)
+        if (acEntity.status != ContractStatus.PENDING)
             throw ErrorException(error = CONTRACT_STATUS)
-        if (statusDetails != ContractStatusDetails.VERIFICATION)
+        if (acEntity.statusDetails != ContractStatusDetails.VERIFICATION)
             throw ErrorException(error = CONTRACT_STATUS_DETAILS)
     }
 

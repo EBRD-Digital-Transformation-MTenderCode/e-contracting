@@ -2,6 +2,8 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
@@ -60,8 +62,8 @@ class ActivationAcService(private val acDao: AcDao,
         val relatedLots = contractProcess.award.relatedLots
 
         contractEntity.jsonData = toJson(contractProcess)
-        contractEntity.status = ContractStatus.ACTIVE.value
-        contractEntity.statusDetails = ContractStatusDetails.EXECUTION.value
+        contractEntity.status = ContractStatus.ACTIVE
+        contractEntity.statusDetails = ContractStatusDetails.EXECUTION
         acDao.save(contractEntity)
 
         val canEntities = canDao.findAllByCpId(cpId)
@@ -71,10 +73,10 @@ class ActivationAcService(private val acDao: AcDao,
         for (canEntity in canEntities) {
             if (canEntity.acId == contractEntity.acId) {
                 val can = toObject(Can::class.java, canEntity.jsonData)
-                can.status = ContractStatus.ACTIVE
-                can.statusDetails = ContractStatusDetails.EMPTY
-                canEntity.status = can.status.value
-                canEntity.statusDetails = can.statusDetails.value
+                can.status = CANStatus.ACTIVE
+                can.statusDetails = CANStatusDetails.EMPTY
+                canEntity.status = can.status
+                canEntity.statusDetails = can.statusDetails
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)

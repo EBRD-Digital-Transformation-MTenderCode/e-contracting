@@ -8,6 +8,7 @@ import com.procurement.contracting.application.exception.repository.ReadEntityEx
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import org.springframework.stereotype.Repository
@@ -64,11 +65,29 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                   AND $columnContractId=?
                IF EXISTS
             """
+
+        private const val SAVE_NEW_CQL = """
+               INSERT INTO $keySpace.$tableName(
+                      $columnCpid,
+                      $columnContractId,
+                      $columnToken,
+                      $columnOwner,
+                      $columnCreatedDate,
+                      $columnStatus,
+                      $columnStatusDetails,
+                      $columnMPC,
+                      $columnLanguage,
+                      $columnJsonData
+               )
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               IF NOT EXISTS
+            """
     }
 
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
+    private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
 
     override fun findBy(cpid: String, contractId: String): ACEntity? {
         val query = preparedFindByCpidAndCanIdCQL.bind()
@@ -94,12 +113,38 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         token = row.getUUID(columnToken),
         owner = row.getString(columnOwner),
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        status = row.getString(columnStatus),
-        statusDetails = row.getString(columnStatusDetails),
-        mainProcurementCategory = row.getString(columnMPC),
+        status = ContractStatus.fromString(row.getString(columnStatus)),
+        statusDetails = ContractStatusDetails.fromString(row.getString(columnStatusDetails)),
+        mainProcurementCategory = MainProcurementCategory.fromString(row.getString(columnMPC)),
         language = row.getString(columnLanguage),
         jsonData = row.getString(columnJsonData)
     )
+
+    override fun saveNew(entity: ACEntity) {
+        val statements = preparedSaveNewCQL.bind()
+            .apply {
+                setString(columnCpid, entity.cpid)
+                setString(columnContractId, entity.id)
+                setUUID(columnToken, entity.token)
+                setString(columnOwner, entity.owner)
+                setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
+                setString(columnStatus, entity.status.value)
+                setString(columnStatusDetails, entity.statusDetails.value)
+                setString(columnMPC, entity.mainProcurementCategory.value)
+                setString(columnLanguage, entity.language)
+                setString(columnJsonData, entity.jsonData)
+            }
+
+        val result = saveNew(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the new contract by cpid '${entity.cpid}' and id '${entity.id}' to the database. Record is already.")
+    }
+
+    private fun saveNew(statement: BoundStatement): ResultSet = try {
+        session.execute(statement)
+    } catch (exception: Exception) {
+        throw SaveEntityException(message = "Error writing new contract to database.", cause = exception)
+    }
 
     override fun saveCancelledAC(
         cpid: String,
@@ -117,7 +162,9 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                 setString(columnJsonData, jsonData)
             }
 
-        saveCancelledAC(statements)
+        val result = saveCancelledAC(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save cancelled AC by cpid '$cpid' and id '$id' with status '$status' and status details '$statusDetails' to the database. Record is not exists.")
     }
 
     private fun saveCancelledAC(statement: BoundStatement): ResultSet = try {

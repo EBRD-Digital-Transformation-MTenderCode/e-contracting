@@ -2,6 +2,9 @@ package com.procurement.contracting.service
 
 import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
@@ -37,6 +40,7 @@ class CreateAcService(
     private val generationService: GenerationService
 ) {
 
+    @Deprecated(message = "Use method create in ACService.", level = DeprecationLevel.ERROR)
     fun createAC(cm: CommandMessage): ResponseDto {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
@@ -54,33 +58,33 @@ class CreateAcService(
             throw ErrorException(ErrorType.AWARD_CURRENCY)
         }
 
-        val idsOfCANs: Set<String> = dto.contracts.fold(initial = HashSet()) { acc, item ->
+        val idsOfCANs: Set<CANId> = dto.contracts.fold(initial = HashSet()) { acc, item ->
             if(acc.add(item.id))
                 acc
             else
                 throw ErrorException(ErrorType.DUPLICATE_CAN_ID)
         }
         val canEntities = canDao.findAllByCpId(cpId)
-        val canEntityIds: Set<String> = canEntities.fold(initial = HashSet()) { acc, item ->
-            acc.add(item.canId.toString())
+        val canEntityIds: Set<CANId> = canEntities.fold(initial = HashSet()) { acc, item ->
+            acc.add(item.canId)
             acc
         }
         val isValidCANIds = idsOfCANs.all { canEntityIds.contains(it) }
         if (!isValidCANIds) throw ErrorException(CANS_NOT_FOUND)
 
         val updatedCanEntities = ArrayList<CanEntity>()
-        val acId = generationService.newOcId(cpId)
+        val acId = generationService.contractId(cpId)
         val cans = ArrayList<Can>()
         //BR-9.1.3
 
         for (canEntity in canEntities) {
-            if (idsOfCANs.contains(canEntity.canId.toString())) {
-                if (!(canEntity.status == ContractStatus.PENDING.value && canEntity.statusDetails == ContractStatusDetails.CONTRACT_PROJECT.value)) {
+            if (idsOfCANs.contains(canEntity.canId)) {
+                if (!(canEntity.status == CANStatus.PENDING && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)
-                can.statusDetails = ContractStatusDetails.ACTIVE
-                canEntity.statusDetails = can.statusDetails.value
+                can.statusDetails = CANStatusDetails.ACTIVE
+                canEntity.statusDetails = can.statusDetails
                 canEntity.acId = acId
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
@@ -89,7 +93,7 @@ class CreateAcService(
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
 
-        val awardId = generationService.generateRandomUUID().toString()
+        val awardId = generationService.awardId()
         val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
         val awardsLotsIdsSet = dto.awards.asSequence().map { it.relatedLots[0] }.toSet()
         val awardsBidsIdsSet = dto.awards.asSequence().map { it.relatedBid }.toSet()
@@ -135,8 +139,8 @@ class CreateAcService(
             token = UUID.fromString(contract.token!!),
             owner = owner,
             createdDate = dateTime.toDate(),
-            status = contract.status.value,
-            statusDetails = contract.statusDetails.value,
+            status = contract.status,
+            statusDetails = contract.statusDetails,
             mainProcurementCategory = mainProcurementCategory,
             language = language,
             jsonData = toJson(contractProcess)

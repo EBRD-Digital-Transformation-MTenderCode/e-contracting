@@ -1,28 +1,33 @@
 package com.procurement.contracting.model.entity
 
+import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import java.util.*
 
 data class CanEntity(
 
-        val cpId: String,
+    val cpId: String,
 
-        val canId: UUID,
+    val canId: CANId,
 
-        val token: UUID,
+    val token: UUID,
 
-        val owner: String,
+    val owner: String,
 
-        val createdDate: Date,
+    val createdDate: Date,
 
-        val awardId: String?,
+    val awardId: AwardId?,
 
-        val lotId: String,
+    val lotId: LotId,
 
-        var acId: String?,
+    var acId: String?,
 
-        var status: String,
+    var status: CANStatus,
 
-        var statusDetails: String,
+    var statusDetails: CANStatusDetails,
 
-        var jsonData: String
+    var jsonData: String
 )
