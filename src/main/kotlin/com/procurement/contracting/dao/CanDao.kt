@@ -75,7 +75,7 @@ class CanDao(private val session: Session) {
                 token = row.getUUID(TOKEN),
                 owner = row.getString(OWNER),
                 createdDate = row.getTimestamp(CREATED_DATE),
-                awardId = UUID.fromString(row.getString(AWARD_ID)),
+                awardId = row.getString(AWARD_ID)?.let { UUID.fromString(it) },
                 lotId = UUID.fromString(row.getString(LOT_ID)),
                 acId = row.getString(AC_ID),
                 status = CANStatus.fromString(row.getString(STATUS)),
