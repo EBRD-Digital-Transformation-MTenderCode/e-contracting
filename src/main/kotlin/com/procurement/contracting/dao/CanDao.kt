@@ -24,7 +24,7 @@ class CanDao(private val session: Session) {
                 .value(TOKEN, entity.token)
                 .value(OWNER, entity.owner)
                 .value(CREATED_DATE, entity.createdDate)
-                .value(AWARD_ID, entity.awardId.toString())
+                .value(AWARD_ID, entity.awardId?.toString())
                 .value(LOT_ID, entity.lotId.toString())
                 .value(AC_ID, entity.acId)
                 .value(STATUS, entity.status.value)
