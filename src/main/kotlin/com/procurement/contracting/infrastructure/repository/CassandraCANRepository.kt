@@ -163,7 +163,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         token = row.getUUID(columnToken),
         owner = row.getString(columnOwner),
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        awardId = UUID.fromString(row.getString(columnAwardId)),
+        awardId = row.getString(columnAwardId)?.let { UUID.fromString(row.getString(columnAwardId)) },
         lotId = UUID.fromString(row.getString(columnLotId)),
         contractId = row.getString(columnContractId),
         status = CANStatus.fromString(row.getString(columnStatus)),
