@@ -14,7 +14,8 @@ enum class DocumentTypeAward(@JsonValue val value: String) {
     CANCELLATION_DETAILS("cancellationDetails"),
     CONTRACT_DRAFT("contractDraft"),
     CONTRACT_ARRANGEMENTS("contractArrangements"),
-    CONTRACT_SCHEDULE("contractSchedule");
+    CONTRACT_SCHEDULE("contractSchedule"),
+    SUBMISSION_DOCUMENTS("submissionDocuments");
 
     override fun toString(): String {
         return this.value
