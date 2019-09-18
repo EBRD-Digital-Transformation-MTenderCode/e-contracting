@@ -23,6 +23,8 @@ data class ActivationAcRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ActivationContract @JsonCreator constructor(
 
+    val id: String,
+
     var status: ContractStatus,
 
     var statusDetails: ContractStatusDetails,

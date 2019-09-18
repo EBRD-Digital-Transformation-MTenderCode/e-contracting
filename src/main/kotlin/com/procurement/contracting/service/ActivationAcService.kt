@@ -84,16 +84,19 @@ class ActivationAcService(private val acDao: AcDao,
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
         val cansRs = cans.asSequence().map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
-        return ResponseDto(data = ActivationAcRs(
+        return ResponseDto(
+            data = ActivationAcRs(
                 relatedLots = relatedLots,
                 contract = ActivationContract(
-                        status = contractProcess.contract.status,
-                        statusDetails = contractProcess.contract.statusDetails,
-                        milestones = contractProcess.contract.milestones
+                    id = contractProcess.contract.id,
+                    status = contractProcess.contract.status,
+                    statusDetails = contractProcess.contract.statusDetails,
+                    milestones = contractProcess.contract.milestones
                 ),
                 cans = cansRs
 
-        ))
+            )
+        )
     }
 
 }
