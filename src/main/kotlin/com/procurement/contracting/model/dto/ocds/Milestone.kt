@@ -28,7 +28,7 @@ data class Milestone @JsonCreator constructor(
 
     var additionalInformation: String?,
 
-    var dueDate: LocalDateTime,
+    var dueDate: LocalDateTime?,
 
     var relatedParties: List<RelatedParty>? = null,
 

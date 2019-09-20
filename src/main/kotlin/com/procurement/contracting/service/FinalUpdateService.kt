@@ -119,7 +119,7 @@ class FinalUpdateService(private val acDao: AcDao,
             subtype = MilestoneSubType.BUYERS_APPROVAL,
             relatedItems = null,
             additionalInformation = null,
-            dueDate = LocalDateTime.now(),
+            dueDate = null,
             relatedParties = relatedParties
         )
     }
@@ -143,7 +143,7 @@ class FinalUpdateService(private val acDao: AcDao,
             subtype = MilestoneSubType.SUPPLIERS_APPROVAL,
             relatedItems = null,
             additionalInformation = null,
-            dueDate = LocalDateTime.now(),
+            dueDate = null,
             relatedParties = relatedParties
         )
     }
@@ -168,7 +168,7 @@ class FinalUpdateService(private val acDao: AcDao,
             subtype = MilestoneSubType.CONTRACT_ACTIVATION,
             relatedItems = null,
             additionalInformation = null,
-            dueDate = LocalDateTime.now(),
+            dueDate = null,
             relatedParties = relatedParties
         )
     }
@@ -192,7 +192,7 @@ class FinalUpdateService(private val acDao: AcDao,
             subtype = MilestoneSubType.APPROVE_BODY_VALIDATION,
             relatedItems = null,
             additionalInformation = null,
-            dueDate = LocalDateTime.now(),
+            dueDate = null,
             relatedParties = relatedParties
         )
     }

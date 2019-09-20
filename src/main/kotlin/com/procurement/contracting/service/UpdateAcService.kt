@@ -337,7 +337,7 @@ class UpdateAcService(private val acDao: AcDao,
             if (mpc == MainProcurementCategory.SERVICES) {
                 if (milestone.type != MilestoneType.X_REPORTING) throw ErrorException(MILESTONE_TYPE)
             }
-            if (milestone.dueDate <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
+            if (milestone.dueDate != null && milestone.dueDate!! <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
         }
 
         val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
