@@ -103,6 +103,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
+        validateValueItems(dto)
         validateDocsRelatedLots(dto, contractProcess)
         contractProcess.award.apply {
             dto.award.description?.let { description = it }
@@ -607,11 +608,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (itemDtoIds.size != dto.award.items.size) throw ErrorException(ITEM_ID)
         if (itemDbIds.size != itemDtoIds.size) throw ErrorException(ITEM_ID)
         if (!itemDbIds.containsAll(itemDtoIds)) throw ErrorException(ITEM_ID)
-        itemsDto.asSequence().forEach { item ->
-            val value = item.unit.value
-            if (value.valueAddedTaxIncluded && value.amountNet >= value.amount) throw ErrorException(ITEM_AMOUNT)
-            if (value.currency != contractProcess.award.value.currency) throw ErrorException(ITEM_CURRENCY)
-        }
+
         //update
         itemsDb.forEach { itemDb -> itemDb.update(itemsDto.firstOrNull { it.id == itemDb.id }) }
         return itemsDb
@@ -626,6 +623,20 @@ class UpdateAcService(private val acDao: AcDao,
                     amountNet = itemDto.unit.value.amountNet,
                     valueAddedTaxIncluded = itemDto.unit.value.valueAddedTaxIncluded)
             this.deliveryAddress = itemDto.deliveryAddress
+        }
+    }
+
+    private fun validateValueItems(dto: UpdateAcRq) {
+        val award = dto.award
+        award.items.forEach { item ->
+            val value = item.unit.value
+            when {
+                value.amount > value.amountNet -> if (!value.valueAddedTaxIncluded) throw ErrorException(ITEM_AMOUNT)
+                value.amount == value.amountNet -> if (value.valueAddedTaxIncluded) throw ErrorException(ITEM_AMOUNT)
+                value.amount < value.amountNet -> throw ErrorException(ITEM_AMOUNT)
+            }
+
+            if (item.unit.value.currency != award.value.currency) throw ErrorException(ITEM_CURRENCY)
         }
     }
 
