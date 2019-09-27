@@ -633,17 +633,36 @@ class UpdateAcService(private val acDao: AcDao,
         val award = dto.award
         if (award.id != contractProcess.contract.awardId) throw ErrorException(AWARD_ID) //VR-9.2.3
         if (award.value.currency != contractProcess.award.value.currency) throw ErrorException(INVALID_AWARD_CURRENCY)
-        // VR-9.2.10
-        if (award.items.asSequence().any { it.unit.value.valueAddedTaxIncluded != award.value.valueAddedTaxIncluded }) {
+
+        // VR-9.2.10(1)
+        if(award.value.valueAddedTaxIncluded) {
+            if(allValueAddedTaxIncludedIsFalse(award)) throw ErrorException(AWARD_VALUE)
+        } else {
+            if(anyValueAddedTaxIncludedIsTrue(award)) throw ErrorException(AWARD_VALUE)
+        }
+
+        // VR-9.2.10(2)
+        if(award.value.amount > award.value.amountNet) {
+            if(!award.value.valueAddedTaxIncluded) throw ErrorException(AWARD_VALUE)
+        } else if(award.value.amount == award.value.amountNet){
+            if(award.value.valueAddedTaxIncluded) throw ErrorException(AWARD_VALUE)
+        } else{
             throw ErrorException(AWARD_VALUE)
         }
-        if (award.value.valueAddedTaxIncluded) {
-            if (award.value.amountNet >= award.value.amount) throw ErrorException(AWARD_VALUE)
-        }
+
+        // VR-9.2.10(3)
         val planningAmount = dto.planning.budget.budgetSource.asSequence()
-                .sumByDouble { it.amount.toDouble() }
-                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+            .map { it.amount }
+            .reduce { acc, amount ->  acc + amount}
         if (award.value.amountNet > planningAmount) throw ErrorException(AWARD_VALUE)
+    }
+
+    private fun allValueAddedTaxIncludedIsFalse(award: AwardUpdate) = award.items.all {
+        !it.unit.value.valueAddedTaxIncluded
+    }
+
+    private fun anyValueAddedTaxIncludedIsTrue(award: AwardUpdate) = award.items.any {
+        it.unit.value.valueAddedTaxIncluded
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
