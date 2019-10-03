@@ -56,12 +56,12 @@ data class PermitDetails @JsonCreator constructor(
         val validityPeriod: ValidityPeriod
 )
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 data class ValidityPeriod @JsonCreator constructor(
 
-        val startDate: LocalDateTime,
+    val startDate: LocalDateTime,
 
-        val endDate: LocalDateTime
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val endDate: LocalDateTime?
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
