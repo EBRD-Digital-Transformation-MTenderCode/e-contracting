@@ -353,7 +353,12 @@ class UpdateAcService(private val acDao: AcDao,
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
         val relatedItemIds: Set<ItemId> = milestonesDto.asSequence()
-                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM) }
+                .flatMap {
+                    it.relatedItems
+                        ?.takeIf { relatedItems -> relatedItems.isNotEmpty() }
+                        ?.asSequence()
+                        ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM)
+                }
                 .toSet()
         val awardItemIds: Set<ItemId> = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
