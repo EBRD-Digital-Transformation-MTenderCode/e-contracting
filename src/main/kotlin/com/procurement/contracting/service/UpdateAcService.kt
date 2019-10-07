@@ -10,6 +10,7 @@ import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.AWARD_ID
 import com.procurement.contracting.exception.ErrorType.AWARD_VALUE
@@ -75,7 +76,7 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.math.RoundingMode
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -95,6 +96,7 @@ class UpdateAcService(private val acDao: AcDao,
         val mpc = MainProcurementCategory.fromString(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
+        checkTransactionsValue(dto)
         checkAwardSupplierPersones(dto.award)
         checkAwardSupplierPersonesBusinessFunctionsType(dto.award)
 
@@ -141,6 +143,39 @@ class UpdateAcService(private val acDao: AcDao,
                 planning = contractProcess.planning!!,
                 contract = contractProcess.contract,
                 award = contractProcess.award))
+    }
+
+    /**
+     * VR-9.2.13
+     */
+    private fun checkTransactionsValue(dto: UpdateAcRq) {
+        val currency: String = dto.planning.budget.budgetSource
+            .let { budgetSources ->
+                val uniqueCurrency: Set<String> = budgetSources.asSequence()
+                    .map { it.currency }
+                    .toSet()
+                if (uniqueCurrency.size != 1)
+                    throw ErrorException(
+                        error = ErrorType.INVALID_CURRENCY,
+                        message = "Invalid currency of 'planning.budget.budgetSource' object."
+                    )
+                budgetSources[0].currency
+            }
+
+
+
+        dto.planning.implementation.transactions.forEach { transaction ->
+            if (transaction.value.amount <= BigDecimal.ZERO)
+                throw ErrorException(
+                    error = ErrorType.INVALID_AMOUNT,
+                    message = "Invalid amount of 'implementation.transaction.value' object."
+                )
+            if (transaction.value.currency != currency)
+                throw ErrorException(
+                    error = ErrorType.INVALID_CURRENCY,
+                    message = "Invalid currency of 'implementation.transaction.value' object."
+                )
+        }
     }
 
     /**
