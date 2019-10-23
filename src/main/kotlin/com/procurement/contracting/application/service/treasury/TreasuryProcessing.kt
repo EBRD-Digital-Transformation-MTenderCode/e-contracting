@@ -200,7 +200,7 @@ class TreasuryProcessingImpl(
         val updatedCANs = canRepository.findBy(context.cpid).asSequence()
             .filter {
                 it.contractId == context.ocid
-                    && CANStatus.fromString(it.status) == CANStatus.PENDING
+                    && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
                 can.copy(
@@ -287,7 +287,7 @@ class TreasuryProcessingImpl(
         val updatedCANs = canRepository.findBy(context.cpid).asSequence()
             .filter {
                 it.contractId == context.ocid
-                    && CANStatus.fromString(it.status) == CANStatus.PENDING
+                    && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
                 can.copy(
@@ -555,12 +555,9 @@ class TreasuryProcessingImpl(
      *     throws Exception;
      */
     fun checkStatusAndStatusDetails(acEntity: ACEntity) {
-        val status = ContractStatus.fromString(acEntity.status)
-        val statusDetails = ContractStatusDetails.fromString(acEntity.statusDetails)
-
-        if (status != ContractStatus.PENDING)
+        if (acEntity.status != ContractStatus.PENDING)
             throw ErrorException(error = CONTRACT_STATUS)
-        if (statusDetails != ContractStatusDetails.VERIFICATION)
+        if (acEntity.statusDetails != ContractStatusDetails.VERIFICATION)
             throw ErrorException(error = CONTRACT_STATUS_DETAILS)
     }
 

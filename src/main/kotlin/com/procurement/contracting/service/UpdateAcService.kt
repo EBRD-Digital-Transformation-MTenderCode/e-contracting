@@ -4,10 +4,13 @@ import com.procurement.contracting.dao.AcDao
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
 import com.procurement.contracting.exception.ErrorType.AWARD_ID
 import com.procurement.contracting.exception.ErrorType.AWARD_VALUE
@@ -73,7 +76,7 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.math.RoundingMode
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -93,6 +96,7 @@ class UpdateAcService(private val acDao: AcDao,
         val mpc = MainProcurementCategory.fromString(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
+        checkTransactionsValue(dto)
         checkAwardSupplierPersones(dto.award)
         checkAwardSupplierPersonesBusinessFunctionsType(dto.award)
 
@@ -101,6 +105,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
+        validateValueItems(dto)
         validateDocsRelatedLots(dto, contractProcess)
         contractProcess.award.apply {
             dto.award.description?.let { description = it }
@@ -138,6 +143,39 @@ class UpdateAcService(private val acDao: AcDao,
                 planning = contractProcess.planning!!,
                 contract = contractProcess.contract,
                 award = contractProcess.award))
+    }
+
+    /**
+     * VR-9.2.13
+     */
+    private fun checkTransactionsValue(dto: UpdateAcRq) {
+        val currency: String = dto.planning.budget.budgetSource
+            .let { budgetSources ->
+                val uniqueCurrency: Set<String> = budgetSources.asSequence()
+                    .map { it.currency }
+                    .toSet()
+                if (uniqueCurrency.size != 1)
+                    throw ErrorException(
+                        error = ErrorType.INVALID_CURRENCY,
+                        message = "Invalid currency of 'planning.budget.budgetSource' object."
+                    )
+                budgetSources[0].currency
+            }
+
+
+
+        dto.planning.implementation.transactions.forEach { transaction ->
+            if (transaction.value.amount <= BigDecimal.ZERO)
+                throw ErrorException(
+                    error = ErrorType.INVALID_AMOUNT,
+                    message = "Invalid amount of 'implementation.transaction.value' object."
+                )
+            if (transaction.value.currency != currency)
+                throw ErrorException(
+                    error = ErrorType.INVALID_CURRENCY,
+                    message = "Invalid currency of 'implementation.transaction.value' object."
+                )
+        }
     }
 
     /**
@@ -335,7 +373,7 @@ class UpdateAcService(private val acDao: AcDao,
             if (mpc == MainProcurementCategory.SERVICES) {
                 if (milestone.type != MilestoneType.X_REPORTING) throw ErrorException(MILESTONE_TYPE)
             }
-            if (milestone.dueDate <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
+            if (milestone.dueDate != null && milestone.dueDate!! <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
         }
 
         val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
@@ -349,10 +387,15 @@ class UpdateAcService(private val acDao: AcDao,
 
         if (milestonesDto.isEmpty()) throw ErrorException(MILESTONES_EMPTY)
 
-        val relatedItemIds = milestonesDto.asSequence()
-                .flatMap { it.relatedItems?.asSequence() ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM) }
+        val relatedItemIds: Set<ItemId> = milestonesDto.asSequence()
+                .flatMap {
+                    it.relatedItems
+                        ?.takeIf { relatedItems -> relatedItems.isNotEmpty() }
+                        ?.asSequence()
+                        ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM)
+                }
                 .toSet()
-        val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
+        val awardItemIds: Set<ItemId> = dto.award.items.asSequence().map { it.id }.toSet()
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
 
@@ -475,8 +518,8 @@ class UpdateAcService(private val acDao: AcDao,
         val suppliersDb = contractProcess.award.suppliers
         val suppliersDto = dto.award.suppliers
         //validation
-        val suppliersDbIds = suppliersDb.asSequence().map { it.id }.toSet()
-        val suppliersDtoIds = suppliersDto.asSequence().map { it.id }.toSet()
+        val suppliersDbIds: Set<OrganizationId> = suppliersDb.asSequence().map { it.id }.toSet()
+        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.asSequence().map { it.id }.toSet()
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
         if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
@@ -605,11 +648,7 @@ class UpdateAcService(private val acDao: AcDao,
         if (itemDtoIds.size != dto.award.items.size) throw ErrorException(ITEM_ID)
         if (itemDbIds.size != itemDtoIds.size) throw ErrorException(ITEM_ID)
         if (!itemDbIds.containsAll(itemDtoIds)) throw ErrorException(ITEM_ID)
-        itemsDto.asSequence().forEach { item ->
-            val value = item.unit.value
-            if (value.valueAddedTaxIncluded && value.amountNet >= value.amount) throw ErrorException(ITEM_AMOUNT)
-            if (value.currency != contractProcess.award.value.currency) throw ErrorException(ITEM_CURRENCY)
-        }
+
         //update
         itemsDb.forEach { itemDb -> itemDb.update(itemsDto.firstOrNull { it.id == itemDb.id }) }
         return itemsDb
@@ -627,21 +666,54 @@ class UpdateAcService(private val acDao: AcDao,
         }
     }
 
+    private fun validateValueItems(dto: UpdateAcRq) {
+        val award = dto.award
+        award.items.forEach { item ->
+            val value = item.unit.value
+            when {
+                value.amount > value.amountNet -> if (!value.valueAddedTaxIncluded) throw ErrorException(ITEM_AMOUNT)
+                value.amount == value.amountNet -> if (value.valueAddedTaxIncluded) throw ErrorException(ITEM_AMOUNT)
+                value.amount < value.amountNet -> throw ErrorException(ITEM_AMOUNT)
+            }
+
+            if (item.unit.value.currency != award.value.currency) throw ErrorException(ITEM_CURRENCY)
+        }
+    }
+
     private fun validateAwards(dto: UpdateAcRq, contractProcess: ContractProcess) {
         val award = dto.award
         if (award.id != contractProcess.contract.awardId) throw ErrorException(AWARD_ID) //VR-9.2.3
         if (award.value.currency != contractProcess.award.value.currency) throw ErrorException(INVALID_AWARD_CURRENCY)
-        // VR-9.2.10
-        if (award.items.asSequence().any { it.unit.value.valueAddedTaxIncluded != award.value.valueAddedTaxIncluded }) {
+
+        // VR-9.2.10(1)
+        if(award.value.valueAddedTaxIncluded) {
+            if(allValueAddedTaxIncludedIsFalse(award)) throw ErrorException(AWARD_VALUE)
+        } else {
+            if(anyValueAddedTaxIncludedIsTrue(award)) throw ErrorException(AWARD_VALUE)
+        }
+
+        // VR-9.2.10(2)
+        if(award.value.amount > award.value.amountNet) {
+            if(!award.value.valueAddedTaxIncluded) throw ErrorException(AWARD_VALUE)
+        } else if(award.value.amount == award.value.amountNet){
+            if(award.value.valueAddedTaxIncluded) throw ErrorException(AWARD_VALUE)
+        } else{
             throw ErrorException(AWARD_VALUE)
         }
-        if (award.value.valueAddedTaxIncluded) {
-            if (award.value.amountNet >= award.value.amount) throw ErrorException(AWARD_VALUE)
-        }
+
+        // VR-9.2.10(3)
         val planningAmount = dto.planning.budget.budgetSource.asSequence()
-                .sumByDouble { it.amount.toDouble() }
-                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+            .map { it.amount }
+            .reduce { acc, amount ->  acc + amount}
         if (award.value.amountNet > planningAmount) throw ErrorException(AWARD_VALUE)
+    }
+
+    private fun allValueAddedTaxIncludedIsFalse(award: AwardUpdate) = award.items.all {
+        !it.unit.value.valueAddedTaxIncluded
+    }
+
+    private fun anyValueAddedTaxIncludedIsTrue(award: AwardUpdate) = award.items.any {
+        it.unit.value.valueAddedTaxIncluded
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {

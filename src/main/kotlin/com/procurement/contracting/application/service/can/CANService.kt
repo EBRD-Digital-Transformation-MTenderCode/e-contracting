@@ -59,8 +59,8 @@ class CANServiceImpl(
             awardId = can.awardId,
             lotId = can.lotId,
             contractId = null,
-            status = can.status.value,
-            statusDetails = can.statusDetails.value,
+            status = can.status,
+            statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
         canRepository.saveNewCAN(cpid = context.cpid, entity = canEntity)
@@ -69,8 +69,8 @@ class CANServiceImpl(
             token = can.token,
             can = CreatedCANData.CAN(
                 id = can.id,
-                awardId = can.awardId?.let { UUID.fromString(it) },
-                lotId = UUID.fromString(can.lotId),
+                awardId = can.awardId,
+                lotId = can.lotId,
                 date = can.date,
                 status = can.status,
                 statusDetails = can.statusDetails
@@ -82,8 +82,8 @@ class CANServiceImpl(
         return CAN(
             id = generationService.canId(),
             token = generationService.token(),
-            awardId = data.award!!.id.toString(),
-            lotId = context.lotId.toString(),
+            awardId = data.award!!.id,
+            lotId = context.lotId,
             date = context.startDate,
             //BR-9.14.2
             status = CANStatus.PENDING,
@@ -99,7 +99,7 @@ class CANServiceImpl(
             id = generationService.canId(),
             token = generationService.token(),
             awardId = null,
-            lotId = context.lotId.toString(),
+            lotId = context.lotId,
             date = context.startDate,
             //BR-9.14.3
             status = CANStatus.PENDING,

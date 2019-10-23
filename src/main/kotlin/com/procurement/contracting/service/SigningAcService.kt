@@ -135,7 +135,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
 
-        entity.statusDetails = ContractStatusDetails.APPROVED.toString()
+        entity.statusDetails = ContractStatusDetails.APPROVED
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = BuyerSigningRs(contractProcess.contract))
@@ -235,7 +235,7 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.documents = documents
         contractProcess.contract.statusDetails = ContractStatusDetails.SIGNED
 
-        entity.statusDetails = ContractStatusDetails.SIGNED.toString()
+        entity.statusDetails = ContractStatusDetails.SIGNED
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
         return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract))

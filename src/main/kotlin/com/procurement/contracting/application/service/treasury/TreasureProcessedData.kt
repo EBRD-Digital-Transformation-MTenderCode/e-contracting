@@ -1,5 +1,7 @@
 package com.procurement.contracting.application.service.treasury
 
+import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
@@ -9,11 +11,13 @@ import com.procurement.contracting.domain.model.confirmation.response.Confirmati
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.item.ItemId
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class TreasureProcessedData(
     val contract: Contract,
@@ -23,7 +27,7 @@ data class TreasureProcessedData(
     data class Contract(
         val id: String,
         val date: LocalDateTime,
-        val awardId: String,
+        val awardId: AwardId,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails,
         val title: String,
@@ -45,13 +49,13 @@ data class TreasureProcessedData(
             val id: String,
             val title: String?,
             val description: String?,
-            val relatedLots: List<String>?,
+            val relatedLots: List<LotId>?,
             val relatedConfirmations: List<String>?
         )
 
         data class Milestone(
             val id: String,
-            val relatedItems: List<String>?,
+            val relatedItems: List<ItemId>?,
             val status: MilestoneStatus,
             val additionalInformation: String?,
             val dueDate: LocalDateTime?,
@@ -63,7 +67,7 @@ data class TreasureProcessedData(
             val relatedParties: List<RelatedParty>
         ) {
             data class RelatedParty(
-                val id: String,
+                val id: OrganizationId,
                 val name: String
             )
         }
@@ -106,7 +110,7 @@ data class TreasureProcessedData(
         ) {
 
             data class Value(
-                val id: String,
+                val id: OrganizationId,
                 val name: String,
                 val date: LocalDateTime,
                 val relatedPerson: RelatedPerson?,
@@ -135,7 +139,7 @@ data class TreasureProcessedData(
     }
 
     data class Can(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails
     )

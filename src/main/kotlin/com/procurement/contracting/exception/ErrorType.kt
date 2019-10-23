@@ -82,5 +82,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     BANK_ACCOUNTS_IN_DETAILS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("00.76", "The list of the bank accounts in the details of the supplier is empty or missing."),
     ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING("00.77", "The list of the additional identifiers in the supplier is empty or missing."),
     INVALID_BUSINESS_FUNCTIONS_TYPE("00.78", "A person with a business function type 'authority' should be used for the confirmation request."),
-    INVALID_FORMAT_LOT_ID("00.79", "Invalid format the lot id.");
+    INVALID_FORMAT_LOT_ID("00.79", "Invalid format the lot id."),
+    INVALID_AMOUNT("00.80", "Invalid amount."),
+    INVALID_CURRENCY("00.81", "Invalid currency.");
 }

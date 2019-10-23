@@ -62,8 +62,8 @@ class ActivationAcService(private val acDao: AcDao,
         val relatedLots = contractProcess.award.relatedLots
 
         contractEntity.jsonData = toJson(contractProcess)
-        contractEntity.status = ContractStatus.ACTIVE.value
-        contractEntity.statusDetails = ContractStatusDetails.EXECUTION.value
+        contractEntity.status = ContractStatus.ACTIVE
+        contractEntity.statusDetails = ContractStatusDetails.EXECUTION
         acDao.save(contractEntity)
 
         val canEntities = canDao.findAllByCpId(cpId)
@@ -75,8 +75,8 @@ class ActivationAcService(private val acDao: AcDao,
                 val can = toObject(Can::class.java, canEntity.jsonData)
                 can.status = CANStatus.ACTIVE
                 can.statusDetails = CANStatusDetails.EMPTY
-                canEntity.status = can.status.value
-                canEntity.statusDetails = can.statusDetails.value
+                canEntity.status = can.status
+                canEntity.statusDetails = can.statusDetails
                 canEntity.jsonData = toJson(can)
                 updatedCanEntities.add(canEntity)
                 cans.add(can)
@@ -84,16 +84,19 @@ class ActivationAcService(private val acDao: AcDao,
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
         val cansRs = cans.asSequence().map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
-        return ResponseDto(data = ActivationAcRs(
+        return ResponseDto(
+            data = ActivationAcRs(
                 relatedLots = relatedLots,
                 contract = ActivationContract(
-                        status = contractProcess.contract.status,
-                        statusDetails = contractProcess.contract.statusDetails,
-                        milestones = contractProcess.contract.milestones
+                    id = contractProcess.contract.id,
+                    status = contractProcess.contract.status,
+                    statusDetails = contractProcess.contract.statusDetails,
+                    milestones = contractProcess.contract.milestones
                 ),
                 cans = cansRs
 
-        ))
+            )
+        )
     }
 
 }

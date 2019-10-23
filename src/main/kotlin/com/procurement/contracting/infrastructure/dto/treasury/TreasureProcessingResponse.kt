@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestReleaseTo
@@ -13,15 +15,17 @@ import com.procurement.contracting.domain.model.confirmation.response.Confirmati
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
+import com.procurement.contracting.domain.model.item.ItemId
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
+import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.amount.AmountSerializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class TreasureProcessingResponse(
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
@@ -37,7 +41,7 @@ data class TreasureProcessingResponse(
         @JsonSerialize(using = JsonDateTimeSerializer::class)
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
-        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: String,
+        @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails,
         @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
@@ -70,7 +74,7 @@ data class TreasureProcessingResponse(
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String?,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<String>?,
+            @field:JsonProperty("relatedLots") @param:JsonProperty("relatedLots") val relatedLots: List<LotId>?,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @field:JsonProperty("relatedConfirmations") @param:JsonProperty("relatedConfirmations") val relatedConfirmations: List<String>?
@@ -80,7 +84,7 @@ data class TreasureProcessingResponse(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
-            @field:JsonProperty("relatedItems") @param:JsonProperty("relatedItems") val relatedItems: List<String>?,
+            @field:JsonProperty("relatedItems") @param:JsonProperty("relatedItems") val relatedItems: List<ItemId>?,
 
             @field:JsonProperty("status") @param:JsonProperty("status") val status: MilestoneStatus,
 
@@ -109,7 +113,7 @@ data class TreasureProcessingResponse(
             @field:JsonProperty("relatedParties") @param:JsonProperty("relatedParties") val relatedParties: List<RelatedParty>
         ) {
             data class RelatedParty(
-                @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+                @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
                 @field:JsonProperty("name") @param:JsonProperty("name") val name: String
             )
         }
@@ -154,7 +158,7 @@ data class TreasureProcessingResponse(
         ) {
 
             data class Value(
-                @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+                @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
                 @field:JsonProperty("name") @param:JsonProperty("name") val name: String,
 
                 @JsonDeserialize(using = JsonDateTimeDeserializer::class)
@@ -198,7 +202,7 @@ data class TreasureProcessingResponse(
     }
 
     data class Can(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: CANId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: CANStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: CANStatusDetails
     )

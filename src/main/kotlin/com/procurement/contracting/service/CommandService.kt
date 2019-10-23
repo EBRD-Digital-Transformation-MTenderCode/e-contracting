@@ -3,6 +3,9 @@ package com.procurement.contracting.service
 import com.procurement.contracting.application.service.CancelCANContext
 import com.procurement.contracting.application.service.CancelCANData
 import com.procurement.contracting.application.service.CancelCANService
+import com.procurement.contracting.application.service.ac.ACService
+import com.procurement.contracting.application.service.ac.CreateACContext
+import com.procurement.contracting.application.service.ac.CreateACData
 import com.procurement.contracting.application.service.can.CANService
 import com.procurement.contracting.application.service.can.CreateCANContext
 import com.procurement.contracting.application.service.can.CreateCANData
@@ -10,8 +13,11 @@ import com.procurement.contracting.application.service.treasury.TreasureProcessi
 import com.procurement.contracting.application.service.treasury.TreasureProcessingData
 import com.procurement.contracting.application.service.treasury.TreasuryProcessing
 import com.procurement.contracting.dao.HistoryDao
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.infrastructure.dto.ac.create.CreateACRequest
+import com.procurement.contracting.infrastructure.dto.ac.create.CreateACResponse
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANRequest
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANResponse
 import com.procurement.contracting.infrastructure.dto.can.create.CreateCANRequest
@@ -22,9 +28,11 @@ import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.bpe.cpid
+import com.procurement.contracting.model.dto.bpe.language
 import com.procurement.contracting.model.dto.bpe.lotId
 import com.procurement.contracting.model.dto.bpe.ocid
 import com.procurement.contracting.model.dto.bpe.owner
+import com.procurement.contracting.model.dto.bpe.pmd
 import com.procurement.contracting.model.dto.bpe.startDate
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
@@ -38,18 +46,18 @@ import java.util.*
 class CommandService(
     private val historyDao: HistoryDao,
     private val createCanService: CreateCanService,
-    private val createAcService: CreateAcService,
     private val updateAcService: UpdateAcService,
     private val issuingAcService: IssuingAcService,
     private val statusService: StatusService,
     private val finalUpdateService: FinalUpdateService,
     private val verificationAcService: VerificationAcService,
     private val signingAcService: SigningAcService,
-    private val acService: ActivationAcService,
+    private val activationAcService: ActivationAcService,
     private val updateDocumentsService: UpdateDocumentsService,
     private val cancelService: CancelCANService,
     private val treasuryProcessing: TreasuryProcessing,
-    private val canService: CANService
+    private val canService: CANService,
+    private val acService: ACService
 ) {
 
     companion object {
@@ -133,7 +141,7 @@ class CommandService(
                 val dataResponse = CancelCANResponse(
                     cancelledCAN = result.cancelledCAN.let { can ->
                         CancelCANResponse.CancelledCAN(
-                            id = can.id.toString(),
+                            id = can.id,
                             status = can.status,
                             statusDetails = can.statusDetails,
                             amendment = can.amendment.let { amendment ->
@@ -154,7 +162,7 @@ class CommandService(
                     },
                     relatedCANs = result.relatedCANs.map { relatedCAN ->
                         CancelCANResponse.RelatedCAN(
-                            id = relatedCAN.id.toString(),
+                            id = relatedCAN.id,
                             status = relatedCAN.status,
                             statusDetails = relatedCAN.statusDetails
                         )
@@ -174,7 +182,283 @@ class CommandService(
                 ResponseDto(data = dataResponse)
             }
             CommandType.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
-            CommandType.CREATE_AC -> createAcService.createAC(cm)
+            CommandType.CREATE_AC -> {
+                val context = CreateACContext(
+                    cpid = cm.cpid,
+                    owner = cm.owner,
+                    pmd = cm.pmd,
+                    startDate = cm.startDate,
+                    language = cm.language
+                )
+                val request = toObject(CreateACRequest::class.java, cm.data)
+                val data = CreateACData(
+                    cans = request.cans.map { can ->
+                        CreateACData.CAN(
+                            id = can.id
+                        )
+                    },
+                    awards = request.awards.map { award ->
+                        CreateACData.Award(
+                            id = award.id,
+                            value = award.value.let { value ->
+                                CreateACData.Award.Value(
+                                    amount = value.amount,
+                                    currency = value.currency
+                                )
+                            },
+                            relatedLots = award.relatedLots.toList(),
+                            relatedBid = award.relatedBid,
+                            suppliers = award.suppliers.map { supplier ->
+                                CreateACData.Award.Supplier(
+                                    id = supplier.id,
+                                    name = supplier.name,
+                                    identifier = supplier.identifier.let { identifier ->
+                                        CreateACData.Award.Supplier.Identifier(
+                                            scheme = identifier.scheme,
+                                            id = identifier.id,
+                                            legalName = identifier.legalName,
+                                            uri = identifier.uri
+                                        )
+                                    },
+                                    additionalIdentifiers = supplier.additionalIdentifiers?.map { additionalIdentifier ->
+                                        CreateACData.Award.Supplier.AdditionalIdentifier(
+                                            scheme = additionalIdentifier.scheme,
+                                            id = additionalIdentifier.id,
+                                            legalName = additionalIdentifier.legalName,
+                                            uri = additionalIdentifier.uri
+                                        )
+                                    },
+                                    address = supplier.address.let { address ->
+                                        CreateACData.Award.Supplier.Address(
+                                            streetAddress = address.streetAddress,
+                                            postalCode = address.postalCode,
+                                            addressDetails = address.addressDetails.let { addressDetails ->
+                                                CreateACData.Award.Supplier.Address.AddressDetails(
+                                                    country = addressDetails.country.let { country ->
+                                                        CreateACData.Award.Supplier.Address.AddressDetails.Country(
+                                                            scheme = country.scheme,
+                                                            id = country.id,
+                                                            description = country.description,
+                                                            uri = country.uri
+                                                        )
+                                                    },
+                                                    region = addressDetails.region.let { region ->
+                                                        CreateACData.Award.Supplier.Address.AddressDetails.Region(
+                                                            scheme = region.scheme,
+                                                            id = region.id,
+                                                            description = region.description,
+                                                            uri = region.uri
+                                                        )
+                                                    },
+                                                    locality = addressDetails.locality.let { locality ->
+                                                        CreateACData.Award.Supplier.Address.AddressDetails.Locality(
+                                                            scheme = locality.scheme,
+                                                            id = locality.id,
+                                                            description = locality.description,
+                                                            uri = locality.uri
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        )
+                                    },
+                                    contactPoint = supplier.contactPoint.let { contactPoint ->
+                                        CreateACData.Award.Supplier.ContactPoint(
+                                            name = contactPoint.name,
+                                            email = contactPoint.email,
+                                            telephone = contactPoint.telephone,
+                                            faxNumber = contactPoint.faxNumber,
+                                            url = contactPoint.url
+                                        )
+                                    }
+                                )
+                            },
+                            documents = award.documents?.map { document ->
+                                CreateACData.Award.Document(
+                                    documentType = document.documentType,
+                                    id = document.id,
+                                    title = document.title,
+                                    description = document.description,
+                                    relatedLots = document.relatedLots?.toList()
+                                )
+                            }
+                        )
+                    },
+                    contractedTender = request.contractedTender.let { contractedTender ->
+                        CreateACData.ContractedTender(
+                            mainProcurementCategory = contractedTender.mainProcurementCategory,
+                            items = contractedTender.items.map { item ->
+                                CreateACData.ContractedTender.Item(
+                                    id = item.id,
+                                    classification = item.classification.let { classification ->
+                                        CreateACData.ContractedTender.Item.Classification(
+                                            scheme = classification.scheme,
+                                            id = classification.id,
+                                            description = classification.description
+                                        )
+                                    },
+                                    additionalClassifications = item.additionalClassifications?.map { additionalClassification ->
+                                        CreateACData.ContractedTender.Item.AdditionalClassification(
+                                            scheme = additionalClassification.scheme,
+                                            id = additionalClassification.id,
+                                            description = additionalClassification.description
+                                        )
+                                    },
+                                    quantity = item.quantity,
+                                    unit = item.unit.let { unit ->
+                                        CreateACData.ContractedTender.Item.Unit(
+                                            id = unit.id,
+                                            name = unit.name
+                                        )
+                                    },
+                                    description = item.description,
+                                    relatedLot = item.relatedLot
+                                )
+                            }
+                        )
+                    }
+                )
+                val result = acService.create(context = context, data = data)
+                if (log.isDebugEnabled)
+                    log.debug("AC was created. Result: ${toJson(result)}")
+
+                val dataResponse = CreateACResponse(
+                    token = result.token,
+                    cans = result.cans.map { can ->
+                        CreateACResponse.CAN(
+                            id = can.id,
+                            status = can.status,
+                            statusDetails = can.statusDetails
+                        )
+                    },
+                    contract = result.contract.let { contract ->
+                        CreateACResponse.Contract(
+                            id = contract.id,
+                            awardId = contract.awardId,
+                            status = contract.status,
+                            statusDetails = contract.statusDetails
+                        )
+                    },
+                    contractedAward = result.contractedAward.let { contractedAward ->
+                        CreateACResponse.ContractedAward(
+                            id = contractedAward.id,
+                            date = contractedAward.date,
+                            value = contractedAward.value.let { value ->
+                                CreateACResponse.ContractedAward.Value(
+                                    amount = value.amount,
+                                    currency = value.currency
+                                )
+                            },
+                            relatedLots = contractedAward.relatedLots.toList(),
+                            suppliers = contractedAward.suppliers.map { supplier ->
+                                CreateACResponse.ContractedAward.Supplier(
+                                    id = supplier.id,
+                                    name = supplier.name,
+                                    identifier = supplier.identifier.let { identifier ->
+                                        CreateACResponse.ContractedAward.Supplier.Identifier(
+                                            scheme = identifier.scheme,
+                                            id = identifier.id,
+                                            legalName = identifier.legalName,
+                                            uri = identifier.uri
+                                        )
+                                    },
+                                    additionalIdentifiers = supplier.additionalIdentifiers?.map { additionalIdentifier ->
+                                        CreateACResponse.ContractedAward.Supplier.AdditionalIdentifier(
+                                            scheme = additionalIdentifier.scheme,
+                                            id = additionalIdentifier.id,
+                                            legalName = additionalIdentifier.legalName,
+                                            uri = additionalIdentifier.uri
+                                        )
+                                    },
+                                    address = supplier.address.let { address ->
+                                        CreateACResponse.ContractedAward.Supplier.Address(
+                                            streetAddress = address.streetAddress,
+                                            postalCode = address.postalCode,
+                                            addressDetails = address.addressDetails.let { addressDetails ->
+                                                CreateACResponse.ContractedAward.Supplier.Address.AddressDetails(
+                                                    country = addressDetails.country.let { country ->
+                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Country(
+                                                            scheme = country.scheme,
+                                                            id = country.id,
+                                                            description = country.description,
+                                                            uri = country.uri
+                                                        )
+                                                    },
+                                                    region = addressDetails.region.let { region ->
+                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Region(
+                                                            scheme = region.scheme,
+                                                            id = region.id,
+                                                            description = region.description,
+                                                            uri = region.uri
+                                                        )
+                                                    },
+                                                    locality = addressDetails.locality.let { locality ->
+                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Locality(
+                                                            scheme = locality.scheme,
+                                                            id = locality.id,
+                                                            description = locality.description,
+                                                            uri = locality.uri
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        )
+                                    },
+                                    contactPoint = supplier.contactPoint.let { contactPoint ->
+                                        CreateACResponse.ContractedAward.Supplier.ContactPoint(
+                                            name = contactPoint.name,
+                                            email = contactPoint.email,
+                                            telephone = contactPoint.telephone,
+                                            faxNumber = contactPoint.faxNumber,
+                                            url = contactPoint.url
+                                        )
+                                    }
+                                )
+                            },
+                            documents = contractedAward.documents.map { document ->
+                                CreateACResponse.ContractedAward.Document(
+                                    documentType = document.documentType,
+                                    id = document.id,
+                                    title = document.title,
+                                    description = document.description,
+                                    relatedLots = document.relatedLots?.toList()
+                                )
+                            },
+                            items = contractedAward.items.map { item ->
+                                CreateACResponse.ContractedAward.Item(
+                                    id = item.id,
+                                    classification = item.classification.let { classification ->
+                                        CreateACResponse.ContractedAward.Item.Classification(
+                                            scheme = classification.scheme,
+                                            id = classification.id,
+                                            description = classification.description
+                                        )
+                                    },
+                                    additionalClassifications = item.additionalClassifications?.map { additionalClassification ->
+                                        CreateACResponse.ContractedAward.Item.AdditionalClassification(
+                                            scheme = additionalClassification.scheme,
+                                            id = additionalClassification.id,
+                                            description = additionalClassification.description
+                                        )
+                                    },
+                                    quantity = item.quantity,
+                                    unit = item.unit.let { unit ->
+                                        CreateACResponse.ContractedAward.Item.Unit(
+                                            id = unit.id,
+                                            name = unit.name
+                                        )
+                                    },
+                                    description = item.description,
+                                    relatedLot = item.relatedLot
+                                )
+                            }
+                        )
+                    }
+                )
+                if (log.isDebugEnabled)
+                    log.debug("AC was created. Response: ${toJson(dataResponse)}")
+                ResponseDto(data = dataResponse)
+            }
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
             CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
@@ -334,7 +618,7 @@ class CommandService(
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
                 ResponseDto(data = dataResponse)
             }
-            CommandType.ACTIVATION_AC -> acService.activateAc(cm)
+            CommandType.ACTIVATION_AC -> activationAcService.activateAc(cm)
         }
         historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
         return toObject(ResponseDto::class.java, historyEntity.jsonData)
@@ -362,7 +646,7 @@ class CommandService(
     private fun getOwner(cm: CommandMessage): String = cm.context.owner
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
 
-    private fun getCANId(cm: CommandMessage): UUID = cm.context.id
+    private fun getCANId(cm: CommandMessage): CANId = cm.context.id
         ?.let { id ->
             try {
                 UUID.fromString(id)

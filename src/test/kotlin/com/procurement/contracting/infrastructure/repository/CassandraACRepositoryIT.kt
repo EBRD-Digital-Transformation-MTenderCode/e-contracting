@@ -195,6 +195,60 @@ class CassandraACRepositoryIT {
         assertEquals("Error writing updated contract.", exception.message)
     }
 
+    @Test
+    fun saveNew() {
+        val entity = expectedAC(
+            status = AC_STATUS,
+            statusDetails = AC_STATUS_DETAILS,
+            jsonData = JSON_DATA
+        )
+
+        acRepository.saveNew(entity)
+
+        val actualACEntity: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
+
+        assertNotNull(actualACEntity)
+        assertEquals(entity, actualACEntity)
+    }
+
+    @Test
+    fun errorAlreadyAC() {
+        val entity = expectedAC(
+            status = AC_STATUS,
+            statusDetails = AC_STATUS_DETAILS,
+            jsonData = JSON_DATA
+        )
+
+        acRepository.saveNew(entity)
+
+        val exception = assertThrows<SaveEntityException> {
+            acRepository.saveNew(entity)
+        }
+
+        assertEquals(
+            "An error occurred when writing a record(s) of the new contract by cpid '${entity.cpid}' and id '${entity.id}' to the database. Record is already.",
+            exception.message
+        )
+    }
+
+    @Test
+    fun errorSaveNew() {
+        doThrow(RuntimeException())
+            .whenever(session)
+            .execute(any<BoundStatement>())
+
+        val entity = expectedAC(
+            status = AC_STATUS,
+            statusDetails = AC_STATUS_DETAILS,
+            jsonData = JSON_DATA
+        )
+
+        val exception = assertThrows<SaveEntityException> {
+            acRepository.saveNew(entity)
+        }
+        assertEquals("Error writing new contract to database.", exception.message)
+    }
+
     private fun createKeyspace() {
         session.execute("CREATE KEYSPACE ocds WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};")
     }
@@ -248,9 +302,9 @@ class CassandraACRepositoryIT {
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
-        status = AC_STATUS.toString(),
-        statusDetails = AC_STATUS_DETAILS.toString(),
-        mainProcurementCategory = MPC.toString(),
+        status = AC_STATUS,
+        statusDetails = AC_STATUS_DETAILS,
+        mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = JSON_DATA
     )
@@ -277,9 +331,9 @@ class CassandraACRepositoryIT {
         token = TOKEN,
         owner = OWNER,
         createdDate = CREATE_DATE,
-        status = status.toString(),
-        statusDetails = statusDetails.toString(),
-        mainProcurementCategory = MPC.toString(),
+        status = status,
+        statusDetails = statusDetails,
+        mainProcurementCategory = MPC,
         language = LANGUAGE,
         jsonData = jsonData
     )

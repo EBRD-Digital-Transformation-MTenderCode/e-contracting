@@ -2,15 +2,17 @@ package com.procurement.contracting.model.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.model.dto.ocds.Milestone
 
 data class ActivationAcRs @JsonCreator constructor(
 
-        val relatedLots: List<String>,
+        val relatedLots: List<LotId>,
 
         val contract: ActivationContract,
 
@@ -21,6 +23,8 @@ data class ActivationAcRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ActivationContract @JsonCreator constructor(
 
+    val id: String,
+
     var status: ContractStatus,
 
     var statusDetails: ContractStatusDetails,
@@ -30,7 +34,7 @@ data class ActivationContract @JsonCreator constructor(
 
 data class ActivationCan @JsonCreator constructor(
 
-    val id: String,
+    val id: CANId,
 
     var status: CANStatus,
 

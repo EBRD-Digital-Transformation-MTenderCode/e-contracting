@@ -11,12 +11,15 @@ import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.json.loadJson
@@ -39,9 +42,10 @@ class CancelCANServiceTest {
         private const val CPID = "cpid-1"
         private val CAN_TOKEN: UUID = UUID.fromString("2909bc16-82c7-4281-8f35-3f0bb13476b8")
         private const val OWNER = "owner-1"
-        private val CAN_ID: UUID = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
-        private const val LOT_ID: String = "lot-id-0"
+        private val CAN_ID: CANId = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
+        private val LOT_ID: LotId = UUID.fromString("f02720a6-de85-4a50-aa3d-e9348f1669dc")
         private const val CONTRACT_ID: String = "contract-id-1"
+        private val MPC = MainProcurementCategory.SERVICES
 
         private val cancellationCAN =
             toObject(CAN::class.java, loadJson("json/application/service/cancel/cancellation-can.json"))
@@ -432,7 +436,7 @@ class CancelCANServiceTest {
         cpid: String = CPID,
         token: UUID = CAN_TOKEN,
         owner: String = OWNER,
-        canId: UUID = CAN_ID
+        canId: CANId = CAN_ID
     ): CancelCANContext {
         return CancelCANContext(
             cpid = cpid,
@@ -469,8 +473,8 @@ class CancelCANServiceTest {
             awardId = can.awardId,
             lotId = can.lotId,
             contractId = contractID,
-            status = can.status.toString(),
-            statusDetails = can.statusDetails.toString(),
+            status = can.status,
+            statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
 
@@ -480,9 +484,9 @@ class CancelCANServiceTest {
         token = UUID.fromString(contractProcess.contract.token),
         owner = OWNER,
         createdDate = contractProcess.contract.date!!,
-        status = contractProcess.contract.status.toString(),
-        statusDetails = contractProcess.contract.statusDetails.toString(),
-        mainProcurementCategory = "",
+        status = contractProcess.contract.status,
+        statusDetails = contractProcess.contract.statusDetails,
+        mainProcurementCategory = MPC,
         language = "RO",
         jsonData = toJson(contractProcess)
     )

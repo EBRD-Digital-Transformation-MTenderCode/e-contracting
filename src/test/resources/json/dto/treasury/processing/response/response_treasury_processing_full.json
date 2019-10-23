@@ -2,7 +2,7 @@
   "contract": {
     "id": "",
     "date": "2019-12-31T10:45:00Z",
-    "awardId": "",
+    "awardId": "67f6a3aa-2172-4d3d-997d-23b6b6da00f9",
     "status": "pending",
     "statusDetails": "verified",
     "title": "",
@@ -18,7 +18,7 @@
         "title": "document[0].title",
         "description": "document[0].description",
         "relatedLots": [
-          "lot-1"
+          "8bb59dc5-9816-475b-a18e-71c570875edd"
         ],
         "relatedConfirmations": [
           "cs-buyer-confirmation-on-document.id-relatedPerson.id"
@@ -29,7 +29,7 @@
       {
         "id": "milestones[0].id",
         "relatedItems": [
-          "milestones[0].relatedItems[0]"
+          "69d43aff-e2da-437b-a5e1-cfcdc13114a8"
         ],
         "status": "notMet",
         "additionalInformation": "milestones[0].additionalInformation",

@@ -15,7 +15,7 @@ class QuantityDeserializer : JsonDeserializer<BigDecimal>() {
         fun deserialize(text: String): BigDecimal = try {
             BigDecimal(text)
         } catch (exception: Exception) {
-            throw AmountValueException(text, exception.message ?: "")
+            throw QuantityValueException(text, exception.message ?: "")
         }
     }
 

@@ -1,0 +1,77 @@
+{
+  "contracts": [
+    {
+      "id": "dc5401a8-be50-4f29-9ed4-59aab3baa273"
+    }
+  ],
+  "awards": [
+    {
+      "id": "60fd9413-b1d2-4488-a5d7-2da710ed9244",
+      "value": {
+        "amount": 100.01,
+        "currency": "MDL"
+      },
+      "relatedLots": [
+        "43a00c2a-d34c-4c7b-ac7c-62164ea64d43"
+      ],
+      "suppliers": [
+        {
+          "id": "bdec3dd7-e726-4238-b2e1-60397d004778",
+          "name": "awards[0].suppliers[0].name",
+          "identifier": {
+            "scheme": "awards[0].suppliers[0].identifier.scheme",
+            "id": "awards[0].suppliers[0].identifier.id",
+            "legalName": "awards[0].suppliers[0].identifier.legalName"
+          },
+          "address": {
+            "streetAddress": "awards[0].suppliers[0].address.streetAddress",
+            "addressDetails": {
+              "country": {
+                "scheme": "awards[0].suppliers[0].address.streetAddress.addressDetails.country.scheme",
+                "id": "awards[0].suppliers[0].address.streetAddress.addressDetails.country.id",
+                "description": "awards[0].suppliers[0].address.streetAddress.addressDetails.country.description",
+                "uri": "awards[0].suppliers[0].address.streetAddress.addressDetails.country.uri"
+              },
+              "region": {
+                "scheme": "awards[0].suppliers[0].address.streetAddress.addressDetails.region.scheme",
+                "id": "awards[0].suppliers[0].address.streetAddress.addressDetails.region.id",
+                "description": "awards[0].suppliers[0].address.streetAddress.addressDetails.region.description",
+                "uri": "awards[0].suppliers[0].address.streetAddress.addressDetails.region.uri"
+              },
+              "locality": {
+                "scheme": "awards[0].suppliers[0].address.streetAddress.addressDetails.locality.scheme",
+                "id": "awards[0].suppliers[0].address.streetAddress.addressDetails.locality.id",
+                "description": "awards[0].suppliers[0].address.streetAddress.addressDetails.locality.description"
+              }
+            }
+          },
+          "contactPoint": {
+            "name": "awards[0].suppliers[0].contactPoint.name",
+            "email": "awards[0].suppliers[0].contactPoint.email",
+            "telephone": "awards[0].suppliers[0].contactPoint.telephone"
+          }
+        }
+      ]
+    }
+  ],
+  "contractedTender": {
+    "mainProcurementCategory": "goods",
+    "items": [
+      {
+        "id": "5aba4c01-181c-432c-baec-b1628b2b87e9",
+        "classification": {
+          "scheme": "CPV",
+          "description": "contractedTender.items[0].description",
+          "id": "contractedTender.items[0].id"
+        },
+        "quantity": 99.002,
+        "unit": {
+          "id": "contractedTender.items[0].unit.id",
+          "name": "contractedTender.items[0].unit.name"
+        },
+        "description": "contractedTender.items[0].description",
+        "relatedLot": "43a00c2a-d34c-4c7b-ac7c-62164ea64d43"
+      }
+    ]
+  }
+}

@@ -7,17 +7,20 @@ import com.procurement.contracting.application.repository.DataRelatedCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -25,7 +28,7 @@ data class CancelCANContext(
     val cpid: String,
     val token: UUID,
     val owner: String,
-    val canId: UUID
+    val canId: CANId
 )
 
 data class CancelCANData(
@@ -51,12 +54,12 @@ data class CancelledCANData(
     val cancelledCAN: CancelledCAN,
     val relatedCANs: List<RelatedCAN>,
     val isCancelledAC: Boolean,
-    val lotId: String,
+    val lotId: LotId,
     val contract: Contract?
 ) {
 
     data class CancelledCAN(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails,
         val amendment: Amendment
@@ -78,7 +81,7 @@ data class CancelledCANData(
     }
 
     data class RelatedCAN(
-        val id: UUID,
+        val id: CANId,
         val status: CANStatus,
         val statusDetails: CANStatusDetails
     )
@@ -99,7 +102,9 @@ class CancelCANServiceImpl(
     private val canRepository: CANRepository,
     private val acRepository: ACRepository
 ) : CancelCANService {
-
+    companion object {
+        private val log = LoggerFactory.getLogger(CancelCANService::class.java)
+    }
     /**
      * 1. Validates value of token parameter from context of Request by rule VR-9.13.1;
      *
@@ -160,9 +165,10 @@ class CancelCANServiceImpl(
 
         if (canEntity.contractId != null) {
             val contractId: String = canEntity.contractId
+            log.debug("CAN with id '${context.canId}' has related AC with id '$contractId'.")
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
-
+            log.debug("Founded AC with id '$contractId' for cancelling.")
             val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
             //VR-9.13.4
@@ -180,12 +186,14 @@ class CancelCANServiceImpl(
                 }
                 .toList()
         } else {
+            log.debug("CAN with id '${context.canId}' without AC.")
             cancelledContract = null
             updatedContractProcess = null
             relatedCANs = emptyList()
         }
 
         val isCancelledAC = if (cancelledContract != null) {
+            log.debug("Saving cancelled AC by cpid '${context.cpid}' with id '${cancelledContract.id}' (status '${cancelledContract.status}', status details '${cancelledContract.statusDetails}')")
             acRepository.saveCancelledAC(
                 cpid = context.cpid,
                 id = cancelledContract.id,
@@ -227,7 +235,7 @@ class CancelCANServiceImpl(
 
     private fun getRelatedCans(
         cpid: String,
-        canId: UUID,
+        canId: CANId,
         contractId: String
     ): Sequence<CANEntity> = canRepository.findBy(cpid = cpid)
         .asSequence()
