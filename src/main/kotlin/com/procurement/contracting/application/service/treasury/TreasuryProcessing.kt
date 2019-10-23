@@ -100,17 +100,17 @@ class TreasuryProcessingImpl(
      *   2. Sets Contract.statusDetails by rule BR-9.9.7;
      */
     private fun processingStatus3004(
-            context: TreasuryProcessingContext,
-            data: TreasuryProcessingData,
-            acEntity: ACEntity
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
+        acEntity: ACEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.6
         val milestones = milestonesForApprovedContract(context, data, contractProcess.contract).toMutableList()
@@ -122,11 +122,14 @@ class TreasuryProcessingImpl(
          */
         val statusDetails = ContractStatusDetails.VERIFIED
 
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
+
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             )
         )
@@ -157,20 +160,20 @@ class TreasuryProcessingImpl(
      *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3005(
-            context: TreasuryProcessingContext,
-            data: TreasuryProcessingData,
-            acEntity: ACEntity
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
+        acEntity: ACEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.9
-        val milestones = milestonesForApprovedContract(context, data, contractProcess.contract).toMutableList()
+        val milestones = milestonesForRejectedContract(context, data, contractProcess.contract).toMutableList()
 
         /*
          * BR-9.9.10 Contract.status Contract.statusDetails (contract)
@@ -181,13 +184,15 @@ class TreasuryProcessingImpl(
          */
         val status = ContractStatus.UNSUCCESSFUL
         val statusDetails = ContractStatusDetails.EMPTY
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
 
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 status = status,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             ),
             treasuryData = TreasuryData(
@@ -249,17 +254,17 @@ class TreasuryProcessingImpl(
      *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3006(
-            context: TreasuryProcessingContext,
-            data: TreasuryProcessingData,
-            acEntity: ACEntity
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
+        acEntity: ACEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.9
         val milestones = milestonesForRejectedContract(context, data, contractProcess.contract).toMutableList()
@@ -273,13 +278,15 @@ class TreasuryProcessingImpl(
          */
         val status = ContractStatus.UNSUCCESSFUL
         val statusDetails = ContractStatusDetails.EMPTY
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
 
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 status = status,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             )
         )
@@ -342,21 +349,14 @@ class TreasuryProcessingImpl(
      *   e. Sets confirmationResponses.value.verification.type == "code";
      *   f. Determines confirmationResponses.request value by rule BR-9.9.5;
      */
-    private fun addedNewConfirmationResponse(
-            data: TreasuryProcessingData,
-            contract: Contract
-    ): MutableList<ConfirmationResponse> =
-        contract.confirmationResponses!!
-            .toMutableList()
-            .apply {
-                add(
-                    ConfirmationResponse(
-                        id = generateConfirmationResponseId(contract),
-                        value = generateConfirmationResponseValue(data, contract),
-                        request = confirmationResponseRequest(contract)
-                    )
-                )
-            }
+    private fun createConfirmationResponse(
+        data: TreasuryProcessingData,
+        contract: Contract
+    ): ConfirmationResponse = ConfirmationResponse(
+        id = generateConfirmationResponseId(contract),
+        value = generateConfirmationResponseValue(data, contract),
+        request = confirmationResponseRequest(contract)
+    )
 
     /**
      * BR-9.9.3 ID (confirmationResponses)
@@ -406,8 +406,8 @@ class TreasuryProcessingImpl(
      *   e. Sets confirmationResponses.value.verification.type == "code";
      */
     private fun generateConfirmationResponseValue(
-            data: TreasuryProcessingData,
-            contract: Contract
+        data: TreasuryProcessingData,
+        contract: Contract
     ): ConfirmationResponseValue {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -464,9 +464,9 @@ class TreasuryProcessingImpl(
      *   c. Sets milestones.status == "met";
      */
     private fun milestonesForApprovedContract(
-            context: TreasuryProcessingContext,
-            data: TreasuryProcessingData,
-            contract: Contract
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
+        contract: Contract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -496,7 +496,10 @@ class TreasuryProcessingImpl(
      * 3. Adds to list of values in Document.relatedConfirmations of Document object (found on step 2) value of
      *    confirmationResponses.ID from object generated by rule BR-9.9.3;
      */
-    private fun documentRelatedConfirmations(contract: Contract): List<DocumentContract> {
+    private fun documentRelatedConfirmations(
+        contract: Contract,
+        confirmationResponse: ConfirmationResponse
+    ): List<DocumentContract> {
         val confirmationRequest = contract.confirmationRequests!!.firstOrNull {
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
@@ -504,9 +507,13 @@ class TreasuryProcessingImpl(
             message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
         )
 
+        val confirmationResponseId = confirmationResponse.id
         return contract.documents!!.map {
             if (it.id == confirmationRequest.relatedItem) {
-                it
+                it.copy(
+                    relatedConfirmations = it.relatedConfirmations?.plus(confirmationResponseId)
+                        ?: listOf(confirmationResponseId)
+                )
             } else
                 it
         }
@@ -523,9 +530,9 @@ class TreasuryProcessingImpl(
      *   c. Sets milestones.status == "notMet";
      */
     private fun milestonesForRejectedContract(
-            context: TreasuryProcessingContext,
-            data: TreasuryProcessingData,
-            contract: Contract
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
+        contract: Contract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -537,7 +544,7 @@ class TreasuryProcessingImpl(
         val updatedMilestone = milestone.copy(
             dateModified = context.startDate,
             dateMet = data.dateMet,
-            status = MilestoneStatus.MET
+            status = MilestoneStatus.NOT_MET
         )
 
         return contract.milestones!!.map {
@@ -681,5 +688,4 @@ class TreasuryProcessingImpl(
         )
     }
 }
-
 
