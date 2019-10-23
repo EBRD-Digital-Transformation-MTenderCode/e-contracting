@@ -290,6 +290,7 @@ class CommandService(
                             items = contractedTender.items.map { item ->
                                 CreateACData.ContractedTender.Item(
                                     id = item.id,
+                                    internalId = item.internalId,
                                     classification = item.classification.let { classification ->
                                         CreateACData.ContractedTender.Item.Classification(
                                             scheme = classification.scheme,
@@ -427,6 +428,7 @@ class CommandService(
                             items = contractedAward.items.map { item ->
                                 CreateACResponse.ContractedAward.Item(
                                     id = item.id,
+                                    internalId = item.internalId,
                                     classification = item.classification.let { classification ->
                                         CreateACResponse.ContractedAward.Item.Classification(
                                             scheme = classification.scheme,

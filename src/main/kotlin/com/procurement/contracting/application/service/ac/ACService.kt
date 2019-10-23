@@ -239,6 +239,7 @@ class ACServiceImpl(
                 items = contractedAward.items.map { item ->
                     CreatedACData.ContractedAward.Item(
                         id = item.id,
+                        internalId = item.internalId,
                         classification = item.classification.let { classification ->
                             CreatedACData.ContractedAward.Item.Classification(
                                 scheme = classification.scheme,
@@ -449,6 +450,7 @@ class ACServiceImpl(
         .map { item ->
             Item(
                 id = item.id,
+                internalId = item.internalId,
                 classification = item.classification.let { classification ->
                     Classification(
                         scheme = classification.scheme,

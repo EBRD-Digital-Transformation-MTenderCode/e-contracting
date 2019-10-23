@@ -118,6 +118,7 @@ data class CreateACData(
 
         data class Item(
             val id: ItemId,
+            val internalId: String?,
             val classification: Classification,
             val additionalClassifications: List<AdditionalClassification>?,
             val quantity: BigDecimal,

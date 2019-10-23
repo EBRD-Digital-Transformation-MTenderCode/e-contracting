@@ -11,6 +11,8 @@ data class Item @JsonCreator constructor(
 
     val id: ItemId,
 
+    val internalId: String?,
+
     val description: String?,
 
     val classification: Classification,

@@ -147,6 +147,10 @@ data class CreateACResponse(
 
         data class Item(
             @field:JsonProperty("id") @param:JsonProperty("id") val id: ItemId,
+
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @field:JsonProperty("internalId") @param:JsonProperty("internalId") val internalId: String?,
+
             @field:JsonProperty("classification") @param:JsonProperty("classification") val classification: Classification,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
