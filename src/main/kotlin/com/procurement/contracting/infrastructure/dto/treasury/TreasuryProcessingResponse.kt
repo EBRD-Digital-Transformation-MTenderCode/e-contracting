@@ -27,7 +27,7 @@ import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class TreasureProcessingResponse(
+data class TreasuryProcessingResponse(
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

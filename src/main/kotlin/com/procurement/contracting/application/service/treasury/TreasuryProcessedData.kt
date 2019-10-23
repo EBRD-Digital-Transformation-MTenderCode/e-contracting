@@ -19,7 +19,7 @@ import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class TreasureProcessedData(
+data class TreasuryProcessedData(
     val contract: Contract,
     val cans: List<Can>?
 ) {
