@@ -2,6 +2,7 @@ package com.procurement.contracting.application.service.treasury
 
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
+import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CAN
@@ -220,7 +221,7 @@ class TreasuryProcessingImpl(
             .toList()
 
         val cansEntities = updatedCANs.map { can ->
-            DataStatusesCAN(
+            DataResetCAN(
                 id = can.id,
                 status = can.status,
                 statusDetails = can.statusDetails,
@@ -236,7 +237,7 @@ class TreasuryProcessingImpl(
             statusDetails = updatedContractProcess.contract.statusDetails,
             jsonData = toJson(updatedContractProcess)
         )
-        canRepository.updateStatusesCANs(cpid = context.cpid, cans = cansEntities)
+        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
 
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }

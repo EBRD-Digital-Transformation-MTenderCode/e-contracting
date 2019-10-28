@@ -15,10 +15,19 @@ interface CANRepository {
 
     fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>)
 
+    fun resetCANs(cpid: String, cans: List<DataResetCAN>)
+
     fun relateContract(cpid: String, cans: List<RelatedContract>)
 }
 
 data class DataCancelCAN(
+    val id: CANId,
+    val status: CANStatus,
+    val statusDetails: CANStatusDetails,
+    val jsonData: String
+)
+
+data class DataResetCAN(
     val id: CANId,
     val status: CANStatus,
     val statusDetails: CANStatusDetails,
