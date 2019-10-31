@@ -3,8 +3,8 @@ package com.procurement.contracting.infrastructure.dto.treasury
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
 import org.junit.jupiter.api.Test
 
-class TreasureProcessingResponseTest :
-    AbstractDTOTestBase<TreasureProcessingResponse>(TreasureProcessingResponse::class.java) {
+class TreasuryProcessingResponseTest :
+    AbstractDTOTestBase<TreasuryProcessingResponse>(TreasuryProcessingResponse::class.java) {
 
     @Test
     fun fully() {
