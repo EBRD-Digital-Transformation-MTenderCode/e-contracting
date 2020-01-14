@@ -9,8 +9,8 @@ import com.procurement.contracting.application.service.ac.CreateACData
 import com.procurement.contracting.application.service.can.CANService
 import com.procurement.contracting.application.service.can.CreateCANContext
 import com.procurement.contracting.application.service.can.CreateCANData
-import com.procurement.contracting.application.service.treasury.TreasureProcessingContext
-import com.procurement.contracting.application.service.treasury.TreasureProcessingData
+import com.procurement.contracting.application.service.treasury.TreasuryProcessingContext
+import com.procurement.contracting.application.service.treasury.TreasuryProcessingData
 import com.procurement.contracting.application.service.treasury.TreasuryProcessing
 import com.procurement.contracting.dao.HistoryDao
 import com.procurement.contracting.domain.model.can.CANId
@@ -22,8 +22,8 @@ import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANReques
 import com.procurement.contracting.infrastructure.dto.can.cancel.CancelCANResponse
 import com.procurement.contracting.infrastructure.dto.can.create.CreateCANRequest
 import com.procurement.contracting.infrastructure.dto.can.create.CreateCANResponse
-import com.procurement.contracting.infrastructure.dto.treasury.TreasureProcessingRequest
-import com.procurement.contracting.infrastructure.dto.treasury.TreasureProcessingResponse
+import com.procurement.contracting.infrastructure.dto.treasury.TreasuryProcessingRequest
+import com.procurement.contracting.infrastructure.dto.treasury.TreasuryProcessingResponse
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
 import com.procurement.contracting.model.dto.bpe.ResponseDto
@@ -470,23 +470,23 @@ class CommandService(
             CommandType.SUPPLIER_SIGNING_AC -> signingAcService.supplierSigningAC(cm)
             CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandType.TREASURY_RESPONSE_PROCESSING -> {
-                val context = TreasureProcessingContext(
+                val context = TreasuryProcessingContext(
                     cpid = getCPID(cm),
                     ocid = getOCID(cm),
                     startDate = getStartDate(cm)
                 )
-                val request = toObject(TreasureProcessingRequest::class.java, cm.data)
-                val data = TreasureProcessingData(
+                val request = toObject(TreasuryProcessingRequest::class.java, cm.data)
+                val data = TreasuryProcessingData(
                     verification = request.verification.let { verification ->
-                        TreasureProcessingData.Verification(
+                        TreasuryProcessingData.Verification(
                             status = verification.status,
                             rationale = verification.rationale
                         )
                     },
                     dateMet = request.dateMet,
                     regData = request.regData?.let { regData ->
-                        TreasureProcessingData.RegData(
-                            regNom = regData.regNom,
+                        TreasuryProcessingData.RegData(
+                            externalRegId = regData.externalRegId,
                             regDate = regData.regDate
                         )
                     }
@@ -496,9 +496,9 @@ class CommandService(
                 if (log.isDebugEnabled)
                     log.debug("CANs were cancelled. Result: ${toJson(result)}")
 
-                val dataResponse = TreasureProcessingResponse(
+                val dataResponse = TreasuryProcessingResponse(
                     contract = result.contract.let { contract ->
-                        TreasureProcessingResponse.Contract(
+                        TreasuryProcessingResponse.Contract(
                             id = contract.id,
                             date = contract.date,
                             awardId = contract.awardId,
@@ -507,13 +507,13 @@ class CommandService(
                             title = contract.title,
                             description = contract.description,
                             period = contract.period.let { period ->
-                                TreasureProcessingResponse.Contract.Period(
+                                TreasuryProcessingResponse.Contract.Period(
                                     startDate = period.startDate,
                                     endDate = period.endDate
                                 )
                             },
                             documents = contract.documents.map { document ->
-                                TreasureProcessingResponse.Contract.Document(
+                                TreasuryProcessingResponse.Contract.Document(
                                     id = document.id,
                                     documentType = document.documentType,
                                     title = document.title,
@@ -523,7 +523,7 @@ class CommandService(
                                 )
                             },
                             milestones = contract.milestones.map { milestone ->
-                                TreasureProcessingResponse.Contract.Milestone(
+                                TreasuryProcessingResponse.Contract.Milestone(
                                     id = milestone.id,
                                     relatedItems = milestone.relatedItems?.toList(),
                                     status = milestone.status,
@@ -535,7 +535,7 @@ class CommandService(
                                     dateModified = milestone.dateModified,
                                     dateMet = milestone.dateMet,
                                     relatedParties = milestone.relatedParties.map { relatedParty ->
-                                        TreasureProcessingResponse.Contract.Milestone.RelatedParty(
+                                        TreasuryProcessingResponse.Contract.Milestone.RelatedParty(
                                             id = relatedParty.id,
                                             name = relatedParty.name
                                         )
@@ -543,7 +543,7 @@ class CommandService(
                                 )
                             },
                             confirmationRequests = contract.confirmationRequests.map { confirmationRequest ->
-                                TreasureProcessingResponse.Contract.ConfirmationRequest(
+                                TreasuryProcessingResponse.Contract.ConfirmationRequest(
                                     id = confirmationRequest.id,
                                     type = confirmationRequest.type,
                                     title = confirmationRequest.title,
@@ -552,15 +552,15 @@ class CommandService(
                                     relatedItem = confirmationRequest.relatedItem,
                                     source = confirmationRequest.source,
                                     requestGroups = confirmationRequest.requestGroups.map { requestGroup ->
-                                        TreasureProcessingResponse.Contract.ConfirmationRequest.RequestGroup(
+                                        TreasuryProcessingResponse.Contract.ConfirmationRequest.RequestGroup(
                                             id = requestGroup.id,
                                             requests = requestGroup.requests.map { request ->
-                                                TreasureProcessingResponse.Contract.ConfirmationRequest.RequestGroup.Request(
+                                                TreasuryProcessingResponse.Contract.ConfirmationRequest.RequestGroup.Request(
                                                     id = request.id,
                                                     title = request.title,
                                                     description = request.description,
                                                     relatedPerson = request.relatedPerson?.let { relatedPerson ->
-                                                        TreasureProcessingResponse.Contract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
+                                                        TreasuryProcessingResponse.Contract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
                                                             id = relatedPerson.id,
                                                             name = relatedPerson.name
                                                         )
@@ -572,21 +572,21 @@ class CommandService(
                                 )
                             },
                             confirmationResponses = contract.confirmationResponses.map { confirmationResponse ->
-                                TreasureProcessingResponse.Contract.ConfirmationResponse(
+                                TreasuryProcessingResponse.Contract.ConfirmationResponse(
                                     id = confirmationResponse.id,
                                     value = confirmationResponse.value.let { value ->
-                                        TreasureProcessingResponse.Contract.ConfirmationResponse.Value(
+                                        TreasuryProcessingResponse.Contract.ConfirmationResponse.Value(
                                             id = value.id,
                                             name = value.name,
                                             date = value.date,
                                             relatedPerson = value.relatedPerson?.let { relatedPerson ->
-                                                TreasureProcessingResponse.Contract.ConfirmationResponse.Value.RelatedPerson(
+                                                TreasuryProcessingResponse.Contract.ConfirmationResponse.Value.RelatedPerson(
                                                     id = relatedPerson.id,
                                                     name = relatedPerson.name
                                                 )
                                             },
                                             verifications = value.verifications.map { verification ->
-                                                TreasureProcessingResponse.Contract.ConfirmationResponse.Value.Verification(
+                                                TreasuryProcessingResponse.Contract.ConfirmationResponse.Value.Verification(
                                                     type = verification.type,
                                                     value = verification.value,
                                                     rationale = verification.rationale
@@ -598,7 +598,7 @@ class CommandService(
                                 )
                             },
                             value = contract.value.let { value ->
-                                TreasureProcessingResponse.Contract.Value(
+                                TreasuryProcessingResponse.Contract.Value(
                                     amount = value.amount,
                                     currency = value.currency,
                                     amountNet = value.amountNet,
@@ -608,7 +608,7 @@ class CommandService(
                         )
                     },
                     cans = result.cans?.map { can ->
-                        TreasureProcessingResponse.Can(
+                        TreasuryProcessingResponse.Can(
                             id = can.id,
                             status = can.status,
                             statusDetails = can.statusDetails

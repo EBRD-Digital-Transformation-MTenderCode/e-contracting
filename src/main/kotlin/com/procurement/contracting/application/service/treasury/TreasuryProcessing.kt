@@ -2,6 +2,7 @@ package com.procurement.contracting.application.service.treasury
 
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
+import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CAN
@@ -15,9 +16,9 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
-import com.procurement.contracting.domain.model.treasury.TreasureResponseStatus.APPROVED
-import com.procurement.contracting.domain.model.treasury.TreasureResponseStatus.NOT_ACCEPTED
-import com.procurement.contracting.domain.model.treasury.TreasureResponseStatus.REJECTED
+import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.APPROVED
+import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.NOT_ACCEPTED
+import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.REJECTED
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType.CONFIRMATION_REQUEST
 import com.procurement.contracting.exception.ErrorType.CONTRACT_NOT_FOUND
@@ -37,7 +38,7 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 
 interface TreasuryProcessing {
-    fun processing(context: TreasureProcessingContext, data: TreasureProcessingData): TreasureProcessedData
+    fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData
 }
 
 @Service
@@ -80,7 +81,7 @@ class TreasuryProcessingImpl(
      *         b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      *   e. Returns updated Contract object for Response;
      */
-    override fun processing(context: TreasureProcessingContext, data: TreasureProcessingData): TreasureProcessedData {
+    override fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData {
         val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = context.ocid)
             ?: throw ErrorException(error = CONTRACT_NOT_FOUND)
 
@@ -100,17 +101,17 @@ class TreasuryProcessingImpl(
      *   2. Sets Contract.statusDetails by rule BR-9.9.7;
      */
     private fun processingStatus3004(
-        context: TreasureProcessingContext,
-        data: TreasureProcessingData,
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
         acEntity: ACEntity
-    ): TreasureProcessedData {
+    ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.6
         val milestones = milestonesForApprovedContract(context, data, contractProcess.contract).toMutableList()
@@ -122,11 +123,14 @@ class TreasuryProcessingImpl(
          */
         val statusDetails = ContractStatusDetails.VERIFIED
 
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
+
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             )
         )
@@ -157,20 +161,20 @@ class TreasuryProcessingImpl(
      *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3005(
-        context: TreasureProcessingContext,
-        data: TreasureProcessingData,
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
         acEntity: ACEntity
-    ): TreasureProcessedData {
+    ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.9
-        val milestones = milestonesForApprovedContract(context, data, contractProcess.contract).toMutableList()
+        val milestones = milestonesForRejectedContract(context, data, contractProcess.contract).toMutableList()
 
         /*
          * BR-9.9.10 Contract.status Contract.statusDetails (contract)
@@ -181,17 +185,19 @@ class TreasuryProcessingImpl(
          */
         val status = ContractStatus.UNSUCCESSFUL
         val statusDetails = ContractStatusDetails.EMPTY
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
 
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 status = status,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             ),
             treasuryData = TreasuryData(
-                regNom = data.regData!!.regNom,
+                externalRegId = data.regData!!.externalRegId,
                 regDate = data.regData.regDate,
                 dateMet = data.dateMet
             )
@@ -215,7 +221,7 @@ class TreasuryProcessingImpl(
             .toList()
 
         val cansEntities = updatedCANs.map { can ->
-            DataStatusesCAN(
+            DataResetCAN(
                 id = can.id,
                 status = can.status,
                 statusDetails = can.statusDetails,
@@ -231,7 +237,7 @@ class TreasuryProcessingImpl(
             statusDetails = updatedContractProcess.contract.statusDetails,
             jsonData = toJson(updatedContractProcess)
         )
-        canRepository.updateStatusesCANs(cpid = context.cpid, cans = cansEntities)
+        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
 
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }
@@ -249,17 +255,17 @@ class TreasuryProcessingImpl(
      *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3006(
-        context: TreasureProcessingContext,
-        data: TreasureProcessingData,
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
         acEntity: ACEntity
-    ): TreasureProcessedData {
+    ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
         // BR-9.9.2
-        val confirmationResponses = addedNewConfirmationResponse(data, contractProcess.contract)
+        val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
 
         // BR-9.9.8
-        val documents = documentRelatedConfirmations(contractProcess.contract)
+        val documents = documentRelatedConfirmations(contractProcess.contract, newConfirmationResponse)
 
         // BR-9.9.9
         val milestones = milestonesForRejectedContract(context, data, contractProcess.contract).toMutableList()
@@ -273,13 +279,15 @@ class TreasuryProcessingImpl(
          */
         val status = ContractStatus.UNSUCCESSFUL
         val statusDetails = ContractStatusDetails.EMPTY
+        val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
+            newConfirmationResponse
 
         val updatedContractProcess = contractProcess.copy(
             contract = contractProcess.contract.copy(
                 milestones = milestones,
                 status = status,
                 statusDetails = statusDetails,
-                confirmationResponses = confirmationResponses,
+                confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
             )
         )
@@ -342,21 +350,14 @@ class TreasuryProcessingImpl(
      *   e. Sets confirmationResponses.value.verification.type == "code";
      *   f. Determines confirmationResponses.request value by rule BR-9.9.5;
      */
-    private fun addedNewConfirmationResponse(
-        data: TreasureProcessingData,
+    private fun createConfirmationResponse(
+        data: TreasuryProcessingData,
         contract: Contract
-    ): MutableList<ConfirmationResponse> =
-        contract.confirmationResponses!!
-            .toMutableList()
-            .apply {
-                add(
-                    ConfirmationResponse(
-                        id = generateConfirmationResponseId(contract),
-                        value = generateConfirmationResponseValue(data, contract),
-                        request = confirmationResponseRequest(contract)
-                    )
-                )
-            }
+    ): ConfirmationResponse = ConfirmationResponse(
+        id = generateConfirmationResponseId(contract),
+        value = generateConfirmationResponseValue(data, contract),
+        request = confirmationResponseRequest(contract)
+    )
 
     /**
      * BR-9.9.3 ID (confirmationResponses)
@@ -406,7 +407,7 @@ class TreasuryProcessingImpl(
      *   e. Sets confirmationResponses.value.verification.type == "code";
      */
     private fun generateConfirmationResponseValue(
-        data: TreasureProcessingData,
+        data: TreasuryProcessingData,
         contract: Contract
     ): ConfirmationResponseValue {
         val milestone = contract.milestones!!.firstOrNull {
@@ -464,8 +465,8 @@ class TreasuryProcessingImpl(
      *   c. Sets milestones.status == "met";
      */
     private fun milestonesForApprovedContract(
-        context: TreasureProcessingContext,
-        data: TreasureProcessingData,
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
         contract: Contract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
@@ -496,7 +497,10 @@ class TreasuryProcessingImpl(
      * 3. Adds to list of values in Document.relatedConfirmations of Document object (found on step 2) value of
      *    confirmationResponses.ID from object generated by rule BR-9.9.3;
      */
-    private fun documentRelatedConfirmations(contract: Contract): List<DocumentContract> {
+    private fun documentRelatedConfirmations(
+        contract: Contract,
+        confirmationResponse: ConfirmationResponse
+    ): List<DocumentContract> {
         val confirmationRequest = contract.confirmationRequests!!.firstOrNull {
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
@@ -504,9 +508,13 @@ class TreasuryProcessingImpl(
             message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
         )
 
+        val confirmationResponseId = confirmationResponse.id
         return contract.documents!!.map {
             if (it.id == confirmationRequest.relatedItem) {
-                it
+                it.copy(
+                    relatedConfirmations = it.relatedConfirmations?.plus(confirmationResponseId)
+                        ?: listOf(confirmationResponseId)
+                )
             } else
                 it
         }
@@ -523,8 +531,8 @@ class TreasuryProcessingImpl(
      *   c. Sets milestones.status == "notMet";
      */
     private fun milestonesForRejectedContract(
-        context: TreasureProcessingContext,
-        data: TreasureProcessingData,
+        context: TreasuryProcessingContext,
+        data: TreasuryProcessingData,
         contract: Contract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
@@ -537,7 +545,7 @@ class TreasuryProcessingImpl(
         val updatedMilestone = milestone.copy(
             dateModified = context.startDate,
             dateMet = data.dateMet,
-            status = MilestoneStatus.MET
+            status = MilestoneStatus.NOT_MET
         )
 
         return contract.milestones!!.map {
@@ -561,9 +569,9 @@ class TreasuryProcessingImpl(
             throw ErrorException(error = CONTRACT_STATUS_DETAILS)
     }
 
-    private fun genResponse(contract: Contract, cans: List<CAN>): TreasureProcessedData {
-        return TreasureProcessedData(
-            contract = TreasureProcessedData.Contract(
+    private fun genResponse(contract: Contract, cans: List<CAN>): TreasuryProcessedData {
+        return TreasuryProcessedData(
+            contract = TreasuryProcessedData.Contract(
                 id = contract.id,
                 date = contract.date!!,
                 awardId = contract.awardId,
@@ -572,13 +580,13 @@ class TreasuryProcessingImpl(
                 title = contract.title!!,
                 description = contract.description!!,
                 period = contract.period.let { period ->
-                    TreasureProcessedData.Contract.Period(
+                    TreasuryProcessedData.Contract.Period(
                         startDate = period!!.startDate,
                         endDate = period.endDate!!
                     )
                 },
                 documents = contract.documents!!.map { document ->
-                    TreasureProcessedData.Contract.Document(
+                    TreasuryProcessedData.Contract.Document(
                         id = document.id,
                         documentType = document.documentType,
                         title = document.title,
@@ -588,7 +596,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 milestones = contract.milestones!!.map { milestone ->
-                    TreasureProcessedData.Contract.Milestone(
+                    TreasuryProcessedData.Contract.Milestone(
                         id = milestone.id,
                         relatedItems = milestone.relatedItems?.toList(),
                         status = milestone.status!!,
@@ -600,7 +608,7 @@ class TreasuryProcessingImpl(
                         dateModified = milestone.dateModified,
                         dateMet = milestone.dateMet,
                         relatedParties = milestone.relatedParties!!.map { relatedParty ->
-                            TreasureProcessedData.Contract.Milestone.RelatedParty(
+                            TreasuryProcessedData.Contract.Milestone.RelatedParty(
                                 id = relatedParty.id,
                                 name = relatedParty.name
                             )
@@ -608,7 +616,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 confirmationRequests = contract.confirmationRequests!!.map { confirmationRequest ->
-                    TreasureProcessedData.Contract.ConfirmationRequest(
+                    TreasuryProcessedData.Contract.ConfirmationRequest(
                         id = confirmationRequest.id,
                         type = ConfirmationRequestType.fromString(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
@@ -617,15 +625,15 @@ class TreasuryProcessingImpl(
                         relatedItem = confirmationRequest.relatedItem,
                         source = ConfirmationRequestSource.fromString(confirmationRequest.source.value),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
-                            TreasureProcessedData.Contract.ConfirmationRequest.RequestGroup(
+                            TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup(
                                 id = requestGroup.id,
                                 requests = requestGroup.requests.map { request ->
-                                    TreasureProcessedData.Contract.ConfirmationRequest.RequestGroup.Request(
+                                    TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup.Request(
                                         id = request.id,
                                         title = request.title,
                                         description = request.description,
                                         relatedPerson = request.relatedPerson?.let { relatedPerson ->
-                                            TreasureProcessedData.Contract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
+                                            TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
                                                 id = relatedPerson.id,
                                                 name = relatedPerson.name
                                             )
@@ -637,21 +645,21 @@ class TreasuryProcessingImpl(
                     )
                 },
                 confirmationResponses = contract.confirmationResponses!!.map { confirmationResponse ->
-                    TreasureProcessedData.Contract.ConfirmationResponse(
+                    TreasuryProcessedData.Contract.ConfirmationResponse(
                         id = confirmationResponse.id,
                         value = confirmationResponse.value.let { value ->
-                            TreasureProcessedData.Contract.ConfirmationResponse.Value(
+                            TreasuryProcessedData.Contract.ConfirmationResponse.Value(
                                 id = value.id,
                                 name = value.name,
                                 date = value.date,
                                 relatedPerson = value.relatedPerson?.let { relatedPerson ->
-                                    TreasureProcessedData.Contract.ConfirmationResponse.Value.RelatedPerson(
+                                    TreasuryProcessedData.Contract.ConfirmationResponse.Value.RelatedPerson(
                                         id = relatedPerson.id,
                                         name = relatedPerson.name
                                     )
                                 },
                                 verifications = value.verification.map { verification ->
-                                    TreasureProcessedData.Contract.ConfirmationResponse.Value.Verification(
+                                    TreasuryProcessedData.Contract.ConfirmationResponse.Value.Verification(
                                         type = ConfirmationResponseType.fromString(verification.type.value),
                                         value = verification.value,
                                         rationale = verification.rationale
@@ -663,7 +671,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 value = contract.value!!.let { value ->
-                    TreasureProcessedData.Contract.Value(
+                    TreasuryProcessedData.Contract.Value(
                         amount = value.amount!!,
                         currency = value.currency!!,
                         amountNet = value.amountNet!!,
@@ -672,7 +680,7 @@ class TreasuryProcessingImpl(
                 }
             ),
             cans = cans.map { can ->
-                TreasureProcessedData.Can(
+                TreasuryProcessedData.Can(
                     id = can.id,
                     status = can.status,
                     statusDetails = can.statusDetails
@@ -681,5 +689,4 @@ class TreasuryProcessingImpl(
         )
     }
 }
-
 

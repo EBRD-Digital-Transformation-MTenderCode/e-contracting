@@ -73,7 +73,7 @@ data class ContractUpdate @JsonCreator constructor(
 
     val documents: List<DocumentContract>?,
 
-    val milestones: HashSet<Milestone>,
+    val milestones: List<Milestone>,
 
     val confirmationRequests: MutableList<ConfirmationRequest>?,
 

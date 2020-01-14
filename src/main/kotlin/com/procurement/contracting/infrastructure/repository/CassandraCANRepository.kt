@@ -11,6 +11,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
+import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
@@ -82,6 +83,17 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                IF EXISTS
             """
 
+        private const val RESET_CQL = """
+               UPDATE $keySpace.$tableName
+                  SET $columnContractId=?,
+                      $columnStatus=?,
+                      $columnStatusDetails=?,
+                      $columnJsonData=?
+                WHERE $columnCpid=?
+                  AND $columnCanId=?
+               IF EXISTS
+            """
+
         private const val UPDATE_STATUSES_CQL = """
                UPDATE $keySpace.$tableName
                   SET $columnStatus=?,
@@ -125,6 +137,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
+    private val preparedResetCQL = session.prepare(RESET_CQL)
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
     private val preparedRelateContractCQL = session.prepare(RELATE_CONTRACT_CQL)
     private val preparedSaveNewCANCQL = session.prepare(SAVE_NEW_CAN_CQL)
@@ -215,6 +228,29 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     } catch (exception: Exception) {
         throw SaveEntityException(message = "Error writing cancelled CAN(s).", cause = exception)
     }
+
+    override fun resetCANs(cpid: String, cans: List<DataResetCAN>) {
+        val statements = BatchStatement().apply {
+            for (can in cans) {
+                add(statementForResetCAN(cpid = cpid, dataResetCAN = can))
+            }
+        }
+
+        val result = updateStatusesCANs(statements)
+        if (!result.wasApplied())
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
+    }
+
+    private fun statementForResetCAN(cpid: String, dataResetCAN: DataResetCAN): Statement =
+        preparedResetCQL.bind()
+            .apply {
+                setString(columnCpid, cpid)
+                setUUID(columnCanId, dataResetCAN.id)
+                setString(columnContractId, null)
+                setString(columnStatus, dataResetCAN.status.toString())
+                setString(columnStatusDetails, dataResetCAN.statusDetails.toString())
+                setString(columnJsonData, dataResetCAN.jsonData)
+            }
 
     override fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>) {
         val statements = BatchStatement().apply {
