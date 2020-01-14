@@ -53,7 +53,6 @@ data class CancelCANData(
 data class CancelledCANData(
     val cancelledCAN: CancelledCAN,
     val relatedCANs: List<RelatedCAN>,
-    val isCancelledAC: Boolean,
     val lotId: LotId,
     val contract: Contract?
 ) {
@@ -192,8 +191,7 @@ class CancelCANServiceImpl(
             relatedCANs = emptyList()
         }
 
-        val isCancelledAC = if (cancelledContract != null) {
-            log.debug("Saving cancelled AC by cpid '${context.cpid}' with id '${cancelledContract.id}' (status '${cancelledContract.status}', status details '${cancelledContract.statusDetails}')")
+        if (cancelledContract != null) {
             acRepository.saveCancelledAC(
                 cpid = context.cpid,
                 id = cancelledContract.id,
@@ -201,9 +199,6 @@ class CancelCANServiceImpl(
                 statusDetails = cancelledContract.statusDetails,
                 jsonData = toJson(updatedContractProcess)
             )
-            true
-        } else {
-            false
         }
 
         canRepository.saveCancelledCANs(
@@ -227,7 +222,6 @@ class CancelCANServiceImpl(
         return CancelledCANData(
             cancelledCAN = generateCancelledCANResponse(cancelledCAN),
             relatedCANs = generateRelatedCANsResponse(relatedCANs),
-            isCancelledAC = isCancelledAC,
             lotId = can.lotId,
             contract = generateContractResponse(cancelledContract)
         )

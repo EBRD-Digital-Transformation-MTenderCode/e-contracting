@@ -174,7 +174,6 @@ class CommandService(
                             statusDetails = contract.statusDetails
                         )
                     },
-                    acCancel = result.isCancelledAC,
                     lotId = result.lotId
                 )
                 if (log.isDebugEnabled)

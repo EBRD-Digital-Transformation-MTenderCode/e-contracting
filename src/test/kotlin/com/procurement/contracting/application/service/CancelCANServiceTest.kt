@@ -116,7 +116,6 @@ class CancelCANServiceTest {
         assertEquals(data.amendment.documents!![0].description, documents[0].description)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(false, response.isCancelledAC)
 
         assertNull(response.contract)
 
@@ -179,7 +178,6 @@ class CancelCANServiceTest {
         assertEquals(data.amendment.documents!![0].description, documents[0].description)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(true, response.isCancelledAC)
 
         assertNotNull(response.contract)
         val contract = response.contract!!
@@ -210,7 +208,6 @@ class CancelCANServiceTest {
         val response = service.cancel(context = context(), data = data)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(true, response.isCancelledAC)
 
         assertNotNull(response.contract)
         val contract = response.contract!!
