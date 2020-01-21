@@ -97,7 +97,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
 
     private fun DocumentContract.update(documentDto: DocumentUpdate?) {
         if (documentDto != null) {
-            this.title = documentDto.title ?: this.title
+            this.title = documentDto.title
             this.description = documentDto.description ?: this.description
         }
     }
