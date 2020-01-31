@@ -15,7 +15,6 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.CreateAcRq
 import com.procurement.contracting.model.dto.CreateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.ContractedAward
@@ -41,7 +40,7 @@ class CreateAcService(
 ) {
 
     @Deprecated(message = "Use method create in ACService.", level = DeprecationLevel.ERROR)
-    fun createAC(cm: CommandMessage): ResponseDto {
+    fun createAC(cm: CommandMessage): CreateAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
@@ -148,6 +147,6 @@ class CreateAcService(
 
         acDao.save(acEntity)
 
-        return ResponseDto(data = CreateAcRs(cans = cans, contract = contract, contractedAward = contractedAward))
+        return CreateAcRs(cans = cans, contract = contract, contractedAward = contractedAward)
     }
 }

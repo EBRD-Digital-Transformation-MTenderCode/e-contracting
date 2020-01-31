@@ -15,7 +15,6 @@ import com.procurement.contracting.model.dto.ContractIssuingAcRs
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.IssuingAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Service
 @Service
 class IssuingAcService(private val acDao: AcDao) {
 
-    fun issuingAc(cm: CommandMessage): ResponseDto {
+    fun issuingAc(cm: CommandMessage): IssuingAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -55,13 +54,12 @@ class IssuingAcService(private val acDao: AcDao) {
         entity.statusDetails = ContractStatusDetails.ISSUED
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(
-            data = IssuingAcRs(
-                ContractIssuingAcRs(
-                    date = contractProcess.contract.date,
-                    statusDetails = contractProcess.contract.statusDetails
-                )
+        return IssuingAcRs(
+            ContractIssuingAcRs(
+                date = contractProcess.contract.date,
+                statusDetails = contractProcess.contract.statusDetails
             )
         )
+
     }
 }

@@ -9,9 +9,9 @@ import com.procurement.contracting.application.service.ac.CreateACData
 import com.procurement.contracting.application.service.can.CANService
 import com.procurement.contracting.application.service.can.CreateCANContext
 import com.procurement.contracting.application.service.can.CreateCANData
+import com.procurement.contracting.application.service.treasury.TreasuryProcessing
 import com.procurement.contracting.application.service.treasury.TreasuryProcessingContext
 import com.procurement.contracting.application.service.treasury.TreasuryProcessingData
-import com.procurement.contracting.application.service.treasury.TreasuryProcessing
 import com.procurement.contracting.dao.HistoryDao
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
@@ -24,9 +24,9 @@ import com.procurement.contracting.infrastructure.dto.can.create.CreateCANReques
 import com.procurement.contracting.infrastructure.dto.can.create.CreateCANResponse
 import com.procurement.contracting.infrastructure.dto.treasury.TreasuryProcessingRequest
 import com.procurement.contracting.infrastructure.dto.treasury.TreasuryProcessingResponse
+import com.procurement.contracting.infrastructure.web.dto.ApiSuccessResponse
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.CommandType
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.bpe.cpid
 import com.procurement.contracting.model.dto.bpe.language
 import com.procurement.contracting.model.dto.bpe.lotId
@@ -64,12 +64,12 @@ class CommandService(
         private val log = LoggerFactory.getLogger(CommandService::class.java)
     }
 
-    fun execute(cm: CommandMessage): ResponseDto {
-        var historyEntity = historyDao.getHistory(cm.id, cm.command.value())
+    fun execute(cm: CommandMessage): ApiSuccessResponse {
+        val historyEntity = historyDao.getHistory(cm.id, cm.command.value())
         if (historyEntity != null) {
-            return toObject(ResponseDto::class.java, historyEntity.jsonData)
+            return toObject(ApiSuccessResponse::class.java, historyEntity.jsonData)
         }
-        val response = when (cm.command) {
+        val dataOfResponse: Any = when (cm.command) {
             CommandType.CHECK_CAN -> createCanService.checkCan(cm)
             CommandType.CHECK_CAN_BY_AWARD -> createCanService.checkCanByAwardId(cm)
             CommandType.CREATE_CAN -> {
@@ -107,7 +107,7 @@ class CommandService(
                 )
                 if (log.isDebugEnabled)
                     log.debug("CAN was create. Response: ${toJson(dataResponse)}")
-                ResponseDto(data = dataResponse)
+                dataResponse
             }
             CommandType.GET_CANS -> createCanService.getCans(cm)
             CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
@@ -178,7 +178,7 @@ class CommandService(
                 )
                 if (log.isDebugEnabled)
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
-                ResponseDto(data = dataResponse)
+                dataResponse
             }
             CommandType.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
             CommandType.CREATE_AC -> {
@@ -458,7 +458,7 @@ class CommandService(
                 )
                 if (log.isDebugEnabled)
                     log.debug("AC was created. Response: ${toJson(dataResponse)}")
-                ResponseDto(data = dataResponse)
+                dataResponse
             }
             CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
             CommandType.CHECK_STATUS_DETAILS -> TODO()
@@ -617,12 +617,17 @@ class CommandService(
                 )
                 if (log.isDebugEnabled)
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
-                ResponseDto(data = dataResponse)
+                dataResponse
             }
             CommandType.ACTIVATION_AC -> activationAcService.activateAc(cm)
         }
-        historyEntity = historyDao.saveHistory(cm.id, cm.command.value(), response)
-        return toObject(ResponseDto::class.java, historyEntity.jsonData)
+        val response = ApiSuccessResponse(id = cm.id, version = cm.version, data = dataOfResponse)
+            .also {
+                if (log.isDebugEnabled)
+                    log.debug("Response: ${toJson(it)}")
+            }
+        historyDao.saveHistory(cm.id, cm.command.value(), response)
+        return response
     }
 
     private fun getCPID(cm: CommandMessage): String = cm.context.cpid

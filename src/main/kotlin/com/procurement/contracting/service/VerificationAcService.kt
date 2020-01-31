@@ -8,7 +8,6 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ContractVerifiedAcRs
 import com.procurement.contracting.model.dto.VerificationAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service
 @Service
 class VerificationAcService(private val acDao: AcDao) {
 
-    fun verificationAc(cm: CommandMessage): ResponseDto {
+    fun verificationAc(cm: CommandMessage): VerificationAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
 
@@ -31,6 +30,6 @@ class VerificationAcService(private val acDao: AcDao) {
         entity.statusDetails = ContractStatusDetails.VERIFICATION
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = VerificationAcRs(ContractVerifiedAcRs(contractProcess.contract.statusDetails)))
+        return VerificationAcRs(ContractVerifiedAcRs(contractProcess.contract.statusDetails))
     }
 }
