@@ -18,7 +18,6 @@ import com.procurement.contracting.model.dto.ActivationCan
 import com.procurement.contracting.model.dto.ActivationContract
 import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toJson
@@ -30,7 +29,7 @@ import org.springframework.stereotype.Service
 class ActivationAcService(private val acDao: AcDao,
                           private val canDao: CanDao) {
 
-    fun activateAc(cm: CommandMessage): ResponseDto {
+    fun activateAc(cm: CommandMessage): ActivationAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -83,19 +82,17 @@ class ActivationAcService(private val acDao: AcDao,
             }
         }
         updatedCanEntities.asSequence().forEach { canDao.save(it) }
-        val cansRs = cans.asSequence().map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
-        return ResponseDto(
-            data = ActivationAcRs(
-                relatedLots = relatedLots,
-                contract = ActivationContract(
-                    id = contractProcess.contract.id,
-                    status = contractProcess.contract.status,
-                    statusDetails = contractProcess.contract.statusDetails,
-                    milestones = contractProcess.contract.milestones
-                ),
-                cans = cansRs
-
-            )
+        val cansRs = cans.asSequence()
+            .map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
+        return ActivationAcRs(
+            relatedLots = relatedLots,
+            contract = ActivationContract(
+                id = contractProcess.contract.id,
+                status = contractProcess.contract.status,
+                statusDetails = contractProcess.contract.statusDetails,
+                milestones = contractProcess.contract.milestones
+            ),
+            cans = cansRs
         )
     }
 

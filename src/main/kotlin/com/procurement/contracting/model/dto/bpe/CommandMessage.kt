@@ -2,29 +2,36 @@ package com.procurement.contracting.model.dto.bpe
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.config.GlobalProperties
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.infrastructure.bind.apiversion.ApiVersionDeserializer
+import com.procurement.contracting.infrastructure.bind.apiversion.ApiVersionSerializer
+import com.procurement.contracting.infrastructure.web.dto.ApiErrorResponse
+import com.procurement.contracting.infrastructure.web.dto.ApiVersion
 import com.procurement.contracting.utils.toLocalDateTime
 import java.time.LocalDateTime
 import java.util.*
 
 data class CommandMessage @JsonCreator constructor(
+    @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+    @field:JsonProperty("command") @param:JsonProperty("command") val command: CommandType,
+    @field:JsonProperty("context") @param:JsonProperty("context") val context: Context,
+    @field:JsonProperty("data") @param:JsonProperty("data") val data: JsonNode,
 
-    val id: String,
-
-    val command: CommandType,
-
-    val context: Context,
-
-    val data: JsonNode,
-
-    val version: ApiVersion
+    @JsonDeserialize(using = ApiVersionDeserializer::class)
+    @JsonSerialize(using = ApiVersionSerializer::class)
+    @field:JsonProperty("version") @param:JsonProperty("version") val version: ApiVersion
 )
+
 
 val CommandMessage.cpid: String
     get() = this.context.cpid
@@ -114,29 +121,6 @@ enum class CommandType(private val value: String) {
     }
 }
 
-enum class ApiVersion(private val value: String) {
-    V_0_0_1("0.0.1");
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    override fun toString(): String {
-        return this.value
-    }
-}
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-data class ResponseDto(
-
-    val errors: List<ResponseErrorDto>? = null,
-
-    val data: Any? = null,
-
-    val id: String? = null
-)
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ResponseErrorDto(
 
@@ -145,38 +129,38 @@ data class ResponseErrorDto(
     val description: String?
 )
 
-fun getExceptionResponseDto(exception: Exception): ResponseDto {
-    return ResponseDto(
-        errors = listOf(
-            ResponseErrorDto(
-                code = "400.09.00",
-                description = exception.message
-            )
+fun errorResponse(exception: Exception, id: String, version: ApiVersion): ApiErrorResponse =
+    when (exception) {
+        is ErrorException -> getApiErrorResponse(
+            id = id,
+            version = version,
+            code = exception.code,
+            message = exception.message!!
         )
-    )
-}
+        is EnumException  -> getApiErrorResponse(
+            id = id,
+            version = version,
+            code = exception.code,
+            message = exception.message!!
+        )
+        else              -> getApiErrorResponse(
+            id = id,
+            version = version,
+            code = "00.00",
+            message = exception.message!!
+        )
+    }
 
-fun getErrorExceptionResponseDto(exception: ErrorException, id: String? = null): ResponseDto {
-    return ResponseDto(
+private fun getApiErrorResponse(id: String, version: ApiVersion, code: String, message: String): ApiErrorResponse {
+    return ApiErrorResponse(
         errors = listOf(
-            ResponseErrorDto(
-                code = "400.09." + exception.error.code,
-                description = exception.message
+            ApiErrorResponse.Error(
+                code = "400.${GlobalProperties.serviceId}." + code,
+                description = message
             )
         ),
-        id = id
-    )
-}
-
-fun getEnumExceptionResponseDto(error: EnumException, id: String? = null): ResponseDto {
-    return ResponseDto(
-        errors = listOf(
-            ResponseErrorDto(
-                code = "400.09." + error.code,
-                description = error.msg
-            )
-        ),
-        id = id
+        id = id,
+        version = version
     )
 }
 

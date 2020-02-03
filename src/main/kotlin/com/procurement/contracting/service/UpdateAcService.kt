@@ -54,7 +54,6 @@ import com.procurement.contracting.model.dto.OrganizationReferenceSupplierUpdate
 import com.procurement.contracting.model.dto.UpdateAcRq
 import com.procurement.contracting.model.dto.UpdateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.BusinessFunction
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.DetailsSupplier
@@ -84,7 +83,7 @@ class UpdateAcService(private val acDao: AcDao,
                       private val generationService: GenerationService,
                       private val templateService: TemplateService) {
 
-    fun updateAC(cm: CommandMessage): ResponseDto {
+    fun updateAC(cm: CommandMessage): UpdateAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -139,10 +138,11 @@ class UpdateAcService(private val acDao: AcDao,
 
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = UpdateAcRs(
-                planning = contractProcess.planning!!,
-                contract = contractProcess.contract,
-                award = contractProcess.award))
+        return UpdateAcRs(
+            planning = contractProcess.planning!!,
+            contract = contractProcess.contract,
+            award = contractProcess.award
+        )
     }
 
     /**

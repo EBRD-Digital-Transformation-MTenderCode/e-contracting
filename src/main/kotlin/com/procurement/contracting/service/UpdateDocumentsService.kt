@@ -18,7 +18,6 @@ import com.procurement.contracting.model.dto.UpdateDocumentContract
 import com.procurement.contracting.model.dto.UpdateDocumentsRq
 import com.procurement.contracting.model.dto.UpdateDocumentsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
@@ -30,7 +29,7 @@ import java.util.*
 class UpdateDocumentsService(private val canDao: CanDao,
                              private val acDao: AcDao) {
 
-    fun updateCanDocs(cm: CommandMessage): ResponseDto {
+    fun updateCanDocs(cm: CommandMessage): UpdateDocumentsRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
@@ -51,13 +50,12 @@ class UpdateDocumentsService(private val canDao: CanDao,
         can.documents = updateCanDocuments(dto, can)
         canEntity.jsonData = toJson(can)
         canDao.save(canEntity)
-        return ResponseDto(
-            data = UpdateDocumentsRs(
-                contract = UpdateDocumentContract(
-                    id = canId,
-                    documents = can.documents!!
-                )
-            ))
+        return UpdateDocumentsRs(
+            contract = UpdateDocumentContract(
+                id = canId,
+                documents = can.documents!!
+            )
+        )
     }
 
     private fun updateCanDocuments(dto: UpdateDocumentsRq, can: Can): List<DocumentContract>? {
