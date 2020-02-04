@@ -289,6 +289,11 @@ class TreasuryProcessingImpl(
                 statusDetails = statusDetails,
                 confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
+            ),
+            treasuryData = TreasuryData(
+                externalRegId = data.regData!!.externalRegId,
+                regDate = data.regData.regDate,
+                dateMet = data.dateMet
             )
         )
 
@@ -302,18 +307,15 @@ class TreasuryProcessingImpl(
                     /*
                      * BR-9.9.12 status statusDetails (CAN)
                      *
-                     * eContracting sets:
-                     * CAN.status value == "unsuccessful" and saves it to DB;
-                     * CAN.statusDetails value == "treasuryRejection" and saves it to DB;
+                     * eContracting sets CAN.statusDetails value == "contractProject" and saves it to DB;
                      */
-                    status = CANStatus.UNSUCCESSFUL,
-                    statusDetails = CANStatusDetails.TREASURY_REJECTION
+                    statusDetails = CANStatusDetails.CONTRACT_PROJECT
                 )
             }
             .toList()
 
         val cansEntities = updatedCANs.map { can ->
-            DataStatusesCAN(
+            DataResetCAN(
                 id = can.id,
                 status = can.status,
                 statusDetails = can.statusDetails,
@@ -329,7 +331,7 @@ class TreasuryProcessingImpl(
             statusDetails = updatedContractProcess.contract.statusDetails,
             jsonData = toJson(updatedContractProcess)
         )
-        canRepository.updateStatusesCANs(cpid = context.cpid, cans = cansEntities)
+        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
 
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }
