@@ -84,5 +84,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_BUSINESS_FUNCTIONS_TYPE("00.78", "A person with a business function type 'authority' should be used for the confirmation request."),
     INVALID_FORMAT_LOT_ID("00.79", "Invalid format the lot id."),
     INVALID_AMOUNT("00.80", "Invalid amount."),
-    INVALID_CURRENCY("00.81", "Invalid currency.");
+    INVALID_CURRENCY("00.81", "Invalid currency."),
+    NO_REGDATA("00.82", "RegData from treasury is absent.");
 }
