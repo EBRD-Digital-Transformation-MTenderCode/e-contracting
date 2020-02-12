@@ -147,7 +147,7 @@ fun errorResponse(exception: Exception, id: String, version: ApiVersion): ApiErr
             id = id,
             version = version,
             code = "00.00",
-            message = exception.message!!
+            message = exception.message ?: "Internal server error."
         )
     }
 
