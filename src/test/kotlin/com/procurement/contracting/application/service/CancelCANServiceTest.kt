@@ -498,7 +498,7 @@ class CANStatusDetailsConverter : AbstractArgumentConverter<CANStatusDetails>() 
 }
 
 class ContractStatusConverter : AbstractArgumentConverter<ContractStatus>() {
-    override fun converting(source: String): ContractStatus = ContractStatus.fromString(source)
+    override fun converting(source: String): ContractStatus = ContractStatus.creator(source)
 }
 
 class ContractStatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {

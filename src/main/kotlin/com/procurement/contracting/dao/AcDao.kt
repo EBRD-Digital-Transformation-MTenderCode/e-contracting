@@ -1,7 +1,9 @@
 package com.procurement.contracting.dao
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.querybuilder.QueryBuilder.*
+import com.datastax.driver.core.querybuilder.QueryBuilder.eq
+import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
+import com.datastax.driver.core.querybuilder.QueryBuilder.select
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
@@ -20,7 +22,7 @@ class AcDao(private val session: Session) {
                         .value(TOKEN, entity.token)
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
-                        .value(STATUS, entity.status.value)
+                        .value(STATUS, entity.status.key)
                         .value(STATUS_DETAILS, entity.statusDetails.value)
                         .value(MPC, entity.mainProcurementCategory)
                         .value(LANGUAGE, entity.language)
@@ -43,7 +45,7 @@ class AcDao(private val session: Session) {
                 token = row.getUUID(TOKEN),
                 owner = row.getString(OWNER),
                 createdDate = row.getTimestamp(CREATED_DATE),
-                status = ContractStatus.fromString(row.getString(STATUS)),
+                status = ContractStatus.creator(row.getString(STATUS)),
                 statusDetails = ContractStatusDetails.fromString(row.getString(STATUS_DETAILS)),
                 mainProcurementCategory = row.getString(MPC),
                 language = row.getString(LANGUAGE),
@@ -65,7 +67,7 @@ class AcDao(private val session: Session) {
                     token = row.getUUID(TOKEN),
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
-                    status = ContractStatus.fromString(row.getString(STATUS)),
+                    status = ContractStatus.creator(row.getString(STATUS)),
                     statusDetails = ContractStatusDetails.fromString(row.getString(STATUS_DETAILS)),
                     mainProcurementCategory = row.getString(MPC),
                     language = row.getString(LANGUAGE),
