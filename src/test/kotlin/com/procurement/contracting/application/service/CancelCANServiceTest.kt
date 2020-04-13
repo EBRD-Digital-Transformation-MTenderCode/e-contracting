@@ -490,7 +490,7 @@ class CancelCANServiceTest {
 }
 
 class CANStatusConverter : AbstractArgumentConverter<CANStatus>() {
-    override fun converting(source: String): CANStatus = CANStatus.fromString(source)
+    override fun converting(source: String): CANStatus = CANStatus.creator(source)
 }
 
 class CANStatusDetailsConverter : AbstractArgumentConverter<CANStatusDetails>() {

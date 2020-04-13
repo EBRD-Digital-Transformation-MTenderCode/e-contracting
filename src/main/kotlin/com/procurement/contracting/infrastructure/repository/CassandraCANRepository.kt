@@ -179,7 +179,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         awardId = row.getString(columnAwardId)?.let { UUID.fromString(row.getString(columnAwardId)) },
         lotId = UUID.fromString(row.getString(columnLotId)),
         contractId = row.getString(columnContractId),
-        status = CANStatus.fromString(row.getString(columnStatus)),
+        status = CANStatus.creator(row.getString(columnStatus)),
         statusDetails = CANStatusDetails.fromString(row.getString(columnStatusDetails)),
         jsonData = row.getString(columnJsonData)
     )
@@ -269,7 +269,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(columnCpid, cpid)
                 setUUID(columnCanId, can.id)
-                setString(columnStatus, can.status.value)
+                setString(columnStatus, can.status.key)
                 setString(columnStatusDetails, can.statusDetails.value)
                 setString(columnJsonData, can.jsonData)
             }
@@ -298,7 +298,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnCpid, cpid)
                 setUUID(columnCanId, can.id)
                 setString(columnContractId, can.contractId)
-                setString(columnStatus, can.status.value)
+                setString(columnStatus, can.status.key)
                 setString(columnStatusDetails, can.statusDetails.value)
                 setString(columnJsonData, can.jsonData)
             }
@@ -320,7 +320,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnAwardId, entity.awardId?.toString())
                 setString(columnLotId, entity.lotId.toString())
                 setString(columnContractId, entity.contractId)
-                setString(columnStatus, entity.status.value)
+                setString(columnStatus, entity.status.key)
                 setString(columnStatusDetails, entity.statusDetails.value)
                 setString(columnJsonData, entity.jsonData)
             }
