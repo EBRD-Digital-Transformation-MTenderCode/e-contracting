@@ -390,7 +390,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedPartyId = milestone.relatedParties!![0].id
@@ -420,7 +420,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedParty = milestone.relatedParties!![0]
@@ -479,7 +479,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
@@ -545,7 +545,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
