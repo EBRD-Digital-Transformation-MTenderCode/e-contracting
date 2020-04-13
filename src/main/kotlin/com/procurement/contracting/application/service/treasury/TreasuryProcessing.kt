@@ -666,7 +666,7 @@ class TreasuryProcessingImpl(
                                 },
                                 verifications = value.verification.map { verification ->
                                     TreasuryProcessedData.Contract.ConfirmationResponse.Value.Verification(
-                                        type = ConfirmationResponseType.fromString(verification.type.value),
+                                        type = ConfirmationResponseType.creator(verification.type.key),
                                         value = verification.value,
                                         rationale = verification.rationale
                                     )
