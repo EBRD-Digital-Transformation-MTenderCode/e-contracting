@@ -1,9 +1,10 @@
 package com.procurement.contracting.domain.model.document.type
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class DocumentTypeAward(@JsonValue val value: String) {
+enum class DocumentTypeAward(@JsonValue override val key: String) : EnumElementProvider.Key {
     AWARD_NOTICE("awardNotice"),
     EVALUATION_REPORTS("evaluationReports"),
     SHORTLISTED_FIRMS("shortlistedFirms"),
@@ -17,18 +18,11 @@ enum class DocumentTypeAward(@JsonValue val value: String) {
     CONTRACT_SCHEDULE("contractSchedule"),
     SUBMISSION_DOCUMENTS("submissionDocuments");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, DocumentTypeAward> = values().associateBy { it.value }
-
-        fun fromString(value: String): DocumentTypeAward = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = DocumentTypeAward::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<DocumentTypeAward>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = DocumentTypeAward.orThrow(name)
     }
 }

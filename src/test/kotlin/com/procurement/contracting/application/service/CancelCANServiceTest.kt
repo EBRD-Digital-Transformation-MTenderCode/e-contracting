@@ -502,5 +502,5 @@ class ContractStatusConverter : AbstractArgumentConverter<ContractStatus>() {
 }
 
 class ContractStatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
-    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.fromString(source)
+    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.creator(source)
 }
