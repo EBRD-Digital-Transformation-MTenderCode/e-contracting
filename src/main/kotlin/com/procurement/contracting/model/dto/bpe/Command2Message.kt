@@ -29,7 +29,7 @@ import java.util.*
 
 enum class Command2Type(@JsonValue override val key: String) : Action, EnumElementProvider.Key {
 
-    REPLACE_LATER(""); //TODO
+    FIND_CAN_IDS("findCANIds");
 
     override fun toString(): String = key
 
