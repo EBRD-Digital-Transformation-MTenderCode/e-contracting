@@ -82,7 +82,7 @@ class UpdateDocumentsService(private val canDao: CanDao,
             documentsContract.add(
                 DocumentContract(
                     id = it.id,
-                    documentType = DocumentTypeContract.fromString(it.documentType.toString()),
+                    documentType = DocumentTypeContract.creator(it.documentType.toString()),
                     title = it.title,
                     description = it.description,
                     relatedLots = it.relatedLots,
