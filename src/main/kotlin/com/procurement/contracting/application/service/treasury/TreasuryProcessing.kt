@@ -383,7 +383,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val milestone = contract.milestones!!.firstOrNull {
@@ -453,7 +453,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val requestGroup = confirmationRequest.requestGroups!![0]
@@ -511,7 +511,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val confirmationResponseId = confirmationResponse.id
@@ -629,7 +629,7 @@ class TreasuryProcessingImpl(
                         description = confirmationRequest.description!!,
                         relatesTo = ConfirmationRequestReleaseTo.creator(confirmationRequest.relatesTo!!),
                         relatedItem = confirmationRequest.relatedItem,
-                        source = ConfirmationRequestSource.fromString(confirmationRequest.source.value),
+                        source = ConfirmationRequestSource.creator(confirmationRequest.source.key),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
                             TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup(
                                 id = requestGroup.id,
