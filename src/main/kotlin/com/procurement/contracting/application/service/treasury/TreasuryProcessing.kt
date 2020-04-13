@@ -624,7 +624,7 @@ class TreasuryProcessingImpl(
                 confirmationRequests = contract.confirmationRequests!!.map { confirmationRequest ->
                     TreasuryProcessedData.Contract.ConfirmationRequest(
                         id = confirmationRequest.id,
-                        type = ConfirmationRequestType.fromString(confirmationRequest.type!!),
+                        type = ConfirmationRequestType.creator(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
                         description = confirmationRequest.description!!,
                         relatesTo = ConfirmationRequestReleaseTo.creator(confirmationRequest.relatesTo!!),
