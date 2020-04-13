@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.procurement.contracting.config.GlobalProperties
+import com.procurement.contracting.config.properties.GlobalProperties
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.EnumException

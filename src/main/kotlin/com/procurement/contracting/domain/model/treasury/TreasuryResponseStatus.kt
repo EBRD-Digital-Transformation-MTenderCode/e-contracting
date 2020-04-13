@@ -1,25 +1,19 @@
 package com.procurement.contracting.domain.model.treasury
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class TreasuryResponseStatus(@JsonValue val value: String) {
+enum class TreasuryResponseStatus(@JsonValue override val key: String) : EnumElementProvider.Key {
     APPROVED("3004"),
     NOT_ACCEPTED("3005"),
     REJECTED("3006");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, TreasuryResponseStatus> = values().associateBy { it.value }
-
-        fun fromString(value: String): TreasuryResponseStatus = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = TreasuryResponseStatus::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<TreasuryResponseStatus>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = TreasuryResponseStatus.orThrow(name)
     }
 }

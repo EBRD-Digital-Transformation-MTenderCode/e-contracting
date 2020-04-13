@@ -1,26 +1,20 @@
 package com.procurement.contracting.domain.model.can.status
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class CANStatus(@JsonValue val value: String) {
-    PENDING("pending"),//+
-    ACTIVE("active"),//+
-    CANCELLED("cancelled"), //+
-    UNSUCCESSFUL("unsuccessful"); //+
+enum class CANStatus(@JsonValue override val key: String) : EnumElementProvider.Key {
+    PENDING("pending"),
+    ACTIVE("active"),
+    CANCELLED("cancelled"),
+    UNSUCCESSFUL("unsuccessful");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, CANStatus> = values().associateBy { it.value.toUpperCase() }
-
-        fun fromString(value: String): CANStatus = CONSTANTS[value.toUpperCase()]
-            ?: throw EnumException(
-                enumType = CANStatus::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<CANStatus>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = CANStatus.orThrow(name)
     }
 }

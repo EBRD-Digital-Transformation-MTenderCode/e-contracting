@@ -1,26 +1,20 @@
 package com.procurement.contracting.domain.model.milestone.type
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class MilestoneSubType(@JsonValue val value: String) {
+enum class MilestoneSubType(@JsonValue override val key: String) : EnumElementProvider.Key {
     BUYERS_APPROVAL("buyersApproval"),
     SUPPLIERS_APPROVAL("suppliersApproval"),
     CONTRACT_ACTIVATION("contractActivation"),
     APPROVE_BODY_VALIDATION("approveBodyValidation");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, MilestoneSubType> = values().associateBy { it.value }
-
-        fun fromString(value: String): MilestoneSubType = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = MilestoneSubType::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<MilestoneSubType>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = MilestoneSubType.orThrow(name)
     }
 }

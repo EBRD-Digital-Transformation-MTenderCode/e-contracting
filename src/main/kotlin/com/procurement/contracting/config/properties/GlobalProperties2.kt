@@ -1,6 +1,5 @@
 package com.procurement.contracting.config.properties
 
-import com.procurement.contracting.config.GlobalProperties
 import com.procurement.contracting.infrastructure.io.orThrow
 import com.procurement.contracting.infrastructure.web.dto.ApiVersion2
 import java.util.*
