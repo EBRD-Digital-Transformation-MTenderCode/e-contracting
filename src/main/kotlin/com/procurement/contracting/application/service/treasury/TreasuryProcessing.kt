@@ -432,7 +432,7 @@ class TreasuryProcessingImpl(
             verification = listOf(
                 Verification(
                     type = ConfirmationResponseType.CODE,
-                    value = verification.status.value,
+                    value = verification.status.key,
                     rationale = verification.rationale
                 )
             ),
