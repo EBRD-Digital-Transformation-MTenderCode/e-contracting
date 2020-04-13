@@ -92,7 +92,7 @@ class UpdateAcService(private val acDao: AcDao,
         val language = cm.context.language ?: throw ErrorException(CONTEXT)
         val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
-        val mpc = MainProcurementCategory.fromString(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
+        val mpc = MainProcurementCategory.creator(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
         checkTransactionsValue(dto)
