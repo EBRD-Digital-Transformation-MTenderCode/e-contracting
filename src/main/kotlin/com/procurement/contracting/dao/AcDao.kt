@@ -23,7 +23,7 @@ class AcDao(private val session: Session) {
                         .value(OWNER, entity.owner)
                         .value(CREATED_DATE, entity.createdDate)
                         .value(STATUS, entity.status.key)
-                        .value(STATUS_DETAILS, entity.statusDetails.value)
+                        .value(STATUS_DETAILS, entity.statusDetails.key)
                         .value(MPC, entity.mainProcurementCategory)
                         .value(LANGUAGE, entity.language)
                         .value(JSON_DATA, entity.jsonData)
@@ -46,7 +46,7 @@ class AcDao(private val session: Session) {
                 owner = row.getString(OWNER),
                 createdDate = row.getTimestamp(CREATED_DATE),
                 status = ContractStatus.creator(row.getString(STATUS)),
-                statusDetails = ContractStatusDetails.fromString(row.getString(STATUS_DETAILS)),
+                statusDetails = ContractStatusDetails.creator(row.getString(STATUS_DETAILS)),
                 mainProcurementCategory = row.getString(MPC),
                 language = row.getString(LANGUAGE),
                 jsonData = row.getString(JSON_DATA))
@@ -68,7 +68,7 @@ class AcDao(private val session: Session) {
                     owner = row.getString(OWNER),
                     createdDate = row.getTimestamp(CREATED_DATE),
                     status = ContractStatus.creator(row.getString(STATUS)),
-                    statusDetails = ContractStatusDetails.fromString(row.getString(STATUS_DETAILS)),
+                    statusDetails = ContractStatusDetails.creator(row.getString(STATUS_DETAILS)),
                     mainProcurementCategory = row.getString(MPC),
                     language = row.getString(LANGUAGE),
                     jsonData = row.getString(JSON_DATA))
