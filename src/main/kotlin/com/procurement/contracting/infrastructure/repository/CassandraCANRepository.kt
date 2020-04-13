@@ -180,7 +180,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         lotId = UUID.fromString(row.getString(columnLotId)),
         contractId = row.getString(columnContractId),
         status = CANStatus.creator(row.getString(columnStatus)),
-        statusDetails = CANStatusDetails.fromString(row.getString(columnStatusDetails)),
+        statusDetails = CANStatusDetails.creator(row.getString(columnStatusDetails)),
         jsonData = row.getString(columnJsonData)
     )
 
@@ -270,7 +270,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnCpid, cpid)
                 setUUID(columnCanId, can.id)
                 setString(columnStatus, can.status.key)
-                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnStatusDetails, can.statusDetails.key)
                 setString(columnJsonData, can.jsonData)
             }
 
@@ -299,7 +299,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setUUID(columnCanId, can.id)
                 setString(columnContractId, can.contractId)
                 setString(columnStatus, can.status.key)
-                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnStatusDetails, can.statusDetails.key)
                 setString(columnJsonData, can.jsonData)
             }
 
@@ -321,7 +321,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnLotId, entity.lotId.toString())
                 setString(columnContractId, entity.contractId)
                 setString(columnStatus, entity.status.key)
-                setString(columnStatusDetails, entity.statusDetails.value)
+                setString(columnStatusDetails, entity.statusDetails.key)
                 setString(columnJsonData, entity.jsonData)
             }
 
