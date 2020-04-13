@@ -3,7 +3,6 @@ package com.procurement.contracting.application.service.treasury
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataResetCAN
-import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -628,7 +627,7 @@ class TreasuryProcessingImpl(
                         type = ConfirmationRequestType.fromString(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
                         description = confirmationRequest.description!!,
-                        relatesTo = ConfirmationRequestReleaseTo.fromString(confirmationRequest.relatesTo!!),
+                        relatesTo = ConfirmationRequestReleaseTo.creator(confirmationRequest.relatesTo!!),
                         relatedItem = confirmationRequest.relatedItem,
                         source = ConfirmationRequestSource.fromString(confirmationRequest.source.value),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
