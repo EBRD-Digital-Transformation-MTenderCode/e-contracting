@@ -1,4 +1,4 @@
-package com.procurement.contracting.config
+package com.procurement.contracting.config.properties
 
 import com.procurement.contracting.infrastructure.web.dto.ApiVersion
 
