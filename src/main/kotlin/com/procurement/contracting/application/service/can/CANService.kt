@@ -1,17 +1,22 @@
 package com.procurement.contracting.application.service.can
 
+import com.procurement.contracting.application.model.can.FindCANIdsParams
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.service.GenerationService
 import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Service
-import java.util.*
 
 interface CANService {
     fun create(context: CreateCANContext, data: CreateCANData): CreatedCANData
+    fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail>
 }
 
 @Service
@@ -77,6 +82,32 @@ class CANServiceImpl(
             )
         )
     }
+
+    override fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail> {
+        val canEntity = canRepository.tryFindBy(cpid = params.cpid)
+            .orForwardFail { incident -> return incident }
+
+        val lotIds = params.lotIds.toSet()
+        val sortedStates = params.states.sorted()
+
+        return canEntity.filter { entity ->
+            testContains(value = entity.lotId, patterns = lotIds)
+                && isCANStateListed(canEntity = entity, states = sortedStates)
+        }.map { it.id }
+            .asSuccess()
+    }
+
+    private fun isCANStateListed(canEntity: CANEntity, states: List<FindCANIdsParams.State>) =
+        states.any { state ->
+            when {
+                state.status == null -> canEntity.statusDetails == state.statusDetails
+                state.statusDetails == null -> canEntity.status == state.status
+                else -> canEntity.statusDetails == state.statusDetails && canEntity.status == state.status
+            }
+        }
+
+    private fun <T> testContains(value: T, patterns: Set<T>): Boolean =
+        if (patterns.isNotEmpty()) value in patterns else true
 
     private fun createCANByAward(context: CreateCANContext, data: CreateCANData): CAN {
         return CAN(
