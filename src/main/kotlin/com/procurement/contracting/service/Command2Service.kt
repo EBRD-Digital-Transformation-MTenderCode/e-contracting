@@ -2,7 +2,9 @@ package com.procurement.contracting.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.Logger
+import com.procurement.contracting.infrastructure.handler.FindCANIdsHandler
 import com.procurement.contracting.infrastructure.web.dto.ApiResponse2
+import com.procurement.contracting.model.dto.bpe.Command2Type
 import com.procurement.contracting.model.dto.bpe.generateResponseOnFailure
 import com.procurement.contracting.model.dto.bpe.tryGetAction
 import com.procurement.contracting.model.dto.bpe.tryGetId
@@ -11,7 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class Command2Service(
-    private val logger: Logger
+    private val logger: Logger,
+    private val findCANIdsHandler: FindCANIdsHandler
 ) {
 
     fun execute(node: JsonNode): ApiResponse2 {
@@ -24,7 +27,8 @@ class Command2Service(
                     logger = logger
                 )
             }
-
-        return TODO()
+        return when (action) {
+            Command2Type.FIND_CAN_IDS -> findCANIdsHandler.handle(node)
+        }
     }
 }
