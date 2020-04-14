@@ -15,9 +15,14 @@ import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
+import com.procurement.contracting.infrastructure.fail.Fail
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -290,6 +295,17 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         val result = relateContract(statements)
         if (!result.wasApplied())
             throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
+    }
+
+    override fun tryFindBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database.DatabaseInteractionIncident> {
+        val query = preparedFindByCpidCQL.bind()
+            .apply {
+                setString(columnCpid, cpid.toString())
+            }
+
+        val resultSet = query.tryExecute(session)
+            .orForwardFail { error -> return error }
+        return resultSet.map { convertToCANEntity(it) }.asSuccess()
     }
 
     private fun statementForRelateContract(cpid: String, can: RelatedContract): Statement =
