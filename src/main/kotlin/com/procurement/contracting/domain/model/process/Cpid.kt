@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.model
+package com.procurement.contracting.domain.model.process
 
 import com.fasterxml.jackson.annotation.JsonValue
 
