@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.procurement.contracting.infrastructure.apiversion.ApiVersion2Deserializer
+import com.procurement.contracting.infrastructure.apiversion.ApiVersion2Serializer
+import com.procurement.contracting.infrastructure.web.dto.ApiVersion2
 import com.procurement.contracting.model.dto.databinding.IntDeserializer
 import com.procurement.contracting.model.dto.databinding.JsonDateDeserializer
 import com.procurement.contracting.model.dto.databinding.JsonDateSerializer
@@ -23,6 +26,12 @@ class ObjectMapperConfig(@Autowired objectMapper: ObjectMapper) {
         module.addDeserializer(LocalDateTime::class.java, JsonDateDeserializer())
         module.addDeserializer(String::class.java, StringsDeserializer())
         module.addDeserializer(Int::class.java, IntDeserializer())
+        /**
+         * Serializer/Deserializer for ApiVersion type
+         */
+        module.addSerializer(ApiVersion2::class.java, ApiVersion2Serializer())
+        module.addDeserializer(ApiVersion2::class.java, ApiVersion2Deserializer())
+
 
         objectMapper.registerModule(module)
         objectMapper.registerKotlinModule()
