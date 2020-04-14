@@ -97,14 +97,17 @@ class CANServiceImpl(
             .asSuccess()
     }
 
-    private fun isCANStateListed(canEntity: CANEntity, states: List<FindCANIdsParams.State>) =
-        states.any { state ->
+    private fun isCANStateListed(canEntity: CANEntity, states: List<FindCANIdsParams.State>): Boolean {
+        if (states.isEmpty()) return true
+
+        return states.any { state ->
             when {
                 state.status == null -> canEntity.statusDetails == state.statusDetails
                 state.statusDetails == null -> canEntity.status == state.status
                 else -> canEntity.statusDetails == state.statusDetails && canEntity.status == state.status
             }
         }
+    }
 
     private fun <T> testContains(value: T, patterns: Set<T>): Boolean =
         if (patterns.isNotEmpty()) value in patterns else true
