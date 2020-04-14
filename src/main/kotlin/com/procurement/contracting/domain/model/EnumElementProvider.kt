@@ -30,10 +30,6 @@ abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,
                                                                   T : Key = this
             .map { element -> element.key + if (element.isDeprecated()) " (Deprecated)" else "" }
 
-        fun <T> Collection<T>.keysAsStringsUpper(): List<String> where T : Enum<T>,
-                                                                       T : Key = this
-            .map { element -> element.key.toUpperCase() + if (element.isDeprecated()) " (Deprecated)" else "" }
-
         private fun <E : Enum<E>> Enum<E>.isNotExcluded(): Boolean = this.findAnnotation<ExcludedElement, E>() == null
         private fun <E : Enum<E>> Enum<E>.isDeprecated(): Boolean = this.findAnnotation<DeprecatedElement, E>() != null
         private inline fun <reified A : Annotation, E : Enum<E>> Enum<E>.findAnnotation(): A? = this.javaClass
