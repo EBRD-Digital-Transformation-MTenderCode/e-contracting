@@ -45,13 +45,14 @@ class FindCANIdsParams private constructor(
             if (lotIds != null && lotIds.isEmpty())
                 return DataErrors.Validation.EmptyArray(name = LOT_IDS_ATTRIBUTE_NAME).asFailure()
 
-            val lorIdsParsed = lotIds
+            val lotIdsParsed = lotIds
                 ?.mapResult { lotId ->
                     parseLotId(value = lotId, attributeName = LOT_IDS_ATTRIBUTE_NAME)
-                }?.orForwardFail { error -> return error }
+                }
+                ?.orForwardFail { error -> return error }
                 ?: emptyList()
 
-            val duplicateIds = lorIdsParsed
+            val duplicateIds = lotIdsParsed
                 .groupingBy { it }
                 .eachCount()
                 .filter { it.value > 1 }
@@ -65,7 +66,7 @@ class FindCANIdsParams private constructor(
             return FindCANIdsParams(
                 cpid = cpidParsed,
                 ocid = ocidParsed,
-                lotIds = lorIdsParsed,
+                lotIds = lotIdsParsed,
                 states = states ?: emptyList()
             ).asSuccess()
         }
