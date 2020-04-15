@@ -11,6 +11,7 @@ import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class HistoryRepositoryCassandra(private val session: Session) : HistoryRepository {
@@ -49,10 +50,10 @@ class HistoryRepositoryCassandra(private val session: Session) : HistoryReposito
     private val preparedSaveHistoryCQL = session.prepare(SAVE_HISTORY_CQL)
     private val preparedFindHistoryByCpidAndCommandCQL = session.prepare(FIND_HISTORY_ENTRY_CQL)
 
-    override fun getHistory(operationId: String, command: String): Result<HistoryEntity?, Fail.Incident> {
+    override fun getHistory(operationId: UUID, command: String): Result<HistoryEntity?, Fail.Incident> {
         val query = preparedFindHistoryByCpidAndCommandCQL.bind()
             .apply {
-                setString(OPERATION_ID, operationId)
+                setString(OPERATION_ID, operationId.toString())
                 setString(COMMAND, command)
             }
 
@@ -71,9 +72,9 @@ class HistoryRepositoryCassandra(private val session: Session) : HistoryReposito
             .asSuccess()
     }
 
-    override fun saveHistory(operationId: String, command: String, response: Any): Result<HistoryEntity, Fail.Incident> {
+    override fun saveHistory(operationId: UUID, command: String, response: Any): Result<HistoryEntity, Fail.Incident> {
         val entity = HistoryEntity(
-            operationId = operationId,
+            operationId = operationId.toString(),
             command = command,
             operationDate = localNowUTC().toDate(),
             jsonData = toJson(response)
