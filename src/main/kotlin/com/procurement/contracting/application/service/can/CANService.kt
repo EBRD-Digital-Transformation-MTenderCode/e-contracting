@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 
 interface CANService {
     fun create(context: CreateCANContext, data: CreateCANData): CreatedCANData
-    fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail>
+    fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail.Incident>
 }
 
 @Service
@@ -83,7 +83,7 @@ class CANServiceImpl(
         )
     }
 
-    override fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail> {
+    override fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail.Incident> {
         val canEntity = canRepository.tryFindBy(cpid = params.cpid)
             .orForwardFail { incident -> return incident }
 
