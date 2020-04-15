@@ -12,8 +12,8 @@ object GlobalProperties2 {
     }
 
     class Service {
-        val id: String = "7"
-        val name: String = "e-evaluation"
+        val id: String = "9"
+        val name: String = "e-contracting"
         val version: String = loadVersion()
 
         private fun loadVersion(): String {
