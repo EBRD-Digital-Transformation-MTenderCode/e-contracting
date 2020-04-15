@@ -91,7 +91,7 @@ class CANServiceImpl(
         val sortedStates = params.states.sorted()
 
         return canEntity.filter { entity ->
-            testContains(value = entity.lotId, patterns = lotIds)
+            isContained(value = entity.lotId, patterns = lotIds)
                 && isCANStateListed(canEntity = entity, states = sortedStates)
         }.map { it.id }
             .asSuccess()
@@ -109,7 +109,7 @@ class CANServiceImpl(
         }
     }
 
-    private fun <T> testContains(value: T, patterns: Set<T>): Boolean =
+    private fun <T> isContained(value: T, patterns: Set<T>): Boolean =
         if (patterns.isNotEmpty()) value in patterns else true
 
     private fun createCANByAward(context: CreateCANContext, data: CreateCANData): CAN {
