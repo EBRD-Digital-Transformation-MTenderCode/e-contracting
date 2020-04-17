@@ -1,23 +1,17 @@
 package com.procurement.contracting.domain.model.related.process
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class RelatedProcessScheme(@JsonValue val value: String) {
+enum class RelatedProcessScheme(@JsonValue override val key: String) : EnumElementProvider.Key {
     OCID("ocid");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, RelatedProcessScheme> = values().associateBy { it.value }
-
-        fun fromString(value: String): RelatedProcessScheme = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = RelatedProcessScheme::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<RelatedProcessScheme>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = RelatedProcessScheme.orThrow(name)
     }
 }

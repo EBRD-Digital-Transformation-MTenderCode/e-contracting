@@ -3,7 +3,6 @@ package com.procurement.contracting.application.service.treasury
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataResetCAN
-import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -384,14 +383,14 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedPartyId = milestone.relatedParties!![0].id
@@ -421,7 +420,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedParty = milestone.relatedParties!![0]
@@ -433,7 +432,7 @@ class TreasuryProcessingImpl(
             verification = listOf(
                 Verification(
                     type = ConfirmationResponseType.CODE,
-                    value = verification.status.value,
+                    value = verification.status.key,
                     rationale = verification.rationale
                 )
             ),
@@ -454,7 +453,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val requestGroup = confirmationRequest.requestGroups!![0]
@@ -480,7 +479,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
@@ -512,7 +511,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val confirmationResponseId = confirmationResponse.id
@@ -546,7 +545,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
@@ -625,12 +624,12 @@ class TreasuryProcessingImpl(
                 confirmationRequests = contract.confirmationRequests!!.map { confirmationRequest ->
                     TreasuryProcessedData.Contract.ConfirmationRequest(
                         id = confirmationRequest.id,
-                        type = ConfirmationRequestType.fromString(confirmationRequest.type!!),
+                        type = ConfirmationRequestType.creator(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
                         description = confirmationRequest.description!!,
-                        relatesTo = ConfirmationRequestReleaseTo.fromString(confirmationRequest.relatesTo!!),
+                        relatesTo = ConfirmationRequestReleaseTo.creator(confirmationRequest.relatesTo!!),
                         relatedItem = confirmationRequest.relatedItem,
-                        source = ConfirmationRequestSource.fromString(confirmationRequest.source.value),
+                        source = ConfirmationRequestSource.creator(confirmationRequest.source.key),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
                             TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup(
                                 id = requestGroup.id,
@@ -667,7 +666,7 @@ class TreasuryProcessingImpl(
                                 },
                                 verifications = value.verification.map { verification ->
                                     TreasuryProcessedData.Contract.ConfirmationResponse.Value.Verification(
-                                        type = ConfirmationResponseType.fromString(verification.type.value),
+                                        type = ConfirmationResponseType.creator(verification.type.key),
                                         value = verification.value,
                                         rationale = verification.rationale
                                     )

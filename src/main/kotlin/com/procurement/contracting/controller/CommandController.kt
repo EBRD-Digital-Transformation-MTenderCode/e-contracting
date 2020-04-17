@@ -1,6 +1,6 @@
 package com.procurement.contracting.controller
 
-import com.procurement.contracting.config.GlobalProperties
+import com.procurement.contracting.config.properties.GlobalProperties
 import com.procurement.contracting.infrastructure.web.dto.ApiResponse
 import com.procurement.contracting.model.dto.bpe.CommandMessage
 import com.procurement.contracting.model.dto.bpe.errorResponse
