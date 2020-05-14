@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.organization.MainEconomicActivity
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -9,7 +10,7 @@ data class DetailsSupplier @JsonCreator constructor(
 
         val typeOfSupplier: String?,
 
-        val mainEconomicActivities: Set<String>?,
+        val mainEconomicActivities: List<MainEconomicActivity>?,
 
         val scale: String,
 
