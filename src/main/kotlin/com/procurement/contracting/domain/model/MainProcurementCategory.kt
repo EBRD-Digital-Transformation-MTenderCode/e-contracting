@@ -1,25 +1,18 @@
 package com.procurement.contracting.domain.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
 
-enum class MainProcurementCategory(@JsonValue val value: String) {
+enum class MainProcurementCategory(@JsonValue override val key: String): EnumElementProvider.Key {
     GOODS("goods"),
     SERVICES("services"),
     WORKS("works");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, MainProcurementCategory> = values().associateBy { it.value.toUpperCase() }
-
-        fun fromString(value: String): MainProcurementCategory = CONSTANTS[value.toUpperCase()]
-            ?: throw EnumException(
-                enumType = MainProcurementCategory::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<MainProcurementCategory>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = MainProcurementCategory.orThrow(name)
     }
 }

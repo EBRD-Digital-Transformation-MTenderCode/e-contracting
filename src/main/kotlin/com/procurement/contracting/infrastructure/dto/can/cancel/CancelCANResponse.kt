@@ -16,7 +16,6 @@ data class CancelCANResponse(
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @field:JsonProperty("relatedCans") @param:JsonProperty("relatedCans") val relatedCANs: List<RelatedCAN>?,
 
-    @field:JsonProperty("acCancel") @param:JsonProperty("acCancel") val acCancel: Boolean,
     @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: LotId,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

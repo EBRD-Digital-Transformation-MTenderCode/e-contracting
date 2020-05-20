@@ -116,7 +116,6 @@ class CancelCANServiceTest {
         assertEquals(data.amendment.documents!![0].description, documents[0].description)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(false, response.isCancelledAC)
 
         assertNull(response.contract)
 
@@ -179,7 +178,6 @@ class CancelCANServiceTest {
         assertEquals(data.amendment.documents!![0].description, documents[0].description)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(true, response.isCancelledAC)
 
         assertNotNull(response.contract)
         val contract = response.contract!!
@@ -210,7 +208,6 @@ class CancelCANServiceTest {
         val response = service.cancel(context = context(), data = data)
 
         assertEquals(LOT_ID, response.lotId)
-        assertEquals(true, response.isCancelledAC)
 
         assertNotNull(response.contract)
         val contract = response.contract!!
@@ -493,17 +490,17 @@ class CancelCANServiceTest {
 }
 
 class CANStatusConverter : AbstractArgumentConverter<CANStatus>() {
-    override fun converting(source: String): CANStatus = CANStatus.fromString(source)
+    override fun converting(source: String): CANStatus = CANStatus.creator(source)
 }
 
 class CANStatusDetailsConverter : AbstractArgumentConverter<CANStatusDetails>() {
-    override fun converting(source: String): CANStatusDetails = CANStatusDetails.fromString(source)
+    override fun converting(source: String): CANStatusDetails = CANStatusDetails.creator(source)
 }
 
 class ContractStatusConverter : AbstractArgumentConverter<ContractStatus>() {
-    override fun converting(source: String): ContractStatus = ContractStatus.fromString(source)
+    override fun converting(source: String): ContractStatus = ContractStatus.creator(source)
 }
 
 class ContractStatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
-    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.fromString(source)
+    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.creator(source)
 }

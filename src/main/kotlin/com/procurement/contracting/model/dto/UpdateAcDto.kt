@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.item.ItemId
+import com.procurement.contracting.domain.model.organization.MainEconomicActivity
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.model.dto.databinding.BooleansDeserializer
 import com.procurement.contracting.model.dto.databinding.MoneyDeserializer
@@ -73,7 +74,7 @@ data class ContractUpdate @JsonCreator constructor(
 
     val documents: List<DocumentContract>?,
 
-    val milestones: HashSet<Milestone>,
+    val milestones: List<Milestone>,
 
     val confirmationRequests: MutableList<ConfirmationRequest>?,
 
@@ -142,7 +143,7 @@ data class DetailsSupplierUpdate @JsonCreator constructor(
 
     val typeOfSupplier: String,
 
-    val mainEconomicActivities: Set<String>,
+    val mainEconomicActivities: List<MainEconomicActivity>,
 
     val scale: String,
 

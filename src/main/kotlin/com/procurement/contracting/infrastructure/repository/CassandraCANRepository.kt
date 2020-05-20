@@ -15,9 +15,14 @@ import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
+import com.procurement.contracting.infrastructure.fail.Fail
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -179,8 +184,8 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         awardId = row.getString(columnAwardId)?.let { UUID.fromString(row.getString(columnAwardId)) },
         lotId = UUID.fromString(row.getString(columnLotId)),
         contractId = row.getString(columnContractId),
-        status = CANStatus.fromString(row.getString(columnStatus)),
-        statusDetails = CANStatusDetails.fromString(row.getString(columnStatusDetails)),
+        status = CANStatus.creator(row.getString(columnStatus)),
+        statusDetails = CANStatusDetails.creator(row.getString(columnStatusDetails)),
         jsonData = row.getString(columnJsonData)
     )
 
@@ -269,8 +274,8 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(columnCpid, cpid)
                 setUUID(columnCanId, can.id)
-                setString(columnStatus, can.status.value)
-                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnStatus, can.status.key)
+                setString(columnStatusDetails, can.statusDetails.key)
                 setString(columnJsonData, can.jsonData)
             }
 
@@ -292,14 +297,25 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
     }
 
+    override fun tryFindBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database.DatabaseInteractionIncident> {
+        val query = preparedFindByCpidCQL.bind()
+            .apply {
+                setString(columnCpid, cpid.toString())
+            }
+
+        val resultSet = query.tryExecute(session)
+            .orForwardFail { error -> return error }
+        return resultSet.map { convertToCANEntity(it) }.asSuccess()
+    }
+
     private fun statementForRelateContract(cpid: String, can: RelatedContract): Statement =
         preparedRelateContractCQL.bind()
             .apply {
                 setString(columnCpid, cpid)
                 setUUID(columnCanId, can.id)
                 setString(columnContractId, can.contractId)
-                setString(columnStatus, can.status.value)
-                setString(columnStatusDetails, can.statusDetails.value)
+                setString(columnStatus, can.status.key)
+                setString(columnStatusDetails, can.statusDetails.key)
                 setString(columnJsonData, can.jsonData)
             }
 
@@ -320,8 +336,8 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(columnAwardId, entity.awardId?.toString())
                 setString(columnLotId, entity.lotId.toString())
                 setString(columnContractId, entity.contractId)
-                setString(columnStatus, entity.status.value)
-                setString(columnStatusDetails, entity.statusDetails.value)
+                setString(columnStatus, entity.status.key)
+                setString(columnStatusDetails, entity.statusDetails.key)
                 setString(columnJsonData, entity.jsonData)
             }
 

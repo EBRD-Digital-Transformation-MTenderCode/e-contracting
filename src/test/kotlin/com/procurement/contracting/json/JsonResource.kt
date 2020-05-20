@@ -8,8 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.procurement.contracting.infrastructure.apiversion.ApiVersion2Deserializer
+import com.procurement.contracting.infrastructure.apiversion.ApiVersion2Serializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
 import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
+import com.procurement.contracting.infrastructure.web.dto.ApiVersion2
 import com.procurement.contracting.json.exception.JsonBindingException
 import com.procurement.contracting.json.exception.JsonFileNotFoundException
 import com.procurement.contracting.json.exception.JsonMappingException
@@ -97,5 +100,11 @@ object JsonMapper {
             addDeserializer(LocalDateTime::class.java, JsonDateTimeDeserializer())
             addDeserializer(String::class.java, StringsDeserializer())
             addDeserializer(Int::class.java, IntDeserializer())
+
+            /**
+             * Serializer/Deserializer for ApiVersion type
+             */
+            addSerializer(ApiVersion2::class.java, ApiVersion2Serializer())
+            addDeserializer(ApiVersion2::class.java, ApiVersion2Deserializer())
         }
 }

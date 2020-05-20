@@ -1,25 +1,19 @@
 package com.procurement.contracting.domain.model.confirmation.request
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class ConfirmationRequestSource(@JsonValue val value: String) {
+enum class ConfirmationRequestSource(@JsonValue override val key: String) : EnumElementProvider.Key {
     BUYER("buyer"),
     TENDERER("tenderer"),
     APPROVE_BODY("approveBody");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, ConfirmationRequestSource> = values().associateBy { it.value }
-
-        fun fromString(value: String): ConfirmationRequestSource = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = ConfirmationRequestSource::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<ConfirmationRequestSource>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = ConfirmationRequestSource.orThrow(name)
     }
 }

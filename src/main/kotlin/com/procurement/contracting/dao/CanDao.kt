@@ -27,8 +27,8 @@ class CanDao(private val session: Session) {
                 .value(AWARD_ID, entity.awardId?.toString())
                 .value(LOT_ID, entity.lotId.toString())
                 .value(AC_ID, entity.acId)
-                .value(STATUS, entity.status.value)
-                .value(STATUS_DETAILS, entity.statusDetails.value)
+                .value(STATUS, entity.status.key)
+                .value(STATUS_DETAILS, entity.statusDetails.key)
                 .value(JSON_DATA, entity.jsonData)
         session.execute(insert)
     }
@@ -51,8 +51,8 @@ class CanDao(private val session: Session) {
                     awardId = row.getString(AWARD_ID)?.let { UUID.fromString(it) },
                     lotId = UUID.fromString(row.getString(LOT_ID)),
                     acId = row.getString(AC_ID),
-                    status = CANStatus.fromString(row.getString(STATUS)),
-                    statusDetails = CANStatusDetails.fromString(row.getString(STATUS_DETAILS)),
+                    status = CANStatus.creator(row.getString(STATUS)),
+                    statusDetails = CANStatusDetails.creator(row.getString(STATUS_DETAILS)),
                     jsonData = row.getString(JSON_DATA) ?: ""
                 )
             )
@@ -78,8 +78,8 @@ class CanDao(private val session: Session) {
                 awardId = row.getString(AWARD_ID)?.let { UUID.fromString(it) },
                 lotId = UUID.fromString(row.getString(LOT_ID)),
                 acId = row.getString(AC_ID),
-                status = CANStatus.fromString(row.getString(STATUS)),
-                statusDetails = CANStatusDetails.fromString(row.getString(STATUS_DETAILS)),
+                status = CANStatus.creator(row.getString(STATUS)),
+                statusDetails = CANStatusDetails.creator(row.getString(STATUS_DETAILS)),
                 jsonData = row.getString(JSON_DATA) ?: ""
             )
         else throw ErrorException(ErrorType.CAN_NOT_FOUND)

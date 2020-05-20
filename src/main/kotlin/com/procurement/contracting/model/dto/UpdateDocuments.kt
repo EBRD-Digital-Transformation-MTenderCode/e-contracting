@@ -20,7 +20,7 @@ data class DocumentUpdate @JsonCreator constructor(
 
     var documentType: DocumentTypeUpdateCan,
 
-    var title: String?,
+    val title: String,
 
     var description: String?,
 

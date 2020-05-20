@@ -17,7 +17,6 @@ import com.procurement.contracting.model.dto.Document
 import com.procurement.contracting.model.dto.FinalUpdateAcRq
 import com.procurement.contracting.model.dto.FinalUpdateAcRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.model.dto.ocds.Milestone
@@ -30,14 +29,13 @@ import com.procurement.contracting.model.dto.ocds.RequestGroup
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 
 @Service
 class FinalUpdateService(private val acDao: AcDao,
                          private val generationService: GenerationService,
                          private val templateService: TemplateService) {
 
-    fun finalUpdate(cm: CommandMessage): ResponseDto {
+    fun finalUpdate(cm: CommandMessage): FinalUpdateAcRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val country = cm.context.country ?: throw ErrorException(CONTEXT)
@@ -80,7 +78,7 @@ class FinalUpdateService(private val acDao: AcDao,
         entity.statusDetails = ContractStatusDetails.APPROVEMENT
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = FinalUpdateAcRs(contractProcess.contract))
+        return FinalUpdateAcRs(contractProcess.contract)
     }
 
     private fun addContractDocuments(documentsDto: List<Document>, documentsDb: List<DocumentContract>?): List<DocumentContract>? {

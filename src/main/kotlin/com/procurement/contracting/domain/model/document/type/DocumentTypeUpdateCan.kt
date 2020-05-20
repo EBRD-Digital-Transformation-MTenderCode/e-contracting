@@ -1,23 +1,17 @@
 package com.procurement.contracting.domain.model.document.type
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
+import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class DocumentTypeUpdateCan(@JsonValue val value: String) {
+enum class DocumentTypeUpdateCan(@JsonValue override val key: String) : EnumElementProvider.Key {
     EVALUATION_REPORT("evaluationReports");
 
-    override fun toString(): String {
-        return this.value
-    }
+    override fun toString(): String = key
 
-    companion object {
-        private val CONSTANTS: Map<String, DocumentTypeUpdateCan> = values().associateBy { it.value }
-
-        fun fromString(value: String): DocumentTypeUpdateCan = CONSTANTS[value]
-            ?: throw EnumException(
-                enumType = DocumentTypeUpdateCan::class.java.name,
-                value = value,
-                values = values().toString()
-            )
+    companion object : EnumElementProvider<DocumentTypeUpdateCan>(info = info()) {
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = DocumentTypeUpdateCan.orThrow(name)
     }
 }

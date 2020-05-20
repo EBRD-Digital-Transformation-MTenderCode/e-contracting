@@ -18,7 +18,6 @@ import com.procurement.contracting.model.dto.CreateCanRs
 import com.procurement.contracting.model.dto.GetAwardsRq
 import com.procurement.contracting.model.dto.GetAwardsRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.entity.CanEntity
 import com.procurement.contracting.utils.toDate
@@ -34,7 +33,7 @@ import kotlin.collections.ArrayList
 class CreateCanService(private val canDao: CanDao,
                        private val generationService: GenerationService) {
 
-    fun createCan(cm: CommandMessage): ResponseDto {
+    fun createCan(cm: CommandMessage): CreateCanRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
         val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
@@ -61,10 +60,10 @@ class CreateCanService(private val canDao: CanDao,
             amendment = null)
         val canEntity = createCanEntity(cpId, owner, dateTime, can)
         canDao.save(canEntity)
-        return ResponseDto(data = CreateCanRs(can))
+        return CreateCanRs(can)
     }
 
-    fun checkCan(cm: CommandMessage): ResponseDto {
+    fun checkCan(cm: CommandMessage) {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
 
@@ -72,10 +71,9 @@ class CreateCanService(private val canDao: CanDao,
         if (canEntities.asSequence().any { it.lotId == lotId && it.status != CANStatus.CANCELLED }) {
             throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
         }
-        return ResponseDto(data = "ok")
     }
 
-    fun checkCanByAwardId(cm: CommandMessage): ResponseDto {
+    fun checkCanByAwardId(cm: CommandMessage) {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val dto = toObject(AwardDto::class.java, cm.data)
         val canEntities = canDao.findAllByCpId(cpId)
@@ -85,10 +83,9 @@ class CreateCanService(private val canDao: CanDao,
                 }) {
             throw ErrorException(ErrorType.INVALID_CAN_STATUS)
         }
-        return ResponseDto(data = "ok")
     }
 
-    fun getCans(cm: CommandMessage): ResponseDto {
+    fun getCans(cm: CommandMessage): GetAwardsRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val dto = toObject(GetAwardsRq::class.java, cm.data)
 
@@ -103,10 +100,10 @@ class CreateCanService(private val canDao: CanDao,
                 throw ErrorException(ErrorType.INVALID_CAN_STATUS)
             }
         }
-        return ResponseDto(data = GetAwardsRs(cansRs))
+        return GetAwardsRs(cansRs)
     }
 
-    fun confirmationCan(cm: CommandMessage): ResponseDto {
+    fun confirmationCan(cm: CommandMessage): ConfirmationCanRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
         val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
@@ -124,12 +121,11 @@ class CreateCanService(private val canDao: CanDao,
             canEntity.statusDetails = can.statusDetails
             canEntity.jsonData = toJson(can)
             canDao.save(canEntity)
-            return ResponseDto(
-                data = ConfirmationCanRs(
-                    cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
-                    lotId = can.lotId
-                )
+            return ConfirmationCanRs(
+                cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
+                lotId = can.lotId
             )
+
         } else
             throw ErrorException(ErrorType.INVALID_CAN_STATUS)
     }

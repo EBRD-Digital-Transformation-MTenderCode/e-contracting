@@ -3,7 +3,6 @@ package com.procurement.contracting.application.service.treasury
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataResetCAN
-import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -20,6 +19,7 @@ import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.
 import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.NOT_ACCEPTED
 import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.REJECTED
 import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONFIRMATION_REQUEST
 import com.procurement.contracting.exception.ErrorType.CONTRACT_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS
@@ -49,37 +49,28 @@ class TreasuryProcessingImpl(
     TreasuryProcessing {
     /**
      * eContracting executes next operations:
-     * 1. Finds saved version of Contract object by OCID && CPID values from parameter of Request;
-     *   a. Validates Contract.Status && Contract.statusDetails in saved version of Contract by rule VR-9.9.1;
-     *   b. Proceeds confirmationResponses object by rule BR-9.9.2;
-     *   c. Proceeds Documents object by rule BR-9.9.8;
-     *   d. Analyzes the value of verification.value field from Request:
-     *     i.   IF verification.value == "3004":
-     *       1. Proceeds Contract.Milestones object by rule BR-9.9.6;
-     *       2. Sets Contract.statusDetails by rule BR-9.9.7;
-     *     ii.  IF verification.value == "3005":
-     *       1. Proceeds Contract.Milestones object by rule BR-9.9.9;
-     *       2. Sets Contract.status && Contract.statusDetails by rule BR-9.9.10;
-     *       3. Saves regData object & dateMet from Request to separate table in DB with
-     *          ac_id && cp_id && can_id array && ac_status && ac_statusDetails;
-     *       4. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID
-     *          from the context of Request and saves them as list in memory;
-     *       5. Selects only CAN objects from list (got on step 1.e.ii.3) with can.status == "pending"
-     *          and saves them as a list to memory;
-     *       6. FOR every CAN from list (got before):
-     *         a. Sets CAN.statusDetails by rule BR-9.9.11;
-     *         b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
-     *     iii. IF verification.value == "3006":
-     *       1. Proceeds Contract.Milestones object by rule BR-9.9.9;
-     *       2. Sets Contract.status && Contract.statusDetails by rule BR-9.9.10;
-     *       3. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID
-     *          from the context of Request and saves them as list in memory;
-     *       4. Selects only CAN objects from list (got on step 1.e.ii.3) with can.status == "pending"
-     *          and saves them as a list to memory;
-     *       5. FOR every CAN from list (got before) eContracting performs next steps:
-     *         a. Sets CAN.status && CAN.statusDetails by rule BR-9.9.12;
-     *         b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
-     *   e. Returns updated Contract object for Response;
+
+     1. Finds saved version of Contract object by OCID && CPID values from parameter of Request;
+        a. Validates Contract.Status && Contract.statusDetails in saved version of Contract by rule VR-9.9.1;
+        b. Proceeds confirmationResponses object by rule BR-9.9.2;
+        c. Proceeds Documents object by rule BR-9.9.8;
+        d. Analyzes the value of operationType from the context of Request:
+            i. IF [operationType == "treasuryApprovingAC"] then: eContracting executes next operation:
+                1. Проверяет наличие данных во входящем запросе по правилам VR-9.9.2 и VR-9.9.3
+                2. Processes Contract.Milestones object by rule BR-9.9.6;
+                3. Sets Contract.statusDetails by rule BR-9.9.7;
+                4. System saves regData object from Request
+            ii.} else IF [operationType == "processAcClarification" OR "processAcRejection] { then: eContracting executes next operation:
+                1. Processes Contract.Milestones object by rule BR-9.9.9;
+                2. Sets Contract.status && Contract.statusDetails by rule BR-9.9.10;
+                3. System saves dateMet from Request to separate table in DB with ac_id && cp_id && can_id array && ac_status && ac_statusDetails;
+                4. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID from the context of Request and saves them as list in memory;
+                5. Selects only CAN objects from list (got on step 1.d.ii.4) with can.status == "pending" and saves them as a list to memory;
+                6. FOR every CAN from list (got before) eContracting performs next steps:
+                    a. Sets CAN.statusDetails by rule BR-9.9.11;
+                    b. Sets can.ocidAc value == NULL;
+                    c. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
+        e. Returns updated Contract object for Response;
      */
     override fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData {
         val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = context.ocid)
@@ -97,8 +88,10 @@ class TreasuryProcessingImpl(
 
     /**
      * i. IF verification.value == "3004":
-     *   1. Proceeds Contract.Milestones object by rule BR-9.9.6;
-     *   2. Sets Contract.statusDetails by rule BR-9.9.7;
+     *     1. Проверяет наличие данных во входящем запросе по правилам VR-9.9.2 и VR-9.9.3
+     *     2. Processes Contract.Milestones object by rule BR-9.9.6;
+     *     3. Sets Contract.statusDetails by rule BR-9.9.7;
+     *     4. System saves regData object from Request
      */
     private fun processingStatus3004(
         context: TreasuryProcessingContext,
@@ -106,6 +99,9 @@ class TreasuryProcessingImpl(
         acEntity: ACEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
+
+        //VR-9.9.2
+        checkRegData(data)
 
         // BR-9.9.2
         val newConfirmationResponse = createConfirmationResponse(data, contractProcess.contract)
@@ -132,6 +128,11 @@ class TreasuryProcessingImpl(
                 statusDetails = statusDetails,
                 confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
+            ),
+            treasuryData = TreasuryData(
+                externalRegId = data.regData!!.externalRegId,
+                regDate = data.regData.regDate,
+                dateMet = data.dateMet
             )
         )
 
@@ -146,11 +147,20 @@ class TreasuryProcessingImpl(
         return genResponse(contract = updatedContractProcess.contract, cans = emptyList())
     }
 
+    /*    VR-9.9.2,
+         eContracting проверяет наличие объекта regData во входящих данных
+    */
+    private fun checkRegData(data: TreasuryProcessingData) {
+        if (data.regData == null) {
+            throw ErrorException(ErrorType.NO_REGDATA)
+        }
+    }
+
     /**
      * ii.  IF verification.value == "3005":
      *   1. Proceeds Contract.Milestones object by rule BR-9.9.9;
      *   2. Sets Contract.status && Contract.statusDetails by rule BR-9.9.10;
-     *   3. Saves regData object & dateMet from Request to separate table in DB with
+     *   3. System saves dateMet from Request to separate table in DB with
      *      ac_id && cp_id && can_id array && ac_status && ac_statusDetails;
      *   4. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID
      *      from the context of Request and saves them as list in memory;
@@ -158,7 +168,8 @@ class TreasuryProcessingImpl(
      *      and saves them as a list to memory;
      *   6. FOR every CAN from list (got before):
      *     a. Sets CAN.statusDetails by rule BR-9.9.11;
-     *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
+     *     b. Sets can.ocidAc value == NULL;
+     *     c. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3005(
         context: TreasuryProcessingContext,
@@ -195,11 +206,6 @@ class TreasuryProcessingImpl(
                 statusDetails = statusDetails,
                 confirmationResponses = updatedConfirmationResponses.toMutableList(),
                 documents = documents
-            ),
-            treasuryData = TreasuryData(
-                externalRegId = data.regData!!.externalRegId,
-                regDate = data.regData.regDate,
-                dateMet = data.dateMet
             )
         )
 
@@ -243,16 +249,19 @@ class TreasuryProcessingImpl(
     }
 
     /**
-     * iii. IF verification.value == "3006":
+     * ii.  IF verification.value == "3006":
      *   1. Proceeds Contract.Milestones object by rule BR-9.9.9;
      *   2. Sets Contract.status && Contract.statusDetails by rule BR-9.9.10;
-     *   3. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID
+     *   3. System saves dateMet from Request to separate table in DB with
+     *      ac_id && cp_id && can_id array && ac_status && ac_statusDetails;
+     *   4. Finds all CAN objects in DB related to proceeded Contract where can.acOcid value == OCID
      *      from the context of Request and saves them as list in memory;
-     *   4. Selects only CAN objects from list (got on step 1.e.ii.3) with can.status == "pending"
+     *   5. Selects only CAN objects from list (got on step 1.e.ii.3) with can.status == "pending"
      *      and saves them as a list to memory;
-     *   5. FOR every CAN from list (got before) eContracting performs next steps:
-     *     a. Sets CAN.status && CAN.statusDetails by rule BR-9.9.12;
-     *     b. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
+     *   6. FOR every CAN from list (got before):
+     *     a. Sets CAN.statusDetails by rule BR-9.9.11;
+     *     b. Sets can.ocidAc value == NULL;
+     *     c. Returns CAN from DB for Response as can.ID && can.status && can.statusDetails;
      */
     private fun processingStatus3006(
         context: TreasuryProcessingContext,
@@ -302,18 +311,15 @@ class TreasuryProcessingImpl(
                     /*
                      * BR-9.9.12 status statusDetails (CAN)
                      *
-                     * eContracting sets:
-                     * CAN.status value == "unsuccessful" and saves it to DB;
-                     * CAN.statusDetails value == "treasuryRejection" and saves it to DB;
+                     * eContracting sets CAN.statusDetails value == "contractProject" and saves it to DB;
                      */
-                    status = CANStatus.UNSUCCESSFUL,
-                    statusDetails = CANStatusDetails.TREASURY_REJECTION
+                    statusDetails = CANStatusDetails.CONTRACT_PROJECT
                 )
             }
             .toList()
 
         val cansEntities = updatedCANs.map { can ->
-            DataStatusesCAN(
+            DataResetCAN(
                 id = can.id,
                 status = can.status,
                 statusDetails = can.statusDetails,
@@ -329,7 +335,7 @@ class TreasuryProcessingImpl(
             statusDetails = updatedContractProcess.contract.statusDetails,
             jsonData = toJson(updatedContractProcess)
         )
-        canRepository.updateStatusesCANs(cpid = context.cpid, cans = cansEntities)
+        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
 
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }
@@ -377,14 +383,14 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "A confirmation request with type source '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedPartyId = milestone.relatedParties!![0].id
@@ -414,7 +420,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val relatedParty = milestone.relatedParties!![0]
@@ -426,7 +432,7 @@ class TreasuryProcessingImpl(
             verification = listOf(
                 Verification(
                     type = ConfirmationResponseType.CODE,
-                    value = verification.status.value,
+                    value = verification.status.key,
                     rationale = verification.rationale
                 )
             ),
@@ -447,7 +453,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val requestGroup = confirmationRequest.requestGroups!![0]
@@ -473,7 +479,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
@@ -505,7 +511,7 @@ class TreasuryProcessingImpl(
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
             error = CONFIRMATION_REQUEST,
-            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.value}' not found."
+            message = "Confirmation request by type '${ConfirmationRequestSource.APPROVE_BODY.key}' not found."
         )
 
         val confirmationResponseId = confirmationResponse.id
@@ -539,7 +545,7 @@ class TreasuryProcessingImpl(
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
         } ?: throw ErrorException(
             error = MILESTONE,
-            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.value}' not found."
+            message = "Milestone by type '${MilestoneSubType.APPROVE_BODY_VALIDATION.key}' not found."
         )
 
         val updatedMilestone = milestone.copy(
@@ -618,12 +624,12 @@ class TreasuryProcessingImpl(
                 confirmationRequests = contract.confirmationRequests!!.map { confirmationRequest ->
                     TreasuryProcessedData.Contract.ConfirmationRequest(
                         id = confirmationRequest.id,
-                        type = ConfirmationRequestType.fromString(confirmationRequest.type!!),
+                        type = ConfirmationRequestType.creator(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
                         description = confirmationRequest.description!!,
-                        relatesTo = ConfirmationRequestReleaseTo.fromString(confirmationRequest.relatesTo!!),
+                        relatesTo = ConfirmationRequestReleaseTo.creator(confirmationRequest.relatesTo!!),
                         relatedItem = confirmationRequest.relatedItem,
-                        source = ConfirmationRequestSource.fromString(confirmationRequest.source.value),
+                        source = ConfirmationRequestSource.creator(confirmationRequest.source.key),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
                             TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup(
                                 id = requestGroup.id,
@@ -660,7 +666,7 @@ class TreasuryProcessingImpl(
                                 },
                                 verifications = value.verification.map { verification ->
                                     TreasuryProcessedData.Contract.ConfirmationResponse.Value.Verification(
-                                        type = ConfirmationResponseType.fromString(verification.type.value),
+                                        type = ConfirmationResponseType.creator(verification.type.key),
                                         value = verification.value,
                                         rationale = verification.rationale
                                     )

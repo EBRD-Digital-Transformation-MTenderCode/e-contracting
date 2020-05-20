@@ -14,14 +14,13 @@ import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.GetActualBsRs
 import com.procurement.contracting.model.dto.GetBidIdRs
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 
 @Service
 class StatusService(private val acDao: AcDao) {
 
-    fun getActualBudgetSources(cm: CommandMessage): ResponseDto {
+    fun getActualBudgetSources(cm: CommandMessage): GetActualBsRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -39,17 +38,17 @@ class StatusService(private val acDao: AcDao) {
             throw ErrorException(CONTRACT_STATUS_DETAILS)
         val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet() ?: setOf()
         val itemsCPVs = contractProcess.award.items.asSequence().map { it.classification.id }.toHashSet()
-        return ResponseDto(data = GetActualBsRs(
+        return GetActualBsRs(
                 language = entity.language,
                 actualBudgetSource = actualBudgetSource,
-                itemsCPVs = itemsCPVs))
+                itemsCPVs = itemsCPVs)
     }
 
-    fun getRelatedBidId(cm: CommandMessage): ResponseDto {
+    fun getRelatedBidId(cm: CommandMessage): GetBidIdRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val entity = acDao.getByCpIdAndAcId(cpId, ocId)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
-        return ResponseDto(data = GetBidIdRs(contractProcess.award.relatedBids))
+        return GetBidIdRs(contractProcess.award.relatedBids)
     }
 }

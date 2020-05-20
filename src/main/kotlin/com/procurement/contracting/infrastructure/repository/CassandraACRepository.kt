@@ -113,9 +113,9 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         token = row.getUUID(columnToken),
         owner = row.getString(columnOwner),
         createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        status = ContractStatus.fromString(row.getString(columnStatus)),
-        statusDetails = ContractStatusDetails.fromString(row.getString(columnStatusDetails)),
-        mainProcurementCategory = MainProcurementCategory.fromString(row.getString(columnMPC)),
+        status = ContractStatus.creator(row.getString(columnStatus)),
+        statusDetails = ContractStatusDetails.creator(row.getString(columnStatusDetails)),
+        mainProcurementCategory = MainProcurementCategory.creator(row.getString(columnMPC)),
         language = row.getString(columnLanguage),
         jsonData = row.getString(columnJsonData)
     )
@@ -128,9 +128,9 @@ class CassandraACRepository(private val session: Session) : ACRepository {
                 setUUID(columnToken, entity.token)
                 setString(columnOwner, entity.owner)
                 setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnStatus, entity.status.value)
-                setString(columnStatusDetails, entity.statusDetails.value)
-                setString(columnMPC, entity.mainProcurementCategory.value)
+                setString(columnStatus, entity.status.key)
+                setString(columnStatusDetails, entity.statusDetails.key)
+                setString(columnMPC, entity.mainProcurementCategory.key)
                 setString(columnLanguage, entity.language)
                 setString(columnJsonData, entity.jsonData)
             }

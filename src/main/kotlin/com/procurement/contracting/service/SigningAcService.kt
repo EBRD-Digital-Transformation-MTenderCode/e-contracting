@@ -26,7 +26,6 @@ import com.procurement.contracting.model.dto.ProceedResponseRq
 import com.procurement.contracting.model.dto.SupplierSigningRs
 import com.procurement.contracting.model.dto.TreasuryBudgetSourceSupplierSigning
 import com.procurement.contracting.model.dto.bpe.CommandMessage
-import com.procurement.contracting.model.dto.bpe.ResponseDto
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
@@ -49,7 +48,7 @@ class SigningAcService(private val acDao: AcDao,
                        private val generationService: GenerationService,
                        private val templateService: TemplateService) {
 
-    fun buyerSigningAC(cm: CommandMessage): ResponseDto {
+    fun buyerSigningAC(cm: CommandMessage): BuyerSigningRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val token = cm.context.token ?: throw ErrorException(CONTEXT)
@@ -138,10 +137,10 @@ class SigningAcService(private val acDao: AcDao,
         entity.statusDetails = ContractStatusDetails.APPROVED
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = BuyerSigningRs(contractProcess.contract))
+        return BuyerSigningRs(contractProcess.contract)
     }
 
-    fun supplierSigningAC(cm: CommandMessage): ResponseDto {
+    fun supplierSigningAC(cm: CommandMessage): SupplierSigningRs {
         val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
         val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
         val country = cm.context.country ?: throw ErrorException(CONTEXT)
@@ -238,7 +237,7 @@ class SigningAcService(private val acDao: AcDao,
         entity.statusDetails = ContractStatusDetails.SIGNED
         entity.jsonData = toJson(contractProcess)
         acDao.save(entity)
-        return ResponseDto(data = SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract))
+        return SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract)
     }
 
     private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
