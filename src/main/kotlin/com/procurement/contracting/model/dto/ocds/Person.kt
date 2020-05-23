@@ -7,6 +7,8 @@ import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Person @JsonCreator constructor(
 
+        var id: PersonId?,
+
         var title: String,
 
         var name: String,

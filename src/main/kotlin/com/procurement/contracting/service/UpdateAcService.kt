@@ -65,6 +65,7 @@ import com.procurement.contracting.model.dto.ocds.Milestone
 import com.procurement.contracting.model.dto.ocds.OrganizationReferenceSupplier
 import com.procurement.contracting.model.dto.ocds.Period
 import com.procurement.contracting.model.dto.ocds.Person
+import com.procurement.contracting.model.dto.ocds.PersonId
 import com.procurement.contracting.model.dto.ocds.Planning
 import com.procurement.contracting.model.dto.ocds.RelatedParty
 import com.procurement.contracting.model.dto.ocds.RelatedPerson
@@ -557,7 +558,17 @@ class UpdateAcService(private val acDao: AcDao,
         //update
         personesDb.forEach { personDb -> personDb.update(personesDto.firstOrNull { it.identifier.id == personDb.identifier.id }) }
         val newPersonesId = personesDtoIds - personesDbIds
-        val newPersones = personesDto.asSequence().filter { it.identifier.id in newPersonesId }.toHashSet()
+        val newPersones = personesDto.asSequence()
+            .filter { it.identifier.id in newPersonesId }
+            .map { person ->
+                person.apply {
+                    id = PersonId.generate(
+                        scheme = identifier.scheme,
+                        id = identifier.id
+                    )
+                }
+            }
+            .toHashSet()
         return (personesDb + newPersones).toHashSet()
     }
 
