@@ -131,7 +131,15 @@ class UpdateAcService(private val acDao: AcDao,
 
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
-            buyer = dto.buyer//BR-9.2.20
+            //BR-9.2.20 + BR-9.2.20.1
+            buyer = dto.buyer
+                .apply {
+                    copy(
+                        persones = persones.asSequence()
+                            .map { person -> person.generateId() }
+                            .toHashSet()
+                    )
+                }
             funders = dto.funders//BR-9.2.20
             payers = dto.payers//BR-9.2.20
             treasuryBudgetSources = dto.treasuryBudgetSources//BR-9.2.24
