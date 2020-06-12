@@ -160,5 +160,7 @@ data class UpdateAcRs @JsonCreator constructor(
 
     val contract: Contract,
 
-    val award: ContractedAward
+    val award: ContractedAward,
+
+    val buyer: OrganizationReferenceBuyer
 )
