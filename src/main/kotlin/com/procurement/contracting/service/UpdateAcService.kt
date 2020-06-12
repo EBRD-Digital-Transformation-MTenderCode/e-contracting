@@ -150,7 +150,8 @@ class UpdateAcService(private val acDao: AcDao,
         return UpdateAcRs(
             planning = contractProcess.planning!!,
             contract = contractProcess.contract,
-            award = contractProcess.award
+            award = contractProcess.award,
+            buyer = contractProcess.buyer
         )
     }
 
