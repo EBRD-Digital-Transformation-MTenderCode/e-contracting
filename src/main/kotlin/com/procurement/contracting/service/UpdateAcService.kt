@@ -131,7 +131,15 @@ class UpdateAcService(private val acDao: AcDao,
 
         contractProcess.apply {
             planning = validateUpdatePlanning(dto)
-            buyer = dto.buyer//BR-9.2.20
+            //BR-9.2.20 + BR-9.2.20.1
+            buyer = dto.buyer
+                .apply {
+                    copy(
+                        persones = persones.asSequence()
+                            .map { person -> person.generateId() }
+                            .toHashSet()
+                    )
+                }
             funders = dto.funders//BR-9.2.20
             payers = dto.payers//BR-9.2.20
             treasuryBudgetSources = dto.treasuryBudgetSources//BR-9.2.24
@@ -142,7 +150,8 @@ class UpdateAcService(private val acDao: AcDao,
         return UpdateAcRs(
             planning = contractProcess.planning!!,
             contract = contractProcess.contract,
-            award = contractProcess.award
+            award = contractProcess.award,
+            buyer = contractProcess.buyer!!
         )
     }
 
@@ -551,7 +560,11 @@ class UpdateAcService(private val acDao: AcDao,
     }
 
     private fun updatePersones(personesDb: HashSet<Person>?, personesDto: HashSet<Person>): HashSet<Person> {
-        if (personesDb == null || personesDb.isEmpty()) return personesDto
+        if (personesDb == null || personesDb.isEmpty())
+            return personesDto.asSequence()
+                .map { person -> person.generateId() }
+                .toHashSet()
+
         val personesDbIds = personesDb.asSequence().map { it.identifier.id }.toSet()
         val personesDtoIds = personesDto.asSequence().map { it.identifier.id }.toSet()
         if (personesDtoIds.size != personesDto.size) throw ErrorException(PERSONES)
@@ -560,16 +573,16 @@ class UpdateAcService(private val acDao: AcDao,
         val newPersonesId = personesDtoIds - personesDbIds
         val newPersones = personesDto.asSequence()
             .filter { it.identifier.id in newPersonesId }
-            .map { person ->
-                person.apply {
-                    id = PersonId.generate(
-                        scheme = identifier.scheme,
-                        id = identifier.id
-                    )
-                }
-            }
+            .map { person -> person.generateId() }
             .toHashSet()
         return (personesDb + newPersones).toHashSet()
+    }
+
+    private fun Person.generateId(): Person = this.apply {
+        id = PersonId.generate(
+            scheme = identifier.scheme,
+            id = identifier.id
+        )
     }
 
     private fun Person.update(personDto: Person?) {
