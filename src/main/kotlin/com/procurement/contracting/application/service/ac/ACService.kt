@@ -427,7 +427,9 @@ class ACServiceImpl(
             ProcurementMethod.SV,
             ProcurementMethod.TEST_SV,
             ProcurementMethod.MV,
-            ProcurementMethod.TEST_MV -> {
+            ProcurementMethod.TEST_MV,
+            ProcurementMethod.GPA,
+            ProcurementMethod.TEST_GPA -> {
                 awards.map { award ->
                     award.relatedBid!!
                 }
