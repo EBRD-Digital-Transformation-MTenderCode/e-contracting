@@ -422,28 +422,23 @@ class ACServiceImpl(
 
     private fun generateRelatedBids(context: CreateACContext, awards: List<CreateACData.Award>): List<BidId> =
         when (context.pmd) {
-            ProcurementMethod.OT,
-            ProcurementMethod.TEST_OT,
-            ProcurementMethod.SV,
-            ProcurementMethod.TEST_SV,
-            ProcurementMethod.MV,
-            ProcurementMethod.TEST_MV,
-            ProcurementMethod.GPA,
-            ProcurementMethod.TEST_GPA -> {
+            ProcurementMethod.GPA, ProcurementMethod.TEST_GPA,
+            ProcurementMethod.MV, ProcurementMethod.TEST_MV,
+            ProcurementMethod.OT, ProcurementMethod.TEST_OT,
+            ProcurementMethod.RT, ProcurementMethod.TEST_RT,
+            ProcurementMethod.SV, ProcurementMethod.TEST_SV -> {
                 awards.map { award ->
                     award.relatedBid!!
                 }
             }
-            ProcurementMethod.RT,
-            ProcurementMethod.TEST_RT,
-            ProcurementMethod.FA,
-            ProcurementMethod.TEST_FA,
-            ProcurementMethod.OP,
-            ProcurementMethod.TEST_OP,
-            ProcurementMethod.DA,
-            ProcurementMethod.TEST_DA,
-            ProcurementMethod.NP,
-            ProcurementMethod.TEST_NP -> {
+
+            ProcurementMethod.CD, ProcurementMethod.TEST_CD,
+            ProcurementMethod.DA, ProcurementMethod.TEST_DA,
+            ProcurementMethod.DC, ProcurementMethod.TEST_DC,
+            ProcurementMethod.FA, ProcurementMethod.TEST_FA,
+            ProcurementMethod.IP, ProcurementMethod.TEST_IP,
+            ProcurementMethod.NP, ProcurementMethod.TEST_NP,
+            ProcurementMethod.OP, ProcurementMethod.TEST_OP -> {
                 emptyList()
             }
         }
