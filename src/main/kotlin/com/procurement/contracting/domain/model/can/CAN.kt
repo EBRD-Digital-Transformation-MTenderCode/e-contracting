@@ -10,8 +10,8 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.lot.LotId
-import com.procurement.contracting.infrastructure.bind.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.JsonDateTimeSerializer
+import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
+import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
 import java.time.LocalDateTime
 import java.util.*
 

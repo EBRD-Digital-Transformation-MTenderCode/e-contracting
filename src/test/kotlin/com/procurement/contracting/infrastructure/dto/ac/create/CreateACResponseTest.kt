@@ -1,6 +1,7 @@
 package com.procurement.contracting.infrastructure.dto.ac.create
 
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
+import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateACResponse
 import org.junit.jupiter.api.Test
 
 class CreateACResponseTest : AbstractDTOTestBase<CreateACResponse>(CreateACResponse::class.java) {

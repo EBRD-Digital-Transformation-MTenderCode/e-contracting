@@ -4,6 +4,7 @@ import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
 import com.procurement.contracting.application.repository.DataCancelCAN
 import com.procurement.contracting.application.repository.DataRelatedCAN
+import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
@@ -16,7 +17,6 @@ import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendm
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject

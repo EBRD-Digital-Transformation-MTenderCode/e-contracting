@@ -4,11 +4,11 @@ import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder.eq
 import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
 import com.datastax.driver.core.querybuilder.QueryBuilder.select
+import com.procurement.contracting.application.repository.model.AcEntity
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.entity.AcEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -61,7 +61,8 @@ class AcDao(private val session: Session) {
         val resultSet = session.execute(query)
         val entities = ArrayList<AcEntity>()
         resultSet.forEach { row ->
-            entities.add(AcEntity(
+            entities.add(
+                AcEntity(
                     cpId = row.getString(CP_ID),
                     acId = row.getString(AC_ID),
                     token = row.getUUID(TOKEN),

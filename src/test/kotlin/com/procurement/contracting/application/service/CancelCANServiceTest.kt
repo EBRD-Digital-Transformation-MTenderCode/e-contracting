@@ -9,6 +9,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.AbstractArgumentConverter
 import com.procurement.contracting.application.repository.ACRepository
 import com.procurement.contracting.application.repository.CANRepository
+import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
@@ -23,7 +24,6 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.json.loadJson
-import com.procurement.contracting.model.dto.ContractProcess
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.junit.jupiter.api.Assertions.assertEquals

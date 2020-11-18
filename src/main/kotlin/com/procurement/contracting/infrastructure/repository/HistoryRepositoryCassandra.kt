@@ -1,12 +1,12 @@
 package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.Session
-import com.procurement.contracting.application.repository.HistoryRepository
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
-import com.procurement.contracting.model.entity.HistoryEntity
+import com.procurement.contracting.infrastructure.handler.HistoryRepository
+import com.procurement.contracting.infrastructure.repository.model.HistoryEntity
 import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson

@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.model.can
 
+import com.procurement.contracting.application.service.model.FindCANIdsParams
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

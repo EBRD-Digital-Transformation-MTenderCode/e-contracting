@@ -1,6 +1,7 @@
 package com.procurement.contracting.infrastructure.web.dto.ac
 
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
+import com.procurement.contracting.infrastructure.handler.v1.model.response.FinalUpdateACResponse
 import org.junit.jupiter.api.Test
 
 class FinalUpdateResponseTest : AbstractDTOTestBase<FinalUpdateACResponse>(FinalUpdateACResponse::class.java) {

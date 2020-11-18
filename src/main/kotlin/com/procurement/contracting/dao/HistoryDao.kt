@@ -4,8 +4,8 @@ import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder.eq
 import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
 import com.datastax.driver.core.querybuilder.QueryBuilder.select
-import com.procurement.contracting.infrastructure.web.dto.ApiSuccessResponse
-import com.procurement.contracting.model.entity.HistoryEntity
+import com.procurement.contracting.infrastructure.api.v1.ApiSuccessResponse
+import com.procurement.contracting.infrastructure.repository.model.HistoryEntity
 import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
