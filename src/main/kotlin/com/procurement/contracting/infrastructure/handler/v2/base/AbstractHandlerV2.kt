@@ -14,7 +14,7 @@ import com.procurement.contracting.infrastructure.handler.v2.tryGetVersion
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.utils.toJson
 
-abstract class AbstractHandler<ACTION : Action, R : Any>(private val logger: Logger) : Handler<ACTION, ApiResponseV2> {
+abstract class AbstractHandlerV2<ACTION : Action, R : Any>(private val logger: Logger) : Handler<ACTION, ApiResponseV2> {
 
     override fun handle(node: JsonNode): ApiResponseV2 {
         val id = node.tryGetId().getOrElse(CommandId.NaN)
