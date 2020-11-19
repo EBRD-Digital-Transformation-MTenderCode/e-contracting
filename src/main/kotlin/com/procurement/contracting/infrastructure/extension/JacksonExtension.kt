@@ -3,8 +3,10 @@ package com.procurement.contracting.infrastructure.extension
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeType
 import com.fasterxml.jackson.databind.node.NullNode
+import com.procurement.contracting.application.service.Transform
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
+import com.procurement.contracting.infrastructure.fail.error.BadRequest
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.Result.Companion.failure
@@ -12,6 +14,12 @@ import com.procurement.contracting.lib.functional.Result.Companion.success
 import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.lib.functional.flatMap
 import java.math.BigDecimal
+
+fun String.tryGetNode(transform: Transform): Result<JsonNode, BadRequest> =
+    when (val result = transform.tryParse(this)) {
+        is Result.Success -> result
+        is Result.Failure -> failure(BadRequest(exception = result.reason.exception))
+    }
 
 fun JsonNode.getOrNull(name: String): JsonNode? = if (this.has(name)) this.get(name) else null
 
