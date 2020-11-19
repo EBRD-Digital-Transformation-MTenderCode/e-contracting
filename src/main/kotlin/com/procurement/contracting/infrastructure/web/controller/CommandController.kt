@@ -1,7 +1,7 @@
 package com.procurement.contracting.infrastructure.web.controller
 
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
-import com.procurement.contracting.infrastructure.api.v1.ApiResponse
+import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
 import com.procurement.contracting.infrastructure.handler.v1.CommandService
@@ -27,7 +27,7 @@ class CommandController(private val commandService: CommandService) {
     }
 
     @PostMapping
-    fun command(@RequestBody requestBody: String): ResponseEntity<ApiResponse> {
+    fun command(@RequestBody requestBody: String): ResponseEntity<ApiResponseV1> {
         if (log.isDebugEnabled)
             log.debug("RECEIVED COMMAND: '$requestBody'.")
 
