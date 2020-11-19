@@ -34,10 +34,10 @@ class FindCANIdsParams private constructor(
             lotIds: List<String>?
         ): Result<FindCANIdsParams, DataErrors> {
             val cpidParsed = parseCpid(value = cpid)
-                .orForwardFail { error -> return error }
+                .onFailure { error -> return error }
 
             val ocidParsed = parseOcid(value = ocid)
-                .orForwardFail { error -> return error }
+                .onFailure { error -> return error }
 
             if (states != null && states.isEmpty())
                 return DataErrors.Validation.EmptyArray(name = STATES_ATTRIBUTE_NAME).asFailure()
@@ -49,7 +49,7 @@ class FindCANIdsParams private constructor(
                 ?.mapResult { lotId ->
                     parseLotId(value = lotId, attributeName = LOT_IDS_ATTRIBUTE_NAME)
                 }
-                ?.orForwardFail { error -> return error }
+                ?.onFailure { error -> return error }
                 ?: emptyList()
 
             val duplicateIds = lotIdsParsed
@@ -112,7 +112,7 @@ class FindCANIdsParams private constructor(
                 val statusParsed = status?.let {
                     parseCANStatus(
                         status = it, allowedStatuses = allowedStatuses, attributeName = STATUS_ATTRIBUTE_NAME
-                    ).orForwardFail { error -> return error }
+                    ).onFailure { error -> return error }
                 }
 
                 val statusDetailsParsed = statusDetails?.let {
@@ -120,7 +120,7 @@ class FindCANIdsParams private constructor(
                         statusDetails = it,
                         allowedStatuses = allowedStatusDetails,
                         attributeName = STATUS_DETAILS_ATTRIBUTE_NAME
-                    ).orForwardFail { error -> return error }
+                    ).onFailure { error -> return error }
                 }
 
                 return State(

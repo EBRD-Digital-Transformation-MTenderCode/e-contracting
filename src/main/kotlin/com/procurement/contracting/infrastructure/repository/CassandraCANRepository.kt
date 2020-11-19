@@ -304,7 +304,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             }
 
         val resultSet = query.tryExecute(session)
-            .orForwardFail { error -> return error }
+            .onFailure { error -> return error }
         return resultSet.map { convertToCANEntity(it) }.asSuccess()
     }
 

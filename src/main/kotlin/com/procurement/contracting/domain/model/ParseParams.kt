@@ -35,16 +35,13 @@ fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToP
 
 fun parseLotId(value: String, attributeName: String): Result<LotId, DataErrors.Validation.DataFormatMismatch> =
     value.tryLotId()
-        .doReturn {
-            return Result.failure(
-                DataErrors.Validation.DataFormatMismatch(
-                    name = attributeName,
-                    expectedFormat = "uuid",
-                    actualValue = value
-                )
+        .mapFailure {
+            DataErrors.Validation.DataFormatMismatch(
+                name = attributeName,
+                expectedFormat = "uuid",
+                actualValue = value
             )
         }
-        .asSuccess()
 
 fun parseCANStatus(
     status: String, allowedStatuses: Set<CANStatus>, attributeName: String

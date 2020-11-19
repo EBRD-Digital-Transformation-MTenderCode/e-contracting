@@ -58,8 +58,7 @@ class HistoryRepositoryCassandra(private val session: Session) : HistoryReposito
             }
 
         return query.tryExecute(session)
-            .doOnError { error -> return Result.failure(error) }
-            .get
+            .onFailure { return Result.failure(it.reason) }
             .one()
             ?.let { row ->
                 HistoryEntity(

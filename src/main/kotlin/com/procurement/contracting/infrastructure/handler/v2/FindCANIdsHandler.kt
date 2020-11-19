@@ -9,7 +9,6 @@ import com.procurement.contracting.infrastructure.handler.v2.base.AbstractHandle
 import com.procurement.contracting.infrastructure.handler.v2.converter.convert
 import com.procurement.contracting.infrastructure.handler.v2.model.request.FindCANIdsRequest
 import com.procurement.contracting.lib.functional.Result
-import com.procurement.contracting.lib.functional.Result.Companion.failure
 import org.springframework.stereotype.Component
 
 @Component
@@ -22,9 +21,9 @@ class FindCANIdsHandler(
     override fun execute(node: JsonNode): Result<List<CANId>, Fail> {
         val params = node
             .tryGetParams(FindCANIdsRequest::class.java)
-            .doReturn { error -> return failure(error) }
+            .onFailure { return it }
             .convert()
-            .doReturn { error -> return failure(error) }
+            .onFailure { return it }
 
         return CANService.findCANIds(params = params)
     }

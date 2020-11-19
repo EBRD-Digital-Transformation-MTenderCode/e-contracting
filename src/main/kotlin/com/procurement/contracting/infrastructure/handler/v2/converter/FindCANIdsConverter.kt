@@ -8,7 +8,7 @@ fun FindCANIdsRequest.convert() =
     FindCANIdsParams.tryCreate(
         cpid = cpid,
         ocid = ocid,
-        states = states?.mapResult { it.convert() }?.orForwardFail { error -> return error },
+        states = states?.mapResult { it.convert() }?.onFailure { error -> return error },
         lotIds = lotIds
     )
 

@@ -3,6 +3,8 @@ package com.procurement.contracting.infrastructure.handler.v2.base
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.infrastructure.api.Action
+import com.procurement.contracting.infrastructure.api.ApiVersion
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
@@ -14,8 +16,8 @@ import com.procurement.contracting.lib.functional.ValidationResult
 abstract class AbstractValidationHandler<ACTION : Action, E : Fail>(private val logger: Logger) : Handler<ACTION, ApiResponseV2> {
 
     override fun handle(node: JsonNode): ApiResponseV2 {
-        val id = node.tryGetId().get
-        val version = node.tryGetVersion().get
+        val id = node.tryGetId().getOrElse(CommandId.NaN)
+        val version = node.tryGetVersion().getOrElse(ApiVersion.NaN)
 
         return when (val result = execute(node)) {
             is ValidationResult.Ok -> {

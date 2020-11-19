@@ -87,7 +87,7 @@ class CANServiceImpl(
 
     override fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail.Incident> {
         val canEntity = canRepository.tryFindBy(cpid = params.cpid)
-            .orForwardFail { incident -> return incident }
+            .onFailure { incident -> return incident }
 
         val lotIds = params.lotIds.toSet()
         val sortedStates = params.states.sorted()

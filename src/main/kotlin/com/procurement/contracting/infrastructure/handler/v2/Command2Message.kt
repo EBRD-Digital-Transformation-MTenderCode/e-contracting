@@ -22,7 +22,7 @@ import com.procurement.contracting.infrastructure.fail.error.ValidationError
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
-import com.procurement.contracting.lib.functional.bind
+import com.procurement.contracting.lib.functional.flatMap
 import com.procurement.contracting.utils.tryToNode
 import com.procurement.contracting.utils.tryToObject
 import java.util.*
@@ -136,7 +136,7 @@ fun getFullErrorCode(code: String): String = "${code}/${GlobalProperties.service
 fun JsonNode.tryGetVersion(): Result<ApiVersion, DataErrors> {
     val name = "version"
     return tryGetTextAttribute(name)
-        .bind {version ->
+        .flatMap { version ->
         ApiVersion.orNull(version)
             ?.asSuccess<ApiVersion, DataErrors>()
             ?: DataErrors.Validation.DataFormatMismatch(
@@ -152,11 +152,11 @@ fun JsonNode.tryGetAction(): Result<Command2Type, DataErrors> =
 
 fun <T : Any> JsonNode.tryGetParams(target: Class<T>): Result<T, Fail.Error> {
     val name = "params"
-    return tryGetAttribute(name).bind {
+    return tryGetAttribute(name).flatMap {
         when (val result = it.tryToObject(target)) {
             is Result.Success -> result
             is Result.Failure -> Result.failure(
-                BadRequest("Error parsing '$name'", result.error.exception)
+                BadRequest("Error parsing '$name'", result.reason.exception)
             )
         }
     }
@@ -167,5 +167,5 @@ fun JsonNode.tryGetId(): Result<CommandId, DataErrors> = tryGetTextAttribute("id
 fun String.tryGetNode(): Result<JsonNode, BadRequest> =
     when (val result = this.tryToNode()) {
         is Result.Success -> result
-        is Result.Failure -> Result.failure(BadRequest(exception = result.error.exception))
+        is Result.Failure -> Result.failure(BadRequest(exception = result.reason.exception))
     }

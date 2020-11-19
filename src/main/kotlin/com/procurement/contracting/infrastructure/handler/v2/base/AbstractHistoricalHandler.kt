@@ -3,6 +3,8 @@ package com.procurement.contracting.infrastructure.handler.v2.base
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.infrastructure.api.Action
+import com.procurement.contracting.infrastructure.api.ApiVersion
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
@@ -21,25 +23,25 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
 ) : Handler<ACTION, ApiResponseV2> {
 
     override fun handle(node: JsonNode): ApiResponseV2 {
-        val id = node.tryGetId().get
-        val version = node.tryGetVersion().get
+        val id = node.tryGetId().getOrElse(CommandId.NaN)
+        val version = node.tryGetVersion().getOrElse(ApiVersion.NaN)
 
         val history = historyRepository.getHistory(id, action.key)
-            .doOnError { error ->
+            .onFailure {
                 return generateResponseOnFailure(
-                    fail = error,
+                    fail = it.reason,
                     version = version,
                     id = id,
                     logger = logger
                 )
             }
-            .get
+
         if (history != null) {
             val data = history.jsonData
             return data.tryToObject(target)
-                .doReturn { error ->
+                .onFailure {
                     return generateResponseOnFailure(
-                        fail = Fail.Incident.Transform.ParseFromDatabaseIncident(data, error.exception),
+                        fail = Fail.Incident.Transform.ParseFromDatabaseIncident(data, it.reason.exception),
                         id = id,
                         version = version,
                         logger = logger
@@ -49,14 +51,14 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
 
         return when (val result = execute(node)) {
             is Result.Success -> {
-                ApiResponseV2.Success(version = version, id = id, result = result.get).also {
+                ApiResponseV2.Success(version = version, id = id, result = result.value).also {
                     historyRepository.saveHistory(id, action.key, it)
                     if (logger.isDebugEnabled)
                         logger.debug("${action.key} has been executed. Response: ${toJson(it)}")
                 }
             }
             is Result.Failure -> generateResponseOnFailure(
-                fail = result.error,
+                fail = result.reason,
                 version = version,
                 id = id,
                 logger = logger

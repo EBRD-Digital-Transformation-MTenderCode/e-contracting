@@ -10,7 +10,7 @@ fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Opt
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
+            is Result.Success -> r.add(result.value)
             is Result.Failure -> return result
         }
     }
@@ -21,7 +21,7 @@ fun <T, R, E> List<T>.mapResult(block: (T) -> Result<R, E>): Result<List<R>, E> 
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
+            is Result.Success -> r.add(result.value)
             is Result.Failure -> return result
         }
     }
@@ -32,8 +32,8 @@ fun <T, R, E> List<T>.mapResultPair(block: (T) -> Result<R, E>): Result<List<R>,
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
-            is Result.Failure -> return Result.failure(FailPair(result.error, element))
+            is Result.Success -> r.add(result.value)
+            is Result.Failure -> return Result.failure(FailPair(result.reason, element))
         }
     }
     return Result.success(r)
