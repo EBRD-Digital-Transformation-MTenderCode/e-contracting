@@ -2,8 +2,8 @@ package com.procurement.contracting.infrastructure.web.controller
 
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.v2.ApiResponse2
-import com.procurement.contracting.infrastructure.api.v2.ApiVersion2
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.Command2Service
@@ -58,7 +58,7 @@ class Command2Controller(private val commandService: Command2Service, private va
 
     private fun generateResponse(
         fail: Fail,
-        version: ApiVersion2 = GlobalProperties2.App.apiVersion,
+        version: ApiVersion = GlobalProperties2.App.apiVersion,
         id: UUID = NaN
     ): ResponseEntity<ApiResponse2> {
         val response = generateResponseOnFailure(fail = fail, id = id, version = version, logger = logger)

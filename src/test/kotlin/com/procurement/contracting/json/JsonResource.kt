@@ -2,19 +2,9 @@ package com.procurement.contracting.json
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.procurement.contracting.infrastructure.api.v2.ApiVersion2
-import com.procurement.contracting.infrastructure.bind.IntDeserializer
-import com.procurement.contracting.infrastructure.bind.StringsDeserializer
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersion2Deserializer
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersion2Serializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
+import com.procurement.contracting.infrastructure.bind.configuration
 import com.procurement.contracting.json.exception.JsonBindingException
 import com.procurement.contracting.json.exception.JsonFileNotFoundException
 import com.procurement.contracting.json.exception.JsonMappingException
@@ -24,7 +14,6 @@ import java.io.StringWriter
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.LocalDateTime
 
 typealias JSON = String
 
@@ -81,30 +70,5 @@ private object ClassPathResource {
 }
 
 object JsonMapper {
-    val mapper = ObjectMapper().apply {
-        //TODO Refactoring here and utils.kt
-        registerKotlinModule()
-        registerModule(extendModule())
-
-        configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true)
-        configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
-        configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        //TODO added ZERO to last !!!
-//        nodeFactory = JsonNodeFactory.withExactBigDecimals(true)
-    }
-
-    private fun extendModule() =
-        SimpleModule().apply {
-            addSerializer(LocalDateTime::class.java, JsonDateTimeSerializer())
-            addDeserializer(LocalDateTime::class.java, JsonDateTimeDeserializer())
-            addDeserializer(String::class.java, StringsDeserializer())
-            addDeserializer(Int::class.java, IntDeserializer())
-
-            /**
-             * Serializer/Deserializer for ApiVersion type
-             */
-            addSerializer(ApiVersion2::class.java, ApiVersion2Serializer())
-            addDeserializer(ApiVersion2::class.java, ApiVersion2Deserializer())
-        }
+    val mapper = ObjectMapper().apply { configuration() }
 }

@@ -1,6 +1,6 @@
 package com.procurement.contracting.infrastructure.configuration.properties
 
-import com.procurement.contracting.infrastructure.api.v1.ApiVersion
+import com.procurement.contracting.infrastructure.api.ApiVersion
 
 object GlobalProperties {
     const val serviceId = "9"

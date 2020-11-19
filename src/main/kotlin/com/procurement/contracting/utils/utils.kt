@@ -1,20 +1,10 @@
 package com.procurement.contracting.utils
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.infrastructure.api.v2.ApiVersion2
-import com.procurement.contracting.infrastructure.bind.IntDeserializer
-import com.procurement.contracting.infrastructure.bind.StringsDeserializer
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersion2Deserializer
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersion2Serializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateSerializer
+import com.procurement.contracting.infrastructure.bind.configuration
 import com.procurement.contracting.infrastructure.fail.Fail
 import java.io.IOException
 import java.time.Instant
@@ -31,24 +21,7 @@ private object JsonMapper {
     var dateTimeFormatter: DateTimeFormatter
 
     init {
-        val module = SimpleModule()
-        module.addSerializer(LocalDateTime::class.java, JsonDateSerializer())
-        module.addDeserializer(LocalDateTime::class.java, JsonDateDeserializer())
-        module.addDeserializer(String::class.java, StringsDeserializer())
-        module.addDeserializer(Int::class.java, IntDeserializer())
-        /**
-         * Serializer/Deserializer for ApiVersion type
-         */
-        module.addSerializer(ApiVersion2::class.java, ApiVersion2Serializer())
-        module.addDeserializer(ApiVersion2::class.java, ApiVersion2Deserializer())
-
-        mapper.registerModule(module)
-        mapper.registerKotlinModule()
-        mapper.configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true)
-        mapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        mapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true)
-        mapper.nodeFactory = JsonNodeFactory.withExactBigDecimals(true)
+        mapper.apply { configuration() }
 
         dateTimeFormatter = DateTimeFormatterBuilder()
             .parseCaseInsensitive()

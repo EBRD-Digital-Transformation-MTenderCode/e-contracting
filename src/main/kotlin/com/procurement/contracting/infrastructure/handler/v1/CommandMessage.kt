@@ -5,17 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.v1.ApiErrorResponse
-import com.procurement.contracting.infrastructure.api.v1.ApiVersion
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionDeserializer
-import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionSerializer
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.utils.toLocalDateTime
 import java.time.LocalDateTime
@@ -26,9 +22,6 @@ data class CommandMessage @JsonCreator constructor(
     @field:JsonProperty("command") @param:JsonProperty("command") val command: CommandType,
     @field:JsonProperty("context") @param:JsonProperty("context") val context: Context,
     @field:JsonProperty("data") @param:JsonProperty("data") val data: JsonNode,
-
-    @JsonDeserialize(using = ApiVersionDeserializer::class)
-    @JsonSerialize(using = ApiVersionSerializer::class)
     @field:JsonProperty("version") @param:JsonProperty("version") val version: ApiVersion
 )
 

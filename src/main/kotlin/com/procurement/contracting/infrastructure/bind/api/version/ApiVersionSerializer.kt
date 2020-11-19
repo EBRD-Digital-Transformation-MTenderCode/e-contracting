@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
-import com.procurement.contracting.infrastructure.api.v1.ApiVersion
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import java.io.IOException
 
 class ApiVersionSerializer : JsonSerializer<ApiVersion>() {
     companion object {
-        fun serialize(apiVersion: ApiVersion): String = "${apiVersion.major}.${apiVersion.minor}.${apiVersion.patch}"
+        fun serialize(apiVersion: ApiVersion): String = apiVersion.underlying
     }
 
     @Throws(IOException::class, JsonProcessingException::class)

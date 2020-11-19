@@ -5,16 +5,18 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.domain.functional.asFailure
+import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.functional.bind
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.domain.util.extension.nowDefaultUTC
 import com.procurement.contracting.domain.util.extension.toListOrEmpty
 import com.procurement.contracting.domain.util.extension.tryUUID
 import com.procurement.contracting.infrastructure.api.Action
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.v2.ApiErrorResponse2
 import com.procurement.contracting.infrastructure.api.v2.ApiIncidentResponse2
 import com.procurement.contracting.infrastructure.api.v2.ApiResponse2
-import com.procurement.contracting.infrastructure.api.v2.ApiVersion2
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties2
 import com.procurement.contracting.infrastructure.extension.tryGetAttribute
 import com.procurement.contracting.infrastructure.extension.tryGetAttributeAsEnum
@@ -41,7 +43,7 @@ enum class Command2Type(@JsonValue override val key: String) : Action, EnumEleme
 }
 
 fun generateResponseOnFailure(
-    fail: Fail, version: ApiVersion2, id: UUID, logger: Logger
+    fail: Fail, version: ApiVersion, id: UUID, logger: Logger
 ): ApiResponse2 {
     fail.logging(logger)
     return when (fail) {
@@ -59,7 +61,7 @@ fun generateResponseOnFailure(
 }
 
 private fun generateDataErrorResponse(
-    dataError: DataErrors.Validation, version: ApiVersion2, id: UUID
+    dataError: DataErrors.Validation, version: ApiVersion, id: UUID
 ) =
     ApiErrorResponse2(
         version = version,
@@ -74,7 +76,7 @@ private fun generateDataErrorResponse(
     )
 
 private fun generateValidationErrorResponse(
-    validationError: ValidationError, version: ApiVersion2, id: UUID
+    validationError: ValidationError, version: ApiVersion, id: UUID
 ) =
     ApiErrorResponse2(
         version = version,
@@ -89,7 +91,7 @@ private fun generateValidationErrorResponse(
         )
     )
 
-private fun generateErrorResponse(version: ApiVersion2, id: UUID, error: Fail.Error) =
+private fun generateErrorResponse(version: ApiVersion, id: UUID, error: Fail.Error) =
     ApiErrorResponse2(
         version = version,
         id = id,
@@ -101,7 +103,7 @@ private fun generateErrorResponse(version: ApiVersion2, id: UUID, error: Fail.Er
         )
     )
 
-private fun generateIncidentResponse(incident: Fail.Incident, version: ApiVersion2, id: UUID) =
+private fun generateIncidentResponse(incident: Fail.Incident, version: ApiVersion, id: UUID) =
     ApiIncidentResponse2(
         version = version,
         id = id,
@@ -128,19 +130,17 @@ fun getFullErrorCode(code: String): String = "${code}/${GlobalProperties2.servic
 val NaN: UUID
     get() = UUID(0, 0)
 
-fun JsonNode.tryGetVersion(): Result<ApiVersion2, DataErrors> {
+fun JsonNode.tryGetVersion(): Result<ApiVersion, DataErrors> {
     val name = "version"
-    return tryGetTextAttribute(name).bind {
-        when (val result = ApiVersion2.tryValueOf(it)) {
-            is Result.Success -> result
-            is Result.Failure -> Result.failure(
-                DataErrors.Validation.DataFormatMismatch(
-                    name = name,
-                    expectedFormat = "00.00.00",
-                    actualValue = it
-                )
-            )
-        }
+    return tryGetTextAttribute(name)
+        .bind {version ->
+        ApiVersion.orNull(version)
+            ?.asSuccess<ApiVersion, DataErrors>()
+            ?: DataErrors.Validation.DataFormatMismatch(
+                name = name,
+                expectedFormat = ApiVersion.pattern,
+                actualValue = version
+            ).asFailure()
     }
 }
 

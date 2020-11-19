@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import java.time.LocalDateTime
 import java.util.*
 
 @JsonPropertyOrder("version", "id", "status", "result")
 sealed class ApiResponse2(
-    @field:JsonProperty("version") @param:JsonProperty("version") val version: ApiVersion2,
+    @field:JsonProperty("version") @param:JsonProperty("version") val version: ApiVersion,
     @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
     @field:JsonProperty("result") @param:JsonProperty("result") val result: Any?
 ) {
@@ -19,7 +20,7 @@ sealed class ApiResponse2(
 }
 
 class ApiSuccessResponse2(
-    version: ApiVersion2, id: UUID,
+    version: ApiVersion, id: UUID,
     @JsonInclude(JsonInclude.Include.NON_EMPTY) result: Any? = null
 ) : ApiResponse2(
     version = version,
@@ -31,7 +32,7 @@ class ApiSuccessResponse2(
 }
 
 class ApiErrorResponse2(
-    version: ApiVersion2, id: UUID, result: List<Error>
+    version: ApiVersion, id: UUID, result: List<Error>
 ) : ApiResponse2(version = version, result = result, id = id) {
     @field:JsonProperty("status")
     override val status: Response2Status = Response2Status.ERROR
@@ -56,7 +57,7 @@ class ApiErrorResponse2(
     }
 }
 
-class ApiIncidentResponse2(version: ApiVersion2, id: UUID, result: Incident) :
+class ApiIncidentResponse2(version: ApiVersion, id: UUID, result: Incident) :
     ApiResponse2(version = version, id = id, result = result) {
 
     @field:JsonProperty("status")
