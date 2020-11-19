@@ -11,6 +11,7 @@ import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.api.ApiVersion
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.ApiErrorResponse
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.utils.toLocalDateTime
@@ -18,7 +19,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class CommandMessage @JsonCreator constructor(
-    @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+    @field:JsonProperty("id") @param:JsonProperty("id") val id: CommandId,
     @field:JsonProperty("command") @param:JsonProperty("command") val command: CommandType,
     @field:JsonProperty("context") @param:JsonProperty("context") val context: Context,
     @field:JsonProperty("data") @param:JsonProperty("data") val data: JsonNode,
@@ -122,7 +123,7 @@ data class ResponseErrorDto(
     val description: String?
 )
 
-fun errorResponse(exception: Exception, id: String, version: ApiVersion): ApiErrorResponse =
+fun errorResponse(exception: Exception, id: CommandId, version: ApiVersion): ApiErrorResponse =
     when (exception) {
         is ErrorException -> getApiErrorResponse(
             id = id,
@@ -144,7 +145,7 @@ fun errorResponse(exception: Exception, id: String, version: ApiVersion): ApiErr
         )
     }
 
-private fun getApiErrorResponse(id: String, version: ApiVersion, code: String, message: String): ApiErrorResponse {
+private fun getApiErrorResponse(id: CommandId, version: ApiVersion, code: String, message: String): ApiErrorResponse {
     return ApiErrorResponse(
         errors = listOf(
             ApiErrorResponse.Error(

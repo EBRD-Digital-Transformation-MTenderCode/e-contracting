@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.procurement.contracting.infrastructure.bind.api.command.id.CommandIdModule
 import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionModule
 import com.procurement.contracting.infrastructure.bind.date.JsonDateDeserializer
 import com.procurement.contracting.infrastructure.bind.date.JsonDateSerializer
@@ -23,6 +24,7 @@ fun ObjectMapper.configuration() {
 
     registerModule(module)
     registerModule(ApiVersionModule())
+    registerModule(CommandIdModule())
     registerKotlinModule()
 
     configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false)

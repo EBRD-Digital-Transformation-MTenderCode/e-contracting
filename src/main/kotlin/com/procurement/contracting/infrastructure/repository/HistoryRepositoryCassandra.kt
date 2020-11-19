@@ -3,6 +3,7 @@ package com.procurement.contracting.infrastructure.repository
 import com.datastax.driver.core.Session
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.domain.functional.asSuccess
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
@@ -11,7 +12,6 @@ import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class HistoryRepositoryCassandra(private val session: Session) : HistoryRepository {
@@ -50,10 +50,10 @@ class HistoryRepositoryCassandra(private val session: Session) : HistoryReposito
     private val preparedSaveHistoryCQL = session.prepare(SAVE_HISTORY_CQL)
     private val preparedFindHistoryByCpidAndCommandCQL = session.prepare(FIND_HISTORY_ENTRY_CQL)
 
-    override fun getHistory(operationId: UUID, command: String): Result<HistoryEntity?, Fail.Incident> {
+    override fun getHistory(commandId: CommandId, command: String): Result<HistoryEntity?, Fail.Incident> {
         val query = preparedFindHistoryByCpidAndCommandCQL.bind()
             .apply {
-                setString(OPERATION_ID, operationId.toString())
+                setString(OPERATION_ID, commandId.underlying)
                 setString(COMMAND, command)
             }
 
@@ -72,9 +72,9 @@ class HistoryRepositoryCassandra(private val session: Session) : HistoryReposito
             .asSuccess()
     }
 
-    override fun saveHistory(operationId: UUID, command: String, response: Any): Result<HistoryEntity, Fail.Incident> {
+    override fun saveHistory(commandId: CommandId, command: String, response: Any): Result<HistoryEntity, Fail.Incident> {
         val entity = HistoryEntity(
-            operationId = operationId.toString(),
+            operationId = commandId.underlying,
             command = command,
             operationDate = localNowUTC().toDate(),
             jsonData = toJson(response)

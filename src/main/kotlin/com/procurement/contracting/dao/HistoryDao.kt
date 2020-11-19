@@ -4,6 +4,7 @@ import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder.eq
 import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
 import com.datastax.driver.core.querybuilder.QueryBuilder.select
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.ApiSuccessResponse
 import com.procurement.contracting.infrastructure.repository.model.HistoryEntity
 import com.procurement.contracting.utils.localNowUTC
@@ -14,11 +15,11 @@ import org.springframework.stereotype.Service
 @Service
 class HistoryDao(private val session: Session) {
 
-    fun getHistory(operationId: String, command: String): HistoryEntity? {
+    fun getHistory(commandId: CommandId, command: String): HistoryEntity? {
         val query = select()
                 .all()
                 .from(HISTORY_TABLE)
-                .where(eq(OPERATION_ID, operationId))
+                .where(eq(OPERATION_ID, commandId.underlying))
                 .and(eq(COMMAND, command))
                 .limit(1)
         val row = session.execute(query).one()
@@ -29,9 +30,9 @@ class HistoryDao(private val session: Session) {
                 row.getString(JSON_DATA)) else null
     }
 
-    fun saveHistory(operationId: String, command: String, response: ApiSuccessResponse): HistoryEntity {
+    fun saveHistory(commandId: CommandId, command: String, response: ApiSuccessResponse): HistoryEntity {
         val entity = HistoryEntity(
-                operationId = operationId,
+                operationId = commandId.underlying,
                 command = command,
                 operationDate = localNowUTC().toDate(),
                 jsonData = toJson(response))

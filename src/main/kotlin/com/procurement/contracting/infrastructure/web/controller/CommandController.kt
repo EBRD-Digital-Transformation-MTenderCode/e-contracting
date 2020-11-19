@@ -1,5 +1,6 @@
 package com.procurement.contracting.infrastructure.web.controller
 
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.ApiResponse
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
@@ -37,7 +38,7 @@ class CommandController(private val commandService: CommandService) {
             val response =
                 errorResponse(
                     exception = expected,
-                    id = "N/A",
+                    id = CommandId.NaN,
                     version = GlobalProperties.App.apiVersion
                 )
             return ResponseEntity(response, HttpStatus.OK)

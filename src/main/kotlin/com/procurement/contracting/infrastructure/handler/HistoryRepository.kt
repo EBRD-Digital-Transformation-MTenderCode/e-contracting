@@ -1,11 +1,11 @@
 package com.procurement.contracting.infrastructure.handler
 
 import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.repository.model.HistoryEntity
-import java.util.*
 
 interface HistoryRepository {
-    fun getHistory(operationId: UUID, command: String): Result<HistoryEntity?, Fail.Incident>
-    fun saveHistory(operationId: UUID, command: String, response: Any): Result<HistoryEntity, Fail.Incident>
+    fun getHistory(commandId: CommandId, command: String): Result<HistoryEntity?, Fail.Incident>
+    fun saveHistory(commandId: CommandId, command: String, response: Any): Result<HistoryEntity, Fail.Incident>
 }
