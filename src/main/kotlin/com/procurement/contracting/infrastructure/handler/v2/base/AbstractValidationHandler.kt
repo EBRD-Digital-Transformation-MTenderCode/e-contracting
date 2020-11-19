@@ -25,8 +25,8 @@ abstract class AbstractValidationHandler<ACTION : Action, E : Fail>(private val 
                     logger.debug("${action.key} has been executed.")
                 ApiResponseV2.Success(version = version, id = id)
             }
-            is ValidationResult.Fail -> generateResponseOnFailure(
-                fail = result.error,
+            is ValidationResult.Error -> generateResponseOnFailure(
+                fail = result.reason,
                 version = version,
                 id = id,
                 logger = logger
