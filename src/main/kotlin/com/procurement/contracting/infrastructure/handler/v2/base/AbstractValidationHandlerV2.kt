@@ -13,7 +13,7 @@ import com.procurement.contracting.infrastructure.handler.v2.tryGetId
 import com.procurement.contracting.infrastructure.handler.v2.tryGetVersion
 import com.procurement.contracting.lib.functional.ValidationResult
 
-abstract class AbstractValidationHandler<ACTION : Action, E : Fail>(private val logger: Logger) : Handler<ACTION, ApiResponseV2> {
+abstract class AbstractValidationHandlerV2<ACTION : Action, E : Fail>(private val logger: Logger) : Handler<ACTION, ApiResponseV2> {
 
     override fun handle(node: JsonNode): ApiResponseV2 {
         val id = node.tryGetId().getOrElse(CommandId.NaN)
