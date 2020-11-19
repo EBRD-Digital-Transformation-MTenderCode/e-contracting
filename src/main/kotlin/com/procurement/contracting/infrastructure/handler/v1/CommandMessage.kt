@@ -12,7 +12,7 @@ import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
-import com.procurement.contracting.infrastructure.api.v1.ApiErrorResponse
+import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.utils.toLocalDateTime
 import java.time.LocalDateTime
@@ -123,7 +123,7 @@ data class ResponseErrorDto(
     val description: String?
 )
 
-fun errorResponse(exception: Exception, id: CommandId, version: ApiVersion): ApiErrorResponse =
+fun errorResponse(exception: Exception, id: CommandId, version: ApiVersion): ApiResponseV1.Failure =
     when (exception) {
         is ErrorException -> getApiErrorResponse(
             id = id,
@@ -145,10 +145,10 @@ fun errorResponse(exception: Exception, id: CommandId, version: ApiVersion): Api
         )
     }
 
-private fun getApiErrorResponse(id: CommandId, version: ApiVersion, code: String, message: String): ApiErrorResponse {
-    return ApiErrorResponse(
+private fun getApiErrorResponse(id: CommandId, version: ApiVersion, code: String, message: String): ApiResponseV1.Failure {
+    return ApiResponseV1.Failure(
         errors = listOf(
-            ApiErrorResponse.Error(
+            ApiResponseV1.Failure.Error(
                 code = "400.${GlobalProperties.serviceId}." + code,
                 description = message
             )
@@ -157,4 +157,3 @@ private fun getApiErrorResponse(id: CommandId, version: ApiVersion, code: String
         version = version
     )
 }
-

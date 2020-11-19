@@ -5,7 +5,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder.eq
 import com.datastax.driver.core.querybuilder.QueryBuilder.insertInto
 import com.datastax.driver.core.querybuilder.QueryBuilder.select
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
-import com.procurement.contracting.infrastructure.api.v1.ApiSuccessResponse
+import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.repository.model.HistoryEntity
 import com.procurement.contracting.utils.localNowUTC
 import com.procurement.contracting.utils.toDate
@@ -30,7 +30,7 @@ class HistoryDao(private val session: Session) {
                 row.getString(JSON_DATA)) else null
     }
 
-    fun saveHistory(commandId: CommandId, command: String, response: ApiSuccessResponse): HistoryEntity {
+    fun saveHistory(commandId: CommandId, command: String, response: ApiResponseV1.Success): HistoryEntity {
         val entity = HistoryEntity(
                 operationId = commandId.underlying,
                 command = command,

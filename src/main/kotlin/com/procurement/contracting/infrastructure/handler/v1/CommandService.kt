@@ -25,7 +25,7 @@ import com.procurement.contracting.dao.HistoryDao
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.infrastructure.api.v1.ApiSuccessResponse
+import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CancelCANRequest
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateCANRequest
 import com.procurement.contracting.infrastructure.handler.v1.model.request.TreasuryProcessingRequest
@@ -64,10 +64,10 @@ class CommandService(
         private val log = LoggerFactory.getLogger(CommandService::class.java)
     }
 
-    fun execute(cm: CommandMessage): ApiSuccessResponse {
+    fun execute(cm: CommandMessage): ApiResponseV1.Success {
         val historyEntity = historyDao.getHistory(cm.id, cm.command.value())
         if (historyEntity != null) {
-            return toObject(ApiSuccessResponse::class.java, historyEntity.jsonData)
+            return toObject(ApiResponseV1.Success::class.java, historyEntity.jsonData)
         }
         val dataOfResponse: Any = when (cm.command) {
             CommandType.CHECK_CAN -> createCanService.checkCan(cm)
@@ -621,7 +621,7 @@ class CommandService(
             }
             CommandType.ACTIVATION_AC -> activationAcService.activateAc(cm)
         }
-        val response = ApiSuccessResponse(id = cm.id, version = cm.version, data = dataOfResponse)
+        val response = ApiResponseV1.Success(id = cm.id, version = cm.version, data = dataOfResponse)
             .also {
                 if (log.isDebugEnabled)
                     log.debug("Response: ${toJson(it)}")
