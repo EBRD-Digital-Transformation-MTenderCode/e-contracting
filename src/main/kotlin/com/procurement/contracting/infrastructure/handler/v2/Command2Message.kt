@@ -15,7 +15,7 @@ import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
-import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties2
+import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.infrastructure.extension.tryGetAttribute
 import com.procurement.contracting.infrastructure.extension.tryGetAttributeAsEnum
 import com.procurement.contracting.infrastructure.extension.tryGetTextAttribute
@@ -41,7 +41,10 @@ enum class Command2Type(@JsonValue override val key: String) : Action, EnumEleme
 }
 
 fun generateResponseOnFailure(
-    fail: Fail, version: ApiVersion, id: CommandId, logger: Logger
+    fail: Fail,
+    version: ApiVersion,
+    id: CommandId,
+    logger: Logger
 ): ApiResponseV2 {
     fail.logging(logger)
     return when (fail) {
@@ -59,7 +62,9 @@ fun generateResponseOnFailure(
 }
 
 private fun generateDataErrorResponse(
-    dataError: DataErrors.Validation, version: ApiVersion, id: CommandId
+    dataError: DataErrors.Validation,
+    version: ApiVersion,
+    id: CommandId
 ) =
     ApiResponseV2.Error(
         version = version,
@@ -74,7 +79,9 @@ private fun generateDataErrorResponse(
     )
 
 private fun generateValidationErrorResponse(
-    validationError: ValidationError, version: ApiVersion, id: CommandId
+    validationError: ValidationError,
+    version: ApiVersion,
+    id: CommandId
 ) =
     ApiResponseV2.Error(
         version = version,
@@ -110,9 +117,9 @@ private fun generateIncidentResponse(incident: Fail.Incident, version: ApiVersio
             id = UUID.randomUUID().toString(),
             level = incident.level,
             service = ApiResponseV2.Incident.Result.Service(
-                id = GlobalProperties2.service.id,
-                version = GlobalProperties2.service.version,
-                name = GlobalProperties2.service.name
+                id = GlobalProperties.service.id,
+                version = GlobalProperties.service.version,
+                name = GlobalProperties.service.name
             ),
             details = listOf(
                 ApiResponseV2.Incident.Result.Detail(
@@ -124,7 +131,7 @@ private fun generateIncidentResponse(incident: Fail.Incident, version: ApiVersio
         )
     )
 
-fun getFullErrorCode(code: String): String = "${code}/${GlobalProperties2.service.id}"
+fun getFullErrorCode(code: String): String = "${code}/${GlobalProperties.service.id}"
 
 fun JsonNode.tryGetVersion(): Result<ApiVersion, DataErrors> {
     val name = "version"
@@ -162,4 +169,3 @@ fun String.tryGetNode(): Result<JsonNode, BadRequest> =
         is Result.Success -> result
         is Result.Failure -> Result.failure(BadRequest(exception = result.error.exception))
     }
-

@@ -149,7 +149,7 @@ private fun getApiErrorResponse(id: CommandId, version: ApiVersion, code: String
     return ApiResponseV1.Failure(
         errors = listOf(
             ApiResponseV1.Failure.Error(
-                code = "400.${GlobalProperties.serviceId}." + code,
+                code = "400.${GlobalProperties.service.id}." + code,
                 description = message
             )
         ),

@@ -1,8 +1,8 @@
 package com.procurement.contracting.infrastructure.web.controller
 
+import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
-import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
 import com.procurement.contracting.infrastructure.handler.v1.CommandService
 import com.procurement.contracting.infrastructure.handler.v1.errorResponse
@@ -36,11 +36,7 @@ class CommandController(private val commandService: CommandService) {
         } catch (expected: Exception) {
             log.debug("Error.", expected)
             val response =
-                errorResponse(
-                    exception = expected,
-                    id = CommandId.NaN,
-                    version = GlobalProperties.App.apiVersion
-                )
+                errorResponse(exception = expected, id = CommandId.NaN, version = ApiVersion.NaN)
             return ResponseEntity(response, HttpStatus.OK)
         }
 
@@ -52,11 +48,7 @@ class CommandController(private val commandService: CommandService) {
                 }
         } catch (expected: Exception) {
             log.debug("Error.", expected)
-            errorResponse(
-                exception = expected,
-                id = cm.id,
-                version = cm.version
-            )
+            errorResponse(exception = expected, id = cm.id, version = cm.version)
         }
         return ResponseEntity(response, HttpStatus.OK)
     }
