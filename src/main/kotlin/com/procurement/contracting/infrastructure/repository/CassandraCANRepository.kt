@@ -300,7 +300,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     override fun tryFindBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database.DatabaseInteractionIncident> {
         val query = preparedFindByCpidCQL.bind()
             .apply {
-                setString(columnCpid, cpid.toString())
+                setString(columnCpid, cpid.underlying)
             }
 
         val resultSet = query.tryExecute(session)
