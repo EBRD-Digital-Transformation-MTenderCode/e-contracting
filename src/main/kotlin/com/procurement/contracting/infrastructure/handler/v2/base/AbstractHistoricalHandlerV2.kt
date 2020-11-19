@@ -16,7 +16,7 @@ import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.tryToObject
 
-abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
+abstract class AbstractHistoricalHandlerV2<ACTION : Action, R : Any>(
     private val target: Class<ApiResponseV2.Success>,
     private val historyRepository: HistoryRepository,
     private val logger: Logger
