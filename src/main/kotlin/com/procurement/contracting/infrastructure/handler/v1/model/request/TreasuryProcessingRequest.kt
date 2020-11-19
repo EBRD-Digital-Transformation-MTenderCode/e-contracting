@@ -2,18 +2,11 @@ package com.procurement.contracting.infrastructure.handler.v1.model.request
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
 import java.time.LocalDateTime
 
 data class TreasuryProcessingRequest(
     @field:JsonProperty("verification") @param:JsonProperty("verification") val verification: Verification,
-
-    @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-    @JsonSerialize(using = JsonDateTimeSerializer::class)
     @field:JsonProperty("dateMet") @param:JsonProperty("dateMet") val dateMet: LocalDateTime,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

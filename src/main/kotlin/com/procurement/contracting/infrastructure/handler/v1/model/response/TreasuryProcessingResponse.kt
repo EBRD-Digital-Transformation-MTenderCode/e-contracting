@@ -22,8 +22,6 @@ import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.bind.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.bind.amount.AmountSerializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -36,9 +34,6 @@ data class TreasuryProcessingResponse(
 
     data class Contract(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
-
-        @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-        @JsonSerialize(using = JsonDateTimeSerializer::class)
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
         @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,
@@ -54,12 +49,7 @@ data class TreasuryProcessingResponse(
         @field:JsonProperty("value") @param:JsonProperty("value") val value: Value
     ) {
         data class Period(
-            @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-            @JsonSerialize(using = JsonDateTimeSerializer::class)
             @field:JsonProperty("startDate") @param:JsonProperty("startDate") val startDate: LocalDateTime,
-
-            @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-            @JsonSerialize(using = JsonDateTimeSerializer::class)
             @field:JsonProperty("endDate") @param:JsonProperty("endDate") val endDate: LocalDateTime
         )
 
@@ -92,8 +82,6 @@ data class TreasuryProcessingResponse(
             @field:JsonProperty("additionalInformation") @param:JsonProperty("additionalInformation") val additionalInformation: String?,
 
             @JsonInclude(JsonInclude.Include.NON_NULL)
-            @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-            @JsonSerialize(using = JsonDateTimeSerializer::class)
             @field:JsonProperty("dueDate") @param:JsonProperty("dueDate") val dueDate: LocalDateTime?,
 
             @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
@@ -101,13 +89,9 @@ data class TreasuryProcessingResponse(
             @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
 
             @JsonInclude(JsonInclude.Include.NON_NULL)
-            @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-            @JsonSerialize(using = JsonDateTimeSerializer::class)
             @field:JsonProperty("dateModified") @param:JsonProperty("dateModified") val dateModified: LocalDateTime?,
 
             @JsonInclude(JsonInclude.Include.NON_NULL)
-            @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-            @JsonSerialize(using = JsonDateTimeSerializer::class)
             @field:JsonProperty("dateMet") @param:JsonProperty("dateMet") val dateMet: LocalDateTime?,
 
             @field:JsonProperty("relatedParties") @param:JsonProperty("relatedParties") val relatedParties: List<RelatedParty>
@@ -160,9 +144,6 @@ data class TreasuryProcessingResponse(
             data class Value(
                 @field:JsonProperty("id") @param:JsonProperty("id") val id: OrganizationId,
                 @field:JsonProperty("name") @param:JsonProperty("name") val name: String,
-
-                @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-                @JsonSerialize(using = JsonDateTimeSerializer::class)
                 @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
                 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.infrastructure.bind.amount.AmountDeserializer
 import com.procurement.contracting.infrastructure.bind.amount.AmountSerializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
 import com.procurement.contracting.infrastructure.bind.quantity.QuantityDeserializer
 import com.procurement.contracting.infrastructure.bind.quantity.QuantitySerializer
 import java.math.BigDecimal
@@ -26,9 +24,6 @@ data class CreateACRequest(
 
     data class Award(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: UUID,
-
-        @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-        @JsonSerialize(using = JsonDateTimeSerializer::class)
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)

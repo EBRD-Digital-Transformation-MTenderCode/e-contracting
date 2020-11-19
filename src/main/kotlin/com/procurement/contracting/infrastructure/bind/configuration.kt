@@ -8,23 +8,19 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.contracting.infrastructure.bind.api.command.id.CommandIdModule
 import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionModule
-import com.procurement.contracting.infrastructure.bind.date.JsonDateDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateSerializer
-import java.time.LocalDateTime
+import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeModule
 
 fun ObjectMapper.configuration() {
     val module = SimpleModule()
         .apply {
             addDeserializer(String::class.java, StringsDeserializer())
             addDeserializer(Int::class.java, IntDeserializer())
-
-            addSerializer(LocalDateTime::class.java, JsonDateSerializer())
-            addDeserializer(LocalDateTime::class.java, JsonDateDeserializer())
         }
 
     registerModule(module)
     registerModule(ApiVersionModule())
     registerModule(CommandIdModule())
+    registerModule(JsonDateTimeModule())
     registerKotlinModule()
 
     configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false)

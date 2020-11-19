@@ -2,16 +2,12 @@ package com.procurement.contracting.domain.model.can
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.lot.LotId
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeDeserializer
-import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeSerializer
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,9 +18,6 @@ data class CAN(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId?,
     @field:JsonProperty("lotId") @param:JsonProperty("lotId") val lotId: LotId,
-
-    @JsonDeserialize(using = JsonDateTimeDeserializer::class)
-    @JsonSerialize(using = JsonDateTimeSerializer::class)
     @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
     @field:JsonProperty("status") @param:JsonProperty("status") val status: CANStatus,
