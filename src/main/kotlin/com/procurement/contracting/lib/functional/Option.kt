@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.functional
+package com.procurement.contracting.lib.functional
 
 sealed class Option<out T> {
 

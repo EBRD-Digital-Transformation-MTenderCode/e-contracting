@@ -15,14 +15,14 @@ import com.procurement.contracting.application.repository.DataResetCAN
 import com.procurement.contracting.application.repository.DataStatusesCAN
 import com.procurement.contracting.application.repository.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Repository
 import java.util.*
 

@@ -2,8 +2,8 @@ package com.procurement.contracting.domain.model.process
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
+import com.procurement.contracting.lib.functional.Result
 import java.io.Serializable
 
 class Ocid private constructor(private val value: String, val stage: Stage) : Serializable {

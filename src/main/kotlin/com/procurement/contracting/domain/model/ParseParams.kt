@@ -1,7 +1,5 @@
 package com.procurement.contracting.domain.model
 
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -10,6 +8,8 @@ import com.procurement.contracting.domain.model.lot.tryLotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asSuccess
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
     Cpid.tryCreateOrNull(value = value)

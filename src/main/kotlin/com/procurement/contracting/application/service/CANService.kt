@@ -6,13 +6,13 @@ import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.CreatedCANData
 import com.procurement.contracting.application.service.model.FindCANIdsParams
 import com.procurement.contracting.domain.entity.CANEntity
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Service
 

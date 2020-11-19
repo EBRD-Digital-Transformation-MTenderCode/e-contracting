@@ -3,9 +3,9 @@ package com.procurement.contracting.utils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.bind.configuration
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.Result
 import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.functional
+package com.procurement.contracting.lib.functional
 
 sealed class ValidationResult<out E> {
 
@@ -14,16 +14,16 @@ sealed class ValidationResult<out E> {
     val asOption: Option<E>
         get() = when (this) {
             is Fail -> Option.pure(error)
-            is Ok   -> Option.none()
+            is Ok -> Option.none()
         }
 
     fun <R> map(transform: (E) -> R): ValidationResult<R> = when (this) {
-        is Ok   -> this
+        is Ok -> this
         is Fail -> Fail(transform(this.error))
     }
 
     fun <R> bind(function: (E) -> ValidationResult<R>): ValidationResult<R> = when (this) {
-        is Ok   -> this
+        is Ok -> this
         is Fail -> function(this.error)
     }
 

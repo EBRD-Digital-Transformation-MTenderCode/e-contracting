@@ -1,6 +1,6 @@
 package com.procurement.contracting.domain.util.extension
 
-import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.lib.functional.Result
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter

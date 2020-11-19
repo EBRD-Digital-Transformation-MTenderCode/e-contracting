@@ -1,8 +1,5 @@
 package com.procurement.contracting.application.service.model
 
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.asFailure
-import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
@@ -15,6 +12,9 @@ import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
+import com.procurement.contracting.lib.functional.asSuccess
 
 class FindCANIdsParams private constructor(
     val cpid: Cpid,

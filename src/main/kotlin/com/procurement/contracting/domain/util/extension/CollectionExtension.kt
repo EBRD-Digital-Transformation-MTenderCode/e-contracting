@@ -1,7 +1,7 @@
 package com.procurement.contracting.domain.util.extension
 
-import com.procurement.contracting.domain.functional.Option
-import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.lib.functional.Option
+import com.procurement.contracting.lib.functional.Result
 
 fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Option<List<R>>, E> {
     if (this == null)

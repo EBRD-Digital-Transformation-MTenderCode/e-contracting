@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.functional
+package com.procurement.contracting.lib.functional
 
 fun <T, E> T.asSuccess(): Result<T, E> = Result.success(this)
 fun <T, E> E.asFailure(): Result<T, E> = Result.failure(this)
@@ -80,7 +80,7 @@ sealed class Result<out T, out E> {
 }
 
 infix fun <T, E> T.validate(rule: ValidationRule<T, E>): Result<T, E> = when (val result = rule.test(this)) {
-    is ValidationResult.Ok   -> Result.success(this)
+    is ValidationResult.Ok -> Result.success(this)
     is ValidationResult.Fail -> Result.failure(result.error)
 }
 

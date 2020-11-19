@@ -1,7 +1,6 @@
 package com.procurement.contracting.infrastructure.web.controller
 
 import com.procurement.contracting.application.service.Logger
-import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
@@ -11,6 +10,7 @@ import com.procurement.contracting.infrastructure.handler.v2.generateResponseOnF
 import com.procurement.contracting.infrastructure.handler.v2.tryGetId
 import com.procurement.contracting.infrastructure.handler.v2.tryGetNode
 import com.procurement.contracting.infrastructure.handler.v2.tryGetVersion
+import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.utils.toJson
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
