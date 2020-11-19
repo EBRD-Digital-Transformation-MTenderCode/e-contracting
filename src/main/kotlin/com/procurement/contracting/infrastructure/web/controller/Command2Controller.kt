@@ -4,7 +4,7 @@ import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
-import com.procurement.contracting.infrastructure.api.v2.ApiResponse2
+import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.Command2Service
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class Command2Controller(private val commandService: Command2Service, private val logger: Logger) {
 
     @PostMapping
-    fun command(@RequestBody requestBody: String): ResponseEntity<ApiResponse2> {
+    fun command(@RequestBody requestBody: String): ResponseEntity<ApiResponseV2> {
         if (logger.isDebugEnabled)
             logger.debug("RECEIVED COMMAND: '$requestBody'.")
 
@@ -59,7 +59,7 @@ class Command2Controller(private val commandService: Command2Service, private va
         fail: Fail,
         version: ApiVersion = GlobalProperties2.App.apiVersion,
         id: CommandId = CommandId.NaN
-    ): ResponseEntity<ApiResponse2> {
+    ): ResponseEntity<ApiResponseV2> {
         val response = generateResponseOnFailure(fail = fail, id = id, version = version, logger = logger)
         return ResponseEntity(response, HttpStatus.OK)
     }

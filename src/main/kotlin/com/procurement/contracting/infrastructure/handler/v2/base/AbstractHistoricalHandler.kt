@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.api.Action
-import com.procurement.contracting.infrastructure.api.v2.ApiResponse2
+import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
 import com.procurement.contracting.infrastructure.api.v2.ApiSuccessResponse2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
@@ -19,9 +19,9 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
     private val target: Class<ApiSuccessResponse2>,
     private val historyRepository: HistoryRepository,
     private val logger: Logger
-) : Handler<ACTION, ApiResponse2> {
+) : Handler<ACTION, ApiResponseV2> {
 
-    override fun handle(node: JsonNode): ApiResponse2 {
+    override fun handle(node: JsonNode): ApiResponseV2 {
         val id = node.tryGetId().get
         val version = node.tryGetVersion().get
 

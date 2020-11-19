@@ -16,7 +16,7 @@ import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiErrorResponse2
 import com.procurement.contracting.infrastructure.api.v2.ApiIncidentResponse2
-import com.procurement.contracting.infrastructure.api.v2.ApiResponse2
+import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties2
 import com.procurement.contracting.infrastructure.extension.tryGetAttribute
 import com.procurement.contracting.infrastructure.extension.tryGetAttributeAsEnum
@@ -44,7 +44,7 @@ enum class Command2Type(@JsonValue override val key: String) : Action, EnumEleme
 
 fun generateResponseOnFailure(
     fail: Fail, version: ApiVersion, id: CommandId, logger: Logger
-): ApiResponse2 {
+): ApiResponseV2 {
     fail.logging(logger)
     return when (fail) {
         is Fail.Error -> {
