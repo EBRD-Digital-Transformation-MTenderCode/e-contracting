@@ -21,11 +21,12 @@ import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.TreasuryProcessingContext
 import com.procurement.contracting.application.service.model.TreasuryProcessingData
-import com.procurement.contracting.dao.HistoryDao
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
+import com.procurement.contracting.infrastructure.api.v1.CommandTypeV1
+import com.procurement.contracting.infrastructure.handler.HistoryRepository
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CancelCANRequest
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateCANRequest
 import com.procurement.contracting.infrastructure.handler.v1.model.request.TreasuryProcessingRequest
@@ -44,7 +45,7 @@ import java.util.*
 
 @Service
 class CommandService(
-    private val historyDao: HistoryDao,
+    private val historyRepository: HistoryRepository,
     private val createCanService: CreateCanService,
     private val updateAcService: UpdateAcService,
     private val issuingAcService: IssuingAcService,
@@ -65,14 +66,15 @@ class CommandService(
     }
 
     fun execute(cm: CommandMessage): ApiResponseV1.Success {
-        val historyEntity = historyDao.getHistory(cm.id, cm.command.value())
-        if (historyEntity != null) {
-            return toObject(ApiResponseV1.Success::class.java, historyEntity.jsonData)
+        val history = historyRepository.getHistory(cm.id, cm.command)
+            .orThrow { it.exception }
+        if (history != null) {
+            return toObject(ApiResponseV1.Success::class.java, history)
         }
         val dataOfResponse: Any = when (cm.command) {
-            CommandType.CHECK_CAN -> createCanService.checkCan(cm)
-            CommandType.CHECK_CAN_BY_AWARD -> createCanService.checkCanByAwardId(cm)
-            CommandType.CREATE_CAN -> {
+            CommandTypeV1.CHECK_CAN -> createCanService.checkCan(cm)
+            CommandTypeV1.CHECK_CAN_BY_AWARD -> createCanService.checkCanByAwardId(cm)
+            CommandTypeV1.CREATE_CAN -> {
                 val context = CreateCANContext(
                     cpid = cm.cpid,
                     ocid = cm.ocid,
@@ -109,9 +111,9 @@ class CommandService(
                     log.debug("CAN was create. Response: ${toJson(dataResponse)}")
                 dataResponse
             }
-            CommandType.GET_CANS -> createCanService.getCans(cm)
-            CommandType.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
-            CommandType.CANCEL_CAN -> {
+            CommandTypeV1.GET_CANS -> createCanService.getCans(cm)
+            CommandTypeV1.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
+            CommandTypeV1.CANCEL_CAN -> {
                 val context = CancelCANContext(
                     cpid = getCPID(cm),
                     token = getToken(cm),
@@ -180,8 +182,8 @@ class CommandService(
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
                 dataResponse
             }
-            CommandType.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
-            CommandType.CREATE_AC -> {
+            CommandTypeV1.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
+            CommandTypeV1.CREATE_AC -> {
                 val context = CreateACContext(
                     cpid = cm.cpid,
                     owner = cm.owner,
@@ -460,16 +462,16 @@ class CommandService(
                     log.debug("AC was created. Response: ${toJson(dataResponse)}")
                 dataResponse
             }
-            CommandType.UPDATE_AC -> updateAcService.updateAC(cm)
-            CommandType.CHECK_STATUS_DETAILS -> TODO()
-            CommandType.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
-            CommandType.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
-            CommandType.ISSUING_AC -> issuingAcService.issuingAc(cm)
-            CommandType.FINAL_UPDATE -> finalUpdateService.finalUpdate(cm)
-            CommandType.BUYER_SIGNING_AC -> signingAcService.buyerSigningAC(cm)
-            CommandType.SUPPLIER_SIGNING_AC -> signingAcService.supplierSigningAC(cm)
-            CommandType.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
-            CommandType.TREASURY_RESPONSE_PROCESSING -> {
+            CommandTypeV1.UPDATE_AC -> updateAcService.updateAC(cm)
+            CommandTypeV1.CHECK_STATUS_DETAILS -> TODO()
+            CommandTypeV1.GET_BUDGET_SOURCES -> statusService.getActualBudgetSources(cm)
+            CommandTypeV1.GET_RELATED_BID_ID -> statusService.getRelatedBidId(cm)
+            CommandTypeV1.ISSUING_AC -> issuingAcService.issuingAc(cm)
+            CommandTypeV1.FINAL_UPDATE -> finalUpdateService.finalUpdate(cm)
+            CommandTypeV1.BUYER_SIGNING_AC -> signingAcService.buyerSigningAC(cm)
+            CommandTypeV1.SUPPLIER_SIGNING_AC -> signingAcService.supplierSigningAC(cm)
+            CommandTypeV1.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
+            CommandTypeV1.TREASURY_RESPONSE_PROCESSING -> {
                 val context = TreasuryProcessingContext(
                     cpid = getCPID(cm),
                     ocid = getOCID(cm),
@@ -619,15 +621,15 @@ class CommandService(
                     log.debug("CANs were cancelled. Response: ${toJson(dataResponse)}")
                 dataResponse
             }
-            CommandType.ACTIVATION_AC -> activationAcService.activateAc(cm)
+            CommandTypeV1.ACTIVATION_AC -> activationAcService.activateAc(cm)
         }
-        val response = ApiResponseV1.Success(id = cm.id, version = cm.version, data = dataOfResponse)
+        return ApiResponseV1.Success(id = cm.id, version = cm.version, data = dataOfResponse)
             .also {
+                val data = toJson(it)
                 if (log.isDebugEnabled)
-                    log.debug("Response: ${toJson(it)}")
+                    log.debug("Response: $data")
+                historyRepository.saveHistory(cm.id, cm.command, data)
             }
-        historyDao.saveHistory(cm.id, cm.command.value(), response)
-        return response
     }
 
     private fun getCPID(cm: CommandMessage): String = cm.context.cpid

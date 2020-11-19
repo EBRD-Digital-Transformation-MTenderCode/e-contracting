@@ -26,22 +26,16 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
         val id = node.tryGetId().getOrElse(CommandId.NaN)
         val version = node.tryGetVersion().getOrElse(ApiVersion.NaN)
 
-        val history = historyRepository.getHistory(id, action.key)
+        val history = historyRepository.getHistory(id, action)
             .onFailure {
-                return generateResponseOnFailure(
-                    fail = it.reason,
-                    version = version,
-                    id = id,
-                    logger = logger
-                )
+                return generateResponseOnFailure(fail = it.reason, version = version, id = id, logger = logger)
             }
 
         if (history != null) {
-            val data = history.jsonData
-            return data.tryToObject(target)
+            return history.tryToObject(target)
                 .onFailure {
                     return generateResponseOnFailure(
-                        fail = Fail.Incident.Transform.ParseFromDatabaseIncident(data, it.reason.exception),
+                        fail = Fail.Incident.Transform.ParseFromDatabaseIncident(history, it.reason.exception),
                         id = id,
                         version = version,
                         logger = logger
@@ -51,18 +45,17 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
 
         return when (val result = execute(node)) {
             is Result.Success -> {
-                ApiResponseV2.Success(version = version, id = id, result = result.value).also {
-                    historyRepository.saveHistory(id, action.key, it)
-                    if (logger.isDebugEnabled)
-                        logger.debug("${action.key} has been executed. Response: ${toJson(it)}")
-                }
+                ApiResponseV2.Success(version = version, id = id, result = result.value)
+                    .also {
+                        val data = toJson(it)
+                        if (logger.isDebugEnabled)
+                            logger.debug("${action.key} has been executed. Response: $data")
+                        historyRepository.saveHistory(id, action, data)
+                    }
             }
-            is Result.Failure -> generateResponseOnFailure(
-                fail = result.reason,
-                version = version,
-                id = id,
-                logger = logger
-            )
+
+            is Result.Failure ->
+                generateResponseOnFailure(fail = result.reason, version = version, id = id, logger = logger)
         }
     }
 

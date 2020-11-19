@@ -3,7 +3,6 @@ package com.procurement.contracting.infrastructure.handler.v1
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.lot.LotId
@@ -13,6 +12,7 @@ import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
+import com.procurement.contracting.infrastructure.api.v1.CommandTypeV1
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import com.procurement.contracting.utils.toLocalDateTime
 import java.time.LocalDateTime
@@ -20,7 +20,7 @@ import java.util.*
 
 data class CommandMessage @JsonCreator constructor(
     @field:JsonProperty("id") @param:JsonProperty("id") val id: CommandId,
-    @field:JsonProperty("command") @param:JsonProperty("command") val command: CommandType,
+    @field:JsonProperty("command") @param:JsonProperty("command") val command: CommandTypeV1,
     @field:JsonProperty("context") @param:JsonProperty("context") val context: Context,
     @field:JsonProperty("data") @param:JsonProperty("data") val data: JsonNode,
     @field:JsonProperty("version") @param:JsonProperty("version") val version: ApiVersion
@@ -82,38 +82,6 @@ data class Context @JsonCreator constructor(
     val id: String?,
     val mainProcurementCategory: String?
 )
-
-enum class CommandType(private val value: String) {
-
-    CHECK_CAN("checkCan"),
-    CHECK_CAN_BY_AWARD("checkCanBiAwardId"),
-    CREATE_CAN("createCan"),
-    GET_CANS("getCans"),
-    UPDATE_CAN_DOCS("updateCanDocs"),
-    CANCEL_CAN("cancelCan"),
-    CONFIRMATION_CAN("confirmationCan"),
-    CREATE_AC("createAC"),
-    UPDATE_AC("updateAC"),
-    GET_BUDGET_SOURCES("getActualBudgetSources"),
-    CHECK_STATUS_DETAILS("contractingCheckStatusDetails"),
-    GET_RELATED_BID_ID("getRelatedBidId"),
-    ISSUING_AC("issuingAC"),
-    FINAL_UPDATE("finalUpdateAC"),
-    BUYER_SIGNING_AC("buyerSigningAC"),
-    SUPPLIER_SIGNING_AC("supplierSigningAC"),
-    VERIFICATION_AC("verificationAC"),
-    TREASURY_RESPONSE_PROCESSING("treasuryResponseProcessing"),
-    ACTIVATION_AC("activationAC");
-
-    @JsonValue
-    fun value(): String {
-        return this.value
-    }
-
-    override fun toString(): String {
-        return this.value
-    }
-}
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ResponseErrorDto(
