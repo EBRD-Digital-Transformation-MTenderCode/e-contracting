@@ -5,6 +5,7 @@ import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.infrastructure.api.ApiVersion
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
+import com.procurement.contracting.infrastructure.api.v2.CommandTypeV2
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,7 +25,7 @@ class Command2Service(
                 )
             }
         return when (action) {
-            Command2Type.FIND_CAN_IDS -> findCANIdsHandler.handle(node)
+            CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(node)
         }
     }
 }

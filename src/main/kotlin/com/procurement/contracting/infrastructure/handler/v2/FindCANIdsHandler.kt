@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.application.service.CANService
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.infrastructure.api.v2.CommandTypeV2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.base.AbstractHandler
 import com.procurement.contracting.infrastructure.handler.v2.converter.convert
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Component
 @Component
 class FindCANIdsHandler(
     private val CANService: CANService, logger: Logger
-) : AbstractHandler<Command2Type, List<CANId>>(logger) {
+) : AbstractHandler<CommandTypeV2, List<CANId>>(logger) {
 
-    override val action: Command2Type = Command2Type.FIND_CAN_IDS
+    override val action: CommandTypeV2 = CommandTypeV2.FIND_CAN_IDS
 
     override fun execute(node: JsonNode): Result<List<CANId>, Fail> {
         val params = node
