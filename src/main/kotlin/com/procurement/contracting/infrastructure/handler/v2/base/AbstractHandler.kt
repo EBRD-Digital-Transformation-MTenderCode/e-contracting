@@ -5,7 +5,6 @@ import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
-import com.procurement.contracting.infrastructure.api.v2.ApiSuccessResponse2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
 import com.procurement.contracting.infrastructure.handler.v2.generateResponseOnFailure
@@ -23,7 +22,7 @@ abstract class AbstractHandler<ACTION : Action, R : Any>(private val logger: Log
             is Result.Success -> {
                 if (logger.isDebugEnabled)
                     logger.debug("${action.key} has been executed. Result: ${toJson(result.get)}")
-                return ApiSuccessResponse2(version = version, id = id, result = result.get)
+                return ApiResponseV2.Success(version = version, id = id, result = result.get)
             }
             is Result.Failure -> generateResponseOnFailure(
                 fail = result.error,

@@ -5,7 +5,6 @@ import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.ValidationResult
 import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
-import com.procurement.contracting.infrastructure.api.v2.ApiSuccessResponse2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
 import com.procurement.contracting.infrastructure.handler.v2.generateResponseOnFailure
@@ -22,7 +21,7 @@ abstract class AbstractValidationHandler<ACTION : Action, E : Fail>(private val 
             is ValidationResult.Ok -> {
                 if (logger.isDebugEnabled)
                     logger.debug("${action.key} has been executed.")
-                ApiSuccessResponse2(version = version, id = id)
+                ApiResponseV2.Success(version = version, id = id)
             }
             is ValidationResult.Fail -> generateResponseOnFailure(
                 fail = result.error,

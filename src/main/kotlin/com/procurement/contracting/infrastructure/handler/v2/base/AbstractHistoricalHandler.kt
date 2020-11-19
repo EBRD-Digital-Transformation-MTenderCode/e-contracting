@@ -5,7 +5,6 @@ import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.domain.functional.Result
 import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.v2.ApiResponseV2
-import com.procurement.contracting.infrastructure.api.v2.ApiSuccessResponse2
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.Handler
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
@@ -16,7 +15,7 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.tryToObject
 
 abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
-    private val target: Class<ApiSuccessResponse2>,
+    private val target: Class<ApiResponseV2.Success>,
     private val historyRepository: HistoryRepository,
     private val logger: Logger
 ) : Handler<ACTION, ApiResponseV2> {
@@ -50,7 +49,7 @@ abstract class AbstractHistoricalHandler<ACTION : Action, R : Any>(
 
         return when (val result = execute(node)) {
             is Result.Success -> {
-                ApiSuccessResponse2(version = version, id = id, result = result.get).also {
+                ApiResponseV2.Success(version = version, id = id, result = result.get).also {
                     historyRepository.saveHistory(id, action.key, it)
                     if (logger.isDebugEnabled)
                         logger.debug("${action.key} has been executed. Response: ${toJson(it)}")
