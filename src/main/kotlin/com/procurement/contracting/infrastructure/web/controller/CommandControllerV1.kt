@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 @RestController
 @RequestMapping("/command")
-class CommandController(private val commandService: CommandService) {
+class CommandControllerV1(private val commandService: CommandService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(CommandService::class.java)

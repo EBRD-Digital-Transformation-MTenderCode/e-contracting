@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/command2")
-class Command2Controller(
+class CommandControllerV2(
     private val commandService: CommandServiceV2,
     private val transform: Transform,
     private val logger: Logger
