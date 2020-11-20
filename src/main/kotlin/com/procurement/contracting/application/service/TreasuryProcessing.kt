@@ -1,8 +1,10 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataResetCAN
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.DataResetCAN
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.application.service.model.TreasuryProcessedData
 import com.procurement.contracting.application.service.model.TreasuryProcessingContext
@@ -76,7 +78,8 @@ class TreasuryProcessingImpl(
         e. Returns updated Contract object for Response;
      */
     override fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData {
-        val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = context.ocid)
+        val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = context.ocid.underlying)
+            .orThrow { it.exception }
             ?: throw ErrorException(error = CONTRACT_NOT_FOUND)
 
         // VR-9.9.1
@@ -139,13 +142,17 @@ class TreasuryProcessingImpl(
             )
         )
 
-        acRepository.updateStatusesAC(
-            cpid = context.cpid,
-            id = updatedContractProcess.contract.id,
-            status = updatedContractProcess.contract.status,
-            statusDetails = updatedContractProcess.contract.statusDetails,
-            jsonData = toJson(updatedContractProcess)
-        )
+        val wasApplied = acRepository
+            .updateStatusesAC(
+                cpid = context.cpid,
+                id = updatedContractProcess.contract.id,
+                status = updatedContractProcess.contract.status,
+                statusDetails = updatedContractProcess.contract.statusDetails,
+                jsonData = toJson(updatedContractProcess)
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${context.cpid}' and id '${updatedContractProcess.contract.id}' with status '${updatedContractProcess.contract.status}' and status details '${updatedContractProcess.contract.statusDetails}' to the database. Record is not exists.")
 
         return genResponse(contract = updatedContractProcess.contract, cans = emptyList())
     }
@@ -212,9 +219,13 @@ class TreasuryProcessingImpl(
             )
         )
 
-        val updatedCANs = canRepository.findBy(context.cpid).asSequence()
+        val updatedCANs = canRepository.findBy(context.cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
+            .asSequence()
             .filter {
-                it.contractId == context.ocid
+                it.contractId == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
@@ -239,15 +250,23 @@ class TreasuryProcessingImpl(
         }
 
         //FIXME Consistency cannot be guaranteed
-        acRepository.updateStatusesAC(
-            cpid = context.cpid,
-            id = updatedContractProcess.contract.id,
-            status = updatedContractProcess.contract.status,
-            statusDetails = updatedContractProcess.contract.statusDetails,
-            jsonData = toJson(updatedContractProcess)
-        )
-        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
+        val wasAppliedAC = acRepository
+            .updateStatusesAC(
+                cpid = context.cpid,
+                id = updatedContractProcess.contract.id,
+                status = updatedContractProcess.contract.status,
+                statusDetails = updatedContractProcess.contract.statusDetails,
+                jsonData = toJson(updatedContractProcess)
+            )
+            .orThrow { it.exception }
+        if (!wasAppliedAC)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${context.cpid}' and id '${updatedContractProcess.contract.id}' with status '${updatedContractProcess.contract.status}' and status details '${updatedContractProcess.contract.statusDetails}' to the database. Record is not exists.")
 
+        val wasAppliedCan = canRepository
+            .resetCANs(cpid = context.cpid, cans = cansEntities)
+            .orThrow { it.exception }
+        if(!wasAppliedCan)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '${context.cpid}' from the database.")
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }
 
@@ -304,9 +323,13 @@ class TreasuryProcessingImpl(
             )
         )
 
-        val updatedCANs = canRepository.findBy(context.cpid).asSequence()
+        val updatedCANs = canRepository.findBy(context.cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
+            .asSequence()
             .filter {
-                it.contractId == context.ocid
+                it.contractId == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
@@ -331,14 +354,23 @@ class TreasuryProcessingImpl(
         }
 
         //FIXME Consistency cannot be guaranteed
-        acRepository.updateStatusesAC(
-            cpid = context.cpid,
-            id = updatedContractProcess.contract.id,
-            status = updatedContractProcess.contract.status,
-            statusDetails = updatedContractProcess.contract.statusDetails,
-            jsonData = toJson(updatedContractProcess)
-        )
-        canRepository.resetCANs(cpid = context.cpid, cans = cansEntities)
+        val wasAppliedAC = acRepository
+            .updateStatusesAC(
+                cpid = context.cpid,
+                id = updatedContractProcess.contract.id,
+                status = updatedContractProcess.contract.status,
+                statusDetails = updatedContractProcess.contract.statusDetails,
+                jsonData = toJson(updatedContractProcess)
+            )
+            .orThrow { it.exception }
+        if (!wasAppliedAC)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${context.cpid}' and id '${updatedContractProcess.contract.id}' with status '${updatedContractProcess.contract.status}' and status details '${updatedContractProcess.contract.statusDetails}' to the database. Record is not exists.")
+
+        val wasAppliedCAN = canRepository
+            .resetCANs(cpid = context.cpid, cans = cansEntities)
+            .orThrow { it.exception }
+        if(!wasAppliedCAN)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '${context.cpid}' from the database.")
 
         return genResponse(contract = updatedContractProcess.contract, cans = updatedCANs)
     }
@@ -698,4 +730,3 @@ class TreasuryProcessingImpl(
         )
     }
 }
-

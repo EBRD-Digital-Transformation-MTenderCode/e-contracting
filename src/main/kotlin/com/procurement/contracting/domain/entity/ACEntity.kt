@@ -1,20 +1,22 @@
 package com.procurement.contracting.domain.entity
 
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.process.Cpid
 import java.time.LocalDateTime
-import java.util.*
 
 data class ACEntity(
-    val cpid: String,
-    var id: String,
-    val token: UUID,
-    val owner: String,
+    val cpid: Cpid,
+    val id: String,
+    val token: Token,
+    val owner: Owner,
     val createdDate: LocalDateTime,
-    var status: ContractStatus,
-    var statusDetails: ContractStatusDetails,
+    val status: ContractStatus,
+    val statusDetails: ContractStatusDetails,
     val mainProcurementCategory: MainProcurementCategory,
     val language: String,
-    var jsonData: String
+    val jsonData: String
 )

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -20,10 +21,9 @@ import com.procurement.contracting.infrastructure.bind.quantity.QuantityDeserial
 import com.procurement.contracting.infrastructure.bind.quantity.QuantitySerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class CreateACResponse(
-    @field:JsonProperty("token") @param:JsonProperty("token") val token: UUID,
+    @field:JsonProperty("token") @param:JsonProperty("token") val token: Token,
     @field:JsonProperty("cans") @param:JsonProperty("cans") val cans: List<CAN>,
     @field:JsonProperty("contract") @param:JsonProperty("contract") val contract: Contract,
     @field:JsonProperty("contractedAward") @param:JsonProperty("contractedAward") val contractedAward: ContractedAward

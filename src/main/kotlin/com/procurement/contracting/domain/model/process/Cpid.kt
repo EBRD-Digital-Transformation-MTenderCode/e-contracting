@@ -1,5 +1,6 @@
 package com.procurement.contracting.domain.model.process
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 
 class Cpid private constructor(@JsonValue val underlying: String) {
@@ -22,6 +23,8 @@ class Cpid private constructor(@JsonValue val underlying: String) {
         val pattern: String
             get() = regex.pattern
 
-        fun tryCreateOrNull(value: String): Cpid? = if (value.matches(regex)) Cpid(underlying = value) else null
+        @JvmStatic
+        @JsonCreator
+        fun orNull(value: String): Cpid? = if (value.matches(regex)) Cpid(underlying = value) else null
     }
 }

@@ -1,7 +1,10 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
@@ -21,11 +24,19 @@ import com.procurement.contracting.exception.ErrorType.INVALID_REQUEST_ID
 import com.procurement.contracting.exception.ErrorType.INVALID_SUPPLIER_ID
 import com.procurement.contracting.exception.ErrorType.TREASURY_BUDGET_SOURCES
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.country
+import com.procurement.contracting.infrastructure.handler.v1.cpid
+import com.procurement.contracting.infrastructure.handler.v1.language
 import com.procurement.contracting.infrastructure.handler.v1.model.request.BuyerSigningRs
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ConfirmationResponseRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ProceedResponseRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.SupplierSigningRs
 import com.procurement.contracting.infrastructure.handler.v1.model.request.TreasuryBudgetSourceSupplierSigning
+import com.procurement.contracting.infrastructure.handler.v1.ocid
+import com.procurement.contracting.infrastructure.handler.v1.owner
+import com.procurement.contracting.infrastructure.handler.v1.pmd
+import com.procurement.contracting.infrastructure.handler.v1.startDate
+import com.procurement.contracting.infrastructure.handler.v1.token
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
@@ -38,32 +49,33 @@ import com.procurement.contracting.model.dto.ocds.Request
 import com.procurement.contracting.model.dto.ocds.RequestGroup
 import com.procurement.contracting.model.dto.ocds.Verification
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
 
 @Service
-class SigningAcService(private val acDao: AcDao,
-                       private val generationService: GenerationService,
-                       private val templateService: TemplateService
+class SigningAcService(
+    private val acRepository: ACRepository,
+    private val templateService: TemplateService
 ) {
 
     fun buyerSigningAC(cm: CommandMessage): BuyerSigningRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val country = cm.context.country ?: throw ErrorException(CONTEXT)
-        val language = cm.context.language ?: throw ErrorException(CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
-        val startDate = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val token = cm.token
+        val owner = cm.owner
+        val country = cm.country
+        val language = cm.language
+        val pmd = cm.pmd
+        val startDate = cm.startDate
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
-
-        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        val acId = ocid.underlying
+        val entity: ACEntity = acRepository.findBy(cpid, acId)
+            .orThrow { it.exception }
+            ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
-        if (entity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
+        if (entity.token != token) throw ErrorException(ErrorType.INVALID_TOKEN)
 
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
@@ -135,23 +147,39 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
 
-        entity.statusDetails = ContractStatusDetails.APPROVED
-        entity.jsonData = toJson(contractProcess)
-        acDao.save(entity)
+        val updatedContractEntity = entity.copy(
+            status = contractProcess.contract.status,
+            statusDetails = contractProcess.contract.statusDetails,
+            jsonData = toJson(contractProcess)
+        )
+        val wasApplied = acRepository
+            .updateStatusesAC(
+                cpid = cpid,
+                id = updatedContractEntity.id,
+                status = updatedContractEntity.status,
+                statusDetails = updatedContractEntity.statusDetails,
+                jsonData = updatedContractEntity.jsonData
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${cpid}' and id '${updatedContractEntity.id}' with status '${updatedContractEntity.status}' and status details '${updatedContractEntity.statusDetails}' to the database. Record is not exists.")
+
         return BuyerSigningRs(contractProcess.contract)
     }
 
     fun supplierSigningAC(cm: CommandMessage): SupplierSigningRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val country = cm.context.country ?: throw ErrorException(CONTEXT)
-        val language = cm.context.language ?: throw ErrorException(CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
-        val startDate = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val country = cm.country
+        val language = cm.language
+        val pmd = cm.pmd
+        val startDate = cm.startDate
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
-
-        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        val acId = ocid.underlying
+        val entity: ACEntity = acRepository.findBy(cpid, acId)
+            .orThrow { it.exception }
+            ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
 //        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
@@ -236,10 +264,23 @@ class SigningAcService(private val acDao: AcDao,
         contractProcess.contract.confirmationResponses = confirmationResponses
         contractProcess.contract.documents = documents
         contractProcess.contract.statusDetails = ContractStatusDetails.SIGNED
+        val updatedContractEntity = entity.copy(
+            status = contractProcess.contract.status,
+            statusDetails = contractProcess.contract.statusDetails,
+            jsonData = toJson(contractProcess)
+        )
+        val wasApplied = acRepository
+            .updateStatusesAC(
+                cpid = cpid,
+                id = updatedContractEntity.id,
+                status = updatedContractEntity.status,
+                statusDetails = updatedContractEntity.statusDetails,
+                jsonData = updatedContractEntity.jsonData
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${cpid}' and id '${updatedContractEntity.id}' with status '${updatedContractEntity.status}' and status details '${updatedContractEntity.statusDetails}' to the database. Record is not exists.")
 
-        entity.statusDetails = ContractStatusDetails.SIGNED
-        entity.jsonData = toJson(contractProcess)
-        acDao.save(entity)
         return SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract)
     }
 
@@ -265,7 +306,7 @@ class SigningAcService(private val acDao: AcDao,
         if (!isRelatedPersonIdPresent) throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
-    private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: String, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
+    private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: ProcurementMethod, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
         val templateBuyer = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,
@@ -308,7 +349,7 @@ class SigningAcService(private val acDao: AcDao,
     private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier,
                                                      dto: ConfirmationResponseRq,
                                                      country: String,
-                                                     pmd: String,
+                                                     pmd: ProcurementMethod,
                                                      language: String,
                                                      relatedPerson: RelatedPerson,
                                                      requestId: String): ConfirmationResponse {
@@ -367,7 +408,7 @@ class SigningAcService(private val acDao: AcDao,
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier,
                                                     country: String,
-                                                    pmd: String,
+                                                    pmd: ProcurementMethod,
                                                     language: String,
                                                     verificationValue: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(

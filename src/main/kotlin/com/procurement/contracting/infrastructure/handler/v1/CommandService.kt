@@ -36,11 +36,9 @@ import com.procurement.contracting.infrastructure.handler.v1.model.response.Trea
 import com.procurement.contracting.infrastructure.handler.v2.model.request.CreateACRequest
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateACResponse
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -115,9 +113,9 @@ class CommandService(
             CommandTypeV1.UPDATE_CAN_DOCS -> updateDocumentsService.updateCanDocs(cm)
             CommandTypeV1.CANCEL_CAN -> {
                 val context = CancelCANContext(
-                    cpid = getCPID(cm),
-                    token = getToken(cm),
-                    owner = getOwner(cm),
+                    cpid = cm.cpid,
+                    token = cm.token,
+                    owner = cm.owner,
                     canId = getCANId(cm)
                 )
                 val request = toObject(CancelCANRequest::class.java, cm.data)
@@ -473,9 +471,9 @@ class CommandService(
             CommandTypeV1.VERIFICATION_AC -> verificationAcService.verificationAc(cm)
             CommandTypeV1.TREASURY_RESPONSE_PROCESSING -> {
                 val context = TreasuryProcessingContext(
-                    cpid = getCPID(cm),
-                    ocid = getOCID(cm),
-                    startDate = getStartDate(cm)
+                    cpid = cm.cpid,
+                    ocid = cm.ocid,
+                    startDate = cm.startDate
                 )
                 val request = toObject(TreasuryProcessingRequest::class.java, cm.data)
                 val data = TreasuryProcessingData(
@@ -631,28 +629,6 @@ class CommandService(
                 historyRepository.saveHistory(cm.id, cm.command, data)
             }
     }
-
-    private fun getCPID(cm: CommandMessage): String = cm.context.cpid
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'cpid' attribute in context.")
-
-    private fun getOCID(cm: CommandMessage): String = cm.context.ocid
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'ocid' attribute in context.")
-
-    private fun getStartDate(cm: CommandMessage): LocalDateTime = cm.context.startDate?.toLocalDateTime()
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'startDate' attribute in context.")
-
-    private fun getToken(cm: CommandMessage): UUID = cm.context.token
-        ?.let { token ->
-            try {
-                UUID.fromString(token)
-            } catch (exception: Exception) {
-                throw ErrorException(error = ErrorType.INVALID_FORMAT_TOKEN)
-            }
-        }
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'token' attribute in context.")
-
-    private fun getOwner(cm: CommandMessage): String = cm.context.owner
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'owner' attribute in context.")
 
     private fun getCANId(cm: CommandMessage): CANId = cm.context.id
         ?.let { id ->

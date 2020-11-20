@@ -25,3 +25,5 @@ fun String.toLocalDateTime(): Result<LocalDateTime, DataTimeError> = try {
     else
         DataTimeError.InvalidDateTime(value = this, reason = expected).asFailure()
 }
+
+fun LocalDateTime.toMilliseconds(): Long = this.toInstant(ZoneOffset.UTC).toEpochMilli()

@@ -1,12 +1,16 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataCancelCAN
-import com.procurement.contracting.application.repository.DataRelatedCAN
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.DataCancelCAN
+import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -15,6 +19,7 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ocds.Contract
@@ -22,12 +27,11 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
 
 data class CancelCANContext(
-    val cpid: String,
-    val token: UUID,
-    val owner: String,
+    val cpid: Cpid,
+    val token: Token,
+    val owner: Owner,
     val canId: CANId
 )
 
@@ -140,6 +144,9 @@ class CancelCANServiceImpl(
     override fun cancel(context: CancelCANContext, data: CancelCANData): CancelledCANData {
 
         val canEntity: CANEntity = canRepository.findBy(cpid = context.cpid, canId = context.canId)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN from the database.", cause = it.exception)
+            }
             ?: throw ErrorException(ErrorType.CAN_NOT_FOUND)
 
         //VR-9.13.1
@@ -166,6 +173,7 @@ class CancelCANServiceImpl(
             val contractId: String = canEntity.contractId
             log.debug("CAN with id '${context.canId}' has related AC with id '$contractId'.")
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
+                .orThrow { it.exception }
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
             log.debug("Founded AC with id '$contractId' for cancelling.")
             val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
@@ -192,32 +200,40 @@ class CancelCANServiceImpl(
         }
 
         if (cancelledContract != null) {
-            acRepository.saveCancelledAC(
-                cpid = context.cpid,
-                id = cancelledContract.id,
-                status = cancelledContract.status,
-                statusDetails = cancelledContract.statusDetails,
-                jsonData = toJson(updatedContractProcess)
-            )
+            val wasApplied = acRepository
+                .saveCancelledAC(
+                    cpid = context.cpid,
+                    id = cancelledContract.id,
+                    status = cancelledContract.status,
+                    statusDetails = cancelledContract.statusDetails,
+                    jsonData = toJson(updatedContractProcess)
+                )
+                .orThrow { it.exception }
+            if (!wasApplied)
+                throw SaveEntityException(message = "An error occurred when writing a record(s) of the save cancelled AC by cpid '${context.cpid}' and id '${cancelledContract.id}' with status '${cancelledContract.status}' and status details '${cancelledContract.statusDetails}' to the database. Record is not exists.")
         }
 
-        canRepository.saveCancelledCANs(
-            cpid = context.cpid,
-            dataCancelledCAN = DataCancelCAN(
-                id = can.id,
-                status = cancelledCAN.status,
-                statusDetails = cancelledCAN.statusDetails,
-                jsonData = toJson(cancelledCAN)
-            ),
-            dataRelatedCANs = relatedCANs.map { relatedCan ->
-                DataRelatedCAN(
-                    id = relatedCan.id,
-                    status = relatedCan.status,
-                    statusDetails = relatedCan.statusDetails,
-                    jsonData = toJson(relatedCan)
-                )
-            }
-        )
+        val wasApplied = canRepository
+            .saveCancelledCANs(
+                cpid = context.cpid,
+                dataCancelledCAN = DataCancelCAN(
+                    id = can.id,
+                    status = cancelledCAN.status,
+                    statusDetails = cancelledCAN.statusDetails,
+                    jsonData = toJson(cancelledCAN)
+                ),
+                dataRelatedCANs = relatedCANs.map { relatedCan ->
+                    DataRelatedCAN(
+                        id = relatedCan.id,
+                        status = relatedCan.status,
+                        statusDetails = relatedCan.statusDetails,
+                        jsonData = toJson(relatedCan)
+                    )
+                }
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '${context.cpid}' from the database.")
 
         return CancelledCANData(
             cancelledCAN = generateCancelledCANResponse(cancelledCAN),
@@ -228,10 +244,13 @@ class CancelCANServiceImpl(
     }
 
     private fun getRelatedCans(
-        cpid: String,
+        cpid: Cpid,
         canId: CANId,
         contractId: String
     ): Sequence<CANEntity> = canRepository.findBy(cpid = cpid)
+        .orThrow {
+            ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+        }
         .asSequence()
         .filter {
             it.contractId == contractId && it.id != canId
@@ -331,7 +350,7 @@ class CancelCANServiceImpl(
      * eContracting проверяет что найденный по ID && CPID из запароса CAN содержит token,
      * значение которого равно значению параметра token из запроса.
      */
-    private fun checkToken(tokenFromRequest: UUID, canEntity: CANEntity) {
+    private fun checkToken(tokenFromRequest: Token, canEntity: CANEntity) {
         if (canEntity.token != tokenFromRequest)
             throw ErrorException(error = ErrorType.INVALID_TOKEN)
     }
@@ -342,7 +361,7 @@ class CancelCANServiceImpl(
      * eContracting проверяет соответствие owner связанного CAN (выбранного из БД) и owner,
      * полученного в контексте запроса.
      */
-    private fun checkOwner(ownerFromRequest: String, canEntity: CANEntity) {
+    private fun checkOwner(ownerFromRequest: Owner, canEntity: CANEntity) {
         if (canEntity.owner != ownerFromRequest)
             throw ErrorException(error = ErrorType.INVALID_OWNER)
     }

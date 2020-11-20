@@ -12,7 +12,7 @@ import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
-    Cpid.tryCreateOrNull(value = value)
+    Cpid.orNull(value = value)
         ?.asSuccess()
         ?: Result.failure(
             DataErrors.Validation.DataMismatchToPattern(
@@ -23,7 +23,7 @@ fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToP
         )
 
 fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToPattern> =
-    Ocid.tryCreateOrNull(value = value)
+    Ocid.orNull(value = value)
         ?.asSuccess()
         ?: Result.failure(
             DataErrors.Validation.DataMismatchToPattern(

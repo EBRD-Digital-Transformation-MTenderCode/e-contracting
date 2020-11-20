@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service.model
 
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -12,10 +13,9 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class CreatedACData(
-    val token: UUID,
+    val token: Token,
     val cans: List<CAN>,
     val contract: Contract,
     val contractedAward: ContractedAward

@@ -12,23 +12,29 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataCancelCAN
-import com.procurement.contracting.application.repository.DataRelatedCAN
-import com.procurement.contracting.application.repository.DataStatusesCAN
-import com.procurement.contracting.application.repository.RelatedContract
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.DataCancelCAN
+import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
+import com.procurement.contracting.application.repository.can.model.RelatedContract
+import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.get
+import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -43,9 +49,9 @@ import java.util.*
 @ContextConfiguration(classes = [DatabaseTestConfiguration::class])
 class CassandraCANRepositoryIT {
     companion object {
-        private const val CPID = "cpid-1"
-        private val TOKEN = UUID.randomUUID()
-        private const val OWNER = "owner-1"
+        private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
+        private val TOKEN = Token.generate()
+        private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
         private const val CONTRACT_ID = "ac-id-1"
         private val AWARD_ID: AwardId = UUID.randomUUID()
@@ -107,7 +113,7 @@ class CassandraCANRepositoryIT {
     fun findByCPIDAndCANId() {
         insertCANWithContract()
 
-        val actualFundedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+        val actualFundedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
 
         assertNotNull(actualFundedCAN)
         assertEquals(expectedFundedCAN(), actualFundedCAN)
@@ -115,7 +121,8 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun canByCPIDAndCANIdNotFound() {
-        val actualFundedCAN = canRepository.findBy(cpid = "UNKNOWN", canId = CAN_ID)
+        val actualFundedCAN =
+            canRepository.findBy(cpid = Cpid.orNull("ocds-b3wdp1-MD-0000000000000")!!, canId = CAN_ID).get()
         assertNull(actualFundedCAN)
     }
 
@@ -124,7 +131,7 @@ class CassandraCANRepositoryIT {
         insertCANWithContract()
         insertRelatedCAN()
 
-        val actualFundedCANs: List<CANEntity> = canRepository.findBy(cpid = CPID)
+        val actualFundedCANs: List<CANEntity> = canRepository.findBy(cpid = CPID).get()
 
         assertNotNull(actualFundedCANs)
         assertEquals(2, actualFundedCANs.size)
@@ -140,7 +147,8 @@ class CassandraCANRepositoryIT {
 
     @Test
     fun canByCPIDNotFound() {
-        val actualFundedCANs = canRepository.findBy(cpid = "UNKNOWN")
+        val actualFundedCANs =
+            canRepository.findBy(cpid = Cpid.orNull("ocds-b3wdp1-MD-0000000000000")!!).get()
         assertNotNull(actualFundedCANs)
         assertEquals(0, actualFundedCANs.size)
     }
@@ -153,10 +161,7 @@ class CassandraCANRepositoryIT {
             .whenever(session)
             .execute(any<BoundStatement>())
 
-        val exception = assertThrows<ReadEntityException> {
-            canRepository.findBy(cpid = CPID, canId = CAN_ID)
-        }
-        assertEquals("Error read CAN(s) from the database.", exception.message)
+        canRepository.findBy(cpid = CPID, canId = CAN_ID).assertFailure()
     }
 
     @Test
@@ -170,11 +175,11 @@ class CassandraCANRepositoryIT {
             dataRelatedCANs = dataRelatedCANs()
         )
 
-        val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+        val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
         assertNotNull(actualCancelledCAN)
         assertEquals(expectedCancelledCAN(), actualCancelledCAN)
 
-        val actualRelatedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = RELATED_CAN_ID)
+        val actualRelatedCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = RELATED_CAN_ID).get()
         assertNotNull(actualRelatedCAN)
         assertEquals(expectedCancelledRelatedCAN(), actualRelatedCAN)
     }
@@ -183,18 +188,15 @@ class CassandraCANRepositoryIT {
     fun errorSaveUnknownCANs() {
         insertCANWithContract()
 
-        val exception = assertThrows<SaveEntityException> {
-            canRepository.saveCancelledCANs(
+        val wasApplied = canRepository
+            .saveCancelledCANs(
                 cpid = CPID,
                 dataCancelledCAN = dataCancelledCAN(),
                 dataRelatedCANs = dataRelatedCANs()
             )
-        }
+            .get()
 
-        assertEquals(
-            "An error occurred when writing a record(s) of the CAN(s) by cpid '$CPID' from the database.",
-            exception.message
-        )
+        assertFalse(wasApplied)
     }
 
     @Test
@@ -210,70 +212,9 @@ class CassandraCANRepositoryIT {
                 cpid = CPID,
                 dataCancelledCAN = dataCancelledCAN(),
                 dataRelatedCANs = emptyList()
-            )
+            ).orThrow { it.exception }
         }
         assertEquals("Error writing cancelled CAN(s).", exception.message)
-    }
-
-    @Test
-    fun saveUpdatedStatusesCANs() {
-        insertCANWithContract()
-
-        val updatedCan = DataStatusesCAN(
-            id = CAN_ID,
-            status = CAN_STATUS_AFTER_UPDATE,
-            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
-            jsonData = JSON_DATA_UPDATED_CAN
-        )
-
-        canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
-
-        val actualCANEntity: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
-
-        val expectedCANEntity = expectedUpdatedCAN()
-
-        assertNotNull(actualCANEntity)
-        assertEquals(expectedCANEntity, actualCANEntity)
-    }
-
-    @Test
-    fun errorSaveUpdatedStatusesUnknownCANs() {
-        val updatedCan = DataStatusesCAN(
-            id = CAN_ID,
-            status = CAN_STATUS_AFTER_UPDATE,
-            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
-            jsonData = JSON_DATA_UPDATED_CAN
-        )
-
-        val exception = assertThrows<SaveEntityException> {
-            canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
-        }
-
-        assertEquals(
-            "An error occurred when writing a record(s) of the CAN(s) by cpid '$CPID' from the database.",
-            exception.message
-        )
-    }
-
-    @Test
-    fun errorSaveUpdatedStatusesCANs() {
-        insertCANWithContract()
-
-        doThrow(RuntimeException())
-            .whenever(session)
-            .execute(any<BatchStatement>())
-
-        val updatedCan = DataStatusesCAN(
-            id = CAN_ID,
-            status = CAN_STATUS_AFTER_UPDATE,
-            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
-            jsonData = JSON_DATA_UPDATED_CAN
-        )
-
-        val exception = assertThrows<SaveEntityException> {
-            canRepository.updateStatusesCANs(cpid = CPID, cans = listOf(updatedCan))
-        }
-        assertEquals("Error writing updated statuses CAN(s).", exception.message)
     }
 
     @Test
@@ -290,7 +231,7 @@ class CassandraCANRepositoryIT {
 
         canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
 
-        val actualCANEntity: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+        val actualCANEntity: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
         assertNotNull(actualCANEntity)
         val expectedCANEntity = expectedUpdatedCAN()
         assertEquals(expectedCANEntity, actualCANEntity)
@@ -306,14 +247,8 @@ class CassandraCANRepositoryIT {
             jsonData = JSON_DATA_UPDATED_CAN
         )
 
-        val exception = assertThrows<SaveEntityException> {
-            canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
-        }
-
-        assertEquals(
-            "An error occurred when writing a record(s) of the CAN(s) by cpid '$CPID' from the database.",
-            exception.message
-        )
+        val wasApplied = canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract)).get()
+        assertFalse(wasApplied)
     }
 
     @Test
@@ -333,7 +268,7 @@ class CassandraCANRepositoryIT {
         )
 
         val exception = assertThrows<SaveEntityException> {
-            canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract))
+            canRepository.relateContract(cpid = CPID, cans = listOf(relatedContract)).orThrow { it.exception }
         }
         assertEquals("Error writing updated CAN(s) with related Contract.", exception.message)
     }
@@ -351,7 +286,7 @@ class CassandraCANRepositoryIT {
 
         canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
 
-        val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID)
+        val actualCancelledCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
 
         assertNotNull(actualCancelledCAN)
         assertEquals(newCAN, actualCancelledCAN)
@@ -370,14 +305,8 @@ class CassandraCANRepositoryIT {
 
         canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
 
-        val exception = assertThrows<SaveEntityException> {
-            canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
-        }
-
-        assertEquals(
-            "An error occurred when writing a record(s) of new CAN by cpid '$CPID' and lot id '${newCAN.lotId}' and award id '${newCAN.awardId}' to the database. Record is already.",
-            exception.message
-        )
+        val wasApplied = canRepository.saveNewCAN(cpid = CPID, entity = newCAN).get()
+        assertFalse(wasApplied)
     }
 
     @Test
@@ -396,9 +325,63 @@ class CassandraCANRepositoryIT {
         )
 
         val exception = assertThrows<SaveEntityException> {
-            canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
+            canRepository.saveNewCAN(cpid = CPID, entity = newCAN).orThrow { it.exception }
         }
         assertEquals("Error writing new CAN.", exception.message)
+    }
+
+    @Test
+    fun updateOne() {
+        val newCAN = createCANEntity(
+            id = CAN_ID,
+            lotId = CAN_LOT_ID,
+            contractId = CONTRACT_ID,
+            status = CAN_STATUS,
+            statusDetails = CAN_STATUS_DETAILS,
+            jsonData = JSON_DATA_CAN
+        )
+
+        canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
+
+        val updatedCAN = newCAN.copy(
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+        val wasApplied = canRepository.update(cpid = CPID, entity = updatedCAN).get()
+        assertTrue(wasApplied)
+
+        val actualCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
+
+        assertNotNull(actualCAN)
+        assertEquals(updatedCAN, actualCAN)
+    }
+
+    @Test
+    fun updateMulti() {
+        val newCAN = createCANEntity(
+            id = CAN_ID,
+            lotId = CAN_LOT_ID,
+            contractId = CONTRACT_ID,
+            status = CAN_STATUS,
+            statusDetails = CAN_STATUS_DETAILS,
+            jsonData = JSON_DATA_CAN
+        )
+
+        canRepository.saveNewCAN(cpid = CPID, entity = newCAN)
+
+        val updatedCAN = newCAN.copy(
+            status = CAN_STATUS_AFTER_UPDATE,
+            statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
+            jsonData = JSON_DATA_UPDATED_CAN
+        )
+        val wasApplied = canRepository.update(cpid = CPID, entities = listOf(updatedCAN)).get()
+        assertTrue(wasApplied)
+
+        val actualCAN: CANEntity? = canRepository.findBy(cpid = CPID, canId = CAN_ID).get()
+
+        assertNotNull(actualCAN)
+        assertEquals(updatedCAN, actualCAN)
     }
 
     private fun createKeyspace() {
@@ -438,16 +421,16 @@ class CassandraCANRepositoryIT {
         jsonData: String = JSON_DATA_CAN
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
-            .value("cp_id", CPID)
+            .value("cp_id", CPID.underlying)
             .value("can_id", canId)
-            .value("token_entity", TOKEN)
-            .value("owner", OWNER)
+            .value("token_entity", TOKEN.underlying)
+            .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
             .value("lot_id", lotId.toString())
             .value("ac_id", CONTRACT_ID)
-            .value("status", status.toString())
-            .value("status_details", statusDetails.toString())
+            .value("status", status.key)
+            .value("status_details", statusDetails.key)
             .value("json_data", jsonData)
 
         session.execute(rec)
@@ -461,15 +444,15 @@ class CassandraCANRepositoryIT {
         jsonData: String = JSON_DATA_CAN
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
-            .value("cp_id", CPID)
+            .value("cp_id", CPID.underlying)
             .value("can_id", canId)
-            .value("token_entity", TOKEN)
-            .value("owner", OWNER)
+            .value("token_entity", TOKEN.underlying)
+            .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
             .value("lot_id", lotId.toString())
-            .value("status", status.toString())
-            .value("status_details", statusDetails.toString())
+            .value("status", status.key)
+            .value("status_details", statusDetails.key)
             .value("json_data", jsonData)
 
         session.execute(rec)

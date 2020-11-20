@@ -1,14 +1,13 @@
-package com.procurement.contracting.infrastructure.repository.history
+package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.Session
 import com.procurement.contracting.domain.util.extension.nowDefaultUTC
 import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
+import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
-import com.procurement.contracting.infrastructure.repository.Database
-import com.procurement.contracting.infrastructure.repository.toCassandraTimestamp
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Repository

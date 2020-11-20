@@ -1,16 +1,21 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.model.CanEntity
-import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.cpid
 import com.procurement.contracting.infrastructure.handler.v1.model.request.AwardDto
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CanGetAwards
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ConfirmationCan
@@ -19,10 +24,11 @@ import com.procurement.contracting.infrastructure.handler.v1.model.request.Creat
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateCanRs
 import com.procurement.contracting.infrastructure.handler.v1.model.request.GetAwardsRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.GetAwardsRs
+import com.procurement.contracting.infrastructure.handler.v1.owner
+import com.procurement.contracting.infrastructure.handler.v1.startDate
+import com.procurement.contracting.infrastructure.handler.v1.token
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -30,14 +36,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Service
-class CreateCanService(private val canDao: CanDao,
-                       private val generationService: GenerationService
+class CreateCanService(
+    private val canRepository: CANRepository,
+    private val generationService: GenerationService
 ) {
 
     fun createCan(cm: CommandMessage): CreateCanRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val owner = cm.owner
+        val dateTime = cm.startDate
         val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
         val dto = toObject(CreateCanRq::class.java, cm.data)
 
@@ -51,7 +58,7 @@ class CreateCanService(private val canDao: CanDao,
         }
         val can = Can(
             id = generationService.canId(),
-            token = generationService.generateRandomUUID().toString(),
+            token = generationService.token(),
             date = dateTime,
             awardId = canAwardId,
             lotId = lotId,
@@ -59,25 +66,34 @@ class CreateCanService(private val canDao: CanDao,
             statusDetails = statusDetails,
             documents = null,
             amendment = null)
-        val canEntity = createCanEntity(cpId, owner, dateTime, can)
-        canDao.save(canEntity)
+        val canEntity = createCanEntity(cpid, owner, dateTime, can)
+        val wasApplied = canRepository.saveNewCAN(cpid = cpid, entity = canEntity)
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of new CAN by cpid '${canEntity.cpid}' and lot id '${canEntity.lotId}' and award id '${canEntity.awardId}' to the database. Record is already.")
         return CreateCanRs(can)
     }
 
     fun checkCan(cm: CommandMessage) {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
         val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
 
-        val canEntities = canDao.findAllByCpId(cpId)
+        val canEntities = canRepository.findBy(cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
         if (canEntities.asSequence().any { it.lotId == lotId && it.status != CANStatus.CANCELLED }) {
             throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
         }
     }
 
     fun checkCanByAwardId(cm: CommandMessage) {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
         val dto = toObject(AwardDto::class.java, cm.data)
-        val canEntities = canDao.findAllByCpId(cpId)
+        val canEntities = canRepository.findBy(cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
         if (canEntities.asSequence().none {
                     it.awardId == dto.awardId
                             && it.status == CANStatus.PENDING
@@ -87,16 +103,19 @@ class CreateCanService(private val canDao: CanDao,
     }
 
     fun getCans(cm: CommandMessage): GetAwardsRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
         val dto = toObject(GetAwardsRq::class.java, cm.data)
 
-        val canEntities = canDao.findAllByCpId(cpId)
+        val canEntities = canRepository.findBy(cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
         val canIdsSet: Set<CANId> = dto.contracts.asSequence().map { it.id }.toSet()
-        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.canId) }.toList()
+        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.id) }.toList()
         val cansRs = ArrayList<CanGetAwards>()
         for (canEntity in canEntitiesFiltered) {
             if (canEntity.statusDetails != CANStatusDetails.UNSUCCESSFUL) {
-                cansRs.add(CanGetAwards(id = canEntity.canId, awardId = canEntity.awardId!!))
+                cansRs.add(CanGetAwards(id = canEntity.id, awardId = canEntity.awardId!!))
             } else {
                 throw ErrorException(ErrorType.INVALID_CAN_STATUS)
             }
@@ -105,51 +124,58 @@ class CreateCanService(private val canDao: CanDao,
     }
 
     fun confirmationCan(cm: CommandMessage): ConfirmationCanRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val token = cm.token
+        val owner = cm.owner
         val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
-        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
+        val canEntity = canRepository.findBy(cpid, canId)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN from the database.", cause = it.exception)
+            }
+            ?: throw ErrorException(ErrorType.CAN_NOT_FOUND)
         if (canEntity.owner != owner) throw ErrorException(error = ErrorType.INVALID_OWNER)
-        if (canEntity.token.toString() != token) throw ErrorException(ErrorType.INVALID_TOKEN)
+        if (canEntity.token != token) throw ErrorException(ErrorType.INVALID_TOKEN)
 
         if (canEntity.status == CANStatus.PENDING && canEntity.statusDetails == CANStatusDetails.UNSUCCESSFUL) {
             val can = toObject(Can::class.java, canEntity.jsonData)
             can.status = CANStatus.UNSUCCESSFUL
             can.statusDetails = CANStatusDetails.EMPTY
 
-            canEntity.status = can.status
-            canEntity.statusDetails = can.statusDetails
-            canEntity.jsonData = toJson(can)
-            canDao.save(canEntity)
+            val updatedCANEntity = canEntity.copy(
+                status = can.status,
+                statusDetails = can.statusDetails,
+                jsonData = toJson(can)
+            )
+            val wasApplied = canRepository.update(cpid = cpid, entity = updatedCANEntity)
+                .orThrow { it.exception }
+            if (!wasApplied)
+                throw SaveEntityException(message = "An error occurred when writing a record(s) of CAN by cpid '$cpid' and id '${updatedCANEntity.id}' to the database. Record is already.")
+
             return ConfirmationCanRs(
                 cans = listOf(ConfirmationCan(can.id, can.status, can.statusDetails)),
                 lotId = can.lotId
             )
-
         } else
             throw ErrorException(ErrorType.INVALID_CAN_STATUS)
     }
 
 
-    private fun createCanEntity(cpId: String,
-                                owner: String,
+    private fun createCanEntity(cpid: Cpid,
+                                owner: Owner,
                                 dateTime: LocalDateTime,
-                                can: Can): CanEntity {
-        return CanEntity(
-                cpId = cpId,
-                canId = can.id,
-                token = UUID.fromString(can.token),
+                                can: Can): CANEntity {
+        return CANEntity(
+                cpid = cpid,
+                id = can.id,
+                token = can.token,
                 awardId = can.awardId,
                 lotId = can.lotId,
-                acId = null,
+                contractId = null,
                 owner = owner,
                 status = can.status,
                 statusDetails = can.statusDetails,
-                createdDate = dateTime.toDate(),
+                createdDate = dateTime,
                 jsonData = toJson(can)
         )
     }
-
-
 }

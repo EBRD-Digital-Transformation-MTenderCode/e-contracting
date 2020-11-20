@@ -1,8 +1,10 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.RelatedContract
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.RelatedContract
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.application.service.model.CreateACContext
 import com.procurement.contracting.application.service.model.CreateACData
@@ -18,6 +20,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.model.dto.ocds.Address
@@ -38,7 +41,6 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
-import java.util.*
 
 interface ACService {
     fun create(context: CreateACContext, data: CreateACData): CreatedACData
@@ -126,7 +128,7 @@ class ACServiceImpl(
         val acEntity = ACEntity(
             cpid = context.cpid,
             id = contract.id,
-            token = UUID.fromString(contract.token),
+            token = contract.token!!,
             owner = context.owner,
             createdDate = context.startDate,
             status = contract.status,
@@ -136,11 +138,18 @@ class ACServiceImpl(
             jsonData = toJson(contractProcess)
         )
 
-        canRepository.relateContract(cpid = context.cpid, cans = updatedCANsEntities)
-        acRepository.saveNew(acEntity)
+        val wasAppliedCAN = canRepository.relateContract(cpid = context.cpid, cans = updatedCANsEntities)
+            .orThrow { it.exception }
+        if (!wasAppliedCAN)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '${context.cpid}' from the database.")
+
+        val wasAppliedAC = acRepository.saveNew(acEntity)
+            .orThrow { it.exception }
+        if (!wasAppliedAC)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the new contract by cpid '${acEntity.cpid}' and id '${acEntity.id}' to the database. Record is already.")
 
         return CreatedACData(
-            token = UUID.fromString(contract.token),
+            token = contract.token,
             cans = updatedCANS.values.map { can ->
                 CreatedACData.CAN(
                     id = can.id,
@@ -271,11 +280,14 @@ class ACServiceImpl(
         )
     }
 
-    private fun loadCANs(cpid: String, cans: List<CreateACData.CAN>): List<CANEntity> {
+    private fun loadCANs(cpid: Cpid, cans: List<CreateACData.CAN>): List<CANEntity> {
         val cansIds = cans.asSequence()
             .map { can -> can.id }
             .toSet()
         return canRepository.findBy(cpid = cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
             .filter { entity ->
                 cansIds.contains(entity.id)
             }
@@ -360,6 +372,7 @@ class ACServiceImpl(
 
                 val updatedEntity = entity.copy(
                     contractId = contractId,
+                    status = updatedCAN.status,
                     statusDetails = updatedCAN.statusDetails,
                     jsonData = toJson(updatedCAN)
                 )
@@ -371,10 +384,10 @@ class ACServiceImpl(
     /**
      * BR-9.1.13 contract
      */
-    private fun generateContract(cpid: String, contractedAward: ContractedAward): Contract {
+    private fun generateContract(cpid: Cpid, contractedAward: ContractedAward): Contract {
         return Contract(
             id = generationService.contractId(cpid),
-            token = generationService.token().toString(),
+            token = generationService.token(),
             awardId = contractedAward.id,
             //BR-9.1.2
             status = ContractStatus.PENDING,

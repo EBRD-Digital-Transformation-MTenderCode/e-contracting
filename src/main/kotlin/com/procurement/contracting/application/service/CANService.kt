@@ -1,6 +1,7 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.CANRepository
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.CreatedCANData
@@ -70,7 +71,10 @@ class CANServiceImpl(
             statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
-        canRepository.saveNewCAN(cpid = context.cpid, entity = canEntity)
+        val wasApplied = canRepository.saveNewCAN(cpid = context.cpid, entity = canEntity)
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of new CAN by cpid '${canEntity.cpid}' and lot id '${canEntity.lotId}' and award id '${canEntity.awardId}' to the database. Record is already.")
 
         return CreatedCANData(
             token = can.token,
@@ -86,7 +90,7 @@ class CANServiceImpl(
     }
 
     override fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail.Incident> {
-        val canEntity = canRepository.tryFindBy(cpid = params.cpid)
+        val canEntity = canRepository.findBy(cpid = params.cpid)
             .onFailure { incident -> return incident }
 
         val lotIds = params.lotIds.toSet()

@@ -11,15 +11,21 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ACRepository
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.get
+import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -30,16 +36,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
-import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DatabaseTestConfiguration::class])
 class CassandraACRepositoryIT {
     companion object {
-        private const val CPID = "cpid-1"
+        private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
         private const val CONTRACT_ID = "contract-id"
-        private val TOKEN = UUID.randomUUID()
-        private const val OWNER = "owner-1"
+        private val TOKEN = Token.generate()
+        private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
         private val AC_STATUS = ContractStatus.PENDING
         private val AC_STATUS_AFTER_CANCEL = ContractStatus.CANCELLED
@@ -89,7 +94,7 @@ class CassandraACRepositoryIT {
     fun findBy() {
         insertAC()
 
-        val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
+        val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID).get()
 
         assertNotNull(actualFundedAC)
         assertEquals(expectedFundedAC(), actualFundedAC)
@@ -97,7 +102,8 @@ class CassandraACRepositoryIT {
 
     @Test
     fun acNotFound() {
-        val actualFundedAC = acRepository.findBy(cpid = "UNKNOWN", contractId = CONTRACT_ID)
+        val actualFundedAC =
+            acRepository.findBy(cpid = Cpid.orNull("ocds-b3wdp1-MD-0000000000000")!!, contractId = CONTRACT_ID).get()
         assertNull(actualFundedAC)
     }
 
@@ -109,10 +115,7 @@ class CassandraACRepositoryIT {
             .whenever(session)
             .execute(any<BoundStatement>())
 
-        val exception = assertThrows<ReadEntityException> {
-            acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
-        }
-        assertEquals("Error read Contract(s) from the database.", exception.message)
+        acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID).assertFailure()
     }
 
     @Test
@@ -127,7 +130,7 @@ class CassandraACRepositoryIT {
             jsonData = JSON_DATA_CANCELLED_AC
         )
 
-        val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
+        val actualFundedAC: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID).get()
 
         val expectedACEntity = expectedCancelledAC()
 
@@ -150,7 +153,7 @@ class CassandraACRepositoryIT {
                 status = AC_STATUS_AFTER_CANCEL,
                 statusDetails = AC_STATUS_DETAILS_AFTER_CANCEL,
                 jsonData = JSON_DATA_CANCELLED_AC
-            )
+            ).orThrow { it.exception }
         }
         assertEquals("Error writing cancelled contract.", exception.message)
     }
@@ -167,7 +170,7 @@ class CassandraACRepositoryIT {
             jsonData = JSON_DATA_UPDATED_AC
         )
 
-        val actualACEntity: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
+        val actualACEntity: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID).get()
 
         val expectedACEntity = expectedUpdatedAC()
 
@@ -190,7 +193,7 @@ class CassandraACRepositoryIT {
                 status = AC_STATUS_AFTER_UPDATE,
                 statusDetails = AC_STATUS_DETAILS_AFTER_UPDATE,
                 jsonData = JSON_DATA_UPDATED_AC
-            )
+            ).orThrow { it.exception }
         }
         assertEquals("Error writing updated contract.", exception.message)
     }
@@ -205,7 +208,7 @@ class CassandraACRepositoryIT {
 
         acRepository.saveNew(entity)
 
-        val actualACEntity: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID)
+        val actualACEntity: ACEntity? = acRepository.findBy(cpid = CPID, contractId = CONTRACT_ID).get()
 
         assertNotNull(actualACEntity)
         assertEquals(entity, actualACEntity)
@@ -221,14 +224,8 @@ class CassandraACRepositoryIT {
 
         acRepository.saveNew(entity)
 
-        val exception = assertThrows<SaveEntityException> {
-            acRepository.saveNew(entity)
-        }
-
-        assertEquals(
-            "An error occurred when writing a record(s) of the new contract by cpid '${entity.cpid}' and id '${entity.id}' to the database. Record is already.",
-            exception.message
-        )
+        val wasApplied = acRepository.saveNew(entity).get()
+        assertFalse(wasApplied)
     }
 
     @Test
@@ -244,7 +241,7 @@ class CassandraACRepositoryIT {
         )
 
         val exception = assertThrows<SaveEntityException> {
-            acRepository.saveNew(entity)
+            acRepository.saveNew(entity).orThrow { it.exception }
         }
         assertEquals("Error writing new contract to database.", exception.message)
     }
@@ -283,16 +280,16 @@ class CassandraACRepositoryIT {
         jsonData: String = JSON_DATA
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_ac")
-            .value("cp_id", CPID)
+            .value("cp_id", CPID.underlying)
             .value("ac_id", CONTRACT_ID)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("json_data", jsonData)
             .value("language", LANGUAGE)
-            .value("mpc", MPC.toString())
-            .value("owner", OWNER)
-            .value("status", status.toString())
-            .value("status_details", statusDetails.toString())
-            .value("token_entity", TOKEN)
+            .value("mpc", MPC.key)
+            .value("owner", OWNER.underlying)
+            .value("status", status.key)
+            .value("status_details", statusDetails.key)
+            .value("token_entity", TOKEN.underlying)
         session.execute(rec)
     }
 

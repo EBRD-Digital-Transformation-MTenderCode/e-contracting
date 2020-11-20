@@ -1,8 +1,11 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.dao.AcDao
-import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
@@ -14,6 +17,7 @@ import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.DOCS_RELATED_LOTS
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.cpid
 import com.procurement.contracting.infrastructure.handler.v1.model.request.DocumentUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentContract
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentsRq
@@ -26,20 +30,28 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UpdateDocumentsService(private val canDao: CanDao,
-                             private val acDao: AcDao) {
+class UpdateDocumentsService(
+    private val acRepository: ACRepository,
+    private val canRepository: CANRepository
+) {
 
     fun updateCanDocs(cm: CommandMessage): UpdateDocumentsRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
         val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
-        val canEntity = canDao.getByCpIdAndCanId(cpId, canId)
+        val canEntity = canRepository.findBy(cpid, canId)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN from the database.", cause = it.exception)
+            }
+            ?: throw ErrorException(ErrorType.CAN_NOT_FOUND)
         val can = toObject(Can::class.java, canEntity.jsonData)
         if (can.status != CANStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
 
-        if (canEntity.acId != null) {
-            val acEntity = acDao.getByCpIdAndAcId(cpId, canEntity.acId!!)
+        if (canEntity.contractId != null) {
+            val acEntity: ACEntity = acRepository.findBy(cpid, canEntity.contractId)
+                .orThrow { it.exception }
+                ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
             if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
             if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
@@ -48,8 +60,17 @@ class UpdateDocumentsService(private val canDao: CanDao,
         }
         validateDocsRelatedLotCan(dto, can)
         can.documents = updateCanDocuments(dto, can)
-        canEntity.jsonData = toJson(can)
-        canDao.save(canEntity)
+
+        val updatedCANEntity = canEntity.copy(
+            status = can.status,
+            statusDetails = can.statusDetails,
+            jsonData = toJson(can)
+        )
+        val wasApplied = canRepository.update(cpid = cpid, entity = updatedCANEntity)
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of CAN by cpid '$cpid' and id '${updatedCANEntity.id}' to the database. Record is already.")
+
         return UpdateDocumentsRs(
             contract = UpdateDocumentContract(
                 id = canId,

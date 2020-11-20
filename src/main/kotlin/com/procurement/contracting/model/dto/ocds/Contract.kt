@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
@@ -11,7 +12,7 @@ import java.util.*
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Contract @JsonCreator constructor(
 
-    val token: String?,
+    val token: Token?,
 
     val id: String,
 

@@ -1,10 +1,12 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.model.AcEntity
-import com.procurement.contracting.application.repository.model.CanEntity
+import com.procurement.contracting.application.exception.repository.ReadEntityException
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.dao.AcDao
-import com.procurement.contracting.dao.CanDao
+import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -13,39 +15,38 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatusDe
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
-import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.cpid
+import com.procurement.contracting.infrastructure.handler.v1.language
+import com.procurement.contracting.infrastructure.handler.v1.mainProcurementCategory
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateAcRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateAcRs
+import com.procurement.contracting.infrastructure.handler.v1.owner
+import com.procurement.contracting.infrastructure.handler.v1.startDate
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.ContractedAward
 import com.procurement.contracting.model.dto.ocds.DocumentAward
 import com.procurement.contracting.model.dto.ocds.ValueTax
-import com.procurement.contracting.utils.toDate
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 @Service
 class CreateAcService(
-    private val acDao: AcDao,
-    private val canDao: CanDao,
+    private val acRepository: ACRepository,
+    private val canRepository: CANRepository,
     private val generationService: GenerationService
 ) {
 
     @Deprecated(message = "Use method create in ACService.", level = DeprecationLevel.ERROR)
     fun createAC(cm: CommandMessage): CreateAcRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val language = cm.context.language ?: throw ErrorException(CONTEXT)
-        val mainProcurementCategory = cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val owner = cm.owner
+        val language = cm.language
+        val mainProcurementCategory = cm.mainProcurementCategory
+        val dateTime = cm.startDate
         val dto = toObject(CreateAcRq::class.java, cm.data)
 
         //VR-9.1.1
@@ -58,39 +59,50 @@ class CreateAcService(
         }
 
         val idsOfCANs: Set<CANId> = dto.contracts.fold(initial = HashSet()) { acc, item ->
-            if(acc.add(item.id))
+            if (acc.add(item.id))
                 acc
             else
                 throw ErrorException(ErrorType.DUPLICATE_CAN_ID)
         }
-        val canEntities = canDao.findAllByCpId(cpId)
+        val canEntities = canRepository.findBy(cpid)
+            .orThrow {
+                ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
+            }
         val canEntityIds: Set<CANId> = canEntities.fold(initial = HashSet()) { acc, item ->
-            acc.add(item.canId)
+            acc.add(item.id)
             acc
         }
         val isValidCANIds = idsOfCANs.all { canEntityIds.contains(it) }
         if (!isValidCANIds) throw ErrorException(CANS_NOT_FOUND)
 
-        val updatedCanEntities = ArrayList<CanEntity>()
-        val acId = generationService.contractId(cpId)
+        val updatedCanEntities = ArrayList<CANEntity>()
+        val acId = generationService.contractId(cpid)
         val cans = ArrayList<Can>()
         //BR-9.1.3
 
         for (canEntity in canEntities) {
-            if (idsOfCANs.contains(canEntity.canId)) {
+            if (idsOfCANs.contains(canEntity.id)) {
                 if (!(canEntity.status == CANStatus.PENDING && canEntity.statusDetails == CANStatusDetails.CONTRACT_PROJECT)) {
                     throw ErrorException(ErrorType.CAN_ALREADY_USED)
                 }
                 val can = toObject(Can::class.java, canEntity.jsonData)
                 can.statusDetails = CANStatusDetails.ACTIVE
-                canEntity.statusDetails = can.statusDetails
-                canEntity.acId = acId
-                canEntity.jsonData = toJson(can)
-                updatedCanEntities.add(canEntity)
+
+                val updatedCANEntity = canEntity.copy(
+                    contractId = acId,
+                    status = can.status,
+                    statusDetails = can.statusDetails,
+                    jsonData = toJson(can)
+                )
+
+                updatedCanEntities.add(updatedCANEntity)
                 cans.add(can)
             }
         }
-        updatedCanEntities.asSequence().forEach { canDao.save(it) }
+        val wasAppliedCAN = canRepository.update(cpid = cpid, entities = updatedCanEntities)
+            .orThrow { it.exception }
+        if (!wasAppliedCAN)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of CAN by cpid '$cpid' to the database. Record is already.")
 
         val awardId = generationService.awardId()
         val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
@@ -106,7 +118,7 @@ class CreateAcService(
         }
         val contract = Contract(
             id = acId,
-            token = generationService.generateRandomUUID().toString(),
+            token = generationService.token(),
             awardId = awardId,
             status = ContractStatus.PENDING,
             statusDetails = ContractStatusDetails.CONTRACT_PROJECT
@@ -132,12 +144,12 @@ class CreateAcService(
             award = contractedAward
         )
 
-        val acEntity = AcEntity(
-            cpId = cpId,
-            acId = contract.id,
-            token = UUID.fromString(contract.token!!),
+        val acEntity = ACEntity(
+            cpid = cpid,
+            id = contract.id,
+            token = contract.token!!,
             owner = owner,
-            createdDate = dateTime.toDate(),
+            createdDate = dateTime,
             status = contract.status,
             statusDetails = contract.statusDetails,
             mainProcurementCategory = mainProcurementCategory,
@@ -145,7 +157,10 @@ class CreateAcService(
             jsonData = toJson(contractProcess)
         )
 
-        acDao.save(acEntity)
+        val wasAppliedAC = acRepository.saveNew(acEntity)
+            .orThrow { it.exception }
+        if (!wasAppliedAC)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the new contract by cpid '${acEntity.cpid}' and id '${acEntity.id}' to the database. Record is already.")
 
         return CreateAcRs(cans = cans, contract = contract, contractedAward = contractedAward)
     }

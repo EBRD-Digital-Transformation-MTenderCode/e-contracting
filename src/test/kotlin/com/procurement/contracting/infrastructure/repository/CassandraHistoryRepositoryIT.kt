@@ -1,4 +1,4 @@
-package com.procurement.contracting.infrastructure.repository.history
+package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.HostDistance
@@ -10,9 +10,6 @@ import com.procurement.contracting.infrastructure.api.Action
 import com.procurement.contracting.infrastructure.api.command.id.CommandId
 import com.procurement.contracting.infrastructure.api.v1.CommandTypeV1
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
-import com.procurement.contracting.infrastructure.repository.CassandraTestContainer
-import com.procurement.contracting.infrastructure.repository.Database
-import com.procurement.contracting.infrastructure.repository.DatabaseTestConfiguration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

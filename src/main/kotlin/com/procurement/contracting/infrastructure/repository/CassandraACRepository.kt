@@ -1,83 +1,77 @@
 package com.procurement.contracting.infrastructure.repository
 
-import com.datastax.driver.core.BoundStatement
-import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ACRepository
+import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
+import com.procurement.contracting.infrastructure.extension.cassandra.toLocalDateTime
+import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
+import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Repository
 
 @Repository
 class CassandraACRepository(private val session: Session) : ACRepository {
 
     companion object {
-        private const val keySpace = "ocds"
-        private const val tableName = "contracting_ac"
-        private const val columnCpid = "cp_id"
-        private const val columnContractId = "ac_id"
-        private const val columnToken = "token_entity"
-        private const val columnOwner = "owner"
-        private const val columnCreatedDate = "created_date"
-        private const val columnStatus = "status"
-        private const val columnStatusDetails = "status_details"
-        private const val columnMPC = "mpc"
-        private const val columnLanguage = "language"
-        private const val columnJsonData = "json_data"
-
         private const val FIND_BY_CPID_AND_CAN_ID_CQL = """
-               SELECT $columnCpid,
-                      $columnContractId,
-                      $columnToken,
-                      $columnOwner,
-                      $columnCreatedDate,
-                      $columnStatus,
-                      $columnStatusDetails,
-                      $columnMPC,
-                      $columnLanguage,
-                      $columnJsonData
-                 FROM $keySpace.$tableName
-                WHERE $columnCpid=?
-                  AND $columnContractId=?
+               SELECT ${Database.AC.COLUMN_CPID},
+                      ${Database.AC.COLUMN_CONTRACT_ID},
+                      ${Database.AC.COLUMN_TOKEN},
+                      ${Database.AC.COLUMN_OWNER},
+                      ${Database.AC.COLUMN_CREATED_DATE},
+                      ${Database.AC.COLUMN_STATUS},
+                      ${Database.AC.COLUMN_STATUS_DETAILS},
+                      ${Database.AC.COLUMN_MPC},
+                      ${Database.AC.COLUMN_LANGUAGE},
+                      ${Database.AC.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE}.${Database.AC.TABLE}
+                WHERE ${Database.AC.COLUMN_CPID}=?
+                  AND ${Database.AC.COLUMN_CONTRACT_ID}=?
             """
 
         private const val CANCEL_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnStatus=?,
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                  AND $columnContractId=?
+               UPDATE ${Database.KEYSPACE}.${Database.AC.TABLE}
+                  SET ${Database.AC.COLUMN_STATUS}=?,
+                      ${Database.AC.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.AC.COLUMN_JSON_DATA}=?
+                WHERE ${Database.AC.COLUMN_CPID}=?
+                  AND ${Database.AC.COLUMN_CONTRACT_ID}=?
                IF EXISTS
             """
 
         private const val UPDATE_STATUSES_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnStatus=?, 
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                  AND $columnContractId=?
+               UPDATE ${Database.KEYSPACE}.${Database.AC.TABLE}
+                  SET ${Database.AC.COLUMN_STATUS}=?, 
+                      ${Database.AC.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.AC.COLUMN_JSON_DATA}=?
+                WHERE ${Database.AC.COLUMN_CPID}=?
+                  AND ${Database.AC.COLUMN_CONTRACT_ID}=?
                IF EXISTS
             """
 
         private const val SAVE_NEW_CQL = """
-               INSERT INTO $keySpace.$tableName(
-                      $columnCpid,
-                      $columnContractId,
-                      $columnToken,
-                      $columnOwner,
-                      $columnCreatedDate,
-                      $columnStatus,
-                      $columnStatusDetails,
-                      $columnMPC,
-                      $columnLanguage,
-                      $columnJsonData
+               INSERT INTO ${Database.KEYSPACE}.${Database.AC.TABLE}(
+                      ${Database.AC.COLUMN_CPID},
+                      ${Database.AC.COLUMN_CONTRACT_ID},
+                      ${Database.AC.COLUMN_TOKEN},
+                      ${Database.AC.COLUMN_OWNER},
+                      ${Database.AC.COLUMN_CREATED_DATE},
+                      ${Database.AC.COLUMN_STATUS},
+                      ${Database.AC.COLUMN_STATUS_DETAILS},
+                      ${Database.AC.COLUMN_MPC},
+                      ${Database.AC.COLUMN_LANGUAGE},
+                      ${Database.AC.COLUMN_JSON_DATA}
                )
                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
@@ -89,112 +83,106 @@ class CassandraACRepository(private val session: Session) : ACRepository {
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
 
-    override fun findBy(cpid: String, contractId: String): ACEntity? {
-        val query = preparedFindByCpidAndCanIdCQL.bind()
+    override fun findBy(cpid: Cpid, contractId: String): Result<ACEntity?, Fail.Incident.Database> =
+        preparedFindByCpidAndCanIdCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setString(columnContractId, contractId)
+                setString(Database.AC.COLUMN_CPID, cpid.underlying)
+                setString(Database.AC.COLUMN_CONTRACT_ID, contractId)
             }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    ReadEntityException(message = "Error read Contract(s) from the database.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .one()
+            ?.convert()
+            .asSuccess()
 
-        val resultSet = load(query)
-        return resultSet.one()
-            ?.let { convertToContractEntity(it) }
-    }
-
-    protected fun load(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw ReadEntityException(message = "Error read Contract(s) from the database.", cause = exception)
-    }
-
-    private fun convertToContractEntity(row: Row): ACEntity = ACEntity(
-        cpid = row.getString(columnCpid),
-        id = row.getString(columnContractId),
-        token = row.getUUID(columnToken),
-        owner = row.getString(columnOwner),
-        createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        status = ContractStatus.creator(row.getString(columnStatus)),
-        statusDetails = ContractStatusDetails.creator(row.getString(columnStatusDetails)),
-        mainProcurementCategory = MainProcurementCategory.creator(row.getString(columnMPC)),
-        language = row.getString(columnLanguage),
-        jsonData = row.getString(columnJsonData)
+    private fun Row.convert(): ACEntity = ACEntity(
+        cpid = Cpid.orNull(getString(Database.AC.COLUMN_CPID))!!,
+        id = getString(Database.AC.COLUMN_CONTRACT_ID),
+        token = Token.orNull(getUUID(Database.AC.COLUMN_TOKEN).toString())!!,
+        owner = Owner.orNull(getString(Database.AC.COLUMN_OWNER))!!,
+        createdDate = getTimestamp(Database.AC.COLUMN_CREATED_DATE).toLocalDateTime(),
+        status = ContractStatus.creator(getString(Database.AC.COLUMN_STATUS)),
+        statusDetails = ContractStatusDetails.creator(getString(Database.AC.COLUMN_STATUS_DETAILS)),
+        mainProcurementCategory = MainProcurementCategory.creator(getString(Database.AC.COLUMN_MPC)),
+        language = getString(Database.AC.COLUMN_LANGUAGE),
+        jsonData = getString(Database.AC.COLUMN_JSON_DATA)
     )
 
-    override fun saveNew(entity: ACEntity) {
-        val statements = preparedSaveNewCQL.bind()
+    override fun saveNew(entity: ACEntity): Result<Boolean, Fail.Incident.Database> =
+        preparedSaveNewCQL.bind()
             .apply {
-                setString(columnCpid, entity.cpid)
-                setString(columnContractId, entity.id)
-                setUUID(columnToken, entity.token)
-                setString(columnOwner, entity.owner)
-                setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnStatus, entity.status.key)
-                setString(columnStatusDetails, entity.statusDetails.key)
-                setString(columnMPC, entity.mainProcurementCategory.key)
-                setString(columnLanguage, entity.language)
-                setString(columnJsonData, entity.jsonData)
+                setString(Database.AC.COLUMN_CPID, entity.cpid.underlying)
+                setString(Database.AC.COLUMN_CONTRACT_ID, entity.id)
+                setUUID(Database.AC.COLUMN_TOKEN, entity.token.underlying)
+                setString(Database.AC.COLUMN_OWNER, entity.owner.underlying)
+                setTimestamp(Database.AC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
+                setString(Database.AC.COLUMN_STATUS, entity.status.key)
+                setString(Database.AC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.AC.COLUMN_MPC, entity.mainProcurementCategory.key)
+                setString(Database.AC.COLUMN_LANGUAGE, entity.language)
+                setString(Database.AC.COLUMN_JSON_DATA, entity.jsonData)
             }
-
-        val result = saveNew(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the new contract by cpid '${entity.cpid}' and id '${entity.id}' to the database. Record is already.")
-    }
-
-    private fun saveNew(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing new contract to database.", cause = exception)
-    }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing new contract to database.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
 
     override fun saveCancelledAC(
-        cpid: String,
+        cpid: Cpid,
         id: String,
         status: ContractStatus,
         statusDetails: ContractStatusDetails,
         jsonData: String
-    ) {
-        val statements = preparedCancelCQL.bind()
+    ): Result<Boolean, Fail.Incident.Database> =
+        preparedCancelCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setString(columnContractId, id)
-                setString(columnStatus, status.toString())
-                setString(columnStatusDetails, statusDetails.toString())
-                setString(columnJsonData, jsonData)
+                setString(Database.AC.COLUMN_CPID, cpid.underlying)
+                setString(Database.AC.COLUMN_CONTRACT_ID, id)
+                setString(Database.AC.COLUMN_STATUS, status.key)
+                setString(Database.AC.COLUMN_STATUS_DETAILS, statusDetails.key)
+                setString(Database.AC.COLUMN_JSON_DATA, jsonData)
             }
-
-        val result = saveCancelledAC(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save cancelled AC by cpid '$cpid' and id '$id' with status '$status' and status details '$statusDetails' to the database. Record is not exists.")
-    }
-
-    private fun saveCancelledAC(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing cancelled contract.", cause = exception)
-    }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing cancelled contract.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
 
     override fun updateStatusesAC(
-        cpid: String,
+        cpid: Cpid,
         id: String,
         status: ContractStatus,
         statusDetails: ContractStatusDetails,
         jsonData: String
-    ) {
-        val statements = preparedUpdateStatusesCQL.bind()
-            .apply {
-                setString(columnCpid, cpid)
-                setString(columnContractId, id)
-                setString(columnStatus, status.toString())
-                setString(columnStatusDetails, statusDetails.toString())
-                setString(columnJsonData, jsonData)
-            }
-
-        updateStatusesAC(statements)
-    }
-
-    private fun updateStatusesAC(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing updated contract.", cause = exception)
-    }
+    ): Result<Boolean, Fail.Incident.Database> = preparedUpdateStatusesCQL.bind()
+        .apply {
+            setString(Database.AC.COLUMN_CPID, cpid.underlying)
+            setString(Database.AC.COLUMN_CONTRACT_ID, id)
+            setString(Database.AC.COLUMN_STATUS, status.key)
+            setString(Database.AC.COLUMN_STATUS_DETAILS, statusDetails.key)
+            setString(Database.AC.COLUMN_JSON_DATA, jsonData)
+        }
+        .tryExecute(session)
+        .mapFailure {
+            Fail.Incident.Database.DatabaseInteractionIncident(
+                SaveEntityException(message = "Error writing updated contract.", cause = it.exception)
+            )
+        }
+        .onFailure { return it }
+        .wasApplied()
+        .asSuccess()
 }

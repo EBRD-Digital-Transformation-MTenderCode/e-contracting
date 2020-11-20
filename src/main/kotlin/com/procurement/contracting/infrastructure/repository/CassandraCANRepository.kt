@@ -2,23 +2,24 @@ package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.BatchStatement
 import com.datastax.driver.core.BoundStatement
-import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.Statement
-import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.CANRepository
-import com.procurement.contracting.application.repository.DataCancelCAN
-import com.procurement.contracting.application.repository.DataRelatedCAN
-import com.procurement.contracting.application.repository.DataResetCAN
-import com.procurement.contracting.application.repository.DataStatusesCAN
-import com.procurement.contracting.application.repository.RelatedContract
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.DataCancelCAN
+import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
+import com.procurement.contracting.application.repository.can.model.DataResetCAN
+import com.procurement.contracting.application.repository.can.model.RelatedContract
 import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
+import com.procurement.contracting.infrastructure.extension.cassandra.toLocalDateTime
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
@@ -30,112 +31,98 @@ import java.util.*
 class CassandraCANRepository(private val session: Session) : CANRepository {
 
     companion object {
-        private const val keySpace = "ocds"
-        private const val tableName = "contracting_can"
-        private const val columnCpid = "cp_id"
-        private const val columnCanId = "can_id"
-        private const val columnToken = "token_entity"
-        private const val columnOwner = "owner"
-        private const val columnCreatedDate = "created_date"
-        private const val columnAwardId = "award_id"
-        private const val columnLotId = "lot_id"
-        private const val columnContractId = "ac_id"
-        private const val columnStatus = "status"
-        private const val columnStatusDetails = "status_details"
-        private const val columnJsonData = "json_data"
-
         private const val FIND_BY_CPID_CQL = """
-               SELECT $columnCpid,
-                      $columnCanId,
-                      $columnToken,
-                      $columnOwner,
-                      $columnCreatedDate,
-                      $columnAwardId,
-                      $columnLotId,
-                      $columnContractId,
-                      $columnStatus,
-                      $columnStatusDetails,
-                      $columnJsonData
-                 FROM $keySpace.$tableName
-                WHERE $columnCpid=?
+               SELECT ${Database.CAN.COLUMN_CPID},
+                      ${Database.CAN.COLUMN_CANID},
+                      ${Database.CAN.COLUMN_TOKEN},
+                      ${Database.CAN.COLUMN_OWNER},
+                      ${Database.CAN.COLUMN_CREATED_DATE},
+                      ${Database.CAN.COLUMN_AWARD_ID},
+                      ${Database.CAN.COLUMN_LOT_ID},
+                      ${Database.CAN.COLUMN_CONTRACT_ID},
+                      ${Database.CAN.COLUMN_STATUS},
+                      ${Database.CAN.COLUMN_STATUS_DETAILS},
+                      ${Database.CAN.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                WHERE ${Database.CAN.COLUMN_CPID}=?
             """
 
         private const val FIND_BY_CPID_AND_CAN_ID_CQL = """
-               SELECT $columnCpid,
-                      $columnCanId,
-                      $columnToken,
-                      $columnOwner,
-                      $columnCreatedDate,
-                      $columnAwardId,
-                      $columnLotId,
-                      $columnContractId,
-                      $columnStatus,
-                      $columnStatusDetails,
-                      $columnJsonData
-                 FROM $keySpace.$tableName
-                WHERE $columnCpid=?
-                  AND $columnCanId=?
+               SELECT ${Database.CAN.COLUMN_CPID},
+                      ${Database.CAN.COLUMN_CANID},
+                      ${Database.CAN.COLUMN_TOKEN},
+                      ${Database.CAN.COLUMN_OWNER},
+                      ${Database.CAN.COLUMN_CREATED_DATE},
+                      ${Database.CAN.COLUMN_AWARD_ID},
+                      ${Database.CAN.COLUMN_LOT_ID},
+                      ${Database.CAN.COLUMN_CONTRACT_ID},
+                      ${Database.CAN.COLUMN_STATUS},
+                      ${Database.CAN.COLUMN_STATUS_DETAILS},
+                      ${Database.CAN.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                  AND ${Database.CAN.COLUMN_CANID}=?
             """
 
         private const val CANCEL_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnContractId=?,
-                      $columnStatus=?,
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                  AND $columnCanId=?
+               UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                      ${Database.CAN.COLUMN_STATUS}=?,
+                      ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.CAN.COLUMN_JSON_DATA}=?
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                  AND ${Database.CAN.COLUMN_CANID}=?
                IF EXISTS
             """
 
         private const val RESET_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnContractId=?,
-                      $columnStatus=?,
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                  AND $columnCanId=?
-               IF EXISTS
-            """
-
-        private const val UPDATE_STATUSES_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnStatus=?,
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                AND   $columnCanId=?
+               UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                      ${Database.CAN.COLUMN_STATUS}=?,
+                      ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.CAN.COLUMN_JSON_DATA}=?
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                  AND ${Database.CAN.COLUMN_CANID}=?
                IF EXISTS
             """
 
         private const val RELATE_CONTRACT_CQL = """
-               UPDATE $keySpace.$tableName
-                  SET $columnContractId=?,
-                      $columnStatus=?,
-                      $columnStatusDetails=?,
-                      $columnJsonData=?
-                WHERE $columnCpid=?
-                AND   $columnCanId=?
+               UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                      ${Database.CAN.COLUMN_STATUS}=?,
+                      ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.CAN.COLUMN_JSON_DATA}=?
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                AND   ${Database.CAN.COLUMN_CANID}=?
                IF EXISTS
             """
 
         private const val SAVE_NEW_CAN_CQL = """
-               INSERT INTO $keySpace.$tableName(
-                           $columnCpid,
-                           $columnCanId,
-                           $columnToken,
-                           $columnOwner,
-                           $columnCreatedDate,
-                           $columnAwardId,
-                           $columnLotId,
-                           $columnContractId,
-                           $columnStatus,
-                           $columnStatusDetails,
-                           $columnJsonData
+               INSERT INTO ${Database.KEYSPACE}.${Database.CAN.TABLE}(
+                           ${Database.CAN.COLUMN_CPID},
+                           ${Database.CAN.COLUMN_CANID},
+                           ${Database.CAN.COLUMN_TOKEN},
+                           ${Database.CAN.COLUMN_OWNER},
+                           ${Database.CAN.COLUMN_CREATED_DATE},
+                           ${Database.CAN.COLUMN_AWARD_ID},
+                           ${Database.CAN.COLUMN_LOT_ID},
+                           ${Database.CAN.COLUMN_CONTRACT_ID},
+                           ${Database.CAN.COLUMN_STATUS},
+                           ${Database.CAN.COLUMN_STATUS_DETAILS},
+                           ${Database.CAN.COLUMN_JSON_DATA}
                )
                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
                IF NOT EXISTS
+            """
+
+        private const val UPDATE_CQL = """
+               UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                  SET ${Database.CAN.COLUMN_STATUS}=?,
+                      ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.CAN.COLUMN_JSON_DATA}=?
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                AND   ${Database.CAN.COLUMN_CANID}=?
+               IF EXISTS
             """
     }
 
@@ -143,212 +130,216 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
     private val preparedResetCQL = session.prepare(RESET_CQL)
-    private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
     private val preparedRelateContractCQL = session.prepare(RELATE_CONTRACT_CQL)
     private val preparedSaveNewCANCQL = session.prepare(SAVE_NEW_CAN_CQL)
+    private val preparedUpdateNewCANCQL = session.prepare(UPDATE_CQL)
 
-    override fun findBy(cpid: String, canId: CANId): CANEntity? {
-        val query = preparedFindByCpidAndCanIdCQL.bind()
+    override fun findBy(cpid: Cpid, canId: CANId): Result<CANEntity?, Fail.Incident.Database> =
+        preparedFindByCpidAndCanIdCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, canId)
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, canId)
             }
+            .tryExecute(session)
+            .onFailure { return it }
+            .one()
+            ?.convert()
+            .asSuccess()
 
-        val resultSet = load(query)
-        return resultSet.one()
-            ?.let { convertToCANEntity(it) }
-    }
-
-    override fun findBy(cpid: String): List<CANEntity> {
-        val query = preparedFindByCpidCQL.bind()
+    override fun findBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database> =
+        preparedFindByCpidCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
             }
+            .tryExecute(session)
+            .onFailure { return it }
+            .map { it.convert() }
+            .asSuccess()
 
-        val resultSet = load(query)
-        return resultSet.map { convertToCANEntity(it) }
-    }
-
-    protected fun load(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw ReadEntityException(message = "Error read CAN(s) from the database.", cause = exception)
-    }
-
-    private fun convertToCANEntity(row: Row): CANEntity = CANEntity(
-        cpid = row.getString(columnCpid),
-        id = row.getUUID(columnCanId),
-        token = row.getUUID(columnToken),
-        owner = row.getString(columnOwner),
-        createdDate = row.getTimestamp(columnCreatedDate).toLocalDateTime(),
-        awardId = row.getString(columnAwardId)?.let { UUID.fromString(row.getString(columnAwardId)) },
-        lotId = UUID.fromString(row.getString(columnLotId)),
-        contractId = row.getString(columnContractId),
-        status = CANStatus.creator(row.getString(columnStatus)),
-        statusDetails = CANStatusDetails.creator(row.getString(columnStatusDetails)),
-        jsonData = row.getString(columnJsonData)
+    private fun Row.convert(): CANEntity = CANEntity(
+        cpid = Cpid.orNull(getString(Database.CAN.COLUMN_CPID))!!,
+        id = getUUID(Database.CAN.COLUMN_CANID),
+        token = Token.orNull(getUUID(Database.CAN.COLUMN_TOKEN).toString())!!,
+        owner = Owner.orNull(getString(Database.CAN.COLUMN_OWNER))!!,
+        createdDate = getTimestamp(Database.CAN.COLUMN_CREATED_DATE).toLocalDateTime(),
+        awardId = getString(Database.CAN.COLUMN_AWARD_ID)?.let { UUID.fromString(it) },
+        lotId = UUID.fromString(getString(Database.CAN.COLUMN_LOT_ID)),
+        contractId = getString(Database.CAN.COLUMN_CONTRACT_ID),
+        status = CANStatus.creator(getString(Database.CAN.COLUMN_STATUS)),
+        statusDetails = CANStatusDetails.creator(getString(Database.CAN.COLUMN_STATUS_DETAILS)),
+        jsonData = getString(Database.CAN.COLUMN_JSON_DATA)
     )
 
     override fun saveCancelledCANs(
-        cpid: String,
+        cpid: Cpid,
         dataCancelledCAN: DataCancelCAN,
         dataRelatedCANs: List<DataRelatedCAN>
-    ) {
-        val statements = BatchStatement().apply {
+    ): Result<Boolean, Fail.Incident.Database> = BatchStatement()
+        .apply {
             add(statementForCancelCAN(cpid = cpid, dataCancelledCAN = dataCancelledCAN))
             for (dataRelatedCan in dataRelatedCANs) {
                 add(statementForRelatedCAN(cpid = cpid, dataCancelledCAN = dataRelatedCan))
             }
         }
-
-        val result = cancellationCANs(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
-    }
-
-    private fun statementForCancelCAN(cpid: String, dataCancelledCAN: DataCancelCAN): Statement =
-        preparedCancelCQL.bind()
-            .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, dataCancelledCAN.id)
-                setString(columnContractId, null)
-                setString(columnStatus, dataCancelledCAN.status.toString())
-                setString(columnStatusDetails, dataCancelledCAN.statusDetails.toString())
-                setString(columnJsonData, dataCancelledCAN.jsonData)
-            }
-
-    private fun statementForRelatedCAN(cpid: String, dataCancelledCAN: DataRelatedCAN): Statement =
-        preparedCancelCQL.bind()
-            .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, dataCancelledCAN.id)
-                setString(columnContractId, null)
-                setString(columnStatus, dataCancelledCAN.status.toString())
-                setString(columnStatusDetails, dataCancelledCAN.statusDetails.toString())
-                setString(columnJsonData, dataCancelledCAN.jsonData)
-            }
-
-    private fun cancellationCANs(statement: BatchStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing cancelled CAN(s).", cause = exception)
-    }
-
-    override fun resetCANs(cpid: String, cans: List<DataResetCAN>) {
-        val statements = BatchStatement().apply {
-            for (can in cans) {
-                add(statementForResetCAN(cpid = cpid, dataResetCAN = can))
-            }
+        .tryExecute(session)
+        .mapFailure {
+            Fail.Incident.Database.DatabaseInteractionIncident(
+                SaveEntityException(message = "Error writing cancelled CAN(s).", cause = it.exception)
+            )
         }
+        .onFailure { return it }
+        .wasApplied()
+        .asSuccess()
 
-        val result = updateStatusesCANs(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
-    }
+    private fun statementForCancelCAN(cpid: Cpid, dataCancelledCAN: DataCancelCAN): Statement =
+        preparedCancelCQL.bind()
+            .apply {
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id)
+                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, dataCancelledCAN.jsonData)
+            }
 
-    private fun statementForResetCAN(cpid: String, dataResetCAN: DataResetCAN): Statement =
+    private fun statementForRelatedCAN(cpid: Cpid, dataCancelledCAN: DataRelatedCAN): Statement =
+        preparedCancelCQL.bind()
+            .apply {
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id)
+                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, dataCancelledCAN.jsonData)
+            }
+
+    override fun resetCANs(cpid: Cpid, cans: List<DataResetCAN>): Result<Boolean, Fail.Incident.Database> =
+        BatchStatement()
+            .apply {
+                for (can in cans) {
+                    add(statementForResetCAN(cpid = cpid, dataResetCAN = can))
+                }
+            }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing updated reset CAN(s).", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
+
+    private fun statementForResetCAN(cpid: Cpid, dataResetCAN: DataResetCAN): Statement =
         preparedResetCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, dataResetCAN.id)
-                setString(columnContractId, null)
-                setString(columnStatus, dataResetCAN.status.toString())
-                setString(columnStatusDetails, dataResetCAN.statusDetails.toString())
-                setString(columnJsonData, dataResetCAN.jsonData)
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, dataResetCAN.id)
+                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_STATUS, dataResetCAN.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, dataResetCAN.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, dataResetCAN.jsonData)
             }
 
-    override fun updateStatusesCANs(cpid: String, cans: List<DataStatusesCAN>) {
-        val statements = BatchStatement().apply {
-            for (can in cans) {
-                add(statementForUpdateStatusesCAN(cpid = cpid, can = can))
-            }
-        }
-
-        val result = updateStatusesCANs(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
-    }
-
-    private fun statementForUpdateStatusesCAN(cpid: String, can: DataStatusesCAN): Statement =
-        preparedUpdateStatusesCQL.bind()
+    override fun relateContract(cpid: Cpid, cans: List<RelatedContract>): Result<Boolean, Fail.Incident.Database> =
+        BatchStatement()
             .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, can.id)
-                setString(columnStatus, can.status.key)
-                setString(columnStatusDetails, can.statusDetails.key)
-                setString(columnJsonData, can.jsonData)
+                for (can in cans) {
+                    add(statementForRelateContract(cpid = cpid, can = can))
+                }
             }
-
-    private fun updateStatusesCANs(statement: BatchStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing updated statuses CAN(s).", cause = exception)
-    }
-
-    override fun relateContract(cpid: String, cans: List<RelatedContract>) {
-        val statements = BatchStatement().apply {
-            for (can in cans) {
-                add(statementForRelateContract(cpid = cpid, can = can))
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(
+                        message = "Error writing updated CAN(s) with related Contract.",
+                        cause = it.exception
+                    )
+                )
             }
-        }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
 
-        val result = relateContract(statements)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of the CAN(s) by cpid '$cpid' from the database.")
-    }
-
-    override fun tryFindBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database.DatabaseInteractionIncident> {
-        val query = preparedFindByCpidCQL.bind()
-            .apply {
-                setString(columnCpid, cpid.underlying)
-            }
-
-        val resultSet = query.tryExecute(session)
-            .onFailure { error -> return error }
-        return resultSet.map { convertToCANEntity(it) }.asSuccess()
-    }
-
-    private fun statementForRelateContract(cpid: String, can: RelatedContract): Statement =
+    private fun statementForRelateContract(cpid: Cpid, can: RelatedContract): Statement =
         preparedRelateContractCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, can.id)
-                setString(columnContractId, can.contractId)
-                setString(columnStatus, can.status.key)
-                setString(columnStatusDetails, can.statusDetails.key)
-                setString(columnJsonData, can.jsonData)
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, can.id)
+                setString(Database.CAN.COLUMN_CONTRACT_ID, can.contractId)
+                setString(Database.CAN.COLUMN_STATUS, can.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, can.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, can.jsonData)
             }
 
-    private fun relateContract(statement: BatchStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing updated CAN(s) with related Contract.", cause = exception)
-    }
-
-    override fun saveNewCAN(cpid: String, entity: CANEntity) {
-        val statement = preparedSaveNewCANCQL.bind()
+    override fun saveNewCAN(cpid: Cpid, entity: CANEntity): Result<Boolean, Fail.Incident.Database> =
+        preparedSaveNewCANCQL.bind()
             .apply {
-                setString(columnCpid, cpid)
-                setUUID(columnCanId, entity.id)
-                setUUID(columnToken, entity.token)
-                setString(columnOwner, entity.owner)
-                setTimestamp(columnCreatedDate, entity.createdDate.toCassandraTimestamp())
-                setString(columnAwardId, entity.awardId?.toString())
-                setString(columnLotId, entity.lotId.toString())
-                setString(columnContractId, entity.contractId)
-                setString(columnStatus, entity.status.key)
-                setString(columnStatusDetails, entity.statusDetails.key)
-                setString(columnJsonData, entity.jsonData)
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setUUID(Database.CAN.COLUMN_TOKEN, entity.token.underlying)
+                setString(Database.CAN.COLUMN_OWNER, entity.owner.underlying)
+                setTimestamp(Database.CAN.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
+                setString(Database.CAN.COLUMN_AWARD_ID, entity.awardId?.toString())
+                setString(Database.CAN.COLUMN_LOT_ID, entity.lotId.toString())
+                setString(Database.CAN.COLUMN_CONTRACT_ID, entity.contractId)
+                setString(Database.CAN.COLUMN_STATUS, entity.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)
             }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing new CAN.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
 
-        val result = saveNewCAN(statement)
-        if (!result.wasApplied())
-            throw SaveEntityException(message = "An error occurred when writing a record(s) of new CAN by cpid '$cpid' and lot id '${entity.lotId}' and award id '${entity.awardId}' to the database. Record is already.")
-    }
+    override fun update(cpid: Cpid, entity: CANEntity): Result<Boolean, Fail.Incident.Database> =
+        preparedUpdateNewCANCQL.bind()
+            .apply {
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setString(Database.CAN.COLUMN_STATUS, entity.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)
+            }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing updated CAN.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
 
-    private fun saveNewCAN(statement: BoundStatement): ResultSet = try {
-        session.execute(statement)
-    } catch (exception: Exception) {
-        throw SaveEntityException(message = "Error writing new CAN.", cause = exception)
-    }
+    override fun update(cpid: Cpid, entities: Collection<CANEntity>): Result<Boolean, Fail.Incident.Database> =
+        BatchStatement()
+            .apply {
+                for (entity in entities) {
+                    add(statementForUpdate(cpid = cpid, entity = entity))
+                }
+            }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    SaveEntityException(message = "Error writing updated CANs.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
+
+    private fun statementForUpdate(cpid: Cpid, entity: CANEntity): BoundStatement =
+        preparedUpdateNewCANCQL.bind()
+            .apply {
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setString(Database.CAN.COLUMN_STATUS, entity.status.key)
+                setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)
+            }
 }

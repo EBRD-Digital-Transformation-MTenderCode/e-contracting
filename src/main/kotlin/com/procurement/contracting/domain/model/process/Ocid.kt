@@ -31,7 +31,7 @@ class Ocid private constructor(@JsonValue val underlying: String, val stage: Sta
 
         @JvmStatic
         @JsonCreator
-        fun tryCreateOrNull(value: String): Ocid? =
+        fun orNull(value: String): Ocid? =
             if (value.matches(regex)) {
                 val stage = Stage.orNull(value.split("-")[STAGE_POSITION])!!
                 Ocid(underlying = value, stage = stage)

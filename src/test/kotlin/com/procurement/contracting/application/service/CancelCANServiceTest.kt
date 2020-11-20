@@ -7,12 +7,14 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.AbstractArgumentConverter
-import com.procurement.contracting.application.repository.ACRepository
-import com.procurement.contracting.application.repository.CANRepository
+import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -21,9 +23,12 @@ import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.json.loadJson
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,9 +44,9 @@ import java.util.*
 
 class CancelCANServiceTest {
     companion object {
-        private const val CPID = "cpid-1"
-        private val CAN_TOKEN: UUID = UUID.fromString("2909bc16-82c7-4281-8f35-3f0bb13476b8")
-        private const val OWNER = "owner-1"
+        private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
+        private val CAN_TOKEN: Token = Token.orNull("2909bc16-82c7-4281-8f35-3f0bb13476b8")!!
+        private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CAN_ID: CANId = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
         private val LOT_ID: LotId = UUID.fromString("f02720a6-de85-4a50-aa3d-e9348f1669dc")
         private const val CONTRACT_ID: String = "contract-id-1"
@@ -89,11 +94,13 @@ class CancelCANServiceTest {
         )
 
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
             .thenReturn(null)
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
+        whenever(canRepository.saveCancelledCANs(eq(CPID), any(), any()))
+            .thenReturn(true.asSuccess())
 
         val data = data()
         val response = service.cancel(context = context(), data = data)
@@ -141,7 +148,7 @@ class CancelCANServiceTest {
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         val acEntity = acEntity(
             contractProcess = contractProcess.copy(
@@ -152,10 +159,16 @@ class CancelCANServiceTest {
             )
         )
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
-            .thenReturn(acEntity)
+            .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
+
+        whenever(acRepository.saveCancelledAC(eq(CPID), any(), any(), any(), any()))
+            .thenReturn(true.asSuccess())
+
+        whenever(canRepository.saveCancelledCANs(eq(CPID), any(), any()))
+            .thenReturn(true.asSuccess())
 
         val data = data()
         val response = service.cancel(context = context(), data = data)
@@ -193,16 +206,20 @@ class CancelCANServiceTest {
     fun cancelCANWithContractWithRelatedCAN() {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         val acEntity = acEntity(contractProcess = contractProcess)
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
-            .thenReturn(acEntity)
+            .thenReturn(acEntity.asSuccess())
 
         val firstCANEntity = canEntity(can = firstOtherCAN)
         val secondCANEntity = canEntity(can = secondOtherCAN, contractID = "UNKNOWN")
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity, firstCANEntity, secondCANEntity))
+            .thenReturn(listOf(cancellationCANEntity, firstCANEntity, secondCANEntity).asSuccess())
+        whenever(acRepository.saveCancelledAC(eq(CPID), any(), any(), any(), any()))
+            .thenReturn(true.asSuccess())
+        whenever(canRepository.saveCancelledCANs(eq(CPID), any(), any()))
+            .thenReturn(true.asSuccess())
 
         val data = data()
         val response = service.cancel(context = context(), data = data)
@@ -245,7 +262,7 @@ class CancelCANServiceTest {
     @Test
     fun canNotFound() {
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(null)
+            .thenReturn(Result.success(null))
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -256,9 +273,9 @@ class CancelCANServiceTest {
 
     @Test
     fun invalidOwner() {
-        val canEntity = canEntity(can = cancellationCAN, owner = "UNKNOWN")
+        val canEntity = canEntity(can = cancellationCAN, owner = Owner.orNull("00000000-0000-0000-0000-000000000000")!!)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(canEntity)
+            .thenReturn(canEntity.asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -269,9 +286,9 @@ class CancelCANServiceTest {
 
     @Test
     fun invalidToken() {
-        val canEntity = canEntity(can = cancellationCAN, token = UUID.randomUUID())
+        val canEntity = canEntity(can = cancellationCAN, token = Token.generate())
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(canEntity)
+            .thenReturn(canEntity.asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -284,7 +301,9 @@ class CancelCANServiceTest {
     fun contractNotFound() {
         val canEntity = canEntity(cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(canEntity)
+            .thenReturn(Result.success(canEntity))
+        whenever(acRepository.findBy(eq(CPID), eq(canEntity.contractId!!)))
+            .thenReturn(Result.success(null))
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -307,13 +326,13 @@ class CancelCANServiceTest {
             contractID = null
         )
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
             .thenReturn(null)
 
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -339,13 +358,13 @@ class CancelCANServiceTest {
             contractID = null
         )
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
             .thenReturn(null)
 
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -364,7 +383,7 @@ class CancelCANServiceTest {
     fun invalidContractStatus(@ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         val acEntity = acEntity(
             contractProcess.copy(
@@ -374,10 +393,10 @@ class CancelCANServiceTest {
             )
         )
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
-            .thenReturn(acEntity)
+            .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -406,7 +425,7 @@ class CancelCANServiceTest {
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
-            .thenReturn(cancellationCANEntity)
+            .thenReturn(cancellationCANEntity.asSuccess())
 
         val acEntity = acEntity(
             contractProcess.copy(
@@ -417,10 +436,10 @@ class CancelCANServiceTest {
             )
         )
         whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
-            .thenReturn(acEntity)
+            .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
-            .thenReturn(listOf(cancellationCANEntity))
+            .thenReturn(listOf(cancellationCANEntity).asSuccess())
 
         val exception = assertThrows<ErrorException> {
             service.cancel(context = context(), data = data())
@@ -430,9 +449,9 @@ class CancelCANServiceTest {
     }
 
     private fun context(
-        cpid: String = CPID,
-        token: UUID = CAN_TOKEN,
-        owner: String = OWNER,
+        cpid: Cpid = CPID,
+        token: Token = CAN_TOKEN,
+        owner: Owner = OWNER,
         canId: CANId = CAN_ID
     ): CancelCANContext {
         return CancelCANContext(
@@ -460,7 +479,7 @@ class CancelCANServiceTest {
         )
     }
 
-    private fun canEntity(can: CAN, owner: String = OWNER, token: UUID? = null, contractID: String? = CONTRACT_ID) =
+    private fun canEntity(can: CAN, owner: Owner = OWNER, token: Token? = null, contractID: String? = CONTRACT_ID) =
         CANEntity(
             cpid = CPID,
             id = can.id,
@@ -478,7 +497,7 @@ class CancelCANServiceTest {
     private fun acEntity(contractProcess: ContractProcess) = ACEntity(
         cpid = CPID,
         id = contractProcess.contract.id,
-        token = UUID.fromString(contractProcess.contract.token),
+        token = contractProcess.contract.token!!,
         owner = OWNER,
         createdDate = contractProcess.contract.date!!,
         status = contractProcess.contract.status,

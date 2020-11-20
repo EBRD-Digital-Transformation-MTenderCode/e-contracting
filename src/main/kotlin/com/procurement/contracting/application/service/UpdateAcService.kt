@@ -1,8 +1,11 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
+import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.item.ItemId
@@ -21,7 +24,6 @@ import com.procurement.contracting.exception.ErrorType.BF
 import com.procurement.contracting.exception.ErrorType.BS_CURRENCY
 import com.procurement.contracting.exception.ErrorType.BUSINESS_FUNCTIONS_IN_PERSONES_IN_SUPPLIER_IS_EMPTY
 import com.procurement.contracting.exception.ErrorType.CONFIRMATION_ITEM
-import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.CONTRACT_PERIOD
 import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
 import com.procurement.contracting.exception.ErrorType.DOCUMENTS
@@ -48,12 +50,21 @@ import com.procurement.contracting.exception.ErrorType.PERSON_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.SUPPLIERS
 import com.procurement.contracting.exception.ErrorType.TRANSACTIONS
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.country
+import com.procurement.contracting.infrastructure.handler.v1.cpid
+import com.procurement.contracting.infrastructure.handler.v1.language
+import com.procurement.contracting.infrastructure.handler.v1.mainProcurementCategory
 import com.procurement.contracting.infrastructure.handler.v1.model.request.AwardUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.DetailsSupplierUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ItemUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.OrganizationReferenceSupplierUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateAcRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateAcRs
+import com.procurement.contracting.infrastructure.handler.v1.ocid
+import com.procurement.contracting.infrastructure.handler.v1.owner
+import com.procurement.contracting.infrastructure.handler.v1.pmd
+import com.procurement.contracting.infrastructure.handler.v1.startDate
+import com.procurement.contracting.infrastructure.handler.v1.token
 import com.procurement.contracting.model.dto.ocds.BusinessFunction
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.DetailsSupplier
@@ -73,37 +84,39 @@ import com.procurement.contracting.model.dto.ocds.Request
 import com.procurement.contracting.model.dto.ocds.RequestGroup
 import com.procurement.contracting.model.dto.ocds.ValueTax
 import com.procurement.contracting.utils.toJson
-import com.procurement.contracting.utils.toLocalDateTime
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
-class UpdateAcService(private val acDao: AcDao,
-                      private val generationService: GenerationService,
-                      private val templateService: TemplateService
+class UpdateAcService(
+    private val acRepository: ACRepository,
+    private val generationService: GenerationService,
+    private val templateService: TemplateService
 ) {
 
     fun updateAC(cm: CommandMessage): UpdateAcRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val token = cm.context.token ?: throw ErrorException(CONTEXT)
-        val owner = cm.context.owner ?: throw ErrorException(CONTEXT)
-        val country = cm.context.country ?: throw ErrorException(CONTEXT)
-        val language = cm.context.language ?: throw ErrorException(CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
-        val dateTime = cm.context.startDate?.toLocalDateTime() ?: throw ErrorException(CONTEXT)
-        val mpc = MainProcurementCategory.creator(cm.context.mainProcurementCategory ?: throw ErrorException(CONTEXT))
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val token = cm.token
+        val owner = cm.owner
+        val country = cm.country
+        val language = cm.language
+        val pmd = cm.pmd
+        val dateTime = cm.startDate
+        val mpc = cm.mainProcurementCategory
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
         checkTransactionsValue(dto)
         checkAwardSupplierPersones(dto.award)
         checkAwardSupplierPersonesBusinessFunctionsType(dto.award)
-
-        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        val acId = ocid.underlying
+        val entity: ACEntity = acRepository.findBy(cpid, acId)
+            .orThrow { it.exception }
+            ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
-        if (entity.token.toString() != token) throw ErrorException(INVALID_TOKEN)
+        if (entity.token != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         validateAwards(dto, contractProcess)
         validateValueItems(dto)
@@ -146,8 +159,24 @@ class UpdateAcService(private val acDao: AcDao,
             treasuryBudgetSources = dto.treasuryBudgetSources//BR-9.2.24
         }
 
-        entity.jsonData = toJson(contractProcess)
-        acDao.save(entity)
+        val updatedContractEntity = entity.copy(
+            status = contractProcess.contract.status,
+            statusDetails = contractProcess.contract.statusDetails,
+            jsonData = toJson(contractProcess)
+        )
+
+        val wasApplied = acRepository
+            .updateStatusesAC(
+                cpid = cpid,
+                id = updatedContractEntity.id,
+                status = updatedContractEntity.status,
+                statusDetails = updatedContractEntity.statusDetails,
+                jsonData = updatedContractEntity.jsonData
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${cpid}' and id '${updatedContractEntity.id}' with status '${updatedContractEntity.status}' and status details '${updatedContractEntity.statusDetails}' to the database. Record is not exists.")
+
         return UpdateAcRs(
             planning = contractProcess.planning!!,
             contract = contractProcess.contract,
@@ -413,7 +442,7 @@ class UpdateAcService(private val acDao: AcDao,
     private fun updateConfirmationRequests(dto: UpdateAcRq,
                                            documents: List<DocumentContract>?,
                                            country: String,
-                                           pmd: String,
+                                           pmd: ProcurementMethod,
                                            language: String): MutableList<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         if (confRequestDto != null) {

@@ -1,7 +1,10 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.exception.repository.SaveEntityException
+import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.dao.AcDao
+import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
@@ -11,12 +14,16 @@ import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.INVALID_BUSINESS_FUNCTIONS_TYPE
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.country
+import com.procurement.contracting.infrastructure.handler.v1.cpid
+import com.procurement.contracting.infrastructure.handler.v1.language
 import com.procurement.contracting.infrastructure.handler.v1.model.request.Document
 import com.procurement.contracting.infrastructure.handler.v1.model.request.FinalUpdateAcRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.FinalUpdateAcRs
+import com.procurement.contracting.infrastructure.handler.v1.ocid
+import com.procurement.contracting.infrastructure.handler.v1.pmd
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.model.dto.ocds.Milestone
@@ -31,20 +38,23 @@ import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 
 @Service
-class FinalUpdateService(private val acDao: AcDao,
-                         private val generationService: GenerationService,
-                         private val templateService: TemplateService
+class FinalUpdateService(
+    private val acRepository: ACRepository,
+    private val generationService: GenerationService,
+    private val templateService: TemplateService
 ) {
 
     fun finalUpdate(cm: CommandMessage): FinalUpdateAcRs {
-        val cpId = cm.context.cpid ?: throw ErrorException(CONTEXT)
-        val ocId = cm.context.ocid ?: throw ErrorException(CONTEXT)
-        val country = cm.context.country ?: throw ErrorException(CONTEXT)
-        val language = cm.context.language ?: throw ErrorException(CONTEXT)
-        val pmd = cm.context.pmd ?: throw ErrorException(CONTEXT)
+        val cpid = cm.cpid
+        val ocid = cm.ocid
+        val country = cm.country
+        val language = cm.language
+        val pmd = cm.pmd
         val dto = toObject(FinalUpdateAcRq::class.java, cm.data)
-
-        val entity = acDao.getByCpIdAndAcId(cpId, ocId)
+        val acId = ocid.underlying
+        val entity: ACEntity = acRepository.findBy(cpid, acId)
+            .orThrow { it.exception }
+            ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
         if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
@@ -76,9 +86,25 @@ class FinalUpdateService(private val acDao: AcDao,
         contractProcess.contract.confirmationRequests = confirmationRequests
 
         contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
-        entity.statusDetails = ContractStatusDetails.APPROVEMENT
-        entity.jsonData = toJson(contractProcess)
-        acDao.save(entity)
+
+        val updatedContractEntity = entity.copy(
+            status = contractProcess.contract.status,
+            statusDetails = contractProcess.contract.statusDetails,
+            jsonData = toJson(contractProcess)
+        )
+
+        val wasApplied = acRepository
+            .updateStatusesAC(
+                cpid = cpid,
+                id = updatedContractEntity.id,
+                status = updatedContractEntity.status,
+                statusDetails = updatedContractEntity.statusDetails,
+                jsonData = updatedContractEntity.jsonData
+            )
+            .orThrow { it.exception }
+        if (!wasApplied)
+            throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${cpid}' and id '${updatedContractEntity.id}' with status '${updatedContractEntity.status}' and status details '${updatedContractEntity.statusDetails}' to the database. Record is not exists.")
+
         return FinalUpdateAcRs(contractProcess.contract)
     }
 
@@ -98,7 +124,7 @@ class FinalUpdateService(private val acDao: AcDao,
         else newDocuments
     }
 
-    private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String): Milestone {
+    private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -123,7 +149,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
     }
 
-    private fun generateSupplierMilestone(supplier: OrganizationReferenceSupplier, country: String, pmd: String, language: String): Milestone {
+    private fun generateSupplierMilestone(supplier: OrganizationReferenceSupplier, country: String, pmd: ProcurementMethod, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -147,7 +173,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
     }
 
-    private fun generateContractActivationMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String): Milestone {
+    private fun generateContractActivationMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -172,7 +198,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
     }
 
-    private fun generateValidationMilestone(country: String, pmd: String, language: String): Milestone {
+    private fun generateValidationMilestone(country: String, pmd: ProcurementMethod, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -196,7 +222,7 @@ class FinalUpdateService(private val acDao: AcDao,
         )
     }
 
-    private fun generateBuyerConfirmationRequest(buyer: OrganizationReferenceBuyer, country: String, pmd: String, language: String, documentId: String): ConfirmationRequest {
+    private fun generateBuyerConfirmationRequest(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String, documentId: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,
