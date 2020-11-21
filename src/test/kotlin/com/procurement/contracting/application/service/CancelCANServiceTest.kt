@@ -48,7 +48,7 @@ class CancelCANServiceTest {
         private val CAN_TOKEN: Token = Token.orNull("2909bc16-82c7-4281-8f35-3f0bb13476b8")!!
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CAN_ID: CANId = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
-        private val LOT_ID: LotId = UUID.fromString("f02720a6-de85-4a50-aa3d-e9348f1669dc")
+        private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
         private const val CONTRACT_ID: String = "contract-id-1"
         private val MPC = MainProcurementCategory.SERVICES
 

@@ -22,7 +22,6 @@ import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.api.v1.CommandTypeV1
 import com.procurement.contracting.infrastructure.configuration.properties.GlobalProperties
 import java.time.LocalDateTime
-import java.util.*
 
 data class CommandMessage @JsonCreator constructor(
     @field:JsonProperty("id") @param:JsonProperty("id") val id: CommandId,
@@ -104,12 +103,9 @@ val CommandMessage.mainProcurementCategory: MainProcurementCategory
 
 val CommandMessage.lotId: LotId
     get() = this.context.id
-        ?.let { id ->
-            try {
-                UUID.fromString(id)
-            } catch (exception: Exception) {
-                throw ErrorException(error = ErrorType.INVALID_FORMAT_LOT_ID)
-            }
+        ?.let { value ->
+            LotId.orNull(value)
+                ?: throw ErrorException(error = ErrorType.INVALID_FORMAT_LOT_ID)
         }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'lotId' attribute in context.")
 

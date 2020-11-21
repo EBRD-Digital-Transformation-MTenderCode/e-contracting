@@ -17,6 +17,7 @@ import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
 import com.procurement.contracting.infrastructure.extension.cassandra.toLocalDateTime
@@ -163,7 +164,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         owner = Owner.orNull(getString(Database.CAN.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.CAN.COLUMN_CREATED_DATE).toLocalDateTime(),
         awardId = getString(Database.CAN.COLUMN_AWARD_ID)?.let { UUID.fromString(it) },
-        lotId = UUID.fromString(getString(Database.CAN.COLUMN_LOT_ID)),
+        lotId = LotId.orNull(getString(Database.CAN.COLUMN_LOT_ID))!!,
         contractId = getString(Database.CAN.COLUMN_CONTRACT_ID),
         status = CANStatus.creator(getString(Database.CAN.COLUMN_STATUS)),
         statusDetails = CANStatusDetails.creator(getString(Database.CAN.COLUMN_STATUS_DETAILS)),
@@ -281,7 +282,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setString(Database.CAN.COLUMN_OWNER, entity.owner.underlying)
                 setTimestamp(Database.CAN.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
                 setString(Database.CAN.COLUMN_AWARD_ID, entity.awardId?.toString())
-                setString(Database.CAN.COLUMN_LOT_ID, entity.lotId.toString())
+                setString(Database.CAN.COLUMN_LOT_ID, entity.lotId.underlying)
                 setString(Database.CAN.COLUMN_CONTRACT_ID, entity.contractId)
                 setString(Database.CAN.COLUMN_STATUS, entity.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)

@@ -16,6 +16,7 @@ import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
 import com.procurement.contracting.infrastructure.handler.v1.cpid
+import com.procurement.contracting.infrastructure.handler.v1.lotId
 import com.procurement.contracting.infrastructure.handler.v1.model.request.AwardDto
 import com.procurement.contracting.infrastructure.handler.v1.model.request.CanGetAwards
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ConfirmationCan
@@ -45,7 +46,7 @@ class CreateCanService(
         val cpid = cm.cpid
         val owner = cm.owner
         val dateTime = cm.startDate
-        val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
+        val lotId: LotId = cm.lotId
         val dto = toObject(CreateCanRq::class.java, cm.data)
 
         val statusDetails: CANStatusDetails
@@ -76,7 +77,7 @@ class CreateCanService(
 
     fun checkCan(cm: CommandMessage) {
         val cpid = cm.cpid
-        val lotId: LotId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
+        val lotId: LotId = cm.lotId
 
         val canEntities = canRepository.findBy(cpid)
             .orThrow {

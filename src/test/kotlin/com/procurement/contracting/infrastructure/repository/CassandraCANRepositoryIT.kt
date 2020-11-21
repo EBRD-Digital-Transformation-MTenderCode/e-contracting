@@ -55,8 +55,8 @@ class CassandraCANRepositoryIT {
         private val CREATE_DATE = LocalDateTime.now()
         private const val CONTRACT_ID = "ac-id-1"
         private val AWARD_ID: AwardId = UUID.randomUUID()
-        private val CAN_LOT_ID: LotId = UUID.fromString("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")
-        private val RELATED_CAN_LOT_ID: LotId = UUID.fromString("db503a04-780a-49fb-839d-7836a49fa28c")
+        private val CAN_LOT_ID: LotId = LotId.orNull("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")!!
+        private val RELATED_CAN_LOT_ID: LotId = LotId.orNull("db503a04-780a-49fb-839d-7836a49fa28c")!!
 
         private val CAN_ID: CANId = UUID.randomUUID()
         private val CAN_STATUS = CANStatus.PENDING
@@ -427,7 +427,7 @@ class CassandraCANRepositoryIT {
             .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
-            .value("lot_id", lotId.toString())
+            .value("lot_id", lotId.underlying)
             .value("ac_id", CONTRACT_ID)
             .value("status", status.key)
             .value("status_details", statusDetails.key)
@@ -450,7 +450,7 @@ class CassandraCANRepositoryIT {
             .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
-            .value("lot_id", lotId.toString())
+            .value("lot_id", lotId.underlying)
             .value("status", status.key)
             .value("status_details", statusDetails.key)
             .value("json_data", jsonData)

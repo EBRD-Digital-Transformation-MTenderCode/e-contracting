@@ -4,11 +4,11 @@ import com.procurement.contracting.domain.model.EnumElementProvider.Companion.ke
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
-import com.procurement.contracting.domain.model.lot.tryLotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
@@ -34,14 +34,13 @@ fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToP
         )
 
 fun parseLotId(value: String, attributeName: String): Result<LotId, DataErrors.Validation.DataFormatMismatch> =
-    value.tryLotId()
-        .mapFailure {
-            DataErrors.Validation.DataFormatMismatch(
-                name = attributeName,
-                expectedFormat = "uuid",
-                actualValue = value
-            )
-        }
+    LotId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = LotId.pattern,
+            actualValue = value
+        ).asFailure()
 
 fun parseCANStatus(
     status: String, allowedStatuses: Set<CANStatus>, attributeName: String
