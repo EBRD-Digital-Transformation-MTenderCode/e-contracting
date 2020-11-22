@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.procurement.contracting.infrastructure.bind.api.command.id.CommandIdModule
 import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionModule
+import com.procurement.contracting.infrastructure.bind.can.id.CANIdModule
 import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeModule
 import com.procurement.contracting.infrastructure.bind.lot.id.LotIdModule
 import com.procurement.contracting.infrastructure.bind.owner.OwnerModule
@@ -27,6 +28,7 @@ fun ObjectMapper.configuration() {
     registerModule(TokenModule())
     registerModule(OwnerModule())
     registerModule(LotIdModule())
+    registerModule(CANIdModule())
     registerKotlinModule()
 
     configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false)

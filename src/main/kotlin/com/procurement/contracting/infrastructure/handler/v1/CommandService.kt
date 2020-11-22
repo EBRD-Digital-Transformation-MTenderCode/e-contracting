@@ -21,9 +21,6 @@ import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.TreasuryProcessingContext
 import com.procurement.contracting.application.service.model.TreasuryProcessingData
-import com.procurement.contracting.domain.model.can.CANId
-import com.procurement.contracting.exception.ErrorException
-import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.api.v1.ApiResponseV1
 import com.procurement.contracting.infrastructure.api.v1.CommandTypeV1
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
@@ -39,7 +36,6 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class CommandService(
@@ -116,7 +112,7 @@ class CommandService(
                     cpid = cm.cpid,
                     token = cm.token,
                     owner = cm.owner,
-                    canId = getCANId(cm)
+                    canId = cm.canId
                 )
                 val request = toObject(CancelCANRequest::class.java, cm.data)
                 val data = CancelCANData(
@@ -629,14 +625,4 @@ class CommandService(
                 historyRepository.saveHistory(cm.id, cm.command, data)
             }
     }
-
-    private fun getCANId(cm: CommandMessage): CANId = cm.context.id
-        ?.let { id ->
-            try {
-                UUID.fromString(id)
-            } catch (exception: Exception) {
-                throw ErrorException(error = ErrorType.INVALID_FORMAT_CAN_ID)
-            }
-        }
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'id' attribute in context.")
 }

@@ -13,8 +13,8 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.canId
 import com.procurement.contracting.infrastructure.handler.v1.cpid
 import com.procurement.contracting.infrastructure.handler.v1.lotId
 import com.procurement.contracting.infrastructure.handler.v1.model.request.AwardDto
@@ -33,8 +33,6 @@ import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Service
 class CreateCanService(
@@ -128,7 +126,7 @@ class CreateCanService(
         val cpid = cm.cpid
         val token = cm.token
         val owner = cm.owner
-        val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
+        val canId: CANId = cm.canId
         val canEntity = canRepository.findBy(cpid, canId)
             .orThrow {
                 ReadEntityException(message = "Error read CAN from the database.", cause = it.exception)

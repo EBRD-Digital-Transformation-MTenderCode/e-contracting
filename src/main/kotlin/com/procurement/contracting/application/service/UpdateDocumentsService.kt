@@ -14,9 +14,9 @@ import com.procurement.contracting.domain.model.document.type.DocumentTypeContra
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.exception.ErrorType.CONTEXT
 import com.procurement.contracting.exception.ErrorType.DOCS_RELATED_LOTS
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
+import com.procurement.contracting.infrastructure.handler.v1.canId
 import com.procurement.contracting.infrastructure.handler.v1.cpid
 import com.procurement.contracting.infrastructure.handler.v1.model.request.DocumentUpdate
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentContract
@@ -27,7 +27,6 @@ import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UpdateDocumentsService(
@@ -37,7 +36,7 @@ class UpdateDocumentsService(
 
     fun updateCanDocs(cm: CommandMessage): UpdateDocumentsRs {
         val cpid = cm.cpid
-        val canId: CANId = cm.context.id?.let{ UUID.fromString(it) } ?: throw ErrorException(CONTEXT)
+        val canId: CANId = cm.canId
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
 
         val canEntity = canRepository.findBy(cpid, canId)
@@ -144,6 +143,4 @@ class UpdateDocumentsService(
         if (relatedLots.isNotEmpty() && !relatedLots.contains(can.lotId))
             throw ErrorException(DOCS_RELATED_LOTS)
     }
-
 }
-

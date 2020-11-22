@@ -139,7 +139,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedFindByCpidAndCanIdCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, canId)
+                setUUID(Database.CAN.COLUMN_CANID, canId.underlying)
             }
             .tryExecute(session)
             .onFailure { return it }
@@ -159,7 +159,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
 
     private fun Row.convert(): CANEntity = CANEntity(
         cpid = Cpid.orNull(getString(Database.CAN.COLUMN_CPID))!!,
-        id = getUUID(Database.CAN.COLUMN_CANID),
+        id = CANId(getUUID(Database.CAN.COLUMN_CANID)),
         token = Token.orNull(getUUID(Database.CAN.COLUMN_TOKEN).toString())!!,
         owner = Owner.orNull(getString(Database.CAN.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.CAN.COLUMN_CREATED_DATE).toLocalDateTime(),
@@ -196,7 +196,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedCancelCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id)
+                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id.underlying)
                 setString(Database.CAN.COLUMN_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
@@ -207,7 +207,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedCancelCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id)
+                setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id.underlying)
                 setString(Database.CAN.COLUMN_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
@@ -235,7 +235,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedResetCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, dataResetCAN.id)
+                setUUID(Database.CAN.COLUMN_CANID, dataResetCAN.id.underlying)
                 setString(Database.CAN.COLUMN_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataResetCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataResetCAN.statusDetails.key)
@@ -266,7 +266,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedRelateContractCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, can.id)
+                setUUID(Database.CAN.COLUMN_CANID, can.id.underlying)
                 setString(Database.CAN.COLUMN_CONTRACT_ID, can.contractId)
                 setString(Database.CAN.COLUMN_STATUS, can.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, can.statusDetails.key)
@@ -277,7 +277,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedSaveNewCANCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id.underlying)
                 setUUID(Database.CAN.COLUMN_TOKEN, entity.token.underlying)
                 setString(Database.CAN.COLUMN_OWNER, entity.owner.underlying)
                 setTimestamp(Database.CAN.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
@@ -302,7 +302,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedUpdateNewCANCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id.underlying)
                 setString(Database.CAN.COLUMN_STATUS, entity.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)
@@ -338,7 +338,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedUpdateNewCANCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
-                setUUID(Database.CAN.COLUMN_CANID, entity.id)
+                setUUID(Database.CAN.COLUMN_CANID, entity.id.underlying)
                 setString(Database.CAN.COLUMN_STATUS, entity.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)

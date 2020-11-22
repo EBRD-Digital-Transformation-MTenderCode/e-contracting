@@ -8,6 +8,7 @@ import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
@@ -105,9 +106,17 @@ val CommandMessage.lotId: LotId
     get() = this.context.id
         ?.let { value ->
             LotId.orNull(value)
-                ?: throw ErrorException(error = ErrorType.INVALID_FORMAT_LOT_ID)
+                ?: throw ErrorException(error = ErrorType.INVALID_FORMAT_OF_ATTRIBUTE)
         }
-        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'lotId' attribute in context.")
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'id' attribute in context.")
+
+val CommandMessage.canId: CANId
+    get() = this.context.id
+        ?.let { value ->
+            CANId.orNull(value)
+                ?: throw ErrorException(error = ErrorType.INVALID_FORMAT_OF_ATTRIBUTE)
+        }
+        ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'id' attribute in context.")
 
 val CommandMessage.country: String
     get() = this.context.country

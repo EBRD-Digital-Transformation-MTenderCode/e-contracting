@@ -40,14 +40,13 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.converter.ConvertWith
 import org.junit.jupiter.params.provider.CsvSource
-import java.util.*
 
 class CancelCANServiceTest {
     companion object {
         private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
         private val CAN_TOKEN: Token = Token.orNull("2909bc16-82c7-4281-8f35-3f0bb13476b8")!!
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
-        private val CAN_ID: CANId = UUID.fromString("0dc181db-f5ae-4039-97c7-defcceef89a4")
+        private val CAN_ID: CANId = CANId.orNull("0dc181db-f5ae-4039-97c7-defcceef89a4")!!
         private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
         private const val CONTRACT_ID: String = "contract-id-1"
         private val MPC = MainProcurementCategory.SERVICES

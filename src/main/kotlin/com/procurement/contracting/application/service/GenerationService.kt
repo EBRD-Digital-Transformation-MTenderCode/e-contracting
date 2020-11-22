@@ -27,7 +27,7 @@ class GenerationService {
         return cpid.underlying + "-AC-" + (nowDefaultUTC().toMilliseconds() + Random().nextInt())
     }
 
-    fun canId(): CANId = UUID.randomUUID()
+    fun canId(): CANId = CANId.generate()
 
     fun awardId(): AwardId = UUID.randomUUID()
 

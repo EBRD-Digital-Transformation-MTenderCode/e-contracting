@@ -58,7 +58,7 @@ class CassandraCANRepositoryIT {
         private val CAN_LOT_ID: LotId = LotId.orNull("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")!!
         private val RELATED_CAN_LOT_ID: LotId = LotId.orNull("db503a04-780a-49fb-839d-7836a49fa28c")!!
 
-        private val CAN_ID: CANId = UUID.randomUUID()
+        private val CAN_ID: CANId = CANId.orNull(UUID.randomUUID().toString())!!
         private val CAN_STATUS = CANStatus.PENDING
         private val CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
         private val CAN_STATUS_AFTER_UPDATE = CANStatus.UNSUCCESSFUL
@@ -69,7 +69,7 @@ class CassandraCANRepositoryIT {
         private const val JSON_DATA_CANCELLED_CAN = """ {"can": "canceled data"} """
         private const val JSON_DATA_UPDATED_CAN = """ {"can": "updated data"} """
 
-        private val RELATED_CAN_ID: CANId = UUID.randomUUID()
+        private val RELATED_CAN_ID: CANId = CANId.orNull(UUID.randomUUID().toString())!!
         private val RELATED_CAN_STATUS = CANStatus.PENDING
         private val RELATED_CAN_STATUS_AFTER_CANCEL = CANStatus.CANCELLED
         private val RELATED_CAN_STATUS_DETAILS = CANStatusDetails.ACTIVE
@@ -422,7 +422,7 @@ class CassandraCANRepositoryIT {
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
             .value("cp_id", CPID.underlying)
-            .value("can_id", canId)
+            .value("can_id", canId.underlying)
             .value("token_entity", TOKEN.underlying)
             .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
@@ -445,7 +445,7 @@ class CassandraCANRepositoryIT {
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_can")
             .value("cp_id", CPID.underlying)
-            .value("can_id", canId)
+            .value("can_id", canId.underlying)
             .value("token_entity", TOKEN.underlying)
             .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
