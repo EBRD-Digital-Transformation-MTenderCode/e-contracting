@@ -54,7 +54,7 @@ class CassandraCANRepositoryIT {
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
         private const val CONTRACT_ID = "ac-id-1"
-        private val AWARD_ID: AwardId = UUID.randomUUID()
+        private val AWARD_ID: AwardId = AwardId.generate()
         private val CAN_LOT_ID: LotId = LotId.orNull("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")!!
         private val RELATED_CAN_LOT_ID: LotId = LotId.orNull("db503a04-780a-49fb-839d-7836a49fa28c")!!
 

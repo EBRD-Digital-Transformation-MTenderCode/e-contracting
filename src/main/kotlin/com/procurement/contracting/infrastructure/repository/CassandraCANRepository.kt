@@ -14,6 +14,7 @@ import com.procurement.contracting.application.repository.can.model.RelatedContr
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -26,7 +27,6 @@ import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class CassandraCANRepository(private val session: Session) : CANRepository {
@@ -163,7 +163,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         token = Token.orNull(getUUID(Database.CAN.COLUMN_TOKEN).toString())!!,
         owner = Owner.orNull(getString(Database.CAN.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.CAN.COLUMN_CREATED_DATE).toLocalDateTime(),
-        awardId = getString(Database.CAN.COLUMN_AWARD_ID)?.let { UUID.fromString(it) },
+        awardId = getString(Database.CAN.COLUMN_AWARD_ID)?.let { AwardId.orNull(it)!! },
         lotId = LotId.orNull(getString(Database.CAN.COLUMN_LOT_ID))!!,
         contractId = getString(Database.CAN.COLUMN_CONTRACT_ID),
         status = CANStatus.creator(getString(Database.CAN.COLUMN_STATUS)),

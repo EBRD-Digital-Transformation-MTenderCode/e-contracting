@@ -14,7 +14,6 @@ import java.util.*
 @Service
 class GenerationService {
 
-
     fun generateTimeBasedUUID(): UUID {
         return UUIDs.timeBased()
     }
@@ -29,7 +28,7 @@ class GenerationService {
 
     fun canId(): CANId = CANId.generate()
 
-    fun awardId(): AwardId = UUID.randomUUID()
+    fun awardId(): AwardId = AwardId.generate()
 
     fun token(): Token = Token.generate()
 }
