@@ -17,6 +17,7 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
@@ -78,7 +79,8 @@ class TreasuryProcessingImpl(
         e. Returns updated Contract object for Response;
      */
     override fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData {
-        val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = context.ocid.underlying)
+        val contractId = context.ocid.asContractId()
+        val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(error = CONTRACT_NOT_FOUND)
 
@@ -225,7 +227,7 @@ class TreasuryProcessingImpl(
             }
             .asSequence()
             .filter {
-                it.contractId == context.ocid.underlying
+                it.contractId?.underlying == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
@@ -329,7 +331,7 @@ class TreasuryProcessingImpl(
             }
             .asSequence()
             .filter {
-                it.contractId == context.ocid.underlying
+                it.contractId?.underlying == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)

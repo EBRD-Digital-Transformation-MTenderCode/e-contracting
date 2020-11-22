@@ -6,6 +6,7 @@ import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
@@ -51,8 +52,9 @@ class FinalUpdateService(
         val language = cm.language
         val pmd = cm.pmd
         val dto = toObject(FinalUpdateAcRq::class.java, cm.data)
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
@@ -258,5 +260,4 @@ class FinalUpdateService(
         }
         throw ErrorException(INVALID_BUSINESS_FUNCTIONS_TYPE)
     }
-
 }

@@ -25,6 +25,7 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.get
@@ -53,7 +54,7 @@ class CassandraCANRepositoryIT {
         private val TOKEN = Token.generate()
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
-        private const val CONTRACT_ID = "ac-id-1"
+        private val CONTRACT_ID = ContractId.generate(CPID)
         private val AWARD_ID: AwardId = AwardId.generate()
         private val CAN_LOT_ID: LotId = LotId.orNull("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")!!
         private val RELATED_CAN_LOT_ID: LotId = LotId.orNull("db503a04-780a-49fb-839d-7836a49fa28c")!!
@@ -428,7 +429,7 @@ class CassandraCANRepositoryIT {
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
             .value("lot_id", lotId.underlying)
-            .value("ac_id", CONTRACT_ID)
+            .value("ac_id", CONTRACT_ID.underlying)
             .value("status", status.key)
             .value("status_details", statusDetails.key)
             .value("json_data", jsonData)
@@ -531,7 +532,7 @@ class CassandraCANRepositoryIT {
         id: CANId,
         lotId: LotId,
         awardId: AwardId = AWARD_ID,
-        contractId: String?,
+        contractId: ContractId?,
         status: CANStatus,
         statusDetails: CANStatusDetails,
         jsonData: String

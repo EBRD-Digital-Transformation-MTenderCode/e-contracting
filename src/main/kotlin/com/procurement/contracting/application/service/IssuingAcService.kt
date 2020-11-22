@@ -4,6 +4,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.item.ItemId
@@ -38,8 +39,8 @@ class IssuingAcService(
         val owner = cm.owner
         val dateTime = cm.startDate
 
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
@@ -86,6 +87,5 @@ class IssuingAcService(
                 statusDetails = contractProcess.contract.statusDetails
             )
         )
-
     }
 }

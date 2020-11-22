@@ -15,6 +15,7 @@ import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -90,7 +91,7 @@ data class CancelledCANData(
     )
 
     data class Contract(
-        val id: String,
+        val id: ContractId,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails
     )
@@ -170,7 +171,7 @@ class CancelCANServiceImpl(
         val relatedCANs: List<CAN>
 
         if (canEntity.contractId != null) {
-            val contractId: String = canEntity.contractId
+            val contractId: ContractId = canEntity.contractId
             log.debug("CAN with id '${context.canId}' has related AC with id '$contractId'.")
             val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
                 .orThrow { it.exception }
@@ -246,7 +247,7 @@ class CancelCANServiceImpl(
     private fun getRelatedCans(
         cpid: Cpid,
         canId: CANId,
-        contractId: String
+        contractId: ContractId
     ): Sequence<CANEntity> = canRepository.findBy(cpid = cpid)
         .orThrow {
             ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)

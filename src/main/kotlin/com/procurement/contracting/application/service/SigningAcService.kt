@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
@@ -70,8 +71,9 @@ class SigningAcService(
         val startDate = cm.startDate
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
@@ -176,8 +178,9 @@ class SigningAcService(
         val startDate = cm.startDate
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
@@ -475,5 +478,4 @@ class SigningAcService(
         }
         throw ErrorException(BUYER_NAME_IS_EMPTY)
     }
-
 }

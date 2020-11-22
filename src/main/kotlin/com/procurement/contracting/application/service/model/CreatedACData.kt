@@ -5,6 +5,7 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
@@ -28,7 +29,7 @@ data class CreatedACData(
     )
 
     data class Contract(
-        val id: String,
+        val id: ContractId,
         val awardId: AwardId,
         val status: ContractStatus,
         val statusDetails: ContractStatusDetails

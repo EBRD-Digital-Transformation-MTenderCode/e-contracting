@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
@@ -23,7 +24,7 @@ data class ActivationAcRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ActivationContract @JsonCreator constructor(
 
-    val id: String,
+    val id: ContractId,
 
     var status: ContractStatus,
 

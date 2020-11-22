@@ -4,10 +4,8 @@ import com.datastax.driver.core.utils.UUIDs
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.process.Cpid
-import com.procurement.contracting.domain.util.extension.nowDefaultUTC
-import com.procurement.contracting.domain.util.extension.toMilliseconds
-
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -22,9 +20,7 @@ class GenerationService {
         return generateTimeBasedUUID().toString()
     }
 
-    fun contractId(cpid: Cpid): String {
-        return cpid.underlying + "-AC-" + (nowDefaultUTC().toMilliseconds() + Random().nextInt())
-    }
+    fun contractId(cpid: Cpid): ContractId = ContractId.generate(cpid)
 
     fun canId(): CANId = CANId.generate()
 

@@ -8,6 +8,7 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
@@ -25,7 +26,7 @@ data class TreasuryProcessedData(
 ) {
 
     data class Contract(
-        val id: String,
+        val id: ContractId,
         val date: LocalDateTime,
         val awardId: AwardId,
         val status: ContractStatus,

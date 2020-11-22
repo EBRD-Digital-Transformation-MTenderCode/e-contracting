@@ -9,6 +9,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.process.Cpid
@@ -83,11 +84,11 @@ class CassandraACRepository(private val session: Session) : ACRepository {
     private val preparedUpdateStatusesCQL = session.prepare(UPDATE_STATUSES_CQL)
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
 
-    override fun findBy(cpid: Cpid, contractId: String): Result<ACEntity?, Fail.Incident.Database> =
+    override fun findBy(cpid: Cpid, contractId: ContractId): Result<ACEntity?, Fail.Incident.Database> =
         preparedFindByCpidAndCanIdCQL.bind()
             .apply {
                 setString(Database.AC.COLUMN_CPID, cpid.underlying)
-                setString(Database.AC.COLUMN_CONTRACT_ID, contractId)
+                setString(Database.AC.COLUMN_CONTRACT_ID, contractId.underlying)
             }
             .tryExecute(session)
             .mapFailure {
@@ -102,7 +103,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
 
     private fun Row.convert(): ACEntity = ACEntity(
         cpid = Cpid.orNull(getString(Database.AC.COLUMN_CPID))!!,
-        id = getString(Database.AC.COLUMN_CONTRACT_ID),
+        id = ContractId.orNull(getString(Database.AC.COLUMN_CONTRACT_ID))!!,
         token = Token.orNull(getUUID(Database.AC.COLUMN_TOKEN).toString())!!,
         owner = Owner.orNull(getString(Database.AC.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.AC.COLUMN_CREATED_DATE).toLocalDateTime(),
@@ -117,7 +118,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         preparedSaveNewCQL.bind()
             .apply {
                 setString(Database.AC.COLUMN_CPID, entity.cpid.underlying)
-                setString(Database.AC.COLUMN_CONTRACT_ID, entity.id)
+                setString(Database.AC.COLUMN_CONTRACT_ID, entity.id.underlying)
                 setUUID(Database.AC.COLUMN_TOKEN, entity.token.underlying)
                 setString(Database.AC.COLUMN_OWNER, entity.owner.underlying)
                 setTimestamp(Database.AC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
@@ -139,7 +140,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
 
     override fun saveCancelledAC(
         cpid: Cpid,
-        id: String,
+        id: ContractId,
         status: ContractStatus,
         statusDetails: ContractStatusDetails,
         jsonData: String
@@ -147,7 +148,7 @@ class CassandraACRepository(private val session: Session) : ACRepository {
         preparedCancelCQL.bind()
             .apply {
                 setString(Database.AC.COLUMN_CPID, cpid.underlying)
-                setString(Database.AC.COLUMN_CONTRACT_ID, id)
+                setString(Database.AC.COLUMN_CONTRACT_ID, id.underlying)
                 setString(Database.AC.COLUMN_STATUS, status.key)
                 setString(Database.AC.COLUMN_STATUS_DETAILS, statusDetails.key)
                 setString(Database.AC.COLUMN_JSON_DATA, jsonData)
@@ -164,14 +165,14 @@ class CassandraACRepository(private val session: Session) : ACRepository {
 
     override fun updateStatusesAC(
         cpid: Cpid,
-        id: String,
+        id: ContractId,
         status: ContractStatus,
         statusDetails: ContractStatusDetails,
         jsonData: String
     ): Result<Boolean, Fail.Incident.Database> = preparedUpdateStatusesCQL.bind()
         .apply {
             setString(Database.AC.COLUMN_CPID, cpid.underlying)
-            setString(Database.AC.COLUMN_CONTRACT_ID, id)
+            setString(Database.AC.COLUMN_CONTRACT_ID, id.underlying)
             setString(Database.AC.COLUMN_STATUS, status.key)
             setString(Database.AC.COLUMN_STATUS_DETAILS, statusDetails.key)
             setString(Database.AC.COLUMN_JSON_DATA, jsonData)

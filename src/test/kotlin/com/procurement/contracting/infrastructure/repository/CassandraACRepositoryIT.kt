@@ -18,6 +18,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.process.Cpid
@@ -42,7 +43,7 @@ import java.time.LocalDateTime
 class CassandraACRepositoryIT {
     companion object {
         private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
-        private const val CONTRACT_ID = "contract-id"
+        private val CONTRACT_ID = ContractId.generate(CPID)
         private val TOKEN = Token.generate()
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
@@ -281,7 +282,7 @@ class CassandraACRepositoryIT {
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_ac")
             .value("cp_id", CPID.underlying)
-            .value("ac_id", CONTRACT_ID)
+            .value("ac_id", CONTRACT_ID.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("json_data", jsonData)
             .value("language", LANGUAGE)

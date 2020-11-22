@@ -19,6 +19,7 @@ import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -48,7 +49,7 @@ class CancelCANServiceTest {
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CAN_ID: CANId = CANId.orNull("0dc181db-f5ae-4039-97c7-defcceef89a4")!!
         private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
-        private const val CONTRACT_ID: String = "contract-id-1"
+        private val CONTRACT_ID: ContractId = ContractId.orNull("ocds-b3wdp1-MD-1580458690892-AC-1580123456789")!!
         private val MPC = MainProcurementCategory.SERVICES
 
         private val cancellationCAN =
@@ -212,7 +213,8 @@ class CancelCANServiceTest {
             .thenReturn(acEntity.asSuccess())
 
         val firstCANEntity = canEntity(can = firstOtherCAN)
-        val secondCANEntity = canEntity(can = secondOtherCAN, contractID = "UNKNOWN")
+        val unknownContractId = ContractId.generate(CPID)
+        val secondCANEntity = canEntity(can = secondOtherCAN, contractID = unknownContractId)
         whenever(canRepository.findBy(eq(CPID)))
             .thenReturn(listOf(cancellationCANEntity, firstCANEntity, secondCANEntity).asSuccess())
         whenever(acRepository.saveCancelledAC(eq(CPID), any(), any(), any(), any()))
@@ -478,7 +480,7 @@ class CancelCANServiceTest {
         )
     }
 
-    private fun canEntity(can: CAN, owner: Owner = OWNER, token: Token? = null, contractID: String? = CONTRACT_ID) =
+    private fun canEntity(can: CAN, owner: Owner = OWNER, token: Token? = null, contractID: ContractId? = CONTRACT_ID) =
         CANEntity(
             cpid = CPID,
             id = can.id,

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
@@ -58,7 +59,7 @@ data class CancelCANResponse(
     )
 
     data class Contract(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: ContractId,
         @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails
     )

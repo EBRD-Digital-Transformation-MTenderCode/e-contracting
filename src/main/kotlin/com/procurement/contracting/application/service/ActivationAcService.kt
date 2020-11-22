@@ -9,6 +9,7 @@ import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
@@ -45,8 +46,8 @@ class ActivationAcService(
         val owner = cm.owner
         val startDate = cm.startDate
 
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)

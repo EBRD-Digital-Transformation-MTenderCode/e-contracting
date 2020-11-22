@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import java.time.LocalDateTime
@@ -18,7 +19,7 @@ data class CANEntity(
     val createdDate: LocalDateTime,
     val awardId: AwardId?,
     val lotId: LotId,
-    val contractId: String?,
+    val contractId: ContractId?,
     val status: CANStatus,
     val statusDetails: CANStatusDetails,
     val jsonData: String

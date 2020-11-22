@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
@@ -33,7 +34,7 @@ data class TreasuryProcessingResponse(
 ) {
 
     data class Contract(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: ContractId,
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
         @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,

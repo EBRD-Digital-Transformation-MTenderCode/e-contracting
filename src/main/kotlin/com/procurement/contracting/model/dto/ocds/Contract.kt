@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ data class Contract @JsonCreator constructor(
 
     val token: Token?,
 
-    val id: String,
+    val id: ContractId,
 
     var date: LocalDateTime? = null,
 

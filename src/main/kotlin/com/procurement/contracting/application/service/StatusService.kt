@@ -3,6 +3,7 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.ac.ACRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.contract.id.asContractId
 import com.procurement.contracting.domain.model.contract.status.ContractStatus
 import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.exception.ErrorException
@@ -32,15 +33,15 @@ class StatusService(
         val ocid = cm.ocid
         val token = cm.token
         val owner = cm.owner
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         if (entity.owner != owner) throw ErrorException(error = INVALID_OWNER)
         if (entity.token != token) throw ErrorException(INVALID_TOKEN)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
         val contract = contractProcess.contract
-        if (contract.id != ocid.underlying) throw ErrorException(CONTRACT_ID)
+        if (contract.id.underlying != ocid.underlying) throw ErrorException(CONTRACT_ID)
         if (contract.status != ContractStatus.PENDING) throw ErrorException(CONTRACT_STATUS)
         if (contract.statusDetails != ContractStatusDetails.CONTRACT_PROJECT
                 && contract.statusDetails != ContractStatusDetails.CONTRACT_PREPARATION)
@@ -56,8 +57,8 @@ class StatusService(
     fun getRelatedBidId(cm: CommandMessage): GetBidIdRs {
         val cpid = cm.cpid
         val ocid = cm.ocid
-        val acId = ocid.underlying
-        val entity: ACEntity = acRepository.findBy(cpid, acId)
+        val contractId = ocid.asContractId()
+        val entity: ACEntity = acRepository.findBy(cpid, contractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
