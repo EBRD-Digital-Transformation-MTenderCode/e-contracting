@@ -1,9 +1,9 @@
 package com.procurement.contracting.domain.model
 
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.Result.Companion.failure
-import com.procurement.contracting.domain.functional.Result.Companion.success
 import com.procurement.contracting.exception.EnumElementProviderException
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.Result.Companion.failure
+import com.procurement.contracting.lib.functional.Result.Companion.success
 
 abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,
                                                                    T : EnumElementProvider.Key {

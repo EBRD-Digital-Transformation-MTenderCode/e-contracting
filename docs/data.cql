@@ -144,3 +144,17 @@ INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,templat
 INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,template) VALUES ('MD','TEST_GPA','ro','cs-tenderer-confirmation-on','{"id": "cs-tenderer-confirmation-on-", "description": "Supplier has to sign the transferred document", "title": "Document signing", "type": "digitalSignature", "relatesTo": "document", "requestTitle": "parties[role:supplier].persones[role:authority].", "requestDescription": "Defined person has to sign the transferred document"}');
 INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,template) VALUES ('MD','TEST_GPA','ro','cs-treasury-validate-on','{"id": "cs-treasury-validate-on-","description": "Treasury has to approve the contract","title": "Contract validation","type": "approval","relatesTo": "document","requestTitle": "parties[role:treasury].persones[role:authority].","requestDescription": "Defined person has to sign the transferred document"}');
 INSERT INTO ocds.contracting_templates (country,pmd,language,template_id,template) VALUES ('MD','TEST_GPA','ro','verification_rationale','Acest document se semnează electronic în conformitate cu Legea nr. 91 din 29.05.2014. Verificarea semnăturii poate fi realizată la adresa https://msign.gov.md');
+
+CREATE TABLE IF NOT EXISTS ocds.contracting_fc
+(
+    cpid           TEXT,
+    ocid           TEXT,
+    id             TEXT,
+    token_entity   TEXT,
+    owner          TEXT,
+    created_date   TIMESTAMP,
+    status         TEXT,
+    status_details TEXT,
+    json_data      TEXT,
+    PRIMARY KEY (cpid, ocid, id)
+);

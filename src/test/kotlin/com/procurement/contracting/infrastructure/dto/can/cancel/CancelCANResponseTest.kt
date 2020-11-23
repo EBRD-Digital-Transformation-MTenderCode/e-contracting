@@ -1,6 +1,7 @@
 package com.procurement.contracting.infrastructure.dto.can.cancel
 
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
+import com.procurement.contracting.infrastructure.handler.v1.model.response.CancelCANResponse
 import org.junit.jupiter.api.Test
 
 class CancelCANResponseTest : AbstractDTOTestBase<CancelCANResponse>(CancelCANResponse::class.java) {

@@ -2,6 +2,7 @@ package com.procurement.contracting.model.dto.ocds
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -14,7 +15,7 @@ data class Can @JsonCreator constructor(
 
     val id: CANId,
 
-    val token: String,
+    val token: Token,
 
     var date: LocalDateTime?,
 

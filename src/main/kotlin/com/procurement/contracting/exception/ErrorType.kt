@@ -85,5 +85,7 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INVALID_FORMAT_LOT_ID("00.79", "Invalid format the lot id."),
     INVALID_AMOUNT("00.80", "Invalid amount."),
     INVALID_CURRENCY("00.81", "Invalid currency."),
-    NO_REGDATA("00.82", "RegData from treasury is absent.");
+    NO_REGDATA("00.82", "RegData from treasury is absent."),
+    INVALID_ATTRIBUTE("00.83", "Invalid attribute."),
+    INVALID_FORMAT_OF_ATTRIBUTE("00.84", "Invalid attribute format.");
 }

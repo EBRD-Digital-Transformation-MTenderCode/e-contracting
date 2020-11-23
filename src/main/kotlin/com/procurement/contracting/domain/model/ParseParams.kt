@@ -1,18 +1,21 @@
 package com.procurement.contracting.domain.model
 
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.functional.asSuccess
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
-import com.procurement.contracting.domain.model.lot.tryLotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.util.extension.toLocalDateTime
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.infrastructure.fail.error.DataTimeError
+import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
+import com.procurement.contracting.lib.functional.asSuccess
+import java.time.LocalDateTime
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
-    Cpid.tryCreateOrNull(value = value)
+    Cpid.orNull(value = value)
         ?.asSuccess()
         ?: Result.failure(
             DataErrors.Validation.DataMismatchToPattern(
@@ -23,7 +26,7 @@ fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToP
         )
 
 fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToPattern> =
-    Ocid.tryCreateOrNull(value = value)
+    Ocid.orNull(value = value)
         ?.asSuccess()
         ?: Result.failure(
             DataErrors.Validation.DataMismatchToPattern(
@@ -34,17 +37,13 @@ fun parseOcid(value: String): Result<Ocid, DataErrors.Validation.DataMismatchToP
         )
 
 fun parseLotId(value: String, attributeName: String): Result<LotId, DataErrors.Validation.DataFormatMismatch> =
-    value.tryLotId()
-        .doReturn {
-            return Result.failure(
-                DataErrors.Validation.DataFormatMismatch(
-                    name = attributeName,
-                    expectedFormat = "uuid",
-                    actualValue = value
-                )
-            )
-        }
-        .asSuccess()
+    LotId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = LotId.pattern,
+            actualValue = value
+        ).asFailure()
 
 fun parseCANStatus(
     status: String, allowedStatuses: Set<CANStatus>, attributeName: String
@@ -72,3 +71,27 @@ private fun <T> parseEnum(
                 actualValue = value
             )
         )
+
+fun parseDate(value: String, attributeName: String = "date"): Result<LocalDateTime, DataErrors.Validation> =
+    value.toLocalDateTime()
+        .mapFailure { fail ->
+            when (fail) {
+                is DataTimeError.InvalidFormat -> DataErrors.Validation.DataFormatMismatch(
+                    name = attributeName,
+                    actualValue = value,
+                    expectedFormat = fail.pattern
+                )
+
+                is DataTimeError.InvalidDateTime ->
+                    DataErrors.Validation.InvalidDateTime(name = attributeName, actualValue = value)
+            }
+        }
+
+fun parseOwner(value: String): Result<Owner, DataErrors.Validation.DataFormatMismatch> =
+    Owner.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+                    name = "owner",
+                    actualValue = value,
+                    expectedFormat = "uuid"
+                ).asFailure()

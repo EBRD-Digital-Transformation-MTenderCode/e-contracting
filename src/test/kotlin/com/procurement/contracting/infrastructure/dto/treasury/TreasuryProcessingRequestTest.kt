@@ -1,6 +1,7 @@
 package com.procurement.contracting.infrastructure.dto.treasury
 
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
+import com.procurement.contracting.infrastructure.handler.v1.model.request.TreasuryProcessingRequest
 import org.junit.jupiter.api.Test
 
 class TreasuryProcessingRequestTest :
