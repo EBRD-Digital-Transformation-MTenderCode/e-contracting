@@ -10,8 +10,8 @@ import com.procurement.contracting.AbstractArgumentConverter
 import com.procurement.contracting.application.repository.ac.AwardContractRepository
 import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token

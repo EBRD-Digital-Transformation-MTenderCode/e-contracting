@@ -14,11 +14,11 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.repository.can.model.DataCancelCAN
 import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
 import com.procurement.contracting.application.repository.can.model.RelatedContract
 import com.procurement.contracting.assertFailure
-import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.ac.id.AwardContractId

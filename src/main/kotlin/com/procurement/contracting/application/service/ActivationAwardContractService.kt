@@ -5,8 +5,8 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.ac.AwardContractRepository
 import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.ac.id.asAwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails

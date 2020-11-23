@@ -1,10 +1,10 @@
 package com.procurement.contracting.application.repository.can
 
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.repository.can.model.DataCancelCAN
 import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
 import com.procurement.contracting.application.repository.can.model.DataResetCAN
 import com.procurement.contracting.application.repository.can.model.RelatedContract
-import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.infrastructure.fail.Fail

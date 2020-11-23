@@ -1,4 +1,4 @@
-package com.procurement.contracting.domain.entity
+package com.procurement.contracting.application.repository.can.model
 
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token

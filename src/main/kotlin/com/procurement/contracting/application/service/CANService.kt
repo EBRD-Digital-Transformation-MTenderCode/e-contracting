@@ -2,11 +2,11 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.CreatedCANData
 import com.procurement.contracting.application.service.model.FindCANIdsParams
-import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus

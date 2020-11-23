@@ -3,7 +3,7 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.can.CANRepository
-import com.procurement.contracting.domain.entity.CANEntity
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
