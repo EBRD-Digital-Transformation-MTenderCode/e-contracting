@@ -1,14 +1,14 @@
 package com.procurement.contracting.application.service.model
 
-import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.process.Cpid
-import java.time.LocalDateTime
+import com.procurement.contracting.domain.model.process.Ocid
 
-data class CreateAwardContractContext(
+data class CancelFrameworkContractParams(
     val cpid: Cpid,
-    val owner: Owner,
-    val startDate: LocalDateTime,
+    val ocid: Ocid,
     val pmd: ProcurementMethodDetails,
-    val language: String
+    val country: String,
+    val operationType: OperationType
 )

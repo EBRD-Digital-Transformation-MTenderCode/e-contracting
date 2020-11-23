@@ -5,7 +5,7 @@ import com.procurement.contracting.application.repository.ac.AwardContractReposi
 import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.domain.model.MainProcurementCategory
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.ac.id.asAwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
@@ -443,7 +443,7 @@ class UpdateAwardContractService(
     private fun updateConfirmationRequests(dto: UpdateAcRq,
                                            documents: List<DocumentContract>?,
                                            country: String,
-                                           pmd: ProcurementMethod,
+                                           pmd: ProcurementMethodDetails,
                                            language: String): MutableList<ConfirmationRequest>? {
         val confRequestDto = dto.contract.confirmationRequests
         if (confRequestDto != null) {

@@ -71,11 +71,23 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
+
+        private const val UPDATE_STATUSES_CQL = """
+               UPDATE ${Database.KEYSPACE}.${Database.FC.TABLE}
+                  SET ${Database.FC.COLUMN_STATUS}=?, 
+                      ${Database.FC.COLUMN_STATUS_DETAILS}=?,
+                      ${Database.FC.COLUMN_JSON_DATA}=?
+                WHERE ${Database.FC.COLUMN_CPID}=?
+                  AND ${Database.FC.COLUMN_OCID}=?
+                  AND ${Database.FC.COLUMN_ID}=?
+               IF EXISTS
+            """
     }
 
     private val preparedFindByCpidAndOcidCQL = session.prepare(FIND_BY_CPID_AND_OCID_CQL)
     private val preparedFindByCpidAndOcidAndIdCQL = session.prepare(FIND_BY_CPID_AND_OCID_AND_ID_CQL)
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
+    private val preparedUpdateCQL = session.prepare(UPDATE_STATUSES_CQL)
 
     override fun findBy(cpid: Cpid, ocid: Ocid): Result<List<FrameworkContractEntity>, Fail.Incident.Database> =
         preparedFindByCpidAndOcidCQL.bind()
@@ -93,7 +105,11 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
             .map { it.convert() }
             .asSuccess()
 
-    override fun findBy(cpid: Cpid, ocid: Ocid, contractId: FrameworkContractId): Result<FrameworkContractEntity?, Fail.Incident.Database> =
+    override fun findBy(
+        cpid: Cpid,
+        ocid: Ocid,
+        contractId: FrameworkContractId
+    ): Result<FrameworkContractEntity?, Fail.Incident.Database> =
         preparedFindByCpidAndOcidAndIdCQL.bind()
             .apply {
                 setString(Database.FC.COLUMN_CPID, cpid.underlying)
@@ -140,6 +156,26 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
             .mapFailure {
                 Fail.Incident.Database.DatabaseInteractionIncident(
                     SaveEntityException(message = "Error writing new FC contract to database.", cause = it.exception)
+                )
+            }
+            .onFailure { return it }
+            .wasApplied()
+            .asSuccess()
+
+    override fun update(entity: FrameworkContractEntity): Result<Boolean, Fail.Incident.Database> =
+        preparedUpdateCQL.bind()
+            .apply {
+                setString(Database.FC.COLUMN_CPID, entity.cpid.underlying)
+                setString(Database.FC.COLUMN_OCID, entity.ocid.underlying)
+                setString(Database.FC.COLUMN_ID, entity.id.underlying)
+                setString(Database.FC.COLUMN_STATUS, entity.status.key)
+                setString(Database.FC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.FC.COLUMN_JSON_DATA, entity.jsonData)
+            }
+            .tryExecute(session)
+            .mapFailure {
+                Fail.Incident.Database.DatabaseInteractionIncident(
+                    ReadEntityException(message = "Error write FC Contract(s) to the database.", cause = it.exception)
                 )
             }
             .onFailure { return it }

@@ -3,9 +3,9 @@ package com.procurement.contracting.infrastructure.fail.error
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.infrastructure.fail.Fail
 
-sealed class DataErrors(numberError: String, override val description: String) : Fail.Error("DR-") {
+sealed class DataErrors(numberError: String, override val description: String) : Fail.Error() {
 
-    override val code: String = prefix + numberError
+    override val code: String = "DR-$numberError"
 
     sealed class Validation(numberError: String, val name: String, description: String) :
         DataErrors(numberError = numberError, description = description) {

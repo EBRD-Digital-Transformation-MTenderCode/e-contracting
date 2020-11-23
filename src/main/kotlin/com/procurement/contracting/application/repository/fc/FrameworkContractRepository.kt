@@ -13,4 +13,6 @@ interface FrameworkContractRepository {
     fun findBy(cpid: Cpid, ocid: Ocid, contractId: FrameworkContractId): Result<FrameworkContractEntity?, Fail.Incident.Database>
 
     fun saveNew(entity: FrameworkContractEntity): Result<Boolean, Fail.Incident.Database>
+
+    fun update(entity: FrameworkContractEntity): Result<Boolean, Fail.Incident.Database>
 }

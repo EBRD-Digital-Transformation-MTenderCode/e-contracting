@@ -51,8 +51,11 @@ class CassandraFrameworkContractRepositoryIT {
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
         private val FC_STATUS = FrameworkContractStatus.PENDING
+        private val UPDATED_FC_STATUS = FrameworkContractStatus.CANCELLED
         private val FC_STATUS_DETAILS = FrameworkContractStatusDetails.CONTRACT_PROJECT
-        private const val JSON_DATA = """ {"ac": "data"} """
+        private val UPDATED_FC_STATUS_DETAILS = FrameworkContractStatusDetails.WITHDRAWN_QUALIFICATION_PROTOCOL
+        private const val JSON_DATA = """ {"fc": "data"} """
+        private const val UPDATED_JSON_DATA = """ {"updated fc": "data"} """
     }
 
     @Autowired
@@ -90,7 +93,8 @@ class CassandraFrameworkContractRepositoryIT {
     fun findBy() {
         insertFC()
 
-        val actualFundedAC: FrameworkContractEntity? = fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).get()
+        val actualFundedAC: FrameworkContractEntity? =
+            fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).get()
 
         assertNotNull(actualFundedAC)
 
@@ -119,7 +123,6 @@ class CassandraFrameworkContractRepositoryIT {
 
         fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).assertFailure()
     }
-
 
     @Test
     fun findById() {
@@ -165,7 +168,8 @@ class CassandraFrameworkContractRepositoryIT {
 
         fcRepository.saveNew(entity)
 
-        val actualACEntity: FrameworkContractEntity? = fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).get()
+        val actualACEntity: FrameworkContractEntity? =
+            fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).get()
 
         assertNotNull(actualACEntity)
         assertEquals(entity, actualACEntity)
@@ -201,6 +205,30 @@ class CassandraFrameworkContractRepositoryIT {
             fcRepository.saveNew(entity).orThrow { it.exception }
         }
         assertEquals("Error writing new FC contract to database.", exception.message)
+    }
+
+    @Test
+    fun update() {
+        val fcEntity = expectedFC(
+            status = FC_STATUS,
+            statusDetails = FC_STATUS_DETAILS,
+            jsonData = JSON_DATA
+        )
+        val wasSaved = fcRepository.saveNew(fcEntity).get()
+        assertTrue(wasSaved)
+
+        val updatedEntity = fcEntity.copy(
+            status = UPDATED_FC_STATUS,
+            statusDetails = UPDATED_FC_STATUS_DETAILS,
+            jsonData = UPDATED_JSON_DATA
+        )
+        val wasUpdated = fcRepository.update(updatedEntity).get()
+        assertTrue(wasUpdated)
+
+        val actualEntity = fcRepository.findBy(cpid = CPID, ocid = OCID, contractId = FC_ID).get()
+
+        assertNotNull(actualEntity)
+        assertEquals(updatedEntity, actualEntity)
     }
 
     private fun createKeyspace() {
@@ -247,7 +275,6 @@ class CassandraFrameworkContractRepositoryIT {
             .value("json_data", jsonData)
         session.execute(rec)
     }
-
 
     private fun expectedFC(
         status: FrameworkContractStatus,

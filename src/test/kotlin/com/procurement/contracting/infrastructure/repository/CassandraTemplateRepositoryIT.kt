@@ -12,7 +12,7 @@ import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.repository.template.TemplateRepository
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.failure
 import com.procurement.contracting.get
 import org.junit.jupiter.api.AfterEach
@@ -32,7 +32,7 @@ class CassandraTemplateRepositoryIT {
 
     companion object {
         private const val COUNTRY = "MD"
-        private val PMD = ProcurementMethod.CD
+        private val PMD = ProcurementMethodDetails.CD
         private const val LANGUAGE: String = "RO"
         private const val TEMPLATE_ID: String = "template-1"
         private const val TEMPLATE: String = "Template"
@@ -126,7 +126,7 @@ class CassandraTemplateRepositoryIT {
     private fun insert() {
         val query = QueryBuilder.insertInto("ocds", "contracting_templates")
             .value("country", COUNTRY)
-            .value("pmd", PMD.name)
+            .value("pmd", PMD.key)
             .value("template_id", TEMPLATE_ID)
             .value("language", LANGUAGE)
             .value("template", TEMPLATE)

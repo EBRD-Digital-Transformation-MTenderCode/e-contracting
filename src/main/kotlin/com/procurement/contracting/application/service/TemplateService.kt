@@ -2,7 +2,7 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.template.TemplateRepository
 import com.procurement.contracting.application.service.model.ConfirmationRequestTemplate
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.utils.toObject
@@ -13,7 +13,7 @@ class TemplateService(private val templateRepository: TemplateRepository) {
 
     fun getConfirmationRequestTemplate(
         country: String,
-        pmd: ProcurementMethod,
+        pmd: ProcurementMethodDetails,
         language: String,
         templateId: String
     ): ConfirmationRequestTemplate {
@@ -27,7 +27,7 @@ class TemplateService(private val templateRepository: TemplateRepository) {
 
     fun getVerificationTemplate(
         country: String,
-        pmd: ProcurementMethod,
+        pmd: ProcurementMethodDetails,
         language: String,
         templateId: String
     ): String {
