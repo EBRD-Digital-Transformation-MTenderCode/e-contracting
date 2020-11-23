@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.model.dto.ocds.Award
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.model.dto.ocds.Can
-import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.ContractedAward
 import com.procurement.contracting.model.dto.ocds.Item
 
@@ -33,9 +33,9 @@ data class GetDataForAcTender @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CreateAcRs(
 
-        val cans: List<Can>,
+    val cans: List<Can>,
 
-        val contract: Contract,
+    val contract: AwardContract,
 
-        val contractedAward: ContractedAward
+    val contractedAward: ContractedAward
 )

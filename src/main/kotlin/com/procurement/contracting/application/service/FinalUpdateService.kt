@@ -1,14 +1,14 @@
 package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.ac.AwardContractRepository
+import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ac.id.asAwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
-import com.procurement.contracting.domain.model.contract.id.asContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class FinalUpdateService(
-    private val acRepository: ACRepository,
+    private val acRepository: AwardContractRepository,
     private val generationService: GenerationService,
     private val templateService: TemplateService
 ) {
@@ -53,14 +53,14 @@ class FinalUpdateService(
         val pmd = cm.pmd
         val dto = toObject(FinalUpdateAcRq::class.java, cm.data)
 
-        val contractId = ocid.asContractId()
-        val entity: ACEntity = acRepository.findBy(cpid, contractId)
+        val awardContractId = ocid.asAwardContractId()
+        val entity: AwardContractEntity = acRepository.findBy(cpid, awardContractId)
             .orThrow { it.exception }
             ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
         val contractProcess = toObject(ContractProcess::class.java, entity.jsonData)
 
-        if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
-        if (contractProcess.contract.statusDetails != ContractStatusDetails.ISSUED) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+        if (contractProcess.contract.status != AwardContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
+        if (contractProcess.contract.statusDetails != AwardContractStatusDetails.ISSUED) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
 
         contractProcess.contract.apply {
             documents = addContractDocuments(dto.documents, documents)
@@ -87,7 +87,7 @@ class FinalUpdateService(
         confirmationRequests.add(confirmationRequestBuyer)
         contractProcess.contract.confirmationRequests = confirmationRequests
 
-        contractProcess.contract.statusDetails = ContractStatusDetails.APPROVEMENT
+        contractProcess.contract.statusDetails = AwardContractStatusDetails.APPROVEMENT
 
         val updatedContractEntity = entity.copy(
             status = contractProcess.contract.status,

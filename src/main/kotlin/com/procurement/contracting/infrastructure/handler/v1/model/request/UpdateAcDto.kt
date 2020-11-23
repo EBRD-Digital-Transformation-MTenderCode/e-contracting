@@ -12,9 +12,9 @@ import com.procurement.contracting.infrastructure.bind.MoneyDeserializer
 import com.procurement.contracting.infrastructure.bind.quantity.QuantityDeserializer
 import com.procurement.contracting.model.dto.ocds.Address
 import com.procurement.contracting.model.dto.ocds.AgreedMetric
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.model.dto.ocds.BankAccount
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
-import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.ContractedAward
 import com.procurement.contracting.model.dto.ocds.DocumentAward
 import com.procurement.contracting.model.dto.ocds.DocumentContract
@@ -158,7 +158,7 @@ data class UpdateAcRs @JsonCreator constructor(
 
     var planning: Planning,
 
-    val contract: Contract,
+    val contract: AwardContract,
 
     val award: ContractedAward,
 

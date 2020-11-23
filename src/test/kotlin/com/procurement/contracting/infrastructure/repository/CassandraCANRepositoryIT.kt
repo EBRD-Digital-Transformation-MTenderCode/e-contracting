@@ -21,11 +21,11 @@ import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
-import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.get
@@ -54,7 +54,7 @@ class CassandraCANRepositoryIT {
         private val TOKEN = Token.generate()
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
-        private val CONTRACT_ID = ContractId.generate(CPID)
+        private val AWARD_CONTRACT_ID = AwardContractId.generate(CPID)
         private val AWARD_ID: AwardId = AwardId.generate()
         private val CAN_LOT_ID: LotId = LotId.orNull("eb7a7343-c48c-481f-bcd2-7e4d14966e1d")!!
         private val RELATED_CAN_LOT_ID: LotId = LotId.orNull("db503a04-780a-49fb-839d-7836a49fa28c")!!
@@ -224,7 +224,7 @@ class CassandraCANRepositoryIT {
 
         val relatedContract = RelatedContract(
             id = CAN_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS_AFTER_UPDATE,
             statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
             jsonData = JSON_DATA_UPDATED_CAN
@@ -242,7 +242,7 @@ class CassandraCANRepositoryIT {
     fun errorSaveUnknownCANsWithRelatedContract() {
         val relatedContract = RelatedContract(
             id = CAN_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS_AFTER_UPDATE,
             statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
             jsonData = JSON_DATA_UPDATED_CAN
@@ -262,7 +262,7 @@ class CassandraCANRepositoryIT {
 
         val relatedContract = RelatedContract(
             id = CAN_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS_AFTER_UPDATE,
             statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
             jsonData = JSON_DATA_UPDATED_CAN
@@ -279,7 +279,7 @@ class CassandraCANRepositoryIT {
         val newCAN = createCANEntity(
             id = CAN_ID,
             lotId = CAN_LOT_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS,
             statusDetails = CAN_STATUS_DETAILS,
             jsonData = JSON_DATA_CAN
@@ -298,7 +298,7 @@ class CassandraCANRepositoryIT {
         val newCAN = createCANEntity(
             id = CAN_ID,
             lotId = CAN_LOT_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS,
             statusDetails = CAN_STATUS_DETAILS,
             jsonData = JSON_DATA_CAN
@@ -319,7 +319,7 @@ class CassandraCANRepositoryIT {
         val newCAN = createCANEntity(
             id = CAN_ID,
             lotId = CAN_LOT_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS,
             statusDetails = CAN_STATUS_DETAILS,
             jsonData = JSON_DATA_CAN
@@ -336,7 +336,7 @@ class CassandraCANRepositoryIT {
         val newCAN = createCANEntity(
             id = CAN_ID,
             lotId = CAN_LOT_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS,
             statusDetails = CAN_STATUS_DETAILS,
             jsonData = JSON_DATA_CAN
@@ -363,7 +363,7 @@ class CassandraCANRepositoryIT {
         val newCAN = createCANEntity(
             id = CAN_ID,
             lotId = CAN_LOT_ID,
-            contractId = CONTRACT_ID,
+            awardContractId = AWARD_CONTRACT_ID,
             status = CAN_STATUS,
             statusDetails = CAN_STATUS_DETAILS,
             jsonData = JSON_DATA_CAN
@@ -429,7 +429,7 @@ class CassandraCANRepositoryIT {
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("award_id", AWARD_ID.toString())
             .value("lot_id", lotId.underlying)
-            .value("ac_id", CONTRACT_ID.underlying)
+            .value("ac_id", AWARD_CONTRACT_ID.underlying)
             .value("status", status.key)
             .value("status_details", statusDetails.key)
             .value("json_data", jsonData)
@@ -486,7 +486,7 @@ class CassandraCANRepositoryIT {
     private fun expectedFundedCAN() = createCANEntity(
         id = CAN_ID,
         lotId = CAN_LOT_ID,
-        contractId = CONTRACT_ID,
+        awardContractId = AWARD_CONTRACT_ID,
         status = CAN_STATUS,
         statusDetails = CAN_STATUS_DETAILS,
         jsonData = JSON_DATA_CAN
@@ -495,7 +495,7 @@ class CassandraCANRepositoryIT {
     private fun expectedFundedRelatedCAN() = createCANEntity(
         id = RELATED_CAN_ID,
         lotId = RELATED_CAN_LOT_ID,
-        contractId = CONTRACT_ID,
+        awardContractId = AWARD_CONTRACT_ID,
         status = RELATED_CAN_STATUS,
         statusDetails = RELATED_CAN_STATUS_DETAILS,
         jsonData = JSON_DATA_RELATED_CAN
@@ -504,7 +504,7 @@ class CassandraCANRepositoryIT {
     private fun expectedCancelledCAN() = createCANEntity(
         id = CAN_ID,
         lotId = CAN_LOT_ID,
-        contractId = null,
+        awardContractId = null,
         status = CAN_STATUS_AFTER_CANCEL,
         statusDetails = CAN_STATUS_DETAILS_AFTER_CANCEL,
         jsonData = JSON_DATA_CANCELLED_CAN
@@ -513,7 +513,7 @@ class CassandraCANRepositoryIT {
     private fun expectedCancelledRelatedCAN() = createCANEntity(
         id = RELATED_CAN_ID,
         lotId = RELATED_CAN_LOT_ID,
-        contractId = null,
+        awardContractId = null,
         status = RELATED_CAN_STATUS_AFTER_CANCEL,
         statusDetails = RELATED_CAN_STATUS_DETAILS_AFTER_CANCEL,
         jsonData = JSON_DATA_CANCELLED_RELATED_CAN
@@ -522,7 +522,7 @@ class CassandraCANRepositoryIT {
     private fun expectedUpdatedCAN() = createCANEntity(
         id = CAN_ID,
         lotId = CAN_LOT_ID,
-        contractId = CONTRACT_ID,
+        awardContractId = AWARD_CONTRACT_ID,
         status = CAN_STATUS_AFTER_UPDATE,
         statusDetails = CAN_STATUS_DETAILS_AFTER_UPDATE,
         jsonData = JSON_DATA_UPDATED_CAN
@@ -532,7 +532,7 @@ class CassandraCANRepositoryIT {
         id: CANId,
         lotId: LotId,
         awardId: AwardId = AWARD_ID,
-        contractId: ContractId?,
+        awardContractId: AwardContractId?,
         status: CANStatus,
         statusDetails: CANStatusDetails,
         jsonData: String
@@ -544,7 +544,7 @@ class CassandraCANRepositoryIT {
         createdDate = CREATE_DATE,
         awardId = awardId,
         lotId = lotId,
-        contractId = contractId,
+        awardContractId = awardContractId,
         status = status,
         statusDetails = statusDetails,
         jsonData = jsonData

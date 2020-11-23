@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -12,9 +15,6 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
-import com.procurement.contracting.domain.model.contract.id.ContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
@@ -34,12 +34,12 @@ data class TreasuryProcessingResponse(
 ) {
 
     data class Contract(
-        @field:JsonProperty("id") @param:JsonProperty("id") val id: ContractId,
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: AwardContractId,
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
 
         @field:JsonProperty("awardId") @param:JsonProperty("awardId") val awardId: AwardId,
-        @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
-        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails,
+        @field:JsonProperty("status") @param:JsonProperty("status") val status: AwardContractStatus,
+        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: AwardContractStatusDetails,
         @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
         @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
         @field:JsonProperty("period") @param:JsonProperty("period") val period: Period,

@@ -66,7 +66,7 @@ class CANServiceImpl(
             createdDate = context.startDate,
             awardId = can.awardId,
             lotId = can.lotId,
-            contractId = null,
+            awardContractId = null,
             status = can.status,
             statusDetails = can.statusDetails,
             jsonData = toJson(can)

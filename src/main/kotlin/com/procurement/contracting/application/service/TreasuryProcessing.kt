@@ -2,14 +2,17 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.ac.AwardContractRepository
+import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.can.model.DataResetCAN
 import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.application.service.model.TreasuryProcessedData
 import com.procurement.contracting.application.service.model.TreasuryProcessingContext
 import com.procurement.contracting.application.service.model.TreasuryProcessingData
-import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.ac.id.asAwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
@@ -17,9 +20,6 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
-import com.procurement.contracting.domain.model.contract.id.asContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneSubType
 import com.procurement.contracting.domain.model.treasury.TreasuryResponseStatus.APPROVED
@@ -32,9 +32,9 @@ import com.procurement.contracting.exception.ErrorType.CONTRACT_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS
 import com.procurement.contracting.exception.ErrorType.CONTRACT_STATUS_DETAILS
 import com.procurement.contracting.exception.ErrorType.MILESTONE
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
-import com.procurement.contracting.model.dto.ocds.Contract
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.model.dto.ocds.Milestone
 import com.procurement.contracting.model.dto.ocds.TreasuryData
@@ -49,7 +49,7 @@ interface TreasuryProcessing {
 
 @Service
 class TreasuryProcessingImpl(
-    private val acRepository: ACRepository,
+    private val acRepository: AwardContractRepository,
     private val canRepository: CANRepository
 ) :
     TreasuryProcessing {
@@ -79,8 +79,8 @@ class TreasuryProcessingImpl(
         e. Returns updated Contract object for Response;
      */
     override fun processing(context: TreasuryProcessingContext, data: TreasuryProcessingData): TreasuryProcessedData {
-        val contractId = context.ocid.asContractId()
-        val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
+        val awardContractId = context.ocid.asAwardContractId()
+        val acEntity: AwardContractEntity = acRepository.findBy(cpid = context.cpid, id = awardContractId)
             .orThrow { it.exception }
             ?: throw ErrorException(error = CONTRACT_NOT_FOUND)
 
@@ -104,7 +104,7 @@ class TreasuryProcessingImpl(
     private fun processingStatus3004(
         context: TreasuryProcessingContext,
         data: TreasuryProcessingData,
-        acEntity: ACEntity
+        acEntity: AwardContractEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
@@ -125,7 +125,7 @@ class TreasuryProcessingImpl(
          *
          * eContracting sets Contract.statusDetails value == "verified";
          */
-        val statusDetails = ContractStatusDetails.VERIFIED
+        val statusDetails = AwardContractStatusDetails.VERIFIED
 
         val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
             newConfirmationResponse
@@ -186,7 +186,7 @@ class TreasuryProcessingImpl(
     private fun processingStatus3005(
         context: TreasuryProcessingContext,
         data: TreasuryProcessingData,
-        acEntity: ACEntity
+        acEntity: AwardContractEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
@@ -206,8 +206,8 @@ class TreasuryProcessingImpl(
          * contract.status value == "unsuccessful";
          * contract.statusDetails value == "empty";
          */
-        val status = ContractStatus.UNSUCCESSFUL
-        val statusDetails = ContractStatusDetails.EMPTY
+        val status = AwardContractStatus.UNSUCCESSFUL
+        val statusDetails = AwardContractStatusDetails.EMPTY
         val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
             newConfirmationResponse
 
@@ -227,7 +227,7 @@ class TreasuryProcessingImpl(
             }
             .asSequence()
             .filter {
-                it.contractId?.underlying == context.ocid.underlying
+                it.awardContractId?.underlying == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
@@ -290,7 +290,7 @@ class TreasuryProcessingImpl(
     private fun processingStatus3006(
         context: TreasuryProcessingContext,
         data: TreasuryProcessingData,
-        acEntity: ACEntity
+        acEntity: AwardContractEntity
     ): TreasuryProcessedData {
         val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
@@ -310,8 +310,8 @@ class TreasuryProcessingImpl(
          * contract.status value == "unsuccessful";
          * contract.statusDetails value == "empty";
          */
-        val status = ContractStatus.UNSUCCESSFUL
-        val statusDetails = ContractStatusDetails.EMPTY
+        val status = AwardContractStatus.UNSUCCESSFUL
+        val statusDetails = AwardContractStatusDetails.EMPTY
         val updatedConfirmationResponses = contractProcess.contract.confirmationResponses!! +
             newConfirmationResponse
 
@@ -331,7 +331,7 @@ class TreasuryProcessingImpl(
             }
             .asSequence()
             .filter {
-                it.contractId?.underlying == context.ocid.underlying
+                it.awardContractId?.underlying == context.ocid.underlying
                     && it.status == CANStatus.PENDING
             }.map {
                 val can = toObject(CAN::class.java, it.jsonData)
@@ -395,7 +395,7 @@ class TreasuryProcessingImpl(
      */
     private fun createConfirmationResponse(
         data: TreasuryProcessingData,
-        contract: Contract
+        contract: AwardContract
     ): ConfirmationResponse = ConfirmationResponse(
         id = generateConfirmationResponseId(contract),
         value = generateConfirmationResponseValue(data, contract),
@@ -415,7 +415,7 @@ class TreasuryProcessingImpl(
      *      + (get.milestone.relatedParties.ID from object found on step 2)
      *    ) and saves it;
      */
-    private fun generateConfirmationResponseId(contract: Contract): String {
+    private fun generateConfirmationResponseId(contract: AwardContract): String {
         val confirmationRequest = contract.confirmationRequests!!.firstOrNull {
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
@@ -451,7 +451,7 @@ class TreasuryProcessingImpl(
      */
     private fun generateConfirmationResponseValue(
         data: TreasuryProcessingData,
-        contract: Contract
+        contract: AwardContract
     ): ConfirmationResponseValue {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -485,7 +485,7 @@ class TreasuryProcessingImpl(
      * 2. Finds first requestGroups.requests object in confirmationRequest object found before;
      * 3. Sets confirmationResponses.Request value == Get.requestGroups.requests.ID from object found on step 2;
      */
-    private fun confirmationResponseRequest(contract: Contract): String {
+    private fun confirmationResponseRequest(contract: AwardContract): String {
         val confirmationRequest = contract.confirmationRequests!!.firstOrNull {
             it.source == ConfirmationRequestSource.APPROVE_BODY
         } ?: throw ErrorException(
@@ -510,7 +510,7 @@ class TreasuryProcessingImpl(
     private fun milestonesForApprovedContract(
         context: TreasuryProcessingContext,
         data: TreasuryProcessingData,
-        contract: Contract
+        contract: AwardContract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -541,7 +541,7 @@ class TreasuryProcessingImpl(
      *    confirmationResponses.ID from object generated by rule BR-9.9.3;
      */
     private fun documentRelatedConfirmations(
-        contract: Contract,
+        contract: AwardContract,
         confirmationResponse: ConfirmationResponse
     ): List<DocumentContract> {
         val confirmationRequest = contract.confirmationRequests!!.firstOrNull {
@@ -576,7 +576,7 @@ class TreasuryProcessingImpl(
     private fun milestonesForRejectedContract(
         context: TreasuryProcessingContext,
         data: TreasuryProcessingData,
-        contract: Contract
+        contract: AwardContract
     ): List<Milestone> {
         val milestone = contract.milestones!!.firstOrNull {
             it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION
@@ -605,16 +605,16 @@ class TreasuryProcessingImpl(
      * ELSE
      *     throws Exception;
      */
-    fun checkStatusAndStatusDetails(acEntity: ACEntity) {
-        if (acEntity.status != ContractStatus.PENDING)
+    fun checkStatusAndStatusDetails(acEntity: AwardContractEntity) {
+        if (acEntity.status != AwardContractStatus.PENDING)
             throw ErrorException(error = CONTRACT_STATUS)
-        if (acEntity.statusDetails != ContractStatusDetails.VERIFICATION)
+        if (acEntity.statusDetails != AwardContractStatusDetails.VERIFICATION)
             throw ErrorException(error = CONTRACT_STATUS_DETAILS)
     }
 
-    private fun genResponse(contract: Contract, cans: List<CAN>): TreasuryProcessedData {
+    private fun genResponse(contract: AwardContract, cans: List<CAN>): TreasuryProcessedData {
         return TreasuryProcessedData(
-            contract = TreasuryProcessedData.Contract(
+            contract = TreasuryProcessedData.AwardContract(
                 id = contract.id,
                 date = contract.date!!,
                 awardId = contract.awardId,
@@ -623,13 +623,13 @@ class TreasuryProcessingImpl(
                 title = contract.title!!,
                 description = contract.description!!,
                 period = contract.period.let { period ->
-                    TreasuryProcessedData.Contract.Period(
+                    TreasuryProcessedData.AwardContract.Period(
                         startDate = period!!.startDate,
                         endDate = period.endDate!!
                     )
                 },
                 documents = contract.documents!!.map { document ->
-                    TreasuryProcessedData.Contract.Document(
+                    TreasuryProcessedData.AwardContract.Document(
                         id = document.id,
                         documentType = document.documentType,
                         title = document.title,
@@ -639,7 +639,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 milestones = contract.milestones!!.map { milestone ->
-                    TreasuryProcessedData.Contract.Milestone(
+                    TreasuryProcessedData.AwardContract.Milestone(
                         id = milestone.id,
                         relatedItems = milestone.relatedItems?.toList(),
                         status = milestone.status!!,
@@ -651,7 +651,7 @@ class TreasuryProcessingImpl(
                         dateModified = milestone.dateModified,
                         dateMet = milestone.dateMet,
                         relatedParties = milestone.relatedParties!!.map { relatedParty ->
-                            TreasuryProcessedData.Contract.Milestone.RelatedParty(
+                            TreasuryProcessedData.AwardContract.Milestone.RelatedParty(
                                 id = relatedParty.id,
                                 name = relatedParty.name
                             )
@@ -659,7 +659,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 confirmationRequests = contract.confirmationRequests!!.map { confirmationRequest ->
-                    TreasuryProcessedData.Contract.ConfirmationRequest(
+                    TreasuryProcessedData.AwardContract.ConfirmationRequest(
                         id = confirmationRequest.id,
                         type = ConfirmationRequestType.creator(confirmationRequest.type!!),
                         title = confirmationRequest.title!!,
@@ -668,15 +668,15 @@ class TreasuryProcessingImpl(
                         relatedItem = confirmationRequest.relatedItem,
                         source = ConfirmationRequestSource.creator(confirmationRequest.source.key),
                         requestGroups = confirmationRequest.requestGroups!!.map { requestGroup ->
-                            TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup(
+                            TreasuryProcessedData.AwardContract.ConfirmationRequest.RequestGroup(
                                 id = requestGroup.id,
                                 requests = requestGroup.requests.map { request ->
-                                    TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup.Request(
+                                    TreasuryProcessedData.AwardContract.ConfirmationRequest.RequestGroup.Request(
                                         id = request.id,
                                         title = request.title,
                                         description = request.description,
                                         relatedPerson = request.relatedPerson?.let { relatedPerson ->
-                                            TreasuryProcessedData.Contract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
+                                            TreasuryProcessedData.AwardContract.ConfirmationRequest.RequestGroup.Request.RelatedPerson(
                                                 id = relatedPerson.id,
                                                 name = relatedPerson.name
                                             )
@@ -688,21 +688,21 @@ class TreasuryProcessingImpl(
                     )
                 },
                 confirmationResponses = contract.confirmationResponses!!.map { confirmationResponse ->
-                    TreasuryProcessedData.Contract.ConfirmationResponse(
+                    TreasuryProcessedData.AwardContract.ConfirmationResponse(
                         id = confirmationResponse.id,
                         value = confirmationResponse.value.let { value ->
-                            TreasuryProcessedData.Contract.ConfirmationResponse.Value(
+                            TreasuryProcessedData.AwardContract.ConfirmationResponse.Value(
                                 id = value.id,
                                 name = value.name,
                                 date = value.date,
                                 relatedPerson = value.relatedPerson?.let { relatedPerson ->
-                                    TreasuryProcessedData.Contract.ConfirmationResponse.Value.RelatedPerson(
+                                    TreasuryProcessedData.AwardContract.ConfirmationResponse.Value.RelatedPerson(
                                         id = relatedPerson.id,
                                         name = relatedPerson.name
                                     )
                                 },
                                 verifications = value.verification.map { verification ->
-                                    TreasuryProcessedData.Contract.ConfirmationResponse.Value.Verification(
+                                    TreasuryProcessedData.AwardContract.ConfirmationResponse.Value.Verification(
                                         type = ConfirmationResponseType.creator(verification.type.key),
                                         value = verification.value,
                                         rationale = verification.rationale
@@ -714,7 +714,7 @@ class TreasuryProcessingImpl(
                     )
                 },
                 value = contract.value!!.let { value ->
-                    TreasuryProcessedData.Contract.Value(
+                    TreasuryProcessedData.AwardContract.Value(
                         amount = value.amount!!,
                         currency = value.currency!!,
                         amountNet = value.amountNet!!,

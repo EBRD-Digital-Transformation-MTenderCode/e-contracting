@@ -1,22 +1,22 @@
 package com.procurement.contracting.infrastructure.handler.v1
 
-import com.procurement.contracting.application.service.ACService
-import com.procurement.contracting.application.service.ActivationAcService
+import com.procurement.contracting.application.service.ActivationAwardContractService
+import com.procurement.contracting.application.service.AwardContractService
 import com.procurement.contracting.application.service.CANService
 import com.procurement.contracting.application.service.CancelCANContext
 import com.procurement.contracting.application.service.CancelCANData
 import com.procurement.contracting.application.service.CancelCANService
 import com.procurement.contracting.application.service.CreateCanService
 import com.procurement.contracting.application.service.FinalUpdateService
-import com.procurement.contracting.application.service.IssuingAcService
-import com.procurement.contracting.application.service.SigningAcService
+import com.procurement.contracting.application.service.IssuingAwardContractService
+import com.procurement.contracting.application.service.SigningAwardContractService
 import com.procurement.contracting.application.service.StatusService
 import com.procurement.contracting.application.service.TreasuryProcessing
-import com.procurement.contracting.application.service.UpdateAcService
+import com.procurement.contracting.application.service.UpdateAwardContractService
 import com.procurement.contracting.application.service.UpdateDocumentsService
-import com.procurement.contracting.application.service.VerificationAcService
-import com.procurement.contracting.application.service.model.CreateACContext
-import com.procurement.contracting.application.service.model.CreateACData
+import com.procurement.contracting.application.service.VerificationAwardContractService
+import com.procurement.contracting.application.service.model.CreateAwardContractContext
+import com.procurement.contracting.application.service.model.CreateAwardContractData
 import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.TreasuryProcessingContext
@@ -31,7 +31,7 @@ import com.procurement.contracting.infrastructure.handler.v1.model.response.Canc
 import com.procurement.contracting.infrastructure.handler.v1.model.response.CreateCANResponse
 import com.procurement.contracting.infrastructure.handler.v1.model.response.TreasuryProcessingResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.request.CreateACRequest
-import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateACResponse
+import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateAwardContractResponse
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
@@ -41,18 +41,18 @@ import org.springframework.stereotype.Service
 class CommandService(
     private val historyRepository: HistoryRepository,
     private val createCanService: CreateCanService,
-    private val updateAcService: UpdateAcService,
-    private val issuingAcService: IssuingAcService,
+    private val updateAcService: UpdateAwardContractService,
+    private val issuingAcService: IssuingAwardContractService,
     private val statusService: StatusService,
     private val finalUpdateService: FinalUpdateService,
-    private val verificationAcService: VerificationAcService,
-    private val signingAcService: SigningAcService,
-    private val activationAcService: ActivationAcService,
+    private val verificationAcService: VerificationAwardContractService,
+    private val signingAcService: SigningAwardContractService,
+    private val activationAcService: ActivationAwardContractService,
     private val updateDocumentsService: UpdateDocumentsService,
     private val cancelService: CancelCANService,
     private val treasuryProcessing: TreasuryProcessing,
     private val canService: CANService,
-    private val acService: ACService
+    private val awardContractService: AwardContractService
 ) {
 
     companion object {
@@ -178,7 +178,7 @@ class CommandService(
             }
             CommandTypeV1.CONFIRMATION_CAN -> createCanService.confirmationCan(cm)
             CommandTypeV1.CREATE_AC -> {
-                val context = CreateACContext(
+                val context = CreateAwardContractContext(
                     cpid = cm.cpid,
                     owner = cm.owner,
                     pmd = cm.pmd,
@@ -186,17 +186,17 @@ class CommandService(
                     language = cm.language
                 )
                 val request = toObject(CreateACRequest::class.java, cm.data)
-                val data = CreateACData(
+                val data = CreateAwardContractData(
                     cans = request.cans.map { can ->
-                        CreateACData.CAN(
+                        CreateAwardContractData.CAN(
                             id = can.id
                         )
                     },
                     awards = request.awards.map { award ->
-                        CreateACData.Award(
+                        CreateAwardContractData.Award(
                             id = award.id,
                             value = award.value.let { value ->
-                                CreateACData.Award.Value(
+                                CreateAwardContractData.Award.Value(
                                     amount = value.amount,
                                     currency = value.currency
                                 )
@@ -204,11 +204,11 @@ class CommandService(
                             relatedLots = award.relatedLots.toList(),
                             relatedBid = award.relatedBid,
                             suppliers = award.suppliers.map { supplier ->
-                                CreateACData.Award.Supplier(
+                                CreateAwardContractData.Award.Supplier(
                                     id = supplier.id,
                                     name = supplier.name,
                                     identifier = supplier.identifier.let { identifier ->
-                                        CreateACData.Award.Supplier.Identifier(
+                                        CreateAwardContractData.Award.Supplier.Identifier(
                                             scheme = identifier.scheme,
                                             id = identifier.id,
                                             legalName = identifier.legalName,
@@ -216,7 +216,7 @@ class CommandService(
                                         )
                                     },
                                     additionalIdentifiers = supplier.additionalIdentifiers?.map { additionalIdentifier ->
-                                        CreateACData.Award.Supplier.AdditionalIdentifier(
+                                        CreateAwardContractData.Award.Supplier.AdditionalIdentifier(
                                             scheme = additionalIdentifier.scheme,
                                             id = additionalIdentifier.id,
                                             legalName = additionalIdentifier.legalName,
@@ -224,13 +224,13 @@ class CommandService(
                                         )
                                     },
                                     address = supplier.address.let { address ->
-                                        CreateACData.Award.Supplier.Address(
+                                        CreateAwardContractData.Award.Supplier.Address(
                                             streetAddress = address.streetAddress,
                                             postalCode = address.postalCode,
                                             addressDetails = address.addressDetails.let { addressDetails ->
-                                                CreateACData.Award.Supplier.Address.AddressDetails(
+                                                CreateAwardContractData.Award.Supplier.Address.AddressDetails(
                                                     country = addressDetails.country.let { country ->
-                                                        CreateACData.Award.Supplier.Address.AddressDetails.Country(
+                                                        CreateAwardContractData.Award.Supplier.Address.AddressDetails.Country(
                                                             scheme = country.scheme,
                                                             id = country.id,
                                                             description = country.description,
@@ -238,7 +238,7 @@ class CommandService(
                                                         )
                                                     },
                                                     region = addressDetails.region.let { region ->
-                                                        CreateACData.Award.Supplier.Address.AddressDetails.Region(
+                                                        CreateAwardContractData.Award.Supplier.Address.AddressDetails.Region(
                                                             scheme = region.scheme,
                                                             id = region.id,
                                                             description = region.description,
@@ -246,7 +246,7 @@ class CommandService(
                                                         )
                                                     },
                                                     locality = addressDetails.locality.let { locality ->
-                                                        CreateACData.Award.Supplier.Address.AddressDetails.Locality(
+                                                        CreateAwardContractData.Award.Supplier.Address.AddressDetails.Locality(
                                                             scheme = locality.scheme,
                                                             id = locality.id,
                                                             description = locality.description,
@@ -258,7 +258,7 @@ class CommandService(
                                         )
                                     },
                                     contactPoint = supplier.contactPoint.let { contactPoint ->
-                                        CreateACData.Award.Supplier.ContactPoint(
+                                        CreateAwardContractData.Award.Supplier.ContactPoint(
                                             name = contactPoint.name,
                                             email = contactPoint.email,
                                             telephone = contactPoint.telephone,
@@ -269,7 +269,7 @@ class CommandService(
                                 )
                             },
                             documents = award.documents?.map { document ->
-                                CreateACData.Award.Document(
+                                CreateAwardContractData.Award.Document(
                                     documentType = document.documentType,
                                     id = document.id,
                                     title = document.title,
@@ -280,21 +280,21 @@ class CommandService(
                         )
                     },
                     contractedTender = request.contractedTender.let { contractedTender ->
-                        CreateACData.ContractedTender(
+                        CreateAwardContractData.ContractedTender(
                             mainProcurementCategory = contractedTender.mainProcurementCategory,
                             items = contractedTender.items.map { item ->
-                                CreateACData.ContractedTender.Item(
+                                CreateAwardContractData.ContractedTender.Item(
                                     id = item.id,
                                     internalId = item.internalId,
                                     classification = item.classification.let { classification ->
-                                        CreateACData.ContractedTender.Item.Classification(
+                                        CreateAwardContractData.ContractedTender.Item.Classification(
                                             scheme = classification.scheme,
                                             id = classification.id,
                                             description = classification.description
                                         )
                                     },
                                     additionalClassifications = item.additionalClassifications?.map { additionalClassification ->
-                                        CreateACData.ContractedTender.Item.AdditionalClassification(
+                                        CreateAwardContractData.ContractedTender.Item.AdditionalClassification(
                                             scheme = additionalClassification.scheme,
                                             id = additionalClassification.id,
                                             description = additionalClassification.description
@@ -302,7 +302,7 @@ class CommandService(
                                     },
                                     quantity = item.quantity,
                                     unit = item.unit.let { unit ->
-                                        CreateACData.ContractedTender.Item.Unit(
+                                        CreateAwardContractData.ContractedTender.Item.Unit(
                                             id = unit.id,
                                             name = unit.name
                                         )
@@ -314,21 +314,21 @@ class CommandService(
                         )
                     }
                 )
-                val result = acService.create(context = context, data = data)
+                val result = awardContractService.create(context = context, data = data)
                 if (log.isDebugEnabled)
                     log.debug("AC was created. Result: ${toJson(result)}")
 
-                val dataResponse = CreateACResponse(
+                val dataResponse = CreateAwardContractResponse(
                     token = result.token,
                     cans = result.cans.map { can ->
-                        CreateACResponse.CAN(
+                        CreateAwardContractResponse.CAN(
                             id = can.id,
                             status = can.status,
                             statusDetails = can.statusDetails
                         )
                     },
                     contract = result.contract.let { contract ->
-                        CreateACResponse.Contract(
+                        CreateAwardContractResponse.AwardContract(
                             id = contract.id,
                             awardId = contract.awardId,
                             status = contract.status,
@@ -336,22 +336,22 @@ class CommandService(
                         )
                     },
                     contractedAward = result.contractedAward.let { contractedAward ->
-                        CreateACResponse.ContractedAward(
+                        CreateAwardContractResponse.ContractedAward(
                             id = contractedAward.id,
                             date = contractedAward.date,
                             value = contractedAward.value.let { value ->
-                                CreateACResponse.ContractedAward.Value(
+                                CreateAwardContractResponse.ContractedAward.Value(
                                     amount = value.amount,
                                     currency = value.currency
                                 )
                             },
                             relatedLots = contractedAward.relatedLots.toList(),
                             suppliers = contractedAward.suppliers.map { supplier ->
-                                CreateACResponse.ContractedAward.Supplier(
+                                CreateAwardContractResponse.ContractedAward.Supplier(
                                     id = supplier.id,
                                     name = supplier.name,
                                     identifier = supplier.identifier.let { identifier ->
-                                        CreateACResponse.ContractedAward.Supplier.Identifier(
+                                        CreateAwardContractResponse.ContractedAward.Supplier.Identifier(
                                             scheme = identifier.scheme,
                                             id = identifier.id,
                                             legalName = identifier.legalName,
@@ -359,7 +359,7 @@ class CommandService(
                                         )
                                     },
                                     additionalIdentifiers = supplier.additionalIdentifiers?.map { additionalIdentifier ->
-                                        CreateACResponse.ContractedAward.Supplier.AdditionalIdentifier(
+                                        CreateAwardContractResponse.ContractedAward.Supplier.AdditionalIdentifier(
                                             scheme = additionalIdentifier.scheme,
                                             id = additionalIdentifier.id,
                                             legalName = additionalIdentifier.legalName,
@@ -367,13 +367,13 @@ class CommandService(
                                         )
                                     },
                                     address = supplier.address.let { address ->
-                                        CreateACResponse.ContractedAward.Supplier.Address(
+                                        CreateAwardContractResponse.ContractedAward.Supplier.Address(
                                             streetAddress = address.streetAddress,
                                             postalCode = address.postalCode,
                                             addressDetails = address.addressDetails.let { addressDetails ->
-                                                CreateACResponse.ContractedAward.Supplier.Address.AddressDetails(
+                                                CreateAwardContractResponse.ContractedAward.Supplier.Address.AddressDetails(
                                                     country = addressDetails.country.let { country ->
-                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Country(
+                                                        CreateAwardContractResponse.ContractedAward.Supplier.Address.AddressDetails.Country(
                                                             scheme = country.scheme,
                                                             id = country.id,
                                                             description = country.description,
@@ -381,7 +381,7 @@ class CommandService(
                                                         )
                                                     },
                                                     region = addressDetails.region.let { region ->
-                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Region(
+                                                        CreateAwardContractResponse.ContractedAward.Supplier.Address.AddressDetails.Region(
                                                             scheme = region.scheme,
                                                             id = region.id,
                                                             description = region.description,
@@ -389,7 +389,7 @@ class CommandService(
                                                         )
                                                     },
                                                     locality = addressDetails.locality.let { locality ->
-                                                        CreateACResponse.ContractedAward.Supplier.Address.AddressDetails.Locality(
+                                                        CreateAwardContractResponse.ContractedAward.Supplier.Address.AddressDetails.Locality(
                                                             scheme = locality.scheme,
                                                             id = locality.id,
                                                             description = locality.description,
@@ -401,7 +401,7 @@ class CommandService(
                                         )
                                     },
                                     contactPoint = supplier.contactPoint.let { contactPoint ->
-                                        CreateACResponse.ContractedAward.Supplier.ContactPoint(
+                                        CreateAwardContractResponse.ContractedAward.Supplier.ContactPoint(
                                             name = contactPoint.name,
                                             email = contactPoint.email,
                                             telephone = contactPoint.telephone,
@@ -412,7 +412,7 @@ class CommandService(
                                 )
                             },
                             documents = contractedAward.documents.map { document ->
-                                CreateACResponse.ContractedAward.Document(
+                                CreateAwardContractResponse.ContractedAward.Document(
                                     documentType = document.documentType,
                                     id = document.id,
                                     title = document.title,
@@ -421,18 +421,18 @@ class CommandService(
                                 )
                             },
                             items = contractedAward.items.map { item ->
-                                CreateACResponse.ContractedAward.Item(
+                                CreateAwardContractResponse.ContractedAward.Item(
                                     id = item.id,
                                     internalId = item.internalId,
                                     classification = item.classification.let { classification ->
-                                        CreateACResponse.ContractedAward.Item.Classification(
+                                        CreateAwardContractResponse.ContractedAward.Item.Classification(
                                             scheme = classification.scheme,
                                             id = classification.id,
                                             description = classification.description
                                         )
                                     },
                                     additionalClassifications = item.additionalClassifications?.map { additionalClassification ->
-                                        CreateACResponse.ContractedAward.Item.AdditionalClassification(
+                                        CreateAwardContractResponse.ContractedAward.Item.AdditionalClassification(
                                             scheme = additionalClassification.scheme,
                                             id = additionalClassification.id,
                                             description = additionalClassification.description
@@ -440,7 +440,7 @@ class CommandService(
                                     },
                                     quantity = item.quantity,
                                     unit = item.unit.let { unit ->
-                                        CreateACResponse.ContractedAward.Item.Unit(
+                                        CreateAwardContractResponse.ContractedAward.Item.Unit(
                                             id = unit.id,
                                             name = unit.name
                                         )

@@ -1,5 +1,8 @@
 package com.procurement.contracting.application.service.model
 
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
@@ -8,9 +11,6 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
-import com.procurement.contracting.domain.model.contract.id.ContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
@@ -21,16 +21,16 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TreasuryProcessedData(
-    val contract: Contract,
+    val contract: AwardContract,
     val cans: List<Can>?
 ) {
 
-    data class Contract(
-        val id: ContractId,
+    data class AwardContract(
+        val id: AwardContractId,
         val date: LocalDateTime,
         val awardId: AwardId,
-        val status: ContractStatus,
-        val statusDetails: ContractStatusDetails,
+        val status: AwardContractStatus,
+        val statusDetails: AwardContractStatusDetails,
         val title: String,
         val description: String,
         val period: Period,

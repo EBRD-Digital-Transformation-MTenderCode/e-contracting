@@ -169,7 +169,7 @@ class CreateCanService(
                 token = can.token,
                 awardId = can.awardId,
                 lotId = can.lotId,
-                contractId = null,
+                awardContractId = null,
                 owner = owner,
                 status = can.status,
                 statusDetails = can.statusDetails,

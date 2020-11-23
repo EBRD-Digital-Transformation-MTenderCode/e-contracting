@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.bind.MoneyDeserializer
-import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -43,7 +43,7 @@ data class VerificationRq @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BuyerSigningRs @JsonCreator constructor(
 
-    val contract: Contract
+    val contract: AwardContract
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -53,7 +53,7 @@ data class SupplierSigningRs @JsonCreator constructor(
 
     val treasuryBudgetSources: List<TreasuryBudgetSourceSupplierSigning>?,
 
-    val contract: Contract
+    val contract: AwardContract
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

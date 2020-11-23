@@ -7,21 +7,21 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.AbstractArgumentConverter
-import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.ac.AwardContractRepository
+import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
-import com.procurement.contracting.domain.model.contract.id.ContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
@@ -49,7 +49,7 @@ class CancelCANServiceTest {
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CAN_ID: CANId = CANId.orNull("0dc181db-f5ae-4039-97c7-defcceef89a4")!!
         private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
-        private val CONTRACT_ID: ContractId = ContractId.orNull("ocds-b3wdp1-MD-1580458690892-AC-1580123456789")!!
+        private val AWARD_CONTRACT_ID: AwardContractId = AwardContractId.orNull("ocds-b3wdp1-MD-1580458690892-AC-1580123456789")!!
         private val MPC = MainProcurementCategory.SERVICES
 
         private val cancellationCAN =
@@ -63,7 +63,7 @@ class CancelCANServiceTest {
     }
 
     private lateinit var canRepository: CANRepository
-    private lateinit var acRepository: ACRepository
+    private lateinit var acRepository: AwardContractRepository
 
     private lateinit var service: CancelCANService
 
@@ -90,12 +90,12 @@ class CancelCANServiceTest {
                 status = canStatus,
                 statusDetails = canStatusDetails
             ),
-            contractID = null
+            awardContractId = null
         )
 
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(cancellationCANEntity.asSuccess())
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(null)
         whenever(canRepository.findBy(eq(CPID)))
             .thenReturn(listOf(cancellationCANEntity).asSuccess())
@@ -143,8 +143,8 @@ class CancelCANServiceTest {
         "cancelled, empty"
     )
     fun cancelCANWithContractWithoutRelatedCANs(
-        @ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus,
-        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
+        @ConvertWith(ContractStatusConverter::class) contractStatus: AwardContractStatus,
+        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: AwardContractStatusDetails
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
@@ -158,7 +158,7 @@ class CancelCANServiceTest {
                 )
             )
         )
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
@@ -194,9 +194,9 @@ class CancelCANServiceTest {
 
         assertNotNull(response.contract)
         val contract = response.contract!!
-        assertEquals(CONTRACT_ID, contract.id)
-        assertEquals(ContractStatus.CANCELLED, contract.status)
-        assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
+        assertEquals(AWARD_CONTRACT_ID, contract.id)
+        assertEquals(AwardContractStatus.CANCELLED, contract.status)
+        assertEquals(AwardContractStatusDetails.EMPTY, contract.statusDetails)
 
         verify(acRepository, times(1)).saveCancelledAC(any(), any(), any(), any(), any())
         verify(canRepository, times(1)).saveCancelledCANs(any(), any(), any())
@@ -209,12 +209,12 @@ class CancelCANServiceTest {
             .thenReturn(cancellationCANEntity.asSuccess())
 
         val acEntity = acEntity(contractProcess = contractProcess)
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(acEntity.asSuccess())
 
         val firstCANEntity = canEntity(can = firstOtherCAN)
-        val unknownContractId = ContractId.generate(CPID)
-        val secondCANEntity = canEntity(can = secondOtherCAN, contractID = unknownContractId)
+        val unknownAwardContractId = AwardContractId.generate(CPID)
+        val secondCANEntity = canEntity(can = secondOtherCAN, awardContractId = unknownAwardContractId)
         whenever(canRepository.findBy(eq(CPID)))
             .thenReturn(listOf(cancellationCANEntity, firstCANEntity, secondCANEntity).asSuccess())
         whenever(acRepository.saveCancelledAC(eq(CPID), any(), any(), any(), any()))
@@ -229,9 +229,9 @@ class CancelCANServiceTest {
 
         assertNotNull(response.contract)
         val contract = response.contract!!
-        assertEquals(CONTRACT_ID, contract.id)
-        assertEquals(ContractStatus.CANCELLED, contract.status)
-        assertEquals(ContractStatusDetails.EMPTY, contract.statusDetails)
+        assertEquals(AWARD_CONTRACT_ID, contract.id)
+        assertEquals(AwardContractStatus.CANCELLED, contract.status)
+        assertEquals(AwardContractStatusDetails.EMPTY, contract.statusDetails)
 
         val cancelledCAN = response.cancelledCAN
         assertEquals(cancellationCAN.id, cancelledCAN.id)
@@ -303,7 +303,7 @@ class CancelCANServiceTest {
         val canEntity = canEntity(cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(Result.success(canEntity))
-        whenever(acRepository.findBy(eq(CPID), eq(canEntity.contractId!!)))
+        whenever(acRepository.findBy(eq(CPID), eq(canEntity.awardContractId!!)))
             .thenReturn(Result.success(null))
 
         val exception = assertThrows<ErrorException> {
@@ -324,12 +324,12 @@ class CancelCANServiceTest {
             can = cancellationCAN.copy(
                 status = canStatus
             ),
-            contractID = null
+            awardContractId = null
         )
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(cancellationCANEntity.asSuccess())
 
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(null)
 
         whenever(canRepository.findBy(eq(CPID)))
@@ -356,12 +356,12 @@ class CancelCANServiceTest {
                 status = canStatus,
                 statusDetails = canStatusDetails
             ),
-            contractID = null
+            awardContractId = null
         )
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(cancellationCANEntity.asSuccess())
 
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(null)
 
         whenever(canRepository.findBy(eq(CPID)))
@@ -381,7 +381,7 @@ class CancelCANServiceTest {
         "terminated",
         "unsuccessful"
     )
-    fun invalidContractStatus(@ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus) {
+    fun invalidContractStatus(@ConvertWith(ContractStatusConverter::class) contractStatus: AwardContractStatus) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
             .thenReturn(cancellationCANEntity.asSuccess())
@@ -393,7 +393,7 @@ class CancelCANServiceTest {
                 )
             )
         )
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
@@ -421,8 +421,8 @@ class CancelCANServiceTest {
         "cancelled, execution"
     )
     fun invalidContractStatusDetails(
-        @ConvertWith(ContractStatusConverter::class) contractStatus: ContractStatus,
-        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: ContractStatusDetails
+        @ConvertWith(ContractStatusConverter::class) contractStatus: AwardContractStatus,
+        @ConvertWith(ContractStatusDetailsConverter::class) contractStatusDetails: AwardContractStatusDetails
     ) {
         val cancellationCANEntity = canEntity(can = cancellationCAN)
         whenever(canRepository.findBy(eq(CPID), eq(CAN_ID)))
@@ -436,7 +436,7 @@ class CancelCANServiceTest {
                 )
             )
         )
-        whenever(acRepository.findBy(eq(CPID), eq(CONTRACT_ID)))
+        whenever(acRepository.findBy(eq(CPID), eq(AWARD_CONTRACT_ID)))
             .thenReturn(acEntity.asSuccess())
 
         whenever(canRepository.findBy(eq(CPID)))
@@ -480,7 +480,7 @@ class CancelCANServiceTest {
         )
     }
 
-    private fun canEntity(can: CAN, owner: Owner = OWNER, token: Token? = null, contractID: ContractId? = CONTRACT_ID) =
+    private fun canEntity(can: CAN, owner: Owner = OWNER, token: Token? = null, awardContractId: AwardContractId? = AWARD_CONTRACT_ID) =
         CANEntity(
             cpid = CPID,
             id = can.id,
@@ -489,13 +489,13 @@ class CancelCANServiceTest {
             createdDate = can.date,
             awardId = can.awardId,
             lotId = can.lotId,
-            contractId = contractID,
+            awardContractId = awardContractId,
             status = can.status,
             statusDetails = can.statusDetails,
             jsonData = toJson(can)
         )
 
-    private fun acEntity(contractProcess: ContractProcess) = ACEntity(
+    private fun acEntity(contractProcess: ContractProcess) = AwardContractEntity(
         cpid = CPID,
         id = contractProcess.contract.id,
         token = contractProcess.contract.token!!,
@@ -517,10 +517,10 @@ class CANStatusDetailsConverter : AbstractArgumentConverter<CANStatusDetails>() 
     override fun converting(source: String): CANStatusDetails = CANStatusDetails.creator(source)
 }
 
-class ContractStatusConverter : AbstractArgumentConverter<ContractStatus>() {
-    override fun converting(source: String): ContractStatus = ContractStatus.creator(source)
+class ContractStatusConverter : AbstractArgumentConverter<AwardContractStatus>() {
+    override fun converting(source: String): AwardContractStatus = AwardContractStatus.creator(source)
 }
 
-class ContractStatusDetailsConverter : AbstractArgumentConverter<ContractStatusDetails>() {
-    override fun converting(source: String): ContractStatusDetails = ContractStatusDetails.creator(source)
+class ContractStatusDetailsConverter : AbstractArgumentConverter<AwardContractStatusDetails>() {
+    override fun converting(source: String): AwardContractStatusDetails = AwardContractStatusDetails.creator(source)
 }

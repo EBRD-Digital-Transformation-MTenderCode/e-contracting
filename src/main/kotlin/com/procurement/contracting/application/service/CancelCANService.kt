@@ -2,28 +2,28 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.ac.AwardContractRepository
+import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.can.model.DataCancelCAN
 import com.procurement.contracting.application.repository.can.model.DataRelatedCAN
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.ACEntity
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
-import com.procurement.contracting.domain.model.contract.id.ContractId
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAmendment
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
-import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
 import org.slf4j.LoggerFactory
@@ -91,9 +91,9 @@ data class CancelledCANData(
     )
 
     data class Contract(
-        val id: ContractId,
-        val status: ContractStatus,
-        val statusDetails: ContractStatusDetails
+        val id: AwardContractId,
+        val status: AwardContractStatus,
+        val statusDetails: AwardContractStatusDetails
     )
 }
 
@@ -104,7 +104,7 @@ interface CancelCANService {
 @Service
 class CancelCANServiceImpl(
     private val canRepository: CANRepository,
-    private val acRepository: ACRepository
+    private val acRepository: AwardContractRepository
 ) : CancelCANService {
     companion object {
         private val log = LoggerFactory.getLogger(CancelCANService::class.java)
@@ -166,17 +166,17 @@ class CancelCANServiceImpl(
         /**
          * Begin processing a contract of the cancellation CAN & related CANs
          */
-        val cancelledContract: Contract?
+        val cancelledContract: AwardContract?
         val updatedContractProcess: ContractProcess?
         val relatedCANs: List<CAN>
 
-        if (canEntity.contractId != null) {
-            val contractId: ContractId = canEntity.contractId
-            log.debug("CAN with id '${context.canId}' has related AC with id '$contractId'.")
-            val acEntity: ACEntity = acRepository.findBy(cpid = context.cpid, contractId = contractId)
+        if (canEntity.awardContractId != null) {
+            val awardContractId: AwardContractId = canEntity.awardContractId
+            log.debug("CAN with id '${context.canId}' has related AC with id '$awardContractId'.")
+            val acEntity: AwardContractEntity = acRepository.findBy(cpid = context.cpid, id = awardContractId)
                 .orThrow { it.exception }
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
-            log.debug("Founded AC with id '$contractId' for cancelling.")
+            log.debug("Founded AC with id '$awardContractId' for cancelling.")
             val contractProcess: ContractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
 
             //VR-9.13.4
@@ -185,7 +185,7 @@ class CancelCANServiceImpl(
             cancelledContract = cancellingContract(contractProcess.contract)
             updatedContractProcess = contractProcess.copy(contract = cancelledContract)
 
-            relatedCANs = getRelatedCans(cpid = context.cpid, canId = can.id, contractId = contractId)
+            relatedCANs = getRelatedCans(cpid = context.cpid, canId = can.id, awardContractId = awardContractId)
                 .map { relatedCANEntity ->
                     val relatedCAN: CAN = toObject(CAN::class.java, relatedCANEntity.jsonData)
 
@@ -247,14 +247,14 @@ class CancelCANServiceImpl(
     private fun getRelatedCans(
         cpid: Cpid,
         canId: CANId,
-        contractId: ContractId
+        awardContractId: AwardContractId
     ): Sequence<CANEntity> = canRepository.findBy(cpid = cpid)
         .orThrow {
             ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
         }
         .asSequence()
         .filter {
-            it.contractId == contractId && it.id != canId
+            it.awardContractId == awardContractId && it.id != canId
         }
 
     private fun generateCancelledCANResponse(cancelledCAN: CAN) = CancelledCANData.CancelledCAN(
@@ -286,7 +286,7 @@ class CancelCANServiceImpl(
             )
         }
 
-    private fun generateContractResponse(contract: Contract?) = contract?.let {
+    private fun generateContractResponse(contract: AwardContract?) = contract?.let {
         CancelledCANData.Contract(
             id = it.id,
             status = it.status,
@@ -294,15 +294,15 @@ class CancelCANServiceImpl(
         )
     }
 
-    private fun cancellingContract(contract: Contract): Contract {
+    private fun cancellingContract(contract: AwardContract): AwardContract {
         return contract.copy(
             /**
              * BR-9.13.2 Contract.statusDetails Contract.status (contract)
              *
              * eContracting sets Contract.status == "cancelled" && Contract.statusDetails value == "empty" and saves them to DB;
              */
-            status = ContractStatus.CANCELLED,
-            statusDetails = ContractStatusDetails.EMPTY
+            status = AwardContractStatus.CANCELLED,
+            statusDetails = AwardContractStatusDetails.EMPTY
         )
     }
 
@@ -402,45 +402,45 @@ class CancelCANServiceImpl(
      *    validation is successful;
      * ELSE eContracting throws Exception;
      */
-    private fun checkContractStatuses(contract: Contract) {
+    private fun checkContractStatuses(contract: AwardContract) {
         when (contract.status) {
-            ContractStatus.PENDING -> {
+            AwardContractStatus.PENDING -> {
                 return when (contract.statusDetails) {
-                    ContractStatusDetails.CONTRACT_PROJECT,
-                    ContractStatusDetails.CONTRACT_PREPARATION,
-                    ContractStatusDetails.APPROVED,
-                    ContractStatusDetails.SIGNED,
+                    AwardContractStatusDetails.CONTRACT_PROJECT,
+                    AwardContractStatusDetails.CONTRACT_PREPARATION,
+                    AwardContractStatusDetails.APPROVED,
+                    AwardContractStatusDetails.SIGNED,
 
-                    ContractStatusDetails.ISSUED,
-                    ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION,
-                    ContractStatusDetails.EMPTY -> Unit
+                    AwardContractStatusDetails.ISSUED,
+                    AwardContractStatusDetails.APPROVEMENT,
+                    AwardContractStatusDetails.EXECUTION,
+                    AwardContractStatusDetails.EMPTY -> Unit
 
-                    ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    AwardContractStatusDetails.VERIFICATION,
+                    AwardContractStatusDetails.VERIFIED -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 
-            ContractStatus.CANCELLED -> {
+            AwardContractStatus.CANCELLED -> {
                 return when (contract.statusDetails) {
-                    ContractStatusDetails.EMPTY -> Unit
+                    AwardContractStatusDetails.EMPTY -> Unit
 
-                    ContractStatusDetails.CONTRACT_PROJECT,
-                    ContractStatusDetails.CONTRACT_PREPARATION,
-                    ContractStatusDetails.APPROVED,
-                    ContractStatusDetails.SIGNED,
-                    ContractStatusDetails.VERIFICATION,
-                    ContractStatusDetails.VERIFIED,
-                    ContractStatusDetails.ISSUED,
-                    ContractStatusDetails.APPROVEMENT,
-                    ContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
+                    AwardContractStatusDetails.CONTRACT_PROJECT,
+                    AwardContractStatusDetails.CONTRACT_PREPARATION,
+                    AwardContractStatusDetails.APPROVED,
+                    AwardContractStatusDetails.SIGNED,
+                    AwardContractStatusDetails.VERIFICATION,
+                    AwardContractStatusDetails.VERIFIED,
+                    AwardContractStatusDetails.ISSUED,
+                    AwardContractStatusDetails.APPROVEMENT,
+                    AwardContractStatusDetails.EXECUTION -> throw ErrorException(error = ErrorType.CONTRACT_STATUS_DETAILS)
                 }
             }
 
-            ContractStatus.ACTIVE,
-            ContractStatus.COMPLETE,
-            ContractStatus.TERMINATED,
-            ContractStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.CONTRACT_STATUS)
+            AwardContractStatus.ACTIVE,
+            AwardContractStatus.COMPLETE,
+            AwardContractStatus.TERMINATED,
+            AwardContractStatus.UNSUCCESSFUL -> throw ErrorException(error = ErrorType.CONTRACT_STATUS)
         }
     }
 }

@@ -2,14 +2,14 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.ac.ACRepository
+import com.procurement.contracting.application.repository.ac.AwardContractRepository
+import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.entity.ACEntity
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.exception.ErrorException
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UpdateDocumentsService(
-    private val acRepository: ACRepository,
+    private val acRepository: AwardContractRepository,
     private val canRepository: CANRepository
 ) {
 
@@ -47,14 +47,14 @@ class UpdateDocumentsService(
         val can = toObject(Can::class.java, canEntity.jsonData)
         if (can.status != CANStatus.PENDING) throw ErrorException(ErrorType.INVALID_CAN_STATUS)
 
-        if (canEntity.contractId != null) {
-            val acEntity: ACEntity = acRepository.findBy(cpid, canEntity.contractId)
+        if (canEntity.awardContractId != null) {
+            val acEntity: AwardContractEntity = acRepository.findBy(cpid, canEntity.awardContractId)
                 .orThrow { it.exception }
                 ?: throw ErrorException(ErrorType.CONTRACT_NOT_FOUND)
             val contractProcess = toObject(ContractProcess::class.java, acEntity.jsonData)
-            if (contractProcess.contract.status != ContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
-            if (!(contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PREPARATION
-                    || contractProcess.contract.statusDetails == ContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
+            if (contractProcess.contract.status != AwardContractStatus.PENDING) throw ErrorException(ErrorType.CONTRACT_STATUS)
+            if (!(contractProcess.contract.statusDetails == AwardContractStatusDetails.CONTRACT_PREPARATION
+                    || contractProcess.contract.statusDetails == AwardContractStatusDetails.CONTRACT_PROJECT)) throw ErrorException(ErrorType.CONTRACT_STATUS_DETAILS)
             validateDocsRelatedLotContract(dto, contractProcess)
         }
         validateDocsRelatedLotCan(dto, can)

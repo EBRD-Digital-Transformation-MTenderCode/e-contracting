@@ -3,7 +3,7 @@ package com.procurement.contracting.application.repository.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.procurement.contracting.infrastructure.handler.v1.model.request.TreasuryBudgetSource
-import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.model.dto.ocds.ContractedAward
 import com.procurement.contracting.model.dto.ocds.OrganizationReference
 import com.procurement.contracting.model.dto.ocds.OrganizationReferenceBuyer
@@ -16,7 +16,7 @@ data class ContractProcess @JsonCreator constructor(
 
         var planning: Planning? = null,
 
-        val contract: Contract,
+        val contract: AwardContract,
 
         val award: ContractedAward,
 

@@ -14,11 +14,11 @@ import com.procurement.contracting.application.repository.can.model.RelatedContr
 import com.procurement.contracting.domain.entity.CANEntity
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
-import com.procurement.contracting.domain.model.contract.id.ContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.infrastructure.extension.cassandra.toCassandraTimestamp
@@ -41,7 +41,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                       ${Database.CAN.COLUMN_CREATED_DATE},
                       ${Database.CAN.COLUMN_AWARD_ID},
                       ${Database.CAN.COLUMN_LOT_ID},
-                      ${Database.CAN.COLUMN_CONTRACT_ID},
+                      ${Database.CAN.COLUMN_AWARD_CONTRACT_ID},
                       ${Database.CAN.COLUMN_STATUS},
                       ${Database.CAN.COLUMN_STATUS_DETAILS},
                       ${Database.CAN.COLUMN_JSON_DATA}
@@ -57,7 +57,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                       ${Database.CAN.COLUMN_CREATED_DATE},
                       ${Database.CAN.COLUMN_AWARD_ID},
                       ${Database.CAN.COLUMN_LOT_ID},
-                      ${Database.CAN.COLUMN_CONTRACT_ID},
+                      ${Database.CAN.COLUMN_AWARD_CONTRACT_ID},
                       ${Database.CAN.COLUMN_STATUS},
                       ${Database.CAN.COLUMN_STATUS_DETAILS},
                       ${Database.CAN.COLUMN_JSON_DATA}
@@ -68,7 +68,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
 
         private const val CANCEL_CQL = """
                UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
-                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                  SET ${Database.CAN.COLUMN_AWARD_CONTRACT_ID}=?,
                       ${Database.CAN.COLUMN_STATUS}=?,
                       ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
                       ${Database.CAN.COLUMN_JSON_DATA}=?
@@ -79,7 +79,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
 
         private const val RESET_CQL = """
                UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
-                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                  SET ${Database.CAN.COLUMN_AWARD_CONTRACT_ID}=?,
                       ${Database.CAN.COLUMN_STATUS}=?,
                       ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
                       ${Database.CAN.COLUMN_JSON_DATA}=?
@@ -90,7 +90,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
 
         private const val RELATE_CONTRACT_CQL = """
                UPDATE ${Database.KEYSPACE}.${Database.CAN.TABLE}
-                  SET ${Database.CAN.COLUMN_CONTRACT_ID}=?,
+                  SET ${Database.CAN.COLUMN_AWARD_CONTRACT_ID}=?,
                       ${Database.CAN.COLUMN_STATUS}=?,
                       ${Database.CAN.COLUMN_STATUS_DETAILS}=?,
                       ${Database.CAN.COLUMN_JSON_DATA}=?
@@ -108,7 +108,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                            ${Database.CAN.COLUMN_CREATED_DATE},
                            ${Database.CAN.COLUMN_AWARD_ID},
                            ${Database.CAN.COLUMN_LOT_ID},
-                           ${Database.CAN.COLUMN_CONTRACT_ID},
+                           ${Database.CAN.COLUMN_AWARD_CONTRACT_ID},
                            ${Database.CAN.COLUMN_STATUS},
                            ${Database.CAN.COLUMN_STATUS_DETAILS},
                            ${Database.CAN.COLUMN_JSON_DATA}
@@ -166,7 +166,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         createdDate = getTimestamp(Database.CAN.COLUMN_CREATED_DATE).toLocalDateTime(),
         awardId = getString(Database.CAN.COLUMN_AWARD_ID)?.let { AwardId.orNull(it)!! },
         lotId = LotId.orNull(getString(Database.CAN.COLUMN_LOT_ID))!!,
-        contractId = getString(Database.CAN.COLUMN_CONTRACT_ID)?.let { ContractId.orNull(it)!! },
+        awardContractId = getString(Database.CAN.COLUMN_AWARD_CONTRACT_ID)?.let { AwardContractId.orNull(it)!! },
         status = CANStatus.creator(getString(Database.CAN.COLUMN_STATUS)),
         statusDetails = CANStatusDetails.creator(getString(Database.CAN.COLUMN_STATUS_DETAILS)),
         jsonData = getString(Database.CAN.COLUMN_JSON_DATA)
@@ -198,7 +198,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
                 setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id.underlying)
-                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_AWARD_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, dataCancelledCAN.jsonData)
@@ -209,7 +209,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
                 setUUID(Database.CAN.COLUMN_CANID, dataCancelledCAN.id.underlying)
-                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_AWARD_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataCancelledCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataCancelledCAN.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, dataCancelledCAN.jsonData)
@@ -237,7 +237,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
                 setUUID(Database.CAN.COLUMN_CANID, dataResetCAN.id.underlying)
-                setString(Database.CAN.COLUMN_CONTRACT_ID, null)
+                setString(Database.CAN.COLUMN_AWARD_CONTRACT_ID, null)
                 setString(Database.CAN.COLUMN_STATUS, dataResetCAN.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, dataResetCAN.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, dataResetCAN.jsonData)
@@ -268,7 +268,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
                 setUUID(Database.CAN.COLUMN_CANID, can.id.underlying)
-                setString(Database.CAN.COLUMN_CONTRACT_ID, can.contractId.underlying)
+                setString(Database.CAN.COLUMN_AWARD_CONTRACT_ID, can.awardContractId.underlying)
                 setString(Database.CAN.COLUMN_STATUS, can.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, can.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, can.jsonData)
@@ -284,7 +284,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                 setTimestamp(Database.CAN.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
                 setString(Database.CAN.COLUMN_AWARD_ID, entity.awardId?.toString())
                 setString(Database.CAN.COLUMN_LOT_ID, entity.lotId.underlying)
-                setString(Database.CAN.COLUMN_CONTRACT_ID, entity.contractId?.underlying)
+                setString(Database.CAN.COLUMN_AWARD_CONTRACT_ID, entity.awardContractId?.underlying)
                 setString(Database.CAN.COLUMN_STATUS, entity.status.key)
                 setString(Database.CAN.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
                 setString(Database.CAN.COLUMN_JSON_DATA, entity.jsonData)

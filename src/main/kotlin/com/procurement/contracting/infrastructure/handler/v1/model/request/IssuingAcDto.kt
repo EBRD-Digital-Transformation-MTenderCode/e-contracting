@@ -2,7 +2,7 @@ package com.procurement.contracting.infrastructure.handler.v1.model.request
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import java.time.LocalDateTime
 
 data class IssuingAcRs @JsonCreator constructor(
@@ -14,5 +14,5 @@ data class IssuingAcRs @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractIssuingAcRs @JsonCreator constructor(
         var date: LocalDateTime?,
-        var statusDetails: ContractStatusDetails
+        var statusDetails: AwardContractStatusDetails
 )

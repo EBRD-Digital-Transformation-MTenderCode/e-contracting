@@ -2,7 +2,7 @@ package com.procurement.contracting.infrastructure.handler.v1.model.request
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.procurement.contracting.model.dto.ocds.Contract
+import com.procurement.contracting.model.dto.ocds.AwardContract
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class FinalUpdateAcRq @JsonCreator constructor(
@@ -17,7 +17,7 @@ data class Document @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class FinalUpdateAcRs @JsonCreator constructor(
 
-        val contract: Contract
+        val contract: AwardContract
 
 )
 

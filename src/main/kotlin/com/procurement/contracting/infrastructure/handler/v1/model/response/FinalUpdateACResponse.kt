@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
+import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestType
-import com.procurement.contracting.domain.model.contract.status.ContractStatus
-import com.procurement.contracting.domain.model.contract.status.ContractStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
@@ -28,8 +28,8 @@ data class FinalUpdateACResponse(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
         @field:JsonProperty("awardID") @param:JsonProperty("awardID") val awardID: UUID,
-        @field:JsonProperty("status") @param:JsonProperty("status") val status: ContractStatus,
-        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: ContractStatusDetails,
+        @field:JsonProperty("status") @param:JsonProperty("status") val status: AwardContractStatus,
+        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: AwardContractStatusDetails,
         @field:JsonProperty("title") @param:JsonProperty("title") val title: String,
         @field:JsonProperty("description") @param:JsonProperty("description") val description: String,
         @field:JsonProperty("period") @param:JsonProperty("period") val period: Period,
