@@ -49,6 +49,12 @@ sealed class Fail {
                     logger.error(message = message, exception = exception)
                 }
             }
+
+            class SaveIncident(message: String) : Incident(
+                level = Level.ERROR,
+                number = "1.2",
+                description = "Database consistency incident. $message"
+            )
         }
 
         sealed class Transform(val number: String, override val description: String) :

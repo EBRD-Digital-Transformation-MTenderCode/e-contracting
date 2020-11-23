@@ -6,10 +6,13 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.util.extension.toLocalDateTime
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.infrastructure.fail.error.DataTimeError
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import java.time.LocalDateTime
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
     Cpid.orNull(value = value)
@@ -68,3 +71,27 @@ private fun <T> parseEnum(
                 actualValue = value
             )
         )
+
+fun parseDate(value: String, attributeName: String = "date"): Result<LocalDateTime, DataErrors.Validation> =
+    value.toLocalDateTime()
+        .mapFailure { fail ->
+            when (fail) {
+                is DataTimeError.InvalidFormat -> DataErrors.Validation.DataFormatMismatch(
+                    name = attributeName,
+                    actualValue = value,
+                    expectedFormat = fail.pattern
+                )
+
+                is DataTimeError.InvalidDateTime ->
+                    DataErrors.Validation.InvalidDateTime(name = attributeName, actualValue = value)
+            }
+        }
+
+fun parseOwner(value: String): Result<Owner, DataErrors.Validation.DataFormatMismatch> =
+    Owner.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+                    name = "owner",
+                    actualValue = value,
+                    expectedFormat = "uuid"
+                ).asFailure()

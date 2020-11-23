@@ -7,7 +7,8 @@ import com.procurement.contracting.infrastructure.api.Action
 
 enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvider.Key, Action {
 
-    FIND_CAN_IDS("findCANIds")
+    CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
+    FIND_CAN_IDS("findCANIds"),
     ;
 
     override fun toString(): String = key
