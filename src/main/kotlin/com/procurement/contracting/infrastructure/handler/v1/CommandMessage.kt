@@ -13,6 +13,7 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.util.extension.toLocalDateTime
+import com.procurement.contracting.exception.EnumElementProviderException
 import com.procurement.contracting.exception.EnumException
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
@@ -89,7 +90,8 @@ val CommandMessage.startDate: LocalDateTime
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'startDate' attribute in context.")
 
 val CommandMessage.pmd: ProcurementMethodDetails
-    get() = this.context.pmd?.let { ProcurementMethodDetails.fromString(it) }
+    get() = this.context.pmd
+        ?.let { ProcurementMethodDetails.orThrow(it) }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'pmd' attribute in context.")
 
 val CommandMessage.mainProcurementCategory: MainProcurementCategory
@@ -157,18 +159,15 @@ data class ResponseErrorDto(
 
 fun errorResponse(exception: Exception, id: CommandId, version: ApiVersion): ApiResponseV1.Failure =
     when (exception) {
-        is ErrorException -> getApiErrorResponse(
-            id = id,
-            version = version,
-            code = exception.code,
-            message = exception.message!!
-        )
-        is EnumException -> getApiErrorResponse(
-            id = id,
-            version = version,
-            code = exception.code,
-            message = exception.message!!
-        )
+        is ErrorException ->
+            getApiErrorResponse(id = id, version = version, code = exception.code, message = exception.message!!)
+
+        is EnumException ->
+            getApiErrorResponse(id = id, version = version, code = exception.code, message = exception.message!!)
+
+        is EnumElementProviderException ->
+            getApiErrorResponse(id = id, version = version, code = "00.00", message = exception.message!!)
+
         else -> getApiErrorResponse(
             id = id,
             version = version,

@@ -1,47 +1,47 @@
 package com.procurement.contracting.domain.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.procurement.contracting.exception.EnumException
 
-enum class ProcurementMethodDetails(@JsonValue val value: String) {
-    CD("selective"),
-    DA("limited"),
-    DC("selective"),
-    FA("limited"),
-    GPA("selective"),
-    IP("selective"),
-    MV("open"),
-    NP("limited"),
-    OP("selective"),
-    OT("open"),
-    RT("selective"),
-    SV("open"),
-    TEST_CD("selective"),
-    TEST_DA("limited"),
-    TEST_DC("selective"),
-    TEST_FA("limited"),
-    TEST_GPA("selective"),
-    TEST_IP("selective"),
-    TEST_MV("open"),
-    TEST_NP("limited"),
-    TEST_OP("selective"),
-    TEST_OT("open"),
-    TEST_RT("selective"),
-    TEST_SV("open");
+enum class ProcurementMethodDetails(@JsonValue override val key: String, val procurementMethod: String) :
+    EnumElementProvider.Key {
 
-    override fun toString(): String {
-        return this.value
-    }
+    CD(key = "CD", procurementMethod = "selective"),
+    CF(key = "CF", procurementMethod = "selective"),
+    DA(key = "DA", procurementMethod = "limited"),
+    DC(key = "DC", procurementMethod = "selective"),
+    FA(key = "FA", procurementMethod = "limited"),
+    GPA(key = "GPA", procurementMethod = "selective"),
+    IP(key = "IP", procurementMethod = "selective"),
+    MV(key = "MV", procurementMethod = "open"),
+    NP(key = "NP", procurementMethod = "limited"),
+    OF(key = "OF", procurementMethod = "selective"),
+    OP(key = "OP", procurementMethod = "selective"),
+    OT(key = "OT", procurementMethod = "open"),
+    RT(key = "RT", procurementMethod = "selective"),
+    SV(key = "SV", procurementMethod = "open"),
+    TEST_CD(key = "TEST_CD", procurementMethod = "selective"),
+    TEST_CF(key = "TEST_CF", procurementMethod = "selective"),
+    TEST_DA(key = "TEST_DA", procurementMethod = "limited"),
+    TEST_DC(key = "TEST_DC", procurementMethod = "selective"),
+    TEST_FA(key = "TEST_FA", procurementMethod = "limited"),
+    TEST_GPA(key = "TEST_GPA", procurementMethod = "selective"),
+    TEST_IP(key = "TEST_IP", procurementMethod = "selective"),
+    TEST_MV(key = "TEST_MV", procurementMethod = "open"),
+    TEST_NP(key = "TEST_NP", procurementMethod = "limited"),
+    TEST_OF(key = "TEST_OF", procurementMethod = "selective"),
+    TEST_OP(key = "TEST_OP", procurementMethod = "selective"),
+    TEST_OT(key = "TEST_OT", procurementMethod = "open"),
+    TEST_RT(key = "TEST_RT", procurementMethod = "selective"),
+    TEST_SV(key = "TEST_SV", procurementMethod = "open"),
+    ;
 
-    companion object {
-        fun fromString(name: String): ProcurementMethodDetails = try {
-            valueOf(name.toUpperCase())
-        } catch (exception: Exception) {
-            throw EnumException(
-                enumType = ProcurementMethodDetails::class.java.name,
-                value = name,
-                values = values().toString()
-            )
-        }
+    override fun toString(): String = key
+
+    companion object : EnumElementProvider<ProcurementMethodDetails>(info = info()) {
+
+        @JvmStatic
+        @JsonCreator
+        fun creator(name: String) = orThrow(name)
     }
 }

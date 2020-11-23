@@ -33,7 +33,7 @@ class CassandraTemplateRepository(private val session: Session) : TemplateReposi
     ): Result<String?, Fail.Incident.Database> = preparedFindCQL.bind()
         .apply {
             setString(Database.Template.COLUMN_COUNTRY, country)
-            setString(Database.Template.COLUMN_PMD, pmd.name)
+            setString(Database.Template.COLUMN_PMD, pmd.key)
             setString(Database.Template.COLUMN_LANGUAGE, language)
             setString(Database.Template.COLUMN_TEMPLATE_ID, templateId)
         }

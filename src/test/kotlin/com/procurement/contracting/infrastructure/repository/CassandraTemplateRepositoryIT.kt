@@ -126,7 +126,7 @@ class CassandraTemplateRepositoryIT {
     private fun insert() {
         val query = QueryBuilder.insertInto("ocds", "contracting_templates")
             .value("country", COUNTRY)
-            .value("pmd", PMD.name)
+            .value("pmd", PMD.key)
             .value("template_id", TEMPLATE_ID)
             .value("language", LANGUAGE)
             .value("template", TEMPLATE)
