@@ -2,7 +2,7 @@ package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.Session
 import com.procurement.contracting.application.repository.template.TemplateRepository
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
@@ -27,7 +27,7 @@ class CassandraTemplateRepository(private val session: Session) : TemplateReposi
 
     override fun findBy(
         country: String,
-        pmd: ProcurementMethod,
+        pmd: ProcurementMethodDetails,
         language: String,
         templateId: String
     ): Result<String?, Fail.Incident.Database> = preparedFindCQL.bind()

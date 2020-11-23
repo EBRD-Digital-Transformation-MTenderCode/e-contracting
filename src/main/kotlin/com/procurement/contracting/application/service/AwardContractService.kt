@@ -11,7 +11,7 @@ import com.procurement.contracting.application.repository.model.ContractProcess
 import com.procurement.contracting.application.service.model.CreateAwardContractContext
 import com.procurement.contracting.application.service.model.CreateAwardContractData
 import com.procurement.contracting.application.service.model.CreatedAwardContractData
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.award.AwardId
@@ -437,23 +437,23 @@ class AwardContractServiceImpl(
 
     private fun generateRelatedBids(context: CreateAwardContractContext, awards: List<CreateAwardContractData.Award>): List<BidId> =
         when (context.pmd) {
-            ProcurementMethod.GPA, ProcurementMethod.TEST_GPA,
-            ProcurementMethod.MV, ProcurementMethod.TEST_MV,
-            ProcurementMethod.OT, ProcurementMethod.TEST_OT,
-            ProcurementMethod.RT, ProcurementMethod.TEST_RT,
-            ProcurementMethod.SV, ProcurementMethod.TEST_SV -> {
+            ProcurementMethodDetails.GPA, ProcurementMethodDetails.TEST_GPA,
+            ProcurementMethodDetails.MV, ProcurementMethodDetails.TEST_MV,
+            ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+            ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
+            ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> {
                 awards.map { award ->
                     award.relatedBid!!
                 }
             }
 
-            ProcurementMethod.CD, ProcurementMethod.TEST_CD,
-            ProcurementMethod.DA, ProcurementMethod.TEST_DA,
-            ProcurementMethod.DC, ProcurementMethod.TEST_DC,
-            ProcurementMethod.FA, ProcurementMethod.TEST_FA,
-            ProcurementMethod.IP, ProcurementMethod.TEST_IP,
-            ProcurementMethod.NP, ProcurementMethod.TEST_NP,
-            ProcurementMethod.OP, ProcurementMethod.TEST_OP -> {
+            ProcurementMethodDetails.CD, ProcurementMethodDetails.TEST_CD,
+            ProcurementMethodDetails.DA, ProcurementMethodDetails.TEST_DA,
+            ProcurementMethodDetails.DC, ProcurementMethodDetails.TEST_DC,
+            ProcurementMethodDetails.FA, ProcurementMethodDetails.TEST_FA,
+            ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP,
+            ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
+            ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP -> {
                 emptyList()
             }
         }

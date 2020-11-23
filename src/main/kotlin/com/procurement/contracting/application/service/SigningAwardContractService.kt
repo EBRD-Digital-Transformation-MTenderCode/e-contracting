@@ -4,7 +4,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.ac.AwardContractRepository
 import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.ac.id.asAwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
@@ -309,7 +309,7 @@ class SigningAwardContractService(
         if (!isRelatedPersonIdPresent) throw ErrorException(INVALID_RELATED_PERSON_ID)
     }
 
-    private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: ProcurementMethod, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
+    private fun generateBuyerConfirmationResponse(buyer: OrganizationReferenceBuyer, dto: ConfirmationResponseRq, country: String, pmd: ProcurementMethodDetails, language: String, relatedPerson: RelatedPerson, requestId: String): ConfirmationResponse {
         val templateBuyer = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,
@@ -352,7 +352,7 @@ class SigningAwardContractService(
     private fun generateSupplierConfirmationResponse(supplier: OrganizationReferenceSupplier,
                                                      dto: ConfirmationResponseRq,
                                                      country: String,
-                                                     pmd: ProcurementMethod,
+                                                     pmd: ProcurementMethodDetails,
                                                      language: String,
                                                      relatedPerson: RelatedPerson,
                                                      requestId: String): ConfirmationResponse {
@@ -411,7 +411,7 @@ class SigningAwardContractService(
 
     private fun generateSupplierConfirmationRequest(supplier: OrganizationReferenceSupplier,
                                                     country: String,
-                                                    pmd: ProcurementMethod,
+                                                    pmd: ProcurementMethodDetails,
                                                     language: String,
                                                     verificationValue: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(

@@ -4,7 +4,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.ac.AwardContractRepository
 import com.procurement.contracting.application.repository.ac.model.AwardContractEntity
 import com.procurement.contracting.application.repository.model.ContractProcess
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.ac.id.asAwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
@@ -126,7 +126,7 @@ class FinalUpdateService(
         else newDocuments
     }
 
-    private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String): Milestone {
+    private fun generateBuyerMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethodDetails, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -151,7 +151,7 @@ class FinalUpdateService(
         )
     }
 
-    private fun generateSupplierMilestone(supplier: OrganizationReferenceSupplier, country: String, pmd: ProcurementMethod, language: String): Milestone {
+    private fun generateSupplierMilestone(supplier: OrganizationReferenceSupplier, country: String, pmd: ProcurementMethodDetails, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -175,7 +175,7 @@ class FinalUpdateService(
         )
     }
 
-    private fun generateContractActivationMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String): Milestone {
+    private fun generateContractActivationMilestone(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethodDetails, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -200,7 +200,7 @@ class FinalUpdateService(
         )
     }
 
-    private fun generateValidationMilestone(country: String, pmd: ProcurementMethod, language: String): Milestone {
+    private fun generateValidationMilestone(country: String, pmd: ProcurementMethodDetails, language: String): Milestone {
 
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
@@ -224,7 +224,7 @@ class FinalUpdateService(
         )
     }
 
-    private fun generateBuyerConfirmationRequest(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethod, language: String, documentId: String): ConfirmationRequest {
+    private fun generateBuyerConfirmationRequest(buyer: OrganizationReferenceBuyer, country: String, pmd: ProcurementMethodDetails, language: String, documentId: String): ConfirmationRequest {
         val template = templateService.getConfirmationRequestTemplate(
                 country = country,
                 pmd = pmd,

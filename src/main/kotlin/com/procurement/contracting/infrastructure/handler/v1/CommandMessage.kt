@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
 import com.procurement.contracting.domain.model.MainProcurementCategory
 import com.procurement.contracting.domain.model.Owner
-import com.procurement.contracting.domain.model.ProcurementMethod
+import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.lot.LotId
@@ -88,8 +88,8 @@ val CommandMessage.startDate: LocalDateTime
         ?.orThrow { it.reason }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'startDate' attribute in context.")
 
-val CommandMessage.pmd: ProcurementMethod
-    get() = this.context.pmd?.let { ProcurementMethod.fromString(it) }
+val CommandMessage.pmd: ProcurementMethodDetails
+    get() = this.context.pmd?.let { ProcurementMethodDetails.fromString(it) }
         ?: throw ErrorException(error = ErrorType.CONTEXT, message = "Missing the 'pmd' attribute in context.")
 
 val CommandMessage.mainProcurementCategory: MainProcurementCategory

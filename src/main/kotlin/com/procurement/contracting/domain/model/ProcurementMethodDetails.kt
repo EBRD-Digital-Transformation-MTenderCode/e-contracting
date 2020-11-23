@@ -3,7 +3,7 @@ package com.procurement.contracting.domain.model
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.exception.EnumException
 
-enum class ProcurementMethod(@JsonValue val value: String) {
+enum class ProcurementMethodDetails(@JsonValue val value: String) {
     CD("selective"),
     DA("limited"),
     DC("selective"),
@@ -34,11 +34,11 @@ enum class ProcurementMethod(@JsonValue val value: String) {
     }
 
     companion object {
-        fun fromString(name: String): ProcurementMethod = try {
+        fun fromString(name: String): ProcurementMethodDetails = try {
             valueOf(name.toUpperCase())
         } catch (exception: Exception) {
             throw EnumException(
-                enumType = ProcurementMethod::class.java.name,
+                enumType = ProcurementMethodDetails::class.java.name,
                 value = name,
                 values = values().toString()
             )
