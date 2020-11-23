@@ -288,7 +288,7 @@ class SigningAwardContractService(
     }
 
     private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
-        return milestones?.asSequence()?.any { it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION } ?: false
+        return milestones?.any { it.subtype == MilestoneSubType.APPROVE_BODY_VALIDATION } ?: false
     }
 
     private fun validateRelatedPersonId(contractProcess: ContractProcess, dto: ProceedResponseRq, requestId: String) {

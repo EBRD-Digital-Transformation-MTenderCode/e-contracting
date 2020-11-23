@@ -89,7 +89,7 @@ class UpdateDocumentsService(
             val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
             documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
             val newDocumentsId = documentDtoIds - documentsDbIds
-            val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+            val newDocuments = documentsDto.filter { it.id in newDocumentsId }
             (documentsDb + convertUpdateDocsToBaseDocs(newDocuments))
         } else {
             convertUpdateDocsToBaseDocs(documentsDto)

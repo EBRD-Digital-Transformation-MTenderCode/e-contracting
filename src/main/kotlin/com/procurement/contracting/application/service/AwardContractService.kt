@@ -458,7 +458,7 @@ class AwardContractServiceImpl(
             }
         }
 
-    private fun generateItems(items: List<CreateAwardContractData.ContractedTender.Item>): List<Item> = items.asSequence()
+    private fun generateItems(items: List<CreateAwardContractData.ContractedTender.Item>): List<Item> = items
         .map { item ->
             Item(
                 id = item.id,
@@ -495,7 +495,6 @@ class AwardContractServiceImpl(
                 deliveryAddress = null
             )
         }
-        .toList()
 
     private fun generateDocuments(awards: List<CreateAwardContractData.Award>): List<DocumentAward> = awards.asSequence()
         .flatMap { award ->

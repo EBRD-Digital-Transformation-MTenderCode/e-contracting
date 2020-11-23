@@ -112,16 +112,16 @@ class FinalUpdateService(
 
     private fun addContractDocuments(documentsDto: List<Document>, documentsDb: List<DocumentContract>?): List<DocumentContract>? {
         //update
-        val newDocuments = documentsDto.asSequence()
-                .map {
-                    DocumentContract(
-                        id = it.id,
-                        documentType = DocumentTypeContract.CONTRACT_SIGNED,
-                        title = null,
-                        description = null,
-                        relatedLots = null)
-                }
-                .toList()
+        val newDocuments = documentsDto.map {
+            DocumentContract(
+                id = it.id,
+                documentType = DocumentTypeContract.CONTRACT_SIGNED,
+                title = null,
+                description = null,
+                relatedLots = null
+            )
+        }
+
         return if (documentsDb != null && documentsDb.isNotEmpty()) (documentsDb + newDocuments)
         else newDocuments
     }

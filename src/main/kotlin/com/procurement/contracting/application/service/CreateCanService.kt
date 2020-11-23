@@ -81,7 +81,7 @@ class CreateCanService(
             .orThrow {
                 ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
             }
-        if (canEntities.asSequence().any { it.lotId == lotId && it.status != CANStatus.CANCELLED }) {
+        if (canEntities.any { it.lotId == lotId && it.status != CANStatus.CANCELLED }) {
             throw ErrorException(ErrorType.CAN_FOR_LOT_EXIST)
         }
     }
@@ -93,7 +93,7 @@ class CreateCanService(
             .orThrow {
                 ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
             }
-        if (canEntities.asSequence().none {
+        if (canEntities.none {
                     it.awardId == dto.awardId
                             && it.status == CANStatus.PENDING
                 }) {
@@ -110,7 +110,7 @@ class CreateCanService(
                 ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
             }
         val canIdsSet: Set<CANId> = dto.contracts.asSequence().map { it.id }.toSet()
-        val canEntitiesFiltered = canEntities.asSequence().filter { canIdsSet.contains(it.id) }.toList()
+        val canEntitiesFiltered = canEntities.filter { canIdsSet.contains(it.id) }
         val cansRs = ArrayList<CanGetAwards>()
         for (canEntity in canEntitiesFiltered) {
             if (canEntity.statusDetails != CANStatusDetails.UNSUCCESSFUL) {

@@ -119,8 +119,9 @@ class ActivationAwardContractService(
         if (!wasAppliedCAN)
             throw SaveEntityException(message = "An error occurred when writing a record(s) of CAN by cpid '$cpid' to the database. Record is already.")
 
-        val cansRs = cans.asSequence()
-            .map { ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails) }.toList()
+        val cansRs = cans.map {
+            ActivationCan(id = it.id, status = it.status, statusDetails = it.statusDetails)
+        }
         return ActivationAcRs(
             relatedLots = relatedLots,
             contract = ActivationContract(

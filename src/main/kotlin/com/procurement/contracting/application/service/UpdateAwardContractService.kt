@@ -322,7 +322,7 @@ class UpdateAwardContractService(
         val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
-        val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+        val newDocuments = documentsDto.filter { it.id in newDocumentsId }
         return (documentsDb + newDocuments)
     }
 
@@ -517,7 +517,7 @@ class UpdateAwardContractService(
 
     private fun getPersonByBFType(persones: HashSet<Person>, type: String): RelatedPerson? {
         for (person in persones) {
-            if (person.businessFunctions.asSequence().any { it.type == type }) {
+            if (person.businessFunctions.any { it.type == type }) {
                 return RelatedPerson(id = person.identifier.id, name = person.name)
             }
         }
@@ -652,7 +652,7 @@ class UpdateAwardContractService(
         //update
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
-        val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+        val newDocuments = documentsDto.filter { it.id in newDocumentsId }
         return (documentsDb + newDocuments)
     }
 
@@ -675,7 +675,7 @@ class UpdateAwardContractService(
                 val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
                 documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
-                val newDocuments = documentsDto.asSequence().filter { it.id in newDocumentsId }.toList()
+                val newDocuments: List<DocumentAward> = documentsDto.filter { it.id in newDocumentsId }
                 (documentsDb + newDocuments)
             } else {
                 documentsDto
