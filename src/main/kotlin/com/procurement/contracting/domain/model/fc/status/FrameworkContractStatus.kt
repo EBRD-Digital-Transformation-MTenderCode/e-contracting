@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class FrameworkContractStatus(@JsonValue override val key: String) : EnumElementProvider.Key {
-    PENDING("pending");
+
+    CANCELLED("cancelled"),
+    PENDING("pending"),
+    ;
 
     override fun toString(): String = key
 

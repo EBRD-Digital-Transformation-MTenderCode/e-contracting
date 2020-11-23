@@ -158,3 +158,13 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_fc
     json_data      TEXT,
     PRIMARY KEY (cpid, ocid, id)
 );
+
+CREATE TABLE IF NOT EXISTS ocds.contracting_rules
+(
+    country        TEXT,
+    pmd            TEXT,
+    operation_type TEXT,
+    parameter      TEXT,
+    value          TEXT,
+    PRIMARY KEY (country, pmd, operation_type, parameter)
+);

@@ -57,7 +57,7 @@ fun parseCANStatusDetails(
         value = statusDetails, allowedEnums = allowedStatuses, attributeName = attributeName, target = CANStatusDetails
     )
 
-private fun <T> parseEnum(
+fun <T> parseEnum(
     value: String, allowedEnums: Set<T>, attributeName: String, target: EnumElementProvider<T>
 ): Result<T, DataErrors.Validation.UnknownValue> where T : Enum<T>,
                                                        T : EnumElementProvider.Key =
