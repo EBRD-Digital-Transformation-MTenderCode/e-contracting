@@ -1,6 +1,7 @@
 package com.procurement.contracting.infrastructure.dto.can.create
 
 import com.procurement.contracting.infrastructure.AbstractDTOTestBase
+import com.procurement.contracting.infrastructure.handler.v1.model.request.CreateCANRequest
 import org.junit.jupiter.api.Test
 
 class CreateCANRequestTest : AbstractDTOTestBase<CreateCANRequest>(CreateCANRequest::class.java) {

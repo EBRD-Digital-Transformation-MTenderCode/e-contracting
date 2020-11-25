@@ -3,9 +3,9 @@ package com.procurement.contracting.infrastructure.fail.error
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.infrastructure.fail.Fail
 
-sealed class DataErrors(numberError: String, override val description: String) : Fail.Error("DR-") {
+sealed class DataErrors(numberError: String, override val description: String) : Fail.Error() {
 
-    override val code: String = prefix + numberError
+    override val code: String = "DR-$numberError"
 
     sealed class Validation(numberError: String, val name: String, description: String) :
         DataErrors(numberError = numberError, description = description) {
@@ -76,5 +76,8 @@ sealed class DataErrors(numberError: String, override val description: String) :
 
         class UnexpectedAttribute(name: String) :
             Validation(numberError = "12", description = "Unexpected attribute '$name'.", name = name)
+
+        class InvalidDateTime(name: String, actualValue: String) :
+            Validation(numberError = "13", description = "Invalid date-time: '$actualValue'.", name = name)
     }
 }
