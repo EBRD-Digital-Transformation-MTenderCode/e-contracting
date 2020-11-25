@@ -14,6 +14,8 @@ import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
+import com.procurement.contracting.domain.util.extension.getElementsForUpdate
+import com.procurement.contracting.domain.util.extension.getNewElements
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
@@ -45,7 +47,6 @@ import com.procurement.contracting.exception.ErrorType.MILESTONE_DUE_DATE
 import com.procurement.contracting.exception.ErrorType.MILESTONE_ID
 import com.procurement.contracting.exception.ErrorType.MILESTONE_RELATED_ITEMS
 import com.procurement.contracting.exception.ErrorType.MILESTONE_TYPE
-import com.procurement.contracting.exception.ErrorType.PERSONES
 import com.procurement.contracting.exception.ErrorType.PERSONES_IN_SUPPLIERS_IS_EMPTY
 import com.procurement.contracting.exception.ErrorType.PERSON_NOT_FOUND
 import com.procurement.contracting.exception.ErrorType.SUPPLIERS
@@ -571,7 +572,7 @@ class UpdateAwardContractService(
 
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
-            this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
+            this.persones = updatePersones(this.persones, supplierDto.persones).toHashSet()//BR-9.2.3
             if (supplierDto.additionalIdentifiers.isNotEmpty()) {
                 this.additionalIdentifiers = supplierDto.additionalIdentifiers
             }
@@ -590,23 +591,30 @@ class UpdateAwardContractService(
         )
     }
 
-    private fun updatePersones(personesDb: HashSet<Person>?, personesDto: HashSet<Person>): HashSet<Person> {
-        if (personesDb == null || personesDb.isEmpty())
-            return personesDto.asSequence()
-                .map { person -> person.generateId() }
-                .toHashSet()
+    private fun updatePersones(savedPersons: HashSet<Person>?, receivedPersons: HashSet<Person>): List<Person> {
+        val receivedPersonsWithId = receivedPersons.map { person -> person.generateId() }
 
-        val personesDbIds = personesDb.asSequence().map { it.identifier.id }.toSet()
-        val personesDtoIds = personesDto.asSequence().map { it.identifier.id }.toSet()
-        if (personesDtoIds.size != personesDto.size) throw ErrorException(PERSONES)
-        //update
-        personesDb.forEach { personDb -> personDb.update(personesDto.firstOrNull { it.identifier.id == personDb.identifier.id }) }
-        val newPersonesId = personesDtoIds - personesDbIds
-        val newPersones = personesDto.asSequence()
-            .filter { it.identifier.id in newPersonesId }
-            .map { person -> person.generateId() }
-            .toHashSet()
-        return (personesDb + newPersones).toHashSet()
+        if (savedPersons == null || savedPersons.isEmpty())
+            return receivedPersonsWithId
+
+        val receivedPersonByIds = receivedPersonsWithId.associateBy { it.id!! }
+        val receivedPersonIds = receivedPersonByIds.keys
+        if (receivedPersonIds.size != receivedPersons.size) throw ErrorException(ErrorType.PERSONES)
+
+        val savedPersonByIds = savedPersons.associateBy { it.id!! }
+        val savedPersonIds = savedPersonByIds.keys
+
+        val newPersons = getNewElements(received = receivedPersonIds, known = savedPersonIds)
+            .map { id -> receivedPersonByIds.getValue(id) }
+
+        val updatedPersons = getElementsForUpdate(received = receivedPersonIds, known = savedPersonIds)
+            .map { id ->
+                val receivedPerson = receivedPersonByIds.getValue(id)
+                savedPersonByIds.getValue(id)
+                    .apply { update(receivedPerson) }
+            }
+
+        return newPersons + updatedPersons
     }
 
     private fun Person.generateId(): Person = this.apply {
@@ -616,12 +624,10 @@ class UpdateAwardContractService(
         )
     }
 
-    private fun Person.update(personDto: Person?) {
-        if (personDto != null) {
-            this.title = personDto.title
-            this.name = personDto.name
-            this.businessFunctions = updateBusinessFunctions(this.businessFunctions, personDto.businessFunctions)
-        }
+    private fun Person.update(personDto: Person) {
+        this.title = personDto.title
+        this.name = personDto.name
+        this.businessFunctions = updateBusinessFunctions(this.businessFunctions, personDto.businessFunctions)
     }
 
     private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {

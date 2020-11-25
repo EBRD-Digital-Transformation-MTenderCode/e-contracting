@@ -42,3 +42,20 @@ data class FailPair<out E, out T> constructor(val fail: E, val element: T)
 
 fun <T> T?.toListOrEmpty(): List<T> = if (this != null) listOf(this) else emptyList()
 
+inline fun <T, V> Collection<T>.toSet(selector: (T) -> V): Set<V> {
+    val collections = LinkedHashSet<V>()
+    forEach {
+        collections.add(selector(it))
+    }
+    return collections
+}
+
+fun <T> getNewElements(received: Iterable<T>, known: Iterable<T>): Set<T> =
+    received.asSet().subtract(known.asSet())
+
+fun <T> getElementsForUpdate(received: Set<T>, known: Set<T>) = known.intersect(received)
+
+private fun <T> Iterable<T>.asSet(): Set<T> = when (this) {
+    is Set -> this
+    else -> this.toSet()
+}
