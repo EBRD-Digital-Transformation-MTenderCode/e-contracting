@@ -1,11 +1,25 @@
 package com.procurement.contracting.domain.model.lot
 
-import com.procurement.contracting.domain.functional.Result
-import com.procurement.contracting.domain.util.extension.tryUUID
-import com.procurement.contracting.infrastructure.fail.Fail
-import java.util.*
+import com.procurement.contracting.extension.UUID_PATTERN
+import com.procurement.contracting.extension.isUUID
 
-typealias LotId = UUID
+class LotId private constructor(val underlying: String) {
 
-fun String.tryLotId(): Result<LotId, Fail.Incident.Transform.Parsing> =
-    this.tryUUID()
+    companion object {
+        const val pattern = UUID_PATTERN
+        fun validate(text: String): Boolean = text.isUUID
+        fun orNull(text: String): LotId? = if (validate(text)) LotId(text) else null
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (this !== other)
+            other is LotId
+                && this.underlying == other.underlying
+        else
+            true
+    }
+
+    override fun hashCode(): Int = underlying.hashCode()
+
+    override fun toString(): String = underlying
+}

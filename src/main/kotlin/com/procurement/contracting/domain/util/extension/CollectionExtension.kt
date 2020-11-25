@@ -1,7 +1,7 @@
 package com.procurement.contracting.domain.util.extension
 
-import com.procurement.contracting.domain.functional.Option
-import com.procurement.contracting.domain.functional.Result
+import com.procurement.contracting.lib.functional.Option
+import com.procurement.contracting.lib.functional.Result
 
 fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Option<List<R>>, E> {
     if (this == null)
@@ -10,7 +10,7 @@ fun <T, R, E> List<T>?.mapOptionalResult(block: (T) -> Result<R, E>): Result<Opt
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
+            is Result.Success -> r.add(result.value)
             is Result.Failure -> return result
         }
     }
@@ -21,7 +21,7 @@ fun <T, R, E> List<T>.mapResult(block: (T) -> Result<R, E>): Result<List<R>, E> 
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
+            is Result.Success -> r.add(result.value)
             is Result.Failure -> return result
         }
     }
@@ -32,8 +32,8 @@ fun <T, R, E> List<T>.mapResultPair(block: (T) -> Result<R, E>): Result<List<R>,
     val r = mutableListOf<R>()
     for (element in this) {
         when (val result = block(element)) {
-            is Result.Success -> r.add(result.get)
-            is Result.Failure -> return Result.failure(FailPair(result.error, element))
+            is Result.Success -> r.add(result.value)
+            is Result.Failure -> return Result.failure(FailPair(result.reason, element))
         }
     }
     return Result.success(r)
@@ -42,3 +42,20 @@ data class FailPair<out E, out T> constructor(val fail: E, val element: T)
 
 fun <T> T?.toListOrEmpty(): List<T> = if (this != null) listOf(this) else emptyList()
 
+inline fun <T, V> Collection<T>.toSet(selector: (T) -> V): Set<V> {
+    val collections = LinkedHashSet<V>()
+    forEach {
+        collections.add(selector(it))
+    }
+    return collections
+}
+
+fun <T> getNewElements(received: Iterable<T>, known: Iterable<T>): Set<T> =
+    received.asSet().subtract(known.asSet())
+
+fun <T> getElementsForUpdate(received: Set<T>, known: Set<T>) = known.intersect(received)
+
+private fun <T> Iterable<T>.asSet(): Set<T> = when (this) {
+    is Set -> this
+    else -> this.toSet()
+}

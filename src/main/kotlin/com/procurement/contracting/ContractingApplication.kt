@@ -1,6 +1,6 @@
 package com.procurement.contracting
 
-import com.procurement.contracting.config.ApplicationConfig
+import com.procurement.contracting.infrastructure.configuration.ApplicationConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
