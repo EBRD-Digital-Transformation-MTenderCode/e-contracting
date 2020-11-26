@@ -8,7 +8,7 @@ import com.procurement.contracting.domain.model.ac.id.asAwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.item.ItemId
-import com.procurement.contracting.domain.util.extension.toSet
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.BA_ITEM_ID
@@ -57,7 +57,7 @@ class IssuingAwardContractService(
             .budgetAllocation.asSequence()
             .map { it.relatedItem }
             .toSet()
-        val awardItemIds: Set<ItemId> = contractProcess.award.items.toSet { it.id }
+        val awardItemIds: Set<ItemId> = contractProcess.award.items.toSetBy { it.id }
         if (awardItemIds.size != relatedItemIds.size) throw ErrorException(BA_ITEM_ID)
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
 
