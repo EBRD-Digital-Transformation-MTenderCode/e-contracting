@@ -150,11 +150,7 @@ class UpdateAwardContractService(
             //BR-9.2.20 + BR-9.2.20.1
             buyer = dto.buyer
                 .apply {
-                    copy(
-                        persones = persones.asSequence()
-                            .map { person -> person.generateId() }
-                            .toHashSet()
-                    )
+                    copy(persones = persones.map { person -> person.generateId() })
                 }
             funders = dto.funders//BR-9.2.20
             payers = dto.payers//BR-9.2.20
@@ -516,7 +512,7 @@ class UpdateAwardContractService(
         return confRequestDto
     }
 
-    private fun getPersonByBFType(persones: HashSet<Person>, type: String): RelatedPerson? {
+    private fun getPersonByBFType(persones: List<Person>, type: String): RelatedPerson? {
         for (person in persones) {
             if (person.businessFunctions.any { it.type == type }) {
                 return RelatedPerson(id = person.identifier.id, name = person.name)
@@ -572,7 +568,7 @@ class UpdateAwardContractService(
 
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
-            this.persones = updatePersones(this.persones, supplierDto.persones).toHashSet()//BR-9.2.3
+            this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
             if (supplierDto.additionalIdentifiers.isNotEmpty()) {
                 this.additionalIdentifiers = supplierDto.additionalIdentifiers
             }
@@ -591,7 +587,7 @@ class UpdateAwardContractService(
         )
     }
 
-    private fun updatePersones(savedPersons: HashSet<Person>?, receivedPersons: HashSet<Person>): List<Person> {
+    private fun updatePersones(savedPersons: List<Person>?, receivedPersons: List<Person>): List<Person> {
         val receivedPersonsWithId = receivedPersons.map { person -> person.generateId() }
 
         if (savedPersons == null || savedPersons.isEmpty())
