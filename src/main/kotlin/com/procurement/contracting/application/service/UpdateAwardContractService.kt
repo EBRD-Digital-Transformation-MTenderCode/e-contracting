@@ -16,6 +16,7 @@ import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.domain.util.extension.getElementsForUpdate
 import com.procurement.contracting.domain.util.extension.getNewElements
+import com.procurement.contracting.domain.util.extension.toSet
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
@@ -312,11 +313,11 @@ class UpdateAwardContractService(
     private fun updateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentContract>? {
         //validation
         val documentsDto = dto.contract.documents ?: return contractProcess.contract.documents
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        val documentDtoIds = documentsDto.toSet { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
         val documentsDb = contractProcess.contract.documents ?: return documentsDto
-        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+        val documentsDbIds = documentsDb.toSet { it.id }
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
         val newDocuments = documentsDto.filter { it.id in newDocumentsId }
@@ -433,7 +434,7 @@ class UpdateAwardContractService(
                         ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM)
                 }
                 .toSet()
-        val awardItemIds: Set<ItemId> = dto.award.items.asSequence().map { it.id }.toSet()
+        val awardItemIds: Set<ItemId> = dto.award.items.toSet { it.id }
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
 
@@ -446,8 +447,8 @@ class UpdateAwardContractService(
         if (confRequestDto != null) {
             //validation
             if (documents != null) {
-                val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-                val documentIds = documents.asSequence().map { it.id }.toSet()
+                val relatedItemIds = confRequestDto.toSet { it.relatedItem }
+                val documentIds = documents.toSet { it.id }
                 if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
             }
 
@@ -538,8 +539,8 @@ class UpdateAwardContractService(
         if (transactionsId.size != transactions.size) throw ErrorException(TRANSACTIONS)
         transactions.forEach { it.id = generationService.getTimeBasedUUID() }
         //BR-9.2.7
-        val relatedItemIds = dto.planning.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
-        val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
+        val relatedItemIds = dto.planning.budget.budgetAllocation.toSet { it.relatedItem }
+        val awardItemIds = dto.award.items.toSet { it.id }
         if (awardItemIds.size != relatedItemIds.size) throw ErrorException(BA_ITEM_ID)
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
         return dto.planning
@@ -556,8 +557,8 @@ class UpdateAwardContractService(
         val suppliersDb = contractProcess.award.suppliers
         val suppliersDto = dto.award.suppliers
         //validation
-        val suppliersDbIds: Set<OrganizationId> = suppliersDb.asSequence().map { it.id }.toSet()
-        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.asSequence().map { it.id }.toSet()
+        val suppliersDbIds: Set<OrganizationId> = suppliersDb.toSet { it.id }
+        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.toSet { it.id }
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
         if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
@@ -627,8 +628,8 @@ class UpdateAwardContractService(
     }
 
     private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {
-        val bfDbIds = bfDb.asSequence().map { it.id }.toSet()
-        val bfDtoIds = bfDto.asSequence().map { it.id }.toSet()
+        val bfDbIds = bfDb.toSet { it.id }
+        val bfDtoIds = bfDto.toSet { it.id }
         if (bfDtoIds.size != bfDto.size) throw ErrorException(BF)
         //update
         bfDb.forEach { businessFunction -> businessFunction.update(bfDto.firstOrNull { it.id == businessFunction.id }) }
@@ -648,8 +649,8 @@ class UpdateAwardContractService(
 
     private fun updateDocuments(documentsDb: List<DocumentBF>, documentsDto: List<DocumentBF>): List<DocumentBF> {
         //validation
-        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        val documentsDbIds = documentsDb.toSet { it.id }
+        val documentDtoIds = documentsDto.toSet { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
@@ -670,11 +671,11 @@ class UpdateAwardContractService(
         val documentsDto = dto.award.documents
         if (documentsDto != null) {
             //validation
-            val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+            val documentDtoIds = documentsDto.toSet { it.id }
             if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
             //update
             return if (documentsDb != null) {
-                val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+                val documentsDbIds = documentsDb.toSet { it.id }
                 documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
                 val newDocuments: List<DocumentAward> = documentsDto.filter { it.id in newDocumentsId }
@@ -700,8 +701,8 @@ class UpdateAwardContractService(
         val itemsDb = contractProcess.award.items
         val itemsDto = dto.award.items
         //validation
-        val itemDbIds = itemsDb.asSequence().map { it.id }.toSet()
-        val itemDtoIds = itemsDto.asSequence().map { it.id }.toSet()
+        val itemDbIds = itemsDb.toSet { it.id }
+        val itemDtoIds = itemsDto.toSet { it.id }
         if (itemDtoIds.size != dto.award.items.size) throw ErrorException(ITEM_ID)
         if (itemDbIds.size != itemDtoIds.size) throw ErrorException(ITEM_ID)
         if (!itemDbIds.containsAll(itemDtoIds)) throw ErrorException(ITEM_ID)

@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDet
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.util.extension.toSet
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.CANS_NOT_FOUND
@@ -54,7 +55,7 @@ class CreateAwardContractService(
             throw ErrorException(ErrorType.SUPPLIERS_ID)
         }
         //VR-9.1.2
-        if (dto.awards.asSequence().map { it.value.currency }.toSet().size > 1) {
+        if (dto.awards.toSet { it.value.currency }.size > 1) {
             throw ErrorException(ErrorType.AWARD_CURRENCY)
         }
 
@@ -105,9 +106,9 @@ class CreateAwardContractService(
             throw SaveEntityException(message = "An error occurred when writing a record(s) of CAN by cpid '$cpid' to the database. Record is already.")
 
         val awardId = generationService.awardId()
-        val awardsIdsSet = dto.awards.asSequence().map { it.id }.toSet()
-        val awardsLotsIdsSet = dto.awards.asSequence().map { it.relatedLots[0] }.toSet()
-        val awardsBidsIdsSet = dto.awards.asSequence().map { it.relatedBid }.toSet()
+        val awardsIdsSet = dto.awards.toSet { it.id }
+        val awardsLotsIdsSet = dto.awards.toSet { it.relatedLots[0] }
+        val awardsBidsIdsSet = dto.awards.toSet { it.relatedBid }
         val amountSum = dto.awards.asSequence()
             .sumByDouble { it.value.amount.toDouble() }
             .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
