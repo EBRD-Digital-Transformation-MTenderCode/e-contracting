@@ -336,8 +336,8 @@ class UpdateAwardContractService(
     private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): MutableList<Milestone>? {
         val milestonesDto = dto.contract.milestones
         val milestonesDb = contractProcess.contract.milestones ?: mutableListOf()
-        val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
-        val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
+        val milestonesDtoIds = milestonesDto.toSetBy { it.id }
+        val milestonesDbIds = milestonesDb.toSetBy { it.id }
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
         val updatedMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in milestonesDtoIds }
@@ -415,7 +415,7 @@ class UpdateAwardContractService(
             if (milestone.dueDate != null && milestone.dueDate!! <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
         }
 
-        val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
+        val milestonesIdSet = milestonesDto.toSetBy { it.id }
         if (milestonesIdSet.size != milestonesDto.size) throw ErrorException(MILESTONE_ID)
 
         val milestonesFromTrSet = transactions.asSequence()
@@ -535,7 +535,7 @@ class UpdateAwardContractService(
         if (dto.planning.budget.budgetSource.any { it.currency != dto.award.value.currency }) throw ErrorException(BS_CURRENCY)
         val transactions = dto.planning.implementation.transactions
         if (transactions.isEmpty()) throw ErrorException(TRANSACTIONS)
-        val transactionsId = transactions.asSequence().map { it.id }.toHashSet()
+        val transactionsId = transactions.toSetBy { it.id }
         if (transactionsId.size != transactions.size) throw ErrorException(TRANSACTIONS)
         transactions.forEach { it.id = generationService.getTimeBasedUUID() }
         //BR-9.2.7
