@@ -420,7 +420,7 @@ class UpdateAwardContractService(
 
         val milestonesFromTrSet = transactions.asSequence()
                 .filter { it.type != TransactionType.ADVANCE }
-                .map { it.relatedContractMilestone ?: throw ErrorException(INVALID_TR_RELATED_MILESTONES) }.toHashSet()
+                .map { it.relatedContractMilestone ?: throw ErrorException(INVALID_TR_RELATED_MILESTONES) }.toSet()
 
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
 
@@ -634,7 +634,7 @@ class UpdateAwardContractService(
         //update
         bfDb.forEach { businessFunction -> businessFunction.update(bfDto.firstOrNull { it.id == businessFunction.id }) }
         val newBfId = bfDtoIds - bfDbIds
-        val newBf = bfDto.asSequence().filter { it.id in newBfId }.toHashSet()
+        val newBf = bfDto.asSequence().filter { it.id in newBfId }.toSet()
         return bfDb + newBf
     }
 
@@ -775,13 +775,13 @@ class UpdateAwardContractService(
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
-        val awardRelatedLotsDb = contractProcess.award.relatedLots.toHashSet()
+        val awardRelatedLotsDb = contractProcess.award.relatedLots.toSet()
         val awardDocumentsDto = dto.award.documents
         if (awardDocumentsDto != null) {
             val lotsFromAwardDocuments = awardDocumentsDto.asSequence()
                     .filter { it.relatedLots != null }
                     .flatMap { it.relatedLots!!.asSequence() }
-                    .toHashSet()
+                    .toSet()
             if (awardRelatedLotsDb.isNotEmpty()) {
                 if (!awardRelatedLotsDb.containsAll(lotsFromAwardDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
             }
@@ -791,7 +791,7 @@ class UpdateAwardContractService(
             val lotsFromContractDocuments = contractDocumentsDto.asSequence()
                     .filter { it.relatedLots != null }
                     .flatMap { it.relatedLots!!.asSequence() }
-                    .toHashSet()
+                    .toSet()
             if (lotsFromContractDocuments.isNotEmpty()) {
                 if (!awardRelatedLotsDb.containsAll(lotsFromContractDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
             }
