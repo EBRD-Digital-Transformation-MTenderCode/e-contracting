@@ -24,7 +24,7 @@ data class Milestone @JsonCreator constructor(
 
     var status: MilestoneStatus?,
 
-    var relatedItems: Set<ItemId>?,
+    var relatedItems: List<ItemId>?,
 
     var additionalInformation: String?,
 

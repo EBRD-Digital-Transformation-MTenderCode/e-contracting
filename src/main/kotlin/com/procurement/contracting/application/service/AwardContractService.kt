@@ -474,7 +474,6 @@ class AwardContractServiceImpl(
                     )
                 },
                 additionalClassifications = item.additionalClassifications
-                    ?.asSequence()
                     ?.map { additionalClassification ->
                         Classification(
                             scheme = additionalClassification.scheme,
@@ -482,8 +481,7 @@ class AwardContractServiceImpl(
                             description = additionalClassification.description,
                             uri = null
                         )
-                    }
-                    ?.toSet(),
+                    },
                 quantity = item.quantity,
                 unit = item.unit.let { unit ->
                     com.procurement.contracting.model.dto.ocds.Unit(
@@ -537,7 +535,6 @@ class AwardContractServiceImpl(
                         )
                     },
                     additionalIdentifiers = supplier.additionalIdentifiers
-                        ?.asSequence()
                         ?.map { additionalIdentifier ->
                             Identifier(
                                 scheme = additionalIdentifier.scheme,
@@ -545,8 +542,7 @@ class AwardContractServiceImpl(
                                 legalName = additionalIdentifier.legalName,
                                 uri = additionalIdentifier.uri
                             )
-                        }
-                        ?.toHashSet(),
+                        },
                     address = supplier.address.let { address ->
                         Address(
                             streetAddress = address.streetAddress,

@@ -20,7 +20,7 @@ data class Planning @JsonCreator constructor(
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Implementation @JsonCreator constructor(
 
-    var transactions: Set<Transaction>
+    var transactions: List<Transaction>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -9,7 +9,6 @@ import com.procurement.contracting.model.dto.ocds.OrganizationReference
 import com.procurement.contracting.model.dto.ocds.OrganizationReferenceBuyer
 import com.procurement.contracting.model.dto.ocds.Planning
 import com.procurement.contracting.model.dto.ocds.TreasuryData
-import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractProcess @JsonCreator constructor(
@@ -22,9 +21,9 @@ data class ContractProcess @JsonCreator constructor(
 
         var buyer: OrganizationReferenceBuyer? = null,
 
-        var funders: HashSet<OrganizationReference>? = null,
+        var funders: List<OrganizationReference>? = null,
 
-        var payers: HashSet<OrganizationReference>? = null,
+        var payers: List<OrganizationReference>? = null,
 
         var treasuryBudgetSources: List<TreasuryBudgetSource>? = null,
 
