@@ -11,6 +11,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
@@ -109,7 +110,7 @@ class CreateCanService(
             .orThrow {
                 ReadEntityException(message = "Error read CAN(s) from the database.", cause = it.exception)
             }
-        val canIdsSet: Set<CANId> = dto.contracts.asSequence().map { it.id }.toSet()
+        val canIdsSet: Set<CANId> = dto.contracts.toSetBy { it.id }
         val canEntitiesFiltered = canEntities.filter { canIdsSet.contains(it.id) }
         val cansRs = ArrayList<CanGetAwards>()
         for (canEntity in canEntitiesFiltered) {

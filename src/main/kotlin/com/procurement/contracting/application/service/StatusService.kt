@@ -46,8 +46,8 @@ class StatusService(
         if (contract.statusDetails != AwardContractStatusDetails.CONTRACT_PROJECT
                 && contract.statusDetails != AwardContractStatusDetails.CONTRACT_PREPARATION)
             throw ErrorException(CONTRACT_STATUS_DETAILS)
-        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource?.asSequence()?.toSet() ?: setOf()
-        val itemsCPVs = contractProcess.award.items.asSequence().map { it.classification.id }.toHashSet()
+        val actualBudgetSource = contractProcess.planning?.budget?.budgetSource ?: emptyList()
+        val itemsCPVs = contractProcess.award.items.map { it.classification.id }
         return GetActualBsRs(
                 language = entity.language,
                 actualBudgetSource = actualBudgetSource,

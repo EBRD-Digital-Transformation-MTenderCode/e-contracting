@@ -14,7 +14,7 @@ data class OrganizationReference @JsonCreator constructor(
 
         val address: Address,
 
-        val additionalIdentifiers: HashSet<Identifier>?,
+        val additionalIdentifiers: List<Identifier>?,
 
         val contactPoint: ContactPoint?
 )
