@@ -27,7 +27,7 @@ data class GetDataForAcTender @JsonCreator constructor(
 
         val mainProcurementCategory: String,
 
-        var items: HashSet<Item>
+        var items: List<Item>
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

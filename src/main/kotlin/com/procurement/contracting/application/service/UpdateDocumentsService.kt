@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.DOCS_RELATED_LOTS
@@ -82,11 +83,11 @@ class UpdateDocumentsService(
         val documentsDb = can.documents
         val documentsDto = dto.documents
         //validation
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        val documentDtoIds = documentsDto.toSetBy { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(ErrorType.DOCUMENTS)
         //update
         return if (documentsDb != null) {
-            val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+            val documentsDbIds = documentsDb.toSetBy { it.id }
             documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
             val newDocumentsId = documentDtoIds - documentsDbIds
             val newDocuments = documentsDto.filter { it.id in newDocumentsId }

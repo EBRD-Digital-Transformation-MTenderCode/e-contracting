@@ -16,6 +16,7 @@ import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
 import com.procurement.contracting.domain.util.extension.getElementsForUpdate
 import com.procurement.contracting.domain.util.extension.getNewElements
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.exception.ErrorType.ADDITIONAL_IDENTIFIERS_IN_SUPPLIER_IS_EMPTY_OR_MISSING
@@ -150,11 +151,7 @@ class UpdateAwardContractService(
             //BR-9.2.20 + BR-9.2.20.1
             buyer = dto.buyer
                 .apply {
-                    copy(
-                        persones = persones.asSequence()
-                            .map { person -> person.generateId() }
-                            .toHashSet()
-                    )
+                    copy(persones = persones.map { person -> person.generateId() })
                 }
             funders = dto.funders//BR-9.2.20
             payers = dto.payers//BR-9.2.20
@@ -316,11 +313,11 @@ class UpdateAwardContractService(
     private fun updateContractDocuments(dto: UpdateAcRq, contractProcess: ContractProcess): List<DocumentContract>? {
         //validation
         val documentsDto = dto.contract.documents ?: return contractProcess.contract.documents
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        val documentDtoIds = documentsDto.toSetBy { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
         val documentsDb = contractProcess.contract.documents ?: return documentsDto
-        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+        val documentsDbIds = documentsDb.toSetBy { it.id }
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
         val newDocuments = documentsDto.filter { it.id in newDocumentsId }
@@ -339,8 +336,8 @@ class UpdateAwardContractService(
     private fun updateContractMilestones(dto: UpdateAcRq, contractProcess: ContractProcess): MutableList<Milestone>? {
         val milestonesDto = dto.contract.milestones
         val milestonesDb = contractProcess.contract.milestones ?: mutableListOf()
-        val milestonesDtoIds = milestonesDto.asSequence().map { it.id }.toHashSet()
-        val milestonesDbIds = milestonesDb.asSequence().map { it.id }.toHashSet()
+        val milestonesDtoIds = milestonesDto.toSetBy { it.id }
+        val milestonesDbIds = milestonesDb.toSetBy { it.id }
         val newMilestonesIds = milestonesDtoIds - milestonesDbIds
         val updatedMilestonesDb = milestonesDb.asSequence()
                 .filter { it.id in milestonesDtoIds }
@@ -418,12 +415,12 @@ class UpdateAwardContractService(
             if (milestone.dueDate != null && milestone.dueDate!! <= dateTime) throw ErrorException(MILESTONE_DUE_DATE)
         }
 
-        val milestonesIdSet = milestonesDto.asSequence().map { it.id }.toHashSet()
+        val milestonesIdSet = milestonesDto.toSetBy { it.id }
         if (milestonesIdSet.size != milestonesDto.size) throw ErrorException(MILESTONE_ID)
 
         val milestonesFromTrSet = transactions.asSequence()
                 .filter { it.type != TransactionType.ADVANCE }
-                .map { it.relatedContractMilestone ?: throw ErrorException(INVALID_TR_RELATED_MILESTONES) }.toHashSet()
+                .map { it.relatedContractMilestone ?: throw ErrorException(INVALID_TR_RELATED_MILESTONES) }.toSet()
 
         if (!milestonesIdSet.containsAll(milestonesFromTrSet)) throw ErrorException(INVALID_TR_RELATED_MILESTONES)
 
@@ -437,7 +434,7 @@ class UpdateAwardContractService(
                         ?: throw ErrorException(EMPTY_MILESTONE_RELATED_ITEM)
                 }
                 .toSet()
-        val awardItemIds: Set<ItemId> = dto.award.items.asSequence().map { it.id }.toSet()
+        val awardItemIds: Set<ItemId> = dto.award.items.toSetBy { it.id }
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(MILESTONE_RELATED_ITEMS)
     }
 
@@ -450,8 +447,8 @@ class UpdateAwardContractService(
         if (confRequestDto != null) {
             //validation
             if (documents != null) {
-                val relatedItemIds = confRequestDto.asSequence().map { it.relatedItem }.toSet()
-                val documentIds = documents.asSequence().map { it.id }.toSet()
+                val relatedItemIds = confRequestDto.toSetBy { it.relatedItem }
+                val documentIds = documents.toSetBy { it.id }
                 if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
             }
 
@@ -516,7 +513,7 @@ class UpdateAwardContractService(
         return confRequestDto
     }
 
-    private fun getPersonByBFType(persones: HashSet<Person>, type: String): RelatedPerson? {
+    private fun getPersonByBFType(persones: List<Person>, type: String): RelatedPerson? {
         for (person in persones) {
             if (person.businessFunctions.any { it.type == type }) {
                 return RelatedPerson(id = person.identifier.id, name = person.name)
@@ -538,12 +535,12 @@ class UpdateAwardContractService(
         if (dto.planning.budget.budgetSource.any { it.currency != dto.award.value.currency }) throw ErrorException(BS_CURRENCY)
         val transactions = dto.planning.implementation.transactions
         if (transactions.isEmpty()) throw ErrorException(TRANSACTIONS)
-        val transactionsId = transactions.asSequence().map { it.id }.toHashSet()
+        val transactionsId = transactions.toSetBy { it.id }
         if (transactionsId.size != transactions.size) throw ErrorException(TRANSACTIONS)
         transactions.forEach { it.id = generationService.getTimeBasedUUID() }
         //BR-9.2.7
-        val relatedItemIds = dto.planning.budget.budgetAllocation.asSequence().map { it.relatedItem }.toSet()
-        val awardItemIds = dto.award.items.asSequence().map { it.id }.toSet()
+        val relatedItemIds = dto.planning.budget.budgetAllocation.toSetBy { it.relatedItem }
+        val awardItemIds = dto.award.items.toSetBy { it.id }
         if (awardItemIds.size != relatedItemIds.size) throw ErrorException(BA_ITEM_ID)
         if (!awardItemIds.containsAll(relatedItemIds)) throw ErrorException(BA_ITEM_ID)
         return dto.planning
@@ -560,8 +557,8 @@ class UpdateAwardContractService(
         val suppliersDb = contractProcess.award.suppliers
         val suppliersDto = dto.award.suppliers
         //validation
-        val suppliersDbIds: Set<OrganizationId> = suppliersDb.asSequence().map { it.id }.toSet()
-        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.asSequence().map { it.id }.toSet()
+        val suppliersDbIds: Set<OrganizationId> = suppliersDb.toSetBy { it.id }
+        val suppliersDtoIds: Set<OrganizationId> = suppliersDto.toSetBy { it.id }
         if (suppliersDtoIds.size != suppliersDto.size) throw ErrorException(SUPPLIERS)
         if (suppliersDbIds.size != suppliersDtoIds.size) throw ErrorException(SUPPLIERS)
         if (!suppliersDbIds.containsAll(suppliersDtoIds)) throw ErrorException(SUPPLIERS)
@@ -572,7 +569,7 @@ class UpdateAwardContractService(
 
     private fun OrganizationReferenceSupplier.update(supplierDto: OrganizationReferenceSupplierUpdate?) {
         if (supplierDto != null) {
-            this.persones = updatePersones(this.persones, supplierDto.persones).toHashSet()//BR-9.2.3
+            this.persones = updatePersones(this.persones, supplierDto.persones)//BR-9.2.3
             if (supplierDto.additionalIdentifiers.isNotEmpty()) {
                 this.additionalIdentifiers = supplierDto.additionalIdentifiers
             }
@@ -591,7 +588,7 @@ class UpdateAwardContractService(
         )
     }
 
-    private fun updatePersones(savedPersons: HashSet<Person>?, receivedPersons: HashSet<Person>): List<Person> {
+    private fun updatePersones(savedPersons: List<Person>?, receivedPersons: List<Person>): List<Person> {
         val receivedPersonsWithId = receivedPersons.map { person -> person.generateId() }
 
         if (savedPersons == null || savedPersons.isEmpty())
@@ -631,13 +628,13 @@ class UpdateAwardContractService(
     }
 
     private fun updateBusinessFunctions(bfDb: List<BusinessFunction>, bfDto: List<BusinessFunction>): List<BusinessFunction> {
-        val bfDbIds = bfDb.asSequence().map { it.id }.toSet()
-        val bfDtoIds = bfDto.asSequence().map { it.id }.toSet()
+        val bfDbIds = bfDb.toSetBy { it.id }
+        val bfDtoIds = bfDto.toSetBy { it.id }
         if (bfDtoIds.size != bfDto.size) throw ErrorException(BF)
         //update
         bfDb.forEach { businessFunction -> businessFunction.update(bfDto.firstOrNull { it.id == businessFunction.id }) }
         val newBfId = bfDtoIds - bfDbIds
-        val newBf = bfDto.asSequence().filter { it.id in newBfId }.toHashSet()
+        val newBf = bfDto.asSequence().filter { it.id in newBfId }.toSet()
         return bfDb + newBf
     }
 
@@ -652,8 +649,8 @@ class UpdateAwardContractService(
 
     private fun updateDocuments(documentsDb: List<DocumentBF>, documentsDto: List<DocumentBF>): List<DocumentBF> {
         //validation
-        val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
-        val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+        val documentsDbIds = documentsDb.toSetBy { it.id }
+        val documentDtoIds = documentsDto.toSetBy { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
         documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
@@ -674,11 +671,11 @@ class UpdateAwardContractService(
         val documentsDto = dto.award.documents
         if (documentsDto != null) {
             //validation
-            val documentDtoIds = documentsDto.asSequence().map { it.id }.toSet()
+            val documentDtoIds = documentsDto.toSetBy { it.id }
             if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
             //update
             return if (documentsDb != null) {
-                val documentsDbIds = documentsDb.asSequence().map { it.id }.toSet()
+                val documentsDbIds = documentsDb.toSetBy { it.id }
                 documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
                 val newDocuments: List<DocumentAward> = documentsDto.filter { it.id in newDocumentsId }
@@ -704,8 +701,8 @@ class UpdateAwardContractService(
         val itemsDb = contractProcess.award.items
         val itemsDto = dto.award.items
         //validation
-        val itemDbIds = itemsDb.asSequence().map { it.id }.toSet()
-        val itemDtoIds = itemsDto.asSequence().map { it.id }.toSet()
+        val itemDbIds = itemsDb.toSetBy { it.id }
+        val itemDtoIds = itemsDto.toSetBy { it.id }
         if (itemDtoIds.size != dto.award.items.size) throw ErrorException(ITEM_ID)
         if (itemDbIds.size != itemDtoIds.size) throw ErrorException(ITEM_ID)
         if (!itemDbIds.containsAll(itemDtoIds)) throw ErrorException(ITEM_ID)
@@ -778,13 +775,13 @@ class UpdateAwardContractService(
     }
 
     private fun validateDocsRelatedLots(dto: UpdateAcRq, contractProcess: ContractProcess) {
-        val awardRelatedLotsDb = contractProcess.award.relatedLots.toHashSet()
+        val awardRelatedLotsDb = contractProcess.award.relatedLots.toSet()
         val awardDocumentsDto = dto.award.documents
         if (awardDocumentsDto != null) {
             val lotsFromAwardDocuments = awardDocumentsDto.asSequence()
                     .filter { it.relatedLots != null }
                     .flatMap { it.relatedLots!!.asSequence() }
-                    .toHashSet()
+                    .toSet()
             if (awardRelatedLotsDb.isNotEmpty()) {
                 if (!awardRelatedLotsDb.containsAll(lotsFromAwardDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
             }
@@ -794,7 +791,7 @@ class UpdateAwardContractService(
             val lotsFromContractDocuments = contractDocumentsDto.asSequence()
                     .filter { it.relatedLots != null }
                     .flatMap { it.relatedLots!!.asSequence() }
-                    .toHashSet()
+                    .toSet()
             if (lotsFromContractDocuments.isNotEmpty()) {
                 if (!awardRelatedLotsDb.containsAll(lotsFromContractDocuments)) throw ErrorException(INVALID_DOCS_RELATED_LOTS)
             }
