@@ -16,6 +16,7 @@ import com.procurement.contracting.infrastructure.bind.fc.id.FrameworkContractId
 import com.procurement.contracting.infrastructure.bind.lot.id.LotIdModule
 import com.procurement.contracting.infrastructure.bind.owner.OwnerModule
 import com.procurement.contracting.infrastructure.bind.token.TokenModule
+import com.procurement.submission.infrastructure.bind.criteria.RequirementValueModule
 
 fun ObjectMapper.configuration() {
     val module = SimpleModule()
@@ -35,6 +36,7 @@ fun ObjectMapper.configuration() {
     registerModule(AwardIdModule())
     registerModule(AwardContractIdModule())
     registerModule(FrameworkContractIdModule())
+    registerModule(RequirementValueModule())
     registerKotlinModule()
 
     configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false)
