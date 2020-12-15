@@ -1,12 +1,16 @@
 package com.procurement.contracting.domain.model
 
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
+import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.util.extension.toLocalDateTime
+import com.procurement.contracting.domain.util.extension.tryUUID
+import com.procurement.contracting.extension.UUID_PATTERN
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.infrastructure.fail.error.DataTimeError
 import com.procurement.contracting.lib.functional.Result
@@ -42,6 +46,25 @@ fun parseLotId(value: String, attributeName: String): Result<LotId, DataErrors.V
         ?: DataErrors.Validation.DataFormatMismatch(
             name = attributeName,
             expectedFormat = LotId.pattern,
+            actualValue = value
+        ).asFailure()
+
+fun parseBidId(value: String, attributeName: String): Result<BidId, DataErrors.Validation.DataFormatMismatch> =
+    value.tryUUID()
+        .mapFailure {
+            DataErrors.Validation.DataFormatMismatch(
+                name = attributeName,
+                expectedFormat = UUID_PATTERN,
+                actualValue = value
+            )
+        }
+
+fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErrors.Validation.DataFormatMismatch> =
+    AwardId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = AwardId.pattern,
             actualValue = value
         ).asFailure()
 
