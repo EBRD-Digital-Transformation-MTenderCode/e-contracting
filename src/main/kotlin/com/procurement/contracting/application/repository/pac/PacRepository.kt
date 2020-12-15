@@ -5,6 +5,7 @@ import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.MaybeFail
 import com.procurement.contracting.lib.functional.Result
 
 interface PacRepository {
@@ -15,4 +16,6 @@ interface PacRepository {
     fun saveNew(entity: PacEntity): Result<Boolean, Fail.Incident.Database>
 
     fun update(entity: PacEntity): Result<Boolean, Fail.Incident.Database>
+
+    fun save(entities: Collection<PacEntity>): MaybeFail<Fail.Incident.Database>
 }

@@ -1,5 +1,7 @@
 package com.procurement.contracting.infrastructure.repository
 
+import com.datastax.driver.core.BatchStatement
+import com.datastax.driver.core.BoundStatement
 import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
@@ -17,6 +19,7 @@ import com.procurement.contracting.infrastructure.extension.cassandra.toCassandr
 import com.procurement.contracting.infrastructure.extension.cassandra.toLocalDateTime
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.MaybeFail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Repository
@@ -140,18 +143,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
     )
 
     override fun saveNew(entity: PacEntity): Result<Boolean, Fail.Incident.Database> =
-        preparedSaveNewCQL.bind()
-            .apply {
-                setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
-                setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
-                setString(Database.PAC.COLUMN_ID, entity.id.underlying)
-                setString(Database.PAC.COLUMN_TOKEN, entity.token.underlying.toString())
-                setString(Database.PAC.COLUMN_OWNER, entity.owner.underlying)
-                setTimestamp(Database.PAC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
-                setString(Database.PAC.COLUMN_STATUS, entity.status.key)
-                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
-                setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
-            }
+        getSaveStatement(entity)
             .tryExecute(session)
             .mapFailure {
                 Fail.Incident.Database.DatabaseInteractionIncident(
@@ -181,4 +173,33 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             .onFailure { return it }
             .wasApplied()
             .asSuccess()
+
+    override fun save(entities: Collection<PacEntity>): MaybeFail<Fail.Incident.Database> {
+        val batchStatement = BatchStatement()
+
+        entities.forEach { entity ->
+           val statement = getSaveStatement(entity)
+            batchStatement.add(statement)
+        }
+
+        batchStatement.tryExecute(session)
+            .onFailure { return MaybeFail.fail(it.reason) }
+
+        return MaybeFail.none()
+    }
+
+    private fun getSaveStatement(entity: PacEntity): BoundStatement {
+        return preparedSaveNewCQL.bind()
+            .apply {
+                setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
+                setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
+                setString(Database.PAC.COLUMN_ID, entity.id.underlying)
+                setString(Database.PAC.COLUMN_TOKEN, entity.token.underlying.toString())
+                setString(Database.PAC.COLUMN_OWNER, entity.owner.underlying)
+                setTimestamp(Database.PAC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
+                setString(Database.PAC.COLUMN_STATUS, entity.status.key)
+                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
+            }
+    }
 }
