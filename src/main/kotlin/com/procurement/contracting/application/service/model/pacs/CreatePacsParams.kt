@@ -78,7 +78,7 @@ class CreatePacsParams(
         data class Detail(
             val id: BidId,
             val tenderers: List<Tenderer>,
-            val requirementResponses: List<RequirementResponse>?
+            val requirementResponses: List<RequirementResponse>
         ) {
             data class Tenderer(
                 val id: String,
