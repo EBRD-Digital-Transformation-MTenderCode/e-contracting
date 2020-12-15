@@ -1,10 +1,11 @@
 package com.procurement.contracting.application.service.model.pacs
 
 import com.procurement.contracting.domain.model.Token
-import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
-import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.pac.PacId
+import com.procurement.contracting.domain.model.pac.PacStatus
+import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import java.time.LocalDateTime
 
 data class CreatePacsResult(
@@ -12,10 +13,10 @@ data class CreatePacsResult(
     val token: Token?
 ) {
     data class Contract(
-        val id: String,
-        val status: AwardContractStatus,
-        val statusDetails: AwardContractStatusDetails,
-        val date: String,
+        val id: PacId,
+        val status: PacStatus,
+        val statusDetails: PacStatusDetails,
+        val date: LocalDateTime,
         val relatedLots: List<LotId>,
         val suppliers: List<Supplier>?,
         val awardId: AwardId?,
@@ -34,7 +35,7 @@ data class CreatePacsResult(
             data class Observation(
                 val id: String,
                 val notes: String,
-                val measure: String,
+                val measure: Any,
                 val relatedRequirementId: String,
                 val period: Period?,
                 val unit: Unit?
