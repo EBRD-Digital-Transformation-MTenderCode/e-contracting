@@ -1,6 +1,6 @@
 package com.procurement.contracting.infrastructure.handler.v2.converter
 
-import com.procurement.contracting.application.service.model.CreatePacsParams
+import com.procurement.contracting.application.service.model.pacs.CreatePacsParams
 import com.procurement.contracting.domain.model.parseAwardId
 import com.procurement.contracting.domain.model.parseBidId
 import com.procurement.contracting.domain.model.parseCpid

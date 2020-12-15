@@ -1,4 +1,4 @@
-package com.procurement.contracting.application.service.model
+package com.procurement.contracting.application.service.model.pacs
 
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
