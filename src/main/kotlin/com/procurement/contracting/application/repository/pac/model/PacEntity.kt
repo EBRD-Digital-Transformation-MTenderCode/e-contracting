@@ -18,7 +18,7 @@ data class PacEntity(
     val cpid: Cpid,
     val ocid: Ocid,
     val id: PacId,
-    val token: Token,
+    val token: Token?,
     val owner: Owner,
     val createdDate: LocalDateTime,
     val status: PacStatus,
