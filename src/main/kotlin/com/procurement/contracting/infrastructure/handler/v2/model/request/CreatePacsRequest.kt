@@ -3,7 +3,7 @@ package com.procurement.contracting.infrastructure.handler.v2.model.request
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.procurement.contracting.domain.model.requirement.response.RequirementRsValue
+import com.procurement.contracting.domain.model.DynamicValue
 
 data class CreatePacsRequest(
     @param:JsonProperty("cpid") @field:JsonProperty("cpid") val cpid: String,
@@ -94,7 +94,7 @@ data class CreatePacsRequest(
 
             data class RequirementResponse(
                 @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
-                @param:JsonProperty("value") @field:JsonProperty("value") val value: RequirementRsValue,
+                @param:JsonProperty("value") @field:JsonProperty("value") val value: DynamicValue,
                 @param:JsonProperty("requirement") @field:JsonProperty("requirement") val requirement: Requirement,
 
                 @JsonInclude(JsonInclude.Include.NON_NULL)

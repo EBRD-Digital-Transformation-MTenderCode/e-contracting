@@ -1,12 +1,12 @@
 package com.procurement.contracting.application.service.model.pacs
 
+import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
-import com.procurement.contracting.domain.model.requirement.response.RequirementRsValue
 import java.time.LocalDateTime
 
 class CreatePacsParams(
@@ -87,7 +87,7 @@ class CreatePacsParams(
 
             data class RequirementResponse(
                 val id: String,
-                val value: RequirementRsValue,
+                val value: DynamicValue,
                 val requirement: Requirement,
                 val period: Period?
             ) {
