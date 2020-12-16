@@ -9,7 +9,6 @@ import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
-import com.procurement.contracting.domain.util.extension.toListOrEmpty
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
@@ -31,7 +30,7 @@ class PacServiceImpl(
         val createdPacs = if (params.awards.isNotEmpty())
             createPacsByAwards(params)
         else
-            createPac(params)
+            listOf(createPac(params))
 
         val pacEntities = createdPacs.map { pac ->
             PacEntity.of(params.cpid, params.ocid, pac, transform = transform)
@@ -98,7 +97,8 @@ class PacServiceImpl(
         statusDetails = PacStatusDetails.ALL_REJECTED,
         relatedLots = listOf(params.tender.lots.first().id),
         token = Token.generate()
-    ).toListOrEmpty()
+    )
+
 
     private fun createPacsByAwards(params: CreatePacsParams) =
         params.awards.map { award ->
