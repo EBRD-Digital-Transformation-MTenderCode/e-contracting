@@ -4,14 +4,13 @@ import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacEntity
 import com.procurement.contracting.application.service.model.pacs.CreatePacsParams
 import com.procurement.contracting.application.service.model.pacs.CreatePacsResult
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.fc.Pac
-import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
@@ -37,6 +36,7 @@ class PacServiceImpl(
                 .onFailure { return it }
         }
         pacRepository.save(pacEntities)
+            .doOnFail { return it.asFailure() }
 
         return convertToPacResult(createdPacs).asSuccess()
     }
@@ -90,13 +90,13 @@ class PacServiceImpl(
     }
 
     private fun createPac(params: CreatePacsParams) = Pac(
-        id = PacId.generate(),
+        id = generationService.pacId(),
         date = params.date,
         owner = params.owner,
         status = PacStatus.PENDING,
         statusDetails = PacStatusDetails.ALL_REJECTED,
         relatedLots = listOf(params.tender.lots.first().id),
-        token = Token.generate()
+        token = generationService.token()
     )
 
 
@@ -104,7 +104,7 @@ class PacServiceImpl(
         params.awards.map { award ->
             val suppliers = createSuppliers(award)
             Pac(
-                id = PacId.generate(),
+                id = generationService.pacId(),
                 date = params.date,
                 owner = params.owner,
                 awardId = award.id,
