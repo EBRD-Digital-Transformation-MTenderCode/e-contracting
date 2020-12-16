@@ -130,17 +130,19 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             ?.convert()
             .asSuccess()
 
-    private fun Row.convert(): PacEntity = PacEntity(
-        cpid = Cpid.orNull(getString(Database.PAC.COLUMN_CPID))!!,
-        ocid = Ocid.orNull(getString(Database.PAC.COLUMN_OCID))!!,
-        id = PacId.orNull(getString(Database.PAC.COLUMN_ID))!!,
-        token = Token.orNull(getString(Database.PAC.COLUMN_TOKEN))!!,
-        owner = Owner.orNull(getString(Database.PAC.COLUMN_OWNER))!!,
-        createdDate = getTimestamp(Database.PAC.COLUMN_CREATED_DATE).toLocalDateTime(),
-        status = PacStatus.creator(getString(Database.PAC.COLUMN_STATUS)),
-        statusDetails = PacStatusDetails.creator(getString(Database.PAC.COLUMN_STATUS_DETAILS)),
-        jsonData = getString(Database.PAC.COLUMN_JSON_DATA)
-    )
+    private fun Row.convert(): PacEntity {
+        return PacEntity(
+            cpid = Cpid.orNull(getString(Database.PAC.COLUMN_CPID))!!,
+            ocid = Ocid.orNull(getString(Database.PAC.COLUMN_OCID))!!,
+            id = PacId.orNull(getString(Database.PAC.COLUMN_ID))!!,
+            token = getString(Database.PAC.COLUMN_TOKEN)?.let { Token.orNull(it)!! },
+            owner = Owner.orNull(getString(Database.PAC.COLUMN_OWNER))!!,
+            createdDate = getTimestamp(Database.PAC.COLUMN_CREATED_DATE).toLocalDateTime(),
+            status = PacStatus.creator(getString(Database.PAC.COLUMN_STATUS)),
+            statusDetails = PacStatusDetails.creator(getString(Database.PAC.COLUMN_STATUS_DETAILS)),
+            jsonData = getString(Database.PAC.COLUMN_JSON_DATA)
+        )
+    }
 
     override fun saveNew(entity: PacEntity): Result<Boolean, Fail.Incident.Database> =
         getSaveStatement(entity)
@@ -194,7 +196,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                 setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
                 setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
                 setString(Database.PAC.COLUMN_ID, entity.id.underlying)
-                setString(Database.PAC.COLUMN_TOKEN, entity.token.underlying.toString())
+                setString(Database.PAC.COLUMN_TOKEN, entity.token?.toString())
                 setString(Database.PAC.COLUMN_OWNER, entity.owner.underlying)
                 setTimestamp(Database.PAC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
                 setString(Database.PAC.COLUMN_STATUS, entity.status.key)
