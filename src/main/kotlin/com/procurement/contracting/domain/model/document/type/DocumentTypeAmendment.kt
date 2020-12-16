@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class DocumentTypeAmendment(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class DocumentTypeAmendment(@JsonValue override val key: String) : EnumElementProvider.Element {
     CONTRACT_NOTICE("contractNotice"),
     CONTRACT_ARRANGEMENTS("contractArrangements"),
     CONTRACT_SCHEDULE("contractSchedule"),

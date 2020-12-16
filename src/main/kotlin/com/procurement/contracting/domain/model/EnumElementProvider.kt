@@ -6,7 +6,7 @@ import com.procurement.contracting.lib.functional.Result.Companion.failure
 import com.procurement.contracting.lib.functional.Result.Companion.success
 
 abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,
-                                                                   T : EnumElementProvider.Key {
+                                                                   T : EnumElementProvider.Element {
 
     @Target(AnnotationTarget.PROPERTY)
     annotation class DeprecatedElement
@@ -14,8 +14,10 @@ abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,
     @Target(AnnotationTarget.PROPERTY)
     annotation class ExcludedElement
 
-    interface Key {
+    interface Element {
         val key: String
+        val isNeutralElement: Boolean
+            get() = false
     }
 
     class EnumInfo<T>(
@@ -27,7 +29,7 @@ abstract class EnumElementProvider<T>(val info: EnumInfo<T>) where T : Enum<T>,
         inline fun <reified T : Enum<T>> info() = EnumInfo(target = T::class.java, values = enumValues())
 
         fun <T> Collection<T>.keysAsStrings(): List<String> where T : Enum<T>,
-                                                                  T : Key = this
+                                                                  T : Element = this
             .map { element -> element.key + if (element.isDeprecated()) " (Deprecated)" else "" }
 
         private fun <E : Enum<E>> Enum<E>.isNotExcluded(): Boolean = this.findAnnotation<ExcludedElement, E>() == null

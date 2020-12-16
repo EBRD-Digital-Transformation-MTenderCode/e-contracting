@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class TreasuryResponseStatus(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class TreasuryResponseStatus(@JsonValue override val key: String) : EnumElementProvider.Element {
     APPROVED("3004"),
     NOT_ACCEPTED("3005"),
     REJECTED("3006");

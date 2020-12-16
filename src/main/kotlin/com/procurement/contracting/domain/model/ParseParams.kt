@@ -83,7 +83,7 @@ fun parseCANStatusDetails(
 fun <T> parseEnum(
     value: String, allowedEnums: Set<T>, attributeName: String, target: EnumElementProvider<T>
 ): Result<T, DataErrors.Validation.UnknownValue> where T : Enum<T>,
-                                                       T : EnumElementProvider.Key =
+                                                       T : EnumElementProvider.Element =
     target.orNull(value)
         ?.takeIf { it in allowedEnums }
         ?.asSuccess()

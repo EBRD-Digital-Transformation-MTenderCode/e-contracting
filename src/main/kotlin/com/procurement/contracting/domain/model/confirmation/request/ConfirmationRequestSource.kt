@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class ConfirmationRequestSource(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class ConfirmationRequestSource(@JsonValue override val key: String) : EnumElementProvider.Element {
     BUYER("buyer"),
     TENDERER("tenderer"),
     APPROVE_BODY("approveBody");

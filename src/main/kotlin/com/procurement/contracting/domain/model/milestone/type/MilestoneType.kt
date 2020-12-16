@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class MilestoneType(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class MilestoneType(@JsonValue override val key: String) : EnumElementProvider.Element {
     DELIVERY("delivery"),
     X_WARRANTY("x_warranty"),
     X_REPORTING("x_reporting"),

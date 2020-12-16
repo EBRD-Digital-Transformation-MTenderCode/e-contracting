@@ -88,7 +88,7 @@ sealed class Fail {
                 Transform(number = "2.6", description = description)
         }
 
-        enum class Level(override val key: String) : EnumElementProvider.Key {
+        enum class Level(override val key: String) : EnumElementProvider.Element {
             ERROR("error"),
             WARNING("warning"),
             INFO("info");

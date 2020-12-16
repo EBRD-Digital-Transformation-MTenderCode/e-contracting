@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class PacStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class PacStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Element {
 
     CONCLUDED("concluded"),
     ALL_REJECTED("allRejected")

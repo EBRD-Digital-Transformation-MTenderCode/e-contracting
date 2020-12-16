@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.infrastructure.api.Action
 
-enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvider.Key, Action {
+enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvider.Element, Action {
 
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
