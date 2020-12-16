@@ -2,6 +2,7 @@ package com.procurement.contracting.domain.model.fc
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
@@ -42,7 +43,7 @@ data class Pac(
         data class Observation(
             @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
             @param:JsonProperty("notes") @field:JsonProperty("notes") val notes: String,
-            @param:JsonProperty("measure") @field:JsonProperty("measure") val measure: Any,
+            @param:JsonProperty("measure") @field:JsonProperty("measure") val measure: DynamicValue,
             @param:JsonProperty("relatedRequirementId") @field:JsonProperty("relatedRequirementId") val relatedRequirementId: String,
 
             @JsonInclude(JsonInclude.Include.NON_NULL)

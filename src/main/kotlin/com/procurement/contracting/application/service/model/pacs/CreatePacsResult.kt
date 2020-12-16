@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service.model.pacs
 
+import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
@@ -35,7 +36,7 @@ data class CreatePacsResult(
             data class Observation(
                 val id: String,
                 val notes: String,
-                val measure: Any,
+                val measure: DynamicValue,
                 val relatedRequirementId: String,
                 val period: Period?,
                 val unit: Unit?
