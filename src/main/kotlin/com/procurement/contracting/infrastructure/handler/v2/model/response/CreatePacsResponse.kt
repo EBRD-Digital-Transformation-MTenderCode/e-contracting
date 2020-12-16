@@ -38,7 +38,7 @@ data class CreatePacsResponse(
             data class Observation(
                 @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
                 @param:JsonProperty("notes") @field:JsonProperty("notes") val notes: String,
-                @param:JsonProperty("measure") @field:JsonProperty("measure") val measure: String,
+                @param:JsonProperty("measure") @field:JsonProperty("measure") val measure: Any,
                 @param:JsonProperty("relatedRequirementId") @field:JsonProperty("relatedRequirementId") val relatedRequirementId: String,
 
                 @JsonInclude(JsonInclude.Include.NON_NULL)
