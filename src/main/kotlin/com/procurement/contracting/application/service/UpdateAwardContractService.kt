@@ -68,6 +68,7 @@ import com.procurement.contracting.infrastructure.handler.v1.owner
 import com.procurement.contracting.infrastructure.handler.v1.pmd
 import com.procurement.contracting.infrastructure.handler.v1.startDate
 import com.procurement.contracting.infrastructure.handler.v1.token
+import com.procurement.contracting.lib.errorIfBlank
 import com.procurement.contracting.model.dto.ocds.BusinessFunction
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.DetailsSupplier
@@ -110,6 +111,8 @@ class UpdateAwardContractService(
         val dateTime = cm.startDate
         val mpc = cm.mainProcurementCategory
         val dto = toObject(UpdateAcRq::class.java, cm.data)
+
+        dto.validateTextAttributes()
 
         checkTransactionsValue(dto)
         checkAwardSupplierPersones(dto.award)
@@ -181,6 +184,237 @@ class UpdateAwardContractService(
             contract = contractProcess.contract,
             award = contractProcess.award,
             buyer = contractProcess.buyer!!
+        )
+    }
+
+    private fun UpdateAcRq.validateTextAttributes() {
+        planning.budget.description.checkForBlank("planning.budget.description")
+
+        planning.implementation.transactions
+            .forEachIndexed { transactionIdx, transaction ->
+                transaction.id.checkForBlank("planning.implementation.transactions[$transactionIdx].id")
+                transaction.relatedContractMilestone.checkForBlank("planning.implementation.transactions[$transactionIdx].id")
+            }
+
+        award.documents
+            ?.forEachIndexed { index, document ->
+                document.description.checkForBlank("award.documents[$index].description")
+                document.title.checkForBlank("award.documents[$index].title")
+            }
+
+        award.items
+            .forEachIndexed { index, item ->
+                item.apply {
+                    deliveryAddress.postalCode.checkForBlank("award.items[$index].deliveryAddress.postalCode")
+                    deliveryAddress.streetAddress.checkForBlank("award.items[$index].deliveryAddress.streetAddress")
+                    deliveryAddress.addressDetails
+                        .apply {
+                            locality.scheme.checkForBlank("award.items[$index].deliveryAddress.addressDetails.locality.scheme")
+                            locality.id.checkForBlank("award.items[$index].deliveryAddress.addressDetails.locality.id")
+                            locality.description.checkForBlank("award.items[$index].deliveryAddress.addressDetails.locality.description")
+                        }
+                }
+            }
+
+        award.suppliers
+            .forEachIndexed{supplierIdx, supplier ->
+                supplier.additionalIdentifiers
+                    .forEachIndexed { additionalIdentifierIdx, additionalIdentifier ->
+                        additionalIdentifier.scheme.checkForBlank("award.suppliers[$supplierIdx].additionalIdentifiers[$additionalIdentifierIdx].scheme")
+                        additionalIdentifier.id.checkForBlank("award.suppliers[$supplierIdx].additionalIdentifiers[$additionalIdentifierIdx].id")
+                        additionalIdentifier.legalName.checkForBlank("award.suppliers[$supplierIdx].additionalIdentifiers[$additionalIdentifierIdx].legalName")
+                        additionalIdentifier.uri.checkForBlank("award.suppliers[$supplierIdx].additionalIdentifiers[$additionalIdentifierIdx].uri")
+                    }
+
+                supplier.details
+                    .apply {
+                        bankAccounts.forEachIndexed { bankAccountIdx, bankAccount ->
+                            bankAccount.bankName.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].bankName")
+                            bankAccount.description.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].description")
+
+                            bankAccount.identifier.id.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].id")
+                            bankAccount.identifier.scheme.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].scheme")
+
+                            bankAccount.accountIdentification.scheme.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].accountIdentification.scheme")
+                            bankAccount.accountIdentification.id.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].accountIdentification.id")
+                            bankAccount.additionalAccountIdentifiers
+                                ?.forEachIndexed { additionalAccountIdentifierIdx, additionalAccountIdentifier ->
+                                    additionalAccountIdentifier.scheme.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].additionalAccountIdentifiers[$additionalAccountIdentifierIdx].scheme")
+                                    additionalAccountIdentifier.id.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].additionalAccountIdentifiers[$additionalAccountIdentifierIdx].id")
+                                }
+
+                            bankAccount.address
+                                .apply {
+                                    postalCode.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.postalCode")
+                                    streetAddress.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.streetAddress")
+
+                                    addressDetails.apply {
+                                        locality.scheme.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.scheme")
+                                        locality.id.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.id")
+                                        locality.description.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.description")
+                                        locality.uri.checkForBlank("award.suppliers[$supplierIdx].details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.uri")
+                                    }
+                                }
+
+                        }
+
+                        legalForm.description.checkForBlank("award.suppliers[$supplierIdx].details.legalForm.description")
+                        legalForm.id.checkForBlank("award.suppliers[$supplierIdx].details.legalForm.id")
+                        legalForm.scheme.checkForBlank("award.suppliers[$supplierIdx].details.legalForm.scheme")
+                        legalForm.uri.checkForBlank("award.suppliers[$supplierIdx].details.legalForm.uri")
+
+                        mainEconomicActivities.forEachIndexed { mainEconomicActivityIdx, mainEconomicActivity ->
+                            mainEconomicActivity.scheme.checkForBlank("award.suppliers[$supplierIdx].details.mainEconomicActivities[$mainEconomicActivityIdx].scheme")
+                            mainEconomicActivity.id.checkForBlank("award.suppliers[$supplierIdx].details.mainEconomicActivities[$mainEconomicActivityIdx].id")
+                            mainEconomicActivity.description.checkForBlank("award.suppliers[$supplierIdx].details.mainEconomicActivities[$mainEconomicActivityIdx].description")
+                            mainEconomicActivity.uri.checkForBlank("award.suppliers[$supplierIdx].details.mainEconomicActivities[$mainEconomicActivityIdx].uri")
+                        }
+
+                        permits?.forEachIndexed { permitIdx, permit ->
+                            permit.scheme.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].scheme")
+                            permit.id.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].id")
+                            permit.url.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].url")
+
+                            permit.permitDetails
+                                .apply {
+                                    issuedBy.id.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].permitDetails.issuedBy.id")
+                                    issuedBy.name.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].permitDetails.issuedBy.name")
+
+                                    issuedThought.id.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].permitDetails.issuedThought.id")
+                                    issuedThought.name.checkForBlank("award.suppliers[$supplierIdx].details.permits[$permitIdx].permitDetails.issuedThought.name")
+                                }
+                        }
+
+                        scale.checkForBlank("award.suppliers[$supplierIdx].details.scale")
+                        typeOfSupplier.checkForBlank("award.suppliers[$supplierIdx].details.typeOfSupplier")
+                    }
+
+                supplier.persones
+                    .forEachIndexed{personIdx, person ->
+                        person.name.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].name")
+                        person.title.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].title")
+
+                        person.identifier.id.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].identifier.id")
+                        person.identifier.scheme.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].identifier.scheme")
+                        person.identifier.uri.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].identifier.uri")
+
+                        person.businessFunctions
+                            .forEachIndexed{businessFunctionIdx, businessFunction ->
+                                businessFunction.id.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].businessFunctions[$businessFunctionIdx].id")
+                                businessFunction.jobTitle.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].businessFunctions[$businessFunctionIdx].jobTitle")
+
+                                businessFunction.documents
+                                    .forEachIndexed { documentIdx, document ->
+                                        document.description.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].businessFunctions[$businessFunctionIdx].documents[$documentIdx].description")
+                                        document.title.checkForBlank("award.suppliers[$supplierIdx].persones[$personIdx].businessFunctions[$businessFunctionIdx].documents[$documentIdx].title")
+                                    }
+                            }
+                    }
+            }
+
+        buyer.apply {
+            additionalIdentifiers
+                .forEachIndexed {additionalIdentifierIdx, additionalIdentifier ->
+                additionalIdentifier.scheme.checkForBlank("buyer.additionalIdentifiers[$additionalIdentifierIdx].scheme")
+                additionalIdentifier.id.checkForBlank("buyer.additionalIdentifiers[$additionalIdentifierIdx].id")
+                additionalIdentifier.legalName.checkForBlank("buyer.additionalIdentifiers[$additionalIdentifierIdx].legalName")
+                additionalIdentifier.uri.checkForBlank("buyer.additionalIdentifiers[$additionalIdentifierIdx].uri")
+            }
+
+            details.apply {
+                bankAccounts
+                    .forEachIndexed { bankAccountIdx, bankAccount ->
+                        bankAccount.bankName.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].bankName")
+                        bankAccount.description.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].bankName")
+
+
+                        bankAccount.accountIdentification.scheme.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].accountIdentification.scheme")
+                        bankAccount.accountIdentification.id.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].accountIdentification.id")
+
+                        bankAccount.additionalAccountIdentifiers
+                            ?.forEachIndexed { accountIdentifierIdx, accountIdentifier ->
+                                accountIdentifier.id.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].additionalAccountIdentifiers[$accountIdentifierIdx].id")
+                                accountIdentifier.scheme.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].additionalAccountIdentifiers[$accountIdentifierIdx].scheme")
+                        }
+
+                        bankAccount.address
+                            .apply {
+                                postalCode.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.postalCode")
+                                streetAddress.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.streetAddress")
+
+                                addressDetails.apply {
+                                    locality.scheme.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.scheme")
+                                    locality.id.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.id")
+                                    locality.description.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.description")
+                                    locality.uri.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].address.addressDetails.locality.uri")
+                                }
+                            }
+                    }
+            }
+
+            persones
+                .forEachIndexed {personIdx, person ->
+                    person.name.checkForBlank("buyer.persones[$personIdx].name")
+                    person.title.checkForBlank("buyer.persones[$personIdx].title")
+
+                    person.identifier
+                        .apply {
+                            scheme.checkForBlank("buyer.persones[$personIdx].identifier.scheme")
+                            id.checkForBlank("buyer.persones[$personIdx].identifier.id")
+                            uri.checkForBlank("buyer.persones[$personIdx].identifier.uri")
+                        }
+
+                    person.businessFunctions
+                        .forEachIndexed { businessFunctionIdx, businessFunction ->
+                            businessFunction.id.checkForBlank("buyer.persones[$personIdx].businessFunctions[$businessFunctionIdx].id")
+                            businessFunction.jobTitle.checkForBlank("buyer.persones[$personIdx].businessFunctions[$businessFunctionIdx].jobTitle")
+
+                            businessFunction.documents
+                                .forEachIndexed { documentIdx, document ->
+                                    document.description.checkForBlank("buyer.persones[$personIdx].businessFunctions[$businessFunctionIdx].documents[$documentIdx].description")
+                                    document.title.checkForBlank("buyer.persones[$personIdx].businessFunctions[$businessFunctionIdx].documents[$documentIdx].title")
+                                }
+                        }
+                }
+
+
+        }
+
+        contract.apply {
+            title.checkForBlank("contract.title")
+            description.checkForBlank("contract.description")
+
+            agreedMetrics.forEachIndexed { agreedMetricIdx, agreedMetric ->
+                agreedMetric.observations
+                    ?.forEachIndexed { observationIdx, observation ->
+                        val measure = observation.measure
+                            if(measure is String)
+                                measure.checkForBlank("contract.agreedMetrics[$observationIdx].measure")
+                    }
+            }
+
+            confirmationRequests?.forEach {  confirmationRequest->
+                confirmationRequest.id.checkForBlank("contract.confirmationRequests")
+            }
+
+            documents?.forEachIndexed {documentIdx, document ->
+                document.description.checkForBlank("contract.documents[$documentIdx].description")
+                document.title.checkForBlank("contract.documents[$documentIdx].title")
+            }
+
+            milestones.forEachIndexed { milestoneIdx, milestone ->
+                milestone.id.checkForBlank("contract.milestones[$milestoneIdx].id")
+                milestone.title.checkForBlank("contract.milestones[$milestoneIdx].title")
+                milestone.description.checkForBlank("contract.milestones[$milestoneIdx].description")
+                milestone.additionalInformation.checkForBlank("contract.milestones[$milestoneIdx].additionalInformation")
+            }
+        }
+    }
+
+    private fun String?.checkForBlank(name: String) = this.errorIfBlank {
+        ErrorException(
+            error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
+            message = "The attribute '$name' is empty or blank."
         )
     }
 
