@@ -14,6 +14,7 @@ import com.procurement.contracting.domain.model.milestone.status.MilestoneStatus
 import com.procurement.contracting.domain.model.milestone.type.MilestoneType
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.transaction.type.TransactionType
+import com.procurement.contracting.domain.util.extension.getDuplicate
 import com.procurement.contracting.domain.util.extension.getElementsForUpdate
 import com.procurement.contracting.domain.util.extension.getNewElements
 import com.procurement.contracting.domain.util.extension.toSetBy
@@ -113,6 +114,7 @@ class UpdateAwardContractService(
         val dto = toObject(UpdateAcRq::class.java, cm.data)
 
         dto.validateTextAttributes()
+        dto.validateDuplicates()
 
         checkTransactionsValue(dto)
         checkAwardSupplierPersones(dto.award)
@@ -416,6 +418,147 @@ class UpdateAwardContractService(
             error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
             message = "The attribute '$name' is empty or blank."
         )
+    }
+
+    private fun UpdateAcRq.validateDuplicates() {
+        buyer.additionalIdentifiers
+            .apply {
+                val duplicate = getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                if (duplicate != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'buyer.additionalIdentifiers' has duplicate by scheme '${duplicate.scheme}' and id '${duplicate.id}'."
+                    )
+            }
+
+        buyer.persones
+            .apply {
+                val duplicatePersons = getDuplicate { it.id }
+                if (duplicatePersons != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'buyer.persones' has duplicate by id '${duplicatePersons.id}'."
+                    )
+
+                forEachIndexed { personIdx, person ->
+                    val duplicateBusinessFunctions = person.businessFunctions.getDuplicate { it.id }
+                    if (duplicateBusinessFunctions != null)
+                        throw ErrorException(
+                            error = ErrorType.DUPLICATE,
+                            message = "Attribute 'buyer.persones[$personIdx].businessFunctions' has duplicate id '${duplicateBusinessFunctions.id}'."
+                        )
+
+                    person.businessFunctions
+                        .forEachIndexed { businessFunctionIdx, businessFunction ->
+                            val duplicateDocuments = businessFunction.documents.getDuplicate { it.id }
+                            if (duplicateDocuments != null)
+                                throw ErrorException(
+                                    error = ErrorType.DUPLICATE,
+                                    message = "Attribute 'buyer.persones[$personIdx].businessFunctions[$businessFunctionIdx].documents' has duplicate id '${duplicateDocuments.id}'."
+                                )
+                        }
+
+                }
+            }
+
+        buyer.details
+            .apply {
+                val duplicateBankAccounts = buyer.details.bankAccounts
+                    .getDuplicate { it.identifier.scheme.toUpperCase() + it.identifier.id.toUpperCase() }
+                if (duplicateBankAccounts != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'buyer.details.bankAccounts' has duplicate by scheme '${duplicateBankAccounts.identifier.scheme}' and id '${duplicateBankAccounts.identifier.id}'."
+                    )
+
+                bankAccounts.forEachIndexed { bankAccountIdx, bankAccount ->
+                    val duplicateAdditionalAccountIdentifiers =
+                        bankAccount.additionalAccountIdentifiers.getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                    if (duplicateAdditionalAccountIdentifiers != null)
+                        throw ErrorException(
+                            error = ErrorType.DUPLICATE,
+                            message = "Attribute 'buyer.details.bankAccounts[$bankAccountIdx].additionalAccountIdentifiers' has duplicate by scheme '${duplicateAdditionalAccountIdentifiers.scheme}' and id '${duplicateAdditionalAccountIdentifiers.id}'."
+                        )
+                }
+            }
+
+        contract.confirmationRequests
+            .apply {
+                val duplicate = getDuplicate { it.id.toUpperCase() }
+                if (duplicate != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'contract.confirmationRequests' has duplicate by id '${duplicate.id}'."
+                    )
+            }
+
+        award.suppliers
+            .forEachIndexed { supplierIdx, supplier ->
+                val duplicateAdditionalIdentifiers = supplier.additionalIdentifiers
+                    .getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                if (duplicateAdditionalIdentifiers != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'award.suppliers[$supplierIdx].additionalIdentifiers' has duplicate by scheme '${duplicateAdditionalIdentifiers.scheme}' and id '${duplicateAdditionalIdentifiers.id}'."
+                    )
+
+                supplier.details
+                    .apply {
+                        val duplicateMainEconomicActivities =
+                            mainEconomicActivities.getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                        if (duplicateMainEconomicActivities != null)
+                            throw ErrorException(
+                                error = ErrorType.DUPLICATE,
+                                message = "Attribute 'award.suppliers[$supplierIdx].mainEconomicActivities' has duplicate by scheme '${duplicateMainEconomicActivities.scheme}' and id '${duplicateMainEconomicActivities.id}'."
+                            )
+
+                        val duplicatePermits = permits?.getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                        if (duplicatePermits != null)
+                            throw ErrorException(
+                                error = ErrorType.DUPLICATE,
+                                message = "Attribute 'award.suppliers[$supplierIdx].permits' has duplicate by scheme '${duplicatePermits.scheme}' and id '${duplicatePermits.id}'."
+                            )
+
+                        val duplicateBankAccounts =
+                            bankAccounts.getDuplicate { it.identifier.scheme.toUpperCase() + it.identifier.id.toUpperCase() }
+                        if (duplicateBankAccounts != null)
+                            throw ErrorException(
+                                error = ErrorType.DUPLICATE,
+                                message = "Attribute 'award.suppliers[$supplierIdx].bankAccounts' has duplicate by scheme '${duplicateBankAccounts.identifier.scheme}' and id '${duplicateBankAccounts.identifier.id}'."
+                            )
+
+                        bankAccounts.forEachIndexed { bankAccountIdx, bankAccount ->
+                            val duplicateAdditionalAccountIdentifiers = bankAccount.additionalAccountIdentifiers
+                                .getDuplicate { it.scheme.toUpperCase() + it.id.toUpperCase() }
+                            if (duplicateAdditionalAccountIdentifiers != null)
+                                throw ErrorException(
+                                    error = ErrorType.DUPLICATE,
+                                    message = "Attribute 'award.suppliers[$supplierIdx].bankAccounts[$bankAccountIdx].additionalAccountIdentifiers' has duplicate by scheme '${duplicateAdditionalAccountIdentifiers.scheme}' and id '${duplicateAdditionalAccountIdentifiers.id}'."
+                                )
+                        }
+                    }
+
+            }
+
+        planning.budget.budgetAllocation
+            .apply {
+                val duplicate = getDuplicate { it.budgetBreakdownID }
+                if (duplicate != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'planning.budget.budgetAllocation' has duplicate by budgetBreakdownID '${duplicate}'."
+                    )
+            }
+
+        planning.budget.budgetSource
+            .apply {
+                val duplicate = getDuplicate { it.budgetBreakdownID }
+                if (duplicate != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'planning.budget.budgetSource' has duplicate by budgetBreakdownID '${duplicate}'."
+                    )
+            }
     }
 
     /**
