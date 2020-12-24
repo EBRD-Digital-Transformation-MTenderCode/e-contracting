@@ -88,5 +88,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     NO_REGDATA("00.82", "RegData from treasury is absent."),
     INVALID_ATTRIBUTE("00.83", "Invalid attribute."),
     INVALID_FORMAT_OF_ATTRIBUTE("00.84", "Invalid attribute format."),
-    INCORRECT_VALUE_ATTRIBUTE("00.85", "Incorrect an attribute value.");
+    INCORRECT_VALUE_ATTRIBUTE("00.85", "Incorrect an attribute value."),
+    DUPLICATE("00.86", "Duplicate.");
 }
