@@ -482,15 +482,36 @@ class UpdateAwardContractService(
                 }
             }
 
-        contract.confirmationRequests
-            .apply {
-                val duplicate = getDuplicate { it.id.toUpperCase() }
+        contract.apply {
+            confirmationRequests
+                .apply {
+                    val duplicate = getDuplicate { it.id.toUpperCase() }
+                    if (duplicate != null)
+                        throw ErrorException(
+                            error = ErrorType.DUPLICATE,
+                            message = "Attribute 'contract.confirmationRequests' has duplicate by id '${duplicate.id}'."
+                        )
+                }
+
+            milestones.forEachIndexed { milestoneIdx, milestone ->
+                val duplicate = milestone.relatedItems.getDuplicate { it }
                 if (duplicate != null)
                     throw ErrorException(
                         error = ErrorType.DUPLICATE,
-                        message = "Attribute 'contract.confirmationRequests' has duplicate by id '${duplicate.id}'."
+                        message = "Attribute 'contract.milestones[$milestoneIdx].relatedItems' has duplicate '$duplicate'."
                     )
             }
+
+            documents?.forEachIndexed { documentIdx, document ->
+                val duplicate = document.relatedLots.getDuplicate { it }
+                if (duplicate != null)
+                    throw ErrorException(
+                        error = ErrorType.DUPLICATE,
+                        message = "Attribute 'contract.documents[$documentIdx].relatedLots' has duplicate '$duplicate'."
+                    )
+            }
+        }
+
 
         award.suppliers
             .forEachIndexed { supplierIdx, supplier ->
