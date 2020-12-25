@@ -195,7 +195,7 @@ class UpdateAwardContractService(
         planning.implementation.transactions
             .forEachIndexed { transactionIdx, transaction ->
                 transaction.id.checkForBlank("planning.implementation.transactions[$transactionIdx].id")
-                transaction.relatedContractMilestone.checkForBlank("planning.implementation.transactions[$transactionIdx].id")
+                transaction.relatedContractMilestone.checkForBlank("planning.implementation.transactions[$transactionIdx].relatedContractMilestone")
             }
 
         award.documents
@@ -327,7 +327,7 @@ class UpdateAwardContractService(
                 bankAccounts
                     .forEachIndexed { bankAccountIdx, bankAccount ->
                         bankAccount.bankName.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].bankName")
-                        bankAccount.description.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].bankName")
+                        bankAccount.description.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].description")
 
 
                         bankAccount.accountIdentification.scheme.checkForBlank("buyer.details.bankAccounts[$bankAccountIdx].accountIdentification.scheme")
