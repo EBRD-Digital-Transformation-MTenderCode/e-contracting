@@ -182,6 +182,8 @@ class SigningAwardContractService(
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
 
+        dto.validateTextAttributes()
+
         val awardContractId = ocid.asAwardContractId()
         val entity: AwardContractEntity = acRepository.findBy(cpid, awardContractId)
             .orThrow { it.exception }
