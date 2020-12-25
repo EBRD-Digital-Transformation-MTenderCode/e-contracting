@@ -38,6 +38,7 @@ import com.procurement.contracting.infrastructure.handler.v1.owner
 import com.procurement.contracting.infrastructure.handler.v1.pmd
 import com.procurement.contracting.infrastructure.handler.v1.startDate
 import com.procurement.contracting.infrastructure.handler.v1.token
+import com.procurement.contracting.lib.errorIfBlank
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponse
 import com.procurement.contracting.model.dto.ocds.ConfirmationResponseValue
@@ -71,6 +72,8 @@ class SigningAwardContractService(
         val startDate = cm.startDate
         val requestId = cm.context.id ?: throw ErrorException(CONTEXT)
         val dto = toObject(ProceedResponseRq::class.java, cm.data)
+
+        dto.validateTextAttributes()
 
         val awardContractId = ocid.asAwardContractId()
         val entity: AwardContractEntity = acRepository.findBy(cpid, awardContractId)
@@ -285,6 +288,20 @@ class SigningAwardContractService(
             throw SaveEntityException(message = "An error occurred when writing a record(s) of the save updated AC by cpid '${cpid}' and id '${updatedContractEntity.id}' with status '${updatedContractEntity.status}' and status details '${updatedContractEntity.statusDetails}' to the database. Record is not exists.")
 
         return SupplierSigningRs(treasuryValidation, treasuryBudgetSourcesRs, contractProcess.contract)
+    }
+
+    private fun ProceedResponseRq.validateTextAttributes() {
+        confirmationResponse.value.verification
+            .forEachIndexed { verificationIdx, verification ->
+                verification.value.checkForBlank("confirmationResponse.value.verification[$verificationIdx].value")
+            }
+    }
+
+    private fun String?.checkForBlank(name: String) = this.errorIfBlank {
+        ErrorException(
+            error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
+            message = "The attribute '$name' is empty or blank."
+        )
     }
 
     private fun isApproveBodyValidationPresent(milestones: List<Milestone>?): Boolean {
