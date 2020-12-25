@@ -823,11 +823,9 @@ class UpdateAwardContractService(
         val confRequestDto = dto.contract.confirmationRequests
         if (confRequestDto != null) {
             //validation
-            if (documents != null) {
-                val relatedItemIds = confRequestDto.toSetBy { it.relatedItem }
-                val documentIds = documents.toSetBy { it.id }
-                if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
-            }
+            val relatedItemIds = confRequestDto.toSetBy { it.relatedItem }
+            val documentIds = documents?.toSetBy { it.id }.orEmpty()
+            if (!documentIds.containsAll(relatedItemIds)) throw ErrorException(CONFIRMATION_ITEM)
 
             val buyerAuthority = getPersonByBFType(dto.buyer.persones, "authority")
                     ?: throw ErrorException(PERSON_NOT_FOUND)
