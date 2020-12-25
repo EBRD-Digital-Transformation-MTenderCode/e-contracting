@@ -704,7 +704,7 @@ class UpdateAwardContractService(
     private fun updateContractPeriod(dto: UpdateAcRq, dateTime: LocalDateTime): Period {
         val periodDto = dto.contract.period
         if (periodDto.startDate <= dateTime) throw ErrorException(CONTRACT_PERIOD)
-        if (periodDto.startDate > periodDto.endDate) throw ErrorException(CONTRACT_PERIOD)
+        if (periodDto.startDate >= periodDto.endDate) throw ErrorException(CONTRACT_PERIOD)
         return periodDto
     }
 
