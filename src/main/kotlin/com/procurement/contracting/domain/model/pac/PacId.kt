@@ -10,7 +10,7 @@ class PacId private constructor(val underlying: String) {
         const val pattern = UUID_PATTERN
         fun validate(text: String): Boolean = text.isUUID
         fun orNull(text: String): PacId? =
-            if (validate(text)) PacId(UUID.fromString(text).toString()) else null
+            if (validate(text)) PacId(text) else null
 
         fun generate() = PacId(UUID.randomUUID().toString())
     }
