@@ -223,12 +223,14 @@ class CassandraPacRepositoryIT {
     fun saveAll() {
         val firstEntity = expectedPac()
         val secondEntity = firstEntity.copy(id = PacId.generate())
-        val expected = listOf(firstEntity, secondEntity)
+        val expected = setOf(firstEntity, secondEntity)
 
         pacRepository.save(expected)
 
         val actual = pacRepository.findBy(cpid = CPID, ocid = OCID).get()
-        assertEquals(expected, actual)
+
+        assertTrue(actual.size == 2)
+        assertEquals(expected, actual.toSet())
     }
 
     private fun createKeyspace() {
