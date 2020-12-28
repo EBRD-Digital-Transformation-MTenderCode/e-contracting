@@ -3,7 +3,7 @@ package com.procurement.contracting.domain.model
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 
-enum class MainProcurementCategory(@JsonValue override val key: String): EnumElementProvider.Key {
+enum class MainProcurementCategory(@JsonValue override val key: String): EnumElementProvider.Element {
     GOODS("goods"),
     SERVICES("services"),
     WORKS("works");

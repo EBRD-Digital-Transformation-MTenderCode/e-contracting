@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class TenderStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class TenderStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Element {
     PRESELECTION("preselection"),
     PRESELECTED("preselected"),
     PREQUALIFICATION("prequalification"),

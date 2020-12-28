@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 
 enum class ProcurementMethodDetails(@JsonValue override val key: String, val procurementMethod: String) :
-    EnumElementProvider.Key {
+    EnumElementProvider.Element {
 
     CD(key = "CD", procurementMethod = "selective"),
     CF(key = "CF", procurementMethod = "selective"),
