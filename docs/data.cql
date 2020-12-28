@@ -168,3 +168,17 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_rules
     value          TEXT,
     PRIMARY KEY (country, pmd, operation_type, parameter)
 );
+
+CREATE TABLE IF NOT EXISTS ocds.contracting_pac
+(
+    cpid           TEXT,
+    ocid           TEXT,
+    id             TEXT,
+    token_entity   TEXT,
+    owner          TEXT,
+    created_date   TIMESTAMP,
+    status         TEXT,
+    status_details TEXT,
+    json_data      TEXT,
+    PRIMARY KEY (cpid, ocid, id)
+);
