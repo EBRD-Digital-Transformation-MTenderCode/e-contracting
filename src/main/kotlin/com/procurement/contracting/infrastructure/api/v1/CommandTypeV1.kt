@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.infrastructure.api.Action
 
-enum class CommandTypeV1(@JsonValue override val key: String): EnumElementProvider.Key, Action {
+enum class CommandTypeV1(@JsonValue override val key: String): EnumElementProvider.Element, Action {
 
     CHECK_CAN(key = "checkCan"),
     CHECK_CAN_BY_AWARD(key = "checkCanBiAwardId"),

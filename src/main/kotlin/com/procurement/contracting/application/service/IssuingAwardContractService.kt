@@ -19,6 +19,7 @@ import com.procurement.contracting.exception.ErrorType.INVALID_TOKEN
 import com.procurement.contracting.infrastructure.handler.v1.CommandMessage
 import com.procurement.contracting.infrastructure.handler.v1.cpid
 import com.procurement.contracting.infrastructure.handler.v1.model.request.ContractIssuingAcRs
+import com.procurement.contracting.infrastructure.handler.v1.model.request.IssuingAcRequest
 import com.procurement.contracting.infrastructure.handler.v1.model.request.IssuingAcRs
 import com.procurement.contracting.infrastructure.handler.v1.ocid
 import com.procurement.contracting.infrastructure.handler.v1.owner
@@ -39,6 +40,7 @@ class IssuingAwardContractService(
         val token = cm.token
         val owner = cm.owner
         val dateTime = cm.startDate
+        val request = toObject(IssuingAcRequest::class.java, cm.data)
 
         val awardContractId = ocid.asAwardContractId()
         val entity: AwardContractEntity = acRepository.findBy(cpid, awardContractId)
@@ -63,6 +65,7 @@ class IssuingAwardContractService(
 
         contractProcess.contract.statusDetails = AwardContractStatusDetails.ISSUED
         contractProcess.contract.date = dateTime
+        contractProcess.contract.internalId = request.contract?.internalId
 
         val updatedContractEntity = entity.copy(
             status = contractProcess.contract.status,
@@ -85,7 +88,8 @@ class IssuingAwardContractService(
         return IssuingAcRs(
             ContractIssuingAcRs(
                 date = contractProcess.contract.date,
-                statusDetails = contractProcess.contract.statusDetails
+                statusDetails = contractProcess.contract.statusDetails,
+                internalId = contractProcess.contract.internalId
             )
         )
     }

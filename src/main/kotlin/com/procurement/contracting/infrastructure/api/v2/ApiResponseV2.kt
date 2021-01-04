@@ -98,7 +98,7 @@ sealed class ApiResponseV2 {
         }
     }
 
-    enum class Status(@JsonValue override val key: String) : EnumElementProvider.Key {
+    enum class Status(@JsonValue override val key: String) : EnumElementProvider.Element {
         SUCCESS("success"),
         ERROR("error"),
         INCIDENT("incident");

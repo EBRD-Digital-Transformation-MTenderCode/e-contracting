@@ -12,6 +12,7 @@ import com.procurement.contracting.infrastructure.bind.award.id.AwardIdModule
 import com.procurement.contracting.infrastructure.bind.can.id.CANIdModule
 import com.procurement.contracting.infrastructure.bind.contract.id.AwardContractIdModule
 import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeModule
+import com.procurement.contracting.infrastructure.bind.dynamic.DynamicValueModule
 import com.procurement.contracting.infrastructure.bind.fc.id.FrameworkContractIdModule
 import com.procurement.contracting.infrastructure.bind.lot.id.LotIdModule
 import com.procurement.contracting.infrastructure.bind.owner.OwnerModule
@@ -35,6 +36,7 @@ fun ObjectMapper.configuration() {
     registerModule(AwardIdModule())
     registerModule(AwardContractIdModule())
     registerModule(FrameworkContractIdModule())
+    registerModule(DynamicValueModule())
     registerKotlinModule()
 
     configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false)

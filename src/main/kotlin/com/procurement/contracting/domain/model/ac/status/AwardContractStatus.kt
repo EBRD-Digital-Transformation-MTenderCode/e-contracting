@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class AwardContractStatus(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class AwardContractStatus(@JsonValue override val key: String) : EnumElementProvider.Element {
     PENDING("pending"),
     ACTIVE("active"),
     CANCELLED("cancelled"),
