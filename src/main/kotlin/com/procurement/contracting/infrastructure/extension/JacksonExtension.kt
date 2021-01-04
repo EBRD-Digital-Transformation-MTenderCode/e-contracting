@@ -67,7 +67,7 @@ fun JsonNode.tryGetBigDecimalAttribute(name: String): Result<BigDecimal, DataErr
 
 fun <T> JsonNode.tryGetAttributeAsEnum(name: String, enumProvider: EnumElementProvider<T>):
     Result<T, DataErrors.Validation> where T : Enum<T>,
-                                           T : EnumElementProvider.Key = this.tryGetTextAttribute(name)
+                                           T : EnumElementProvider.Element = this.tryGetTextAttribute(name)
     .flatMap { text ->
         enumProvider.orNull(text)
             ?.asSuccess<T, DataErrors.Validation>()

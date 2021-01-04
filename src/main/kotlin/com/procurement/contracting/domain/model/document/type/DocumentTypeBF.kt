@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class DocumentTypeBF(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class DocumentTypeBF(@JsonValue override val key: String) : EnumElementProvider.Element {
     REGULATORY_DOCUMENT("regulatoryDocument");
 
     override fun toString(): String = key

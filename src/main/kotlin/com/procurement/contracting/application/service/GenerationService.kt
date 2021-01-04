@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
+import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import org.springframework.stereotype.Service
 import java.util.*
@@ -30,4 +31,6 @@ class GenerationService {
     fun awardId(): AwardId = AwardId.generate()
 
     fun token(): Token = Token.generate()
+
+    fun pacId(): PacId = PacId.generate()
 }

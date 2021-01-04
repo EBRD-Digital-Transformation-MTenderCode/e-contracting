@@ -55,5 +55,7 @@ data class AwardContract @JsonCreator constructor(
 
     var confirmationResponses: MutableList<ConfirmationResponse>? = null,
 
-    var agreedMetrics: LinkedList<AgreedMetric>? = null
+    var agreedMetrics: LinkedList<AgreedMetric>? = null,
+
+    var internalId: String? = null
 )

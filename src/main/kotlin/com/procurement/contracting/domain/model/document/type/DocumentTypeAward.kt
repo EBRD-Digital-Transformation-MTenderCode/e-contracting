@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class DocumentTypeAward(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class DocumentTypeAward(@JsonValue override val key: String) : EnumElementProvider.Element {
     AWARD_NOTICE("awardNotice"),
     EVALUATION_REPORTS("evaluationReports"),
     SHORTLISTED_FIRMS("shortlistedFirms"),

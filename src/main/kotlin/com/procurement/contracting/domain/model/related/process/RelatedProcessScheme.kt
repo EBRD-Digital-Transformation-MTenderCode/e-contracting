@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class RelatedProcessScheme(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class RelatedProcessScheme(@JsonValue override val key: String) : EnumElementProvider.Element {
     OCID("ocid");
 
     override fun toString(): String = key

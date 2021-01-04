@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
-enum class FrameworkContractStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Key {
+enum class FrameworkContractStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Element {
 
     CONTRACT_PROJECT("contractProject"),
     WITHDRAWN_QUALIFICATION_PROTOCOL("withdrawnQualificationProtocol"),
