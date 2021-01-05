@@ -67,9 +67,9 @@ class FinalUpdateService(
         }
         val buyer = contractProcess.buyer ?: throw ErrorException(ErrorType.BUYER_IS_EMPTY)
         val supplier = contractProcess.award.suppliers.first()
-        val buyerMilestone = generateBuyerMilestone(buyer, country, pmd, language)
-        val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)
-        val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language)
+        val buyerMilestone = generateBuyerMilestone(buyer, country, pmd, language)   // BR-9.5.4
+        val supplierMilestone = generateSupplierMilestone(supplier, country, pmd, language)  // BR-9.5.5
+        val activationMilestone = generateContractActivationMilestone(buyer, country, pmd, language) // BR-9.5.6
 
         val milestones = contractProcess.contract.milestones ?: mutableListOf()
         milestones.add(buyerMilestone)
@@ -77,7 +77,7 @@ class FinalUpdateService(
         milestones.add(activationMilestone)
 
         if (contractProcess.treasuryBudgetSources != null) {
-            val validationMilestone = generateValidationMilestone(country, pmd, language)
+            val validationMilestone = generateValidationMilestone(country, pmd, language) // BR-9.5.7
             milestones.add(validationMilestone)
         }
         contractProcess.contract.milestones = milestones
@@ -138,7 +138,7 @@ class FinalUpdateService(
                 ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         return Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            id = "approval-${relatedParties.first().id}-${generationService.generateTimeBasedUUID()}",
             title = template.title,
             description = template.description,
             status = MilestoneStatus.SCHEDULED,
@@ -162,7 +162,7 @@ class FinalUpdateService(
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = supplier.id, name = supplier.name))
 
         return Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            id = "approval-${relatedParties.first().id}-${generationService.generateTimeBasedUUID()}",
             title = template.title,
             description = template.description,
             status = MilestoneStatus.SCHEDULED,
@@ -187,7 +187,7 @@ class FinalUpdateService(
                 ?: throw ErrorException(ErrorType.BUYER_NAME_IS_EMPTY)))
 
         return Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            id = "approval-${relatedParties.first().id}-${generationService.generateTimeBasedUUID()}",
             title = template.title,
             description = template.description,
             status = MilestoneStatus.SCHEDULED,
@@ -211,7 +211,7 @@ class FinalUpdateService(
         val relatedParties: List<RelatedParty> = listOf(RelatedParty(id = "approveBodyId", name = "approveBodyName"))
 
         return Milestone(
-            id = "approval-" + relatedParties.first().id + generationService.generateTimeBasedUUID(),
+            id = "approval-${relatedParties.first().id}-${generationService.generateTimeBasedUUID()}",
             title = template.title,
             description = template.description,
             status = MilestoneStatus.SCHEDULED,
