@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract
 import com.procurement.contracting.domain.model.item.ItemId
+import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.organization.MainEconomicActivity
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.infrastructure.bind.BooleansDeserializer
@@ -16,8 +19,6 @@ import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.model.dto.ocds.BankAccount
 import com.procurement.contracting.model.dto.ocds.ConfirmationRequest
 import com.procurement.contracting.model.dto.ocds.ContractedAward
-import com.procurement.contracting.model.dto.ocds.DocumentAward
-import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.model.dto.ocds.Identifier
 import com.procurement.contracting.model.dto.ocds.LegalForm
 import com.procurement.contracting.model.dto.ocds.Milestone
@@ -61,7 +62,21 @@ data class AwardUpdate @JsonCreator constructor(
     var documents: List<DocumentAward>?,
 
     var suppliers: List<OrganizationReferenceSupplierUpdate>
-)
+){
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class DocumentAward @JsonCreator constructor(
+
+        val id: String,
+
+        var documentType: DocumentTypeAward,
+
+        var title: String,
+
+        var description: String?,
+
+        var relatedLots: List<LotId>?
+    )
+}
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContractUpdate @JsonCreator constructor(
@@ -79,7 +94,24 @@ data class ContractUpdate @JsonCreator constructor(
     val confirmationRequests: MutableList<ConfirmationRequest>?,
 
     val agreedMetrics: LinkedList<AgreedMetric>
-)
+) {
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class DocumentContract @JsonCreator constructor(
+
+        val id: String,
+
+        var documentType: DocumentTypeContract,
+
+        var title: String,
+
+        var description: String?,
+
+        var relatedLots: List<LotId>?,
+
+        var relatedConfirmations: List<String>? = null
+    )
+}
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ItemUpdate @JsonCreator constructor(
