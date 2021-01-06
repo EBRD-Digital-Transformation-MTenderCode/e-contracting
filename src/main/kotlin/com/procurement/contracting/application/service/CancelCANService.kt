@@ -23,6 +23,7 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.lib.errorIfBlank
 import com.procurement.contracting.model.dto.ocds.AwardContract
 import com.procurement.contracting.utils.toJson
 import com.procurement.contracting.utils.toObject
@@ -144,6 +145,8 @@ class CancelCANServiceImpl(
      */
     override fun cancel(context: CancelCANContext, data: CancelCANData): CancelledCANData {
 
+        data.validateTextAttributes()
+
         val canEntity: CANEntity = canRepository.findBy(cpid = context.cpid, canId = context.canId)
             .orThrow {
                 ReadEntityException(message = "Error read CAN from the database.", cause = it.exception)
@@ -241,6 +244,25 @@ class CancelCANServiceImpl(
             relatedCANs = generateRelatedCANsResponse(relatedCANs),
             lotId = can.lotId,
             contract = generateContractResponse(cancelledContract)
+        )
+    }
+
+    private fun CancelCANData.validateTextAttributes() {
+        this.amendment.apply {
+            rationale.checkForBlank("contract.amendment.rationale")
+            description.checkForBlank("contract.amendment.description")
+
+            documents?.mapIndexed { idx, document ->
+                document.title.checkForBlank("contract.amendment.documents[$idx].title")
+                document.description.checkForBlank("contract.amendment.documents[$idx].description")
+            }
+        }
+    }
+
+    private fun String?.checkForBlank(name: String) = this.errorIfBlank {
+        ErrorException(
+            error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
+            message = "The attribute '$name' is empty or blank."
         )
     }
 
