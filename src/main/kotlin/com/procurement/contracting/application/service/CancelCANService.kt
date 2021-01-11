@@ -252,7 +252,7 @@ class CancelCANServiceImpl(
             rationale.checkForBlank("contract.amendment.rationale")
             description.checkForBlank("contract.amendment.description")
 
-            documents?.mapIndexed { idx, document ->
+            documents?.forEachIndexed { idx, document ->
                 document.title.checkForBlank("contract.amendment.documents[$idx].title")
                 document.description.checkForBlank("contract.amendment.documents[$idx].description")
             }
