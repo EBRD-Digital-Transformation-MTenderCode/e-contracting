@@ -91,8 +91,6 @@ class AwardContractServiceImpl(
      *   d. token;
      */
     override fun create(context: CreateAwardContractContext, data: CreateAwardContractData): CreatedAwardContractData {
-        //VR-9.1.1
-        checkSuppliersId(data = data)
 
         //VR-9.1.2
         checkAwardCurrency(data = data)
@@ -291,28 +289,6 @@ class AwardContractServiceImpl(
             .filter { entity ->
                 cansIds.contains(entity.id)
             }
-    }
-
-    /**
-     * VR-9.1.1 Supplier.ID (Award)
-     *
-     * eContracting checks Award.Supplier.ID in all award objects from Request:
-     * a. IF award.supplier.ID is the same for every Award object from Request (one value in formed set of Supplier.ID)
-     *    validation is successful;
-     * b. ELSE (more than one value in set of Supplier.ID)
-     *    eContracting throws Exception;
-     */
-    private fun checkSuppliersId(data: CreateAwardContractData) {
-        val uniqueSuppliersIds = data.awards.asSequence()
-            .flatMap { award ->
-                award.suppliers
-                    .asSequence()
-                    .map { supplier ->
-                        supplier.id
-                    }
-            }
-            .toSet()
-        if (uniqueSuppliersIds.size != 1) throw ErrorException(error = ErrorType.SUPPLIERS_ID)
     }
 
     /**

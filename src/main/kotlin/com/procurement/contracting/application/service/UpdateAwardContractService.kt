@@ -737,11 +737,22 @@ class UpdateAwardContractService(
         val documentDtoIds = documentsDto.toSetBy { it.id }
         if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
         //update
-        val documentsDb = contractProcess.contract.documents ?: return documentsDto
+        val documentDtoTransformed = documentsDto
+            .map { document ->
+                DocumentContract(
+                    id = document.id,
+                    documentType = document.documentType,
+                    title = document.title,
+                    description = document.description,
+                    relatedLots = document.relatedLots,
+                    relatedConfirmations = document.relatedConfirmations
+                )
+            }
+        val documentsDb = contractProcess.contract.documents ?: return documentDtoTransformed
         val documentsDbIds = documentsDb.toSetBy { it.id }
-        documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
+        documentsDb.forEach { docDb -> docDb.update(documentDtoTransformed.firstOrNull { it.id == docDb.id }) }
         val newDocumentsId = documentDtoIds - documentsDbIds
-        val newDocuments = documentsDto.filter { it.id in newDocumentsId }
+        val newDocuments = documentDtoTransformed.filter { it.id in newDocumentsId }
         return (documentsDb + newDocuments)
     }
 
@@ -1093,14 +1104,25 @@ class UpdateAwardContractService(
             val documentDtoIds = documentsDto.toSetBy { it.id }
             if (documentDtoIds.size != documentsDto.size) throw ErrorException(DOCUMENTS)
             //update
+            val documentDtoTransformed = documentsDto
+                .map { document ->
+                    DocumentAward(
+                        id = document.id,
+                        documentType = document.documentType,
+                        title = document.title,
+                        description = document.description,
+                        relatedLots = document.relatedLots
+                    )
+                }
+
             return if (documentsDb != null) {
                 val documentsDbIds = documentsDb.toSetBy { it.id }
-                documentsDb.forEach { docDb -> docDb.update(documentsDto.firstOrNull { it.id == docDb.id }) }
+                documentsDb.forEach { docDb -> docDb.update(documentDtoTransformed.firstOrNull { it.id == docDb.id }) }
                 val newDocumentsId = documentDtoIds - documentsDbIds
-                val newDocuments: List<DocumentAward> = documentsDto.filter { it.id in newDocumentsId }
+                val newDocuments: List<DocumentAward> = documentDtoTransformed.filter { it.id in newDocumentsId }
                 (documentsDb + newDocuments)
             } else {
-                documentsDto
+                documentDtoTransformed
             }
         } else {
             return documentsDb
