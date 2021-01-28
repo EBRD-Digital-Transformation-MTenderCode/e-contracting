@@ -9,7 +9,7 @@ import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import java.time.LocalDateTime
 
-data class CreatePacsResult(
+data class DoPacsResult(
     val contracts: List<Contract>,
     val token: Token?
 ) {

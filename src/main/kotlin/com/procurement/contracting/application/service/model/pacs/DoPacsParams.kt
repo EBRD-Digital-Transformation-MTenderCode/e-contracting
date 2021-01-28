@@ -9,7 +9,7 @@ import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import java.time.LocalDateTime
 
-data class CreatePacsParams(
+data class DoPacsParams(
     val cpid: Cpid,
     val ocid: Ocid,
     val tender: Tender,

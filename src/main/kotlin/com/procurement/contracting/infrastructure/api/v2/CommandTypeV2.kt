@@ -9,7 +9,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
 
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
-    CREATE_PACS("createPacs"),
+    DO_PACS("doPacs"),
     FIND_CAN_IDS("findCANIds"),
     ;
 

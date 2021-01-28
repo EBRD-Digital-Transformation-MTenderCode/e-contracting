@@ -4,8 +4,8 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.repository.pac.PacRepository
-import com.procurement.contracting.application.service.model.pacs.CreatePacsParams
-import com.procurement.contracting.application.service.model.pacs.CreatePacsResult
+import com.procurement.contracting.application.service.model.pacs.DoPacsParams
+import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
@@ -71,10 +71,10 @@ internal class PacServiceImplTest {
 
 
         val actual = pacService.create(paramsWithoutAwards).get()
-        val expected = CreatePacsResult(
+        val expected = DoPacsResult(
             token = actual.token,
             contracts = listOf(
-                CreatePacsResult.Contract(
+                DoPacsResult.Contract(
                     id = PAC_ID,
                     status = PacStatus.PENDING,
                     statusDetails = PacStatusDetails.ALL_REJECTED,
@@ -108,36 +108,36 @@ internal class PacServiceImplTest {
     }
 
     private fun getExpectedPacsResult(
-        params: CreatePacsParams
-    ) = CreatePacsResult(
+        params: DoPacsParams
+    ) = DoPacsResult(
         token = null,
         contracts = listOf(
-            CreatePacsResult.Contract(
+            DoPacsResult.Contract(
                 id = PAC_ID,
                 status = PacStatus.PENDING,
                 statusDetails = PacStatusDetails.CONCLUDED,
                 date = DATE,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
-                    CreatePacsResult.Contract.Supplier(
+                    DoPacsResult.Contract.Supplier(
                         id = "tenderer.id",
                         name = "tenderer.name"
                     )
                 ),
                 awardId = params.awards.first().id,
                 agreedMetrics = listOf(
-                    CreatePacsResult.Contract.AgreedMetric(
+                    DoPacsResult.Contract.AgreedMetric(
                         id = "criteria.id",
                         title = "criteria.title",
                         observations = listOf(
-                            CreatePacsResult.Contract.AgreedMetric.Observation(
+                            DoPacsResult.Contract.AgreedMetric.Observation(
                                 id = "requirementResponse.id",
                                 notes = "requirement[0].title",
-                                period = CreatePacsResult.Contract.AgreedMetric.Observation.Period(
+                                period = DoPacsResult.Contract.AgreedMetric.Observation.Period(
                                     startDate = DATE,
                                     endDate = DATE.plusDays(1)
                                 ),
-                                unit = CreatePacsResult.Contract.AgreedMetric.Observation.Unit(
+                                unit = DoPacsResult.Contract.AgreedMetric.Observation.Unit(
                                     id = "unit.id",
                                     name = "unit.name"
                                 ),
@@ -157,7 +157,7 @@ internal class PacServiceImplTest {
         val paramsWithUnmatchingSuppliers = paramsWithAwards.copy(
             awards = paramsWithAwards.awards.first().copy(
                 suppliers = listOf(
-                    CreatePacsParams.Award.Supplier(
+                    DoPacsParams.Award.Supplier(
                         id = "unmatching.id",
                         name = "tenderer.name",
                     )
@@ -180,25 +180,25 @@ internal class PacServiceImplTest {
     }
 
     private fun getExpectedPacsResultWithoutObservations(
-        params: CreatePacsParams
-    ) = CreatePacsResult(
+        params: DoPacsParams
+    ) = DoPacsResult(
         token = null,
         contracts = listOf(
-            CreatePacsResult.Contract(
+            DoPacsResult.Contract(
                 id = PAC_ID,
                 status = PacStatus.PENDING,
                 statusDetails = PacStatusDetails.CONCLUDED,
                 date = DATE,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
-                    CreatePacsResult.Contract.Supplier(
+                    DoPacsResult.Contract.Supplier(
                         id = "unmatching.id",
                         name = "tenderer.name"
                     )
                 ),
                 awardId = params.awards.first().id,
                 agreedMetrics = listOf(
-                    CreatePacsResult.Contract.AgreedMetric(
+                    DoPacsResult.Contract.AgreedMetric(
                         id = "criteria.id",
                         title = "criteria.title",
                         observations = emptyList()
@@ -210,40 +210,40 @@ internal class PacServiceImplTest {
 
 
     private fun getParams() =
-        CreatePacsParams(
+        DoPacsParams(
             cpid = CPID,
             ocid = OCID,
             date = DATE,
             owner = OWNER,
-            awards = CreatePacsParams.Award(
+            awards = DoPacsParams.Award(
                 id = AwardId.generate(),
                 suppliers = listOf(
-                    CreatePacsParams.Award.Supplier(
+                    DoPacsParams.Award.Supplier(
                         id = "tenderer.id",
                         name = "tenderer.name",
                     )
                 )
             ).let { listOf(it) },
-            tender = CreatePacsParams.Tender(
+            tender = DoPacsParams.Tender(
                 lots = listOf(
-                    CreatePacsParams.Tender.Lot(
+                    DoPacsParams.Tender.Lot(
                         id = LOT_ID
                     )
                 ),
-                criteria = CreatePacsParams.Tender.Criteria(
+                criteria = DoPacsParams.Tender.Criteria(
                     id = "criteria.id",
                     title = "criteria.title",
                     relatesTo = "criteria.relatesTo",
                     relatedItem = "criteria.relatedItem",
                     requirementGroups = listOf(
-                        CreatePacsParams.Tender.Criteria.RequirementGroup(
+                        DoPacsParams.Tender.Criteria.RequirementGroup(
                             id = "requirementGroup.id",
                             requirements = listOf(
-                                CreatePacsParams.Tender.Criteria.RequirementGroup.Requirement(
+                                DoPacsParams.Tender.Criteria.RequirementGroup.Requirement(
                                     id = "requirement[0].id",
                                     title = "requirement[0].title"
                                 ),
-                                CreatePacsParams.Tender.Criteria.RequirementGroup.Requirement(
+                                DoPacsParams.Tender.Criteria.RequirementGroup.Requirement(
                                     id = "requirement[1].id",
                                     title = "requirement[1].title"
                                 )
@@ -252,13 +252,13 @@ internal class PacServiceImplTest {
                     )
                 ).let { listOf(it) },
                 targets = listOf(
-                    CreatePacsParams.Tender.Target(
+                    DoPacsParams.Tender.Target(
                         id = "target.id",
                         observations = listOf(
-                            CreatePacsParams.Tender.Target.Observation(
+                            DoPacsParams.Tender.Target.Observation(
                                 id = "observation.id",
                                 relatedRequirementId = "requirement[0].id",
-                                unit = CreatePacsParams.Tender.Target.Observation.Unit(
+                                unit = DoPacsParams.Tender.Target.Observation.Unit(
                                     id = "unit.id",
                                     name = "unit.name"
                                 )
@@ -267,20 +267,20 @@ internal class PacServiceImplTest {
                     )
                 )
             ),
-            bids = CreatePacsParams.Bids(
-                details = CreatePacsParams.Bids.Detail(
+            bids = DoPacsParams.Bids(
+                details = DoPacsParams.Bids.Detail(
                     id = BidId.randomUUID(),
                     tenderers = listOf(
-                        CreatePacsParams.Bids.Detail.Tenderer(
+                        DoPacsParams.Bids.Detail.Tenderer(
                             id = "tenderer.id",
                             name = "tenderer.name",
                         )
                     ),
-                    requirementResponses = CreatePacsParams.Bids.Detail.RequirementResponse(
+                    requirementResponses = DoPacsParams.Bids.Detail.RequirementResponse(
                         id = "requirementResponse.id",
                         value = DynamicValue.String("requirementResponse.value"),
-                        requirement = CreatePacsParams.Bids.Detail.RequirementResponse.Requirement(id = "requirement[0].id"),
-                        period = CreatePacsParams.Bids.Detail.RequirementResponse.Period(
+                        requirement = DoPacsParams.Bids.Detail.RequirementResponse.Requirement(id = "requirement[0].id"),
+                        period = DoPacsParams.Bids.Detail.RequirementResponse.Period(
                             startDate = DATE,
                             endDate = DATE.plusDays(1)
                         )
