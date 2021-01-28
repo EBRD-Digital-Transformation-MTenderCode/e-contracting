@@ -13,7 +13,7 @@ class CommandServiceV2(
     private val logger: Logger,
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
-    private val createPacsHandler: CreatePacsHandler,
+    private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
 ) {
 
@@ -22,7 +22,7 @@ class CommandServiceV2(
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
-            CommandTypeV2.CREATE_PACS -> createPacsHandler.handle(descriptor)
+            CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
 
             else -> {
                 val errorDescription = "Unknown action '${descriptor.action.key}'."

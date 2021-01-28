@@ -1,12 +1,12 @@
 package com.procurement.contracting.infrastructure.handler.v2.converter
 
-import com.procurement.contracting.application.service.model.pacs.CreatePacsResult
+import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.domain.util.extension.asString
-import com.procurement.contracting.infrastructure.handler.v2.model.response.CreatePacsResponse
+import com.procurement.contracting.infrastructure.handler.v2.model.response.DoPacsResponse
 
-fun CreatePacsResult.convert() = CreatePacsResponse(
+fun DoPacsResult.convert() = DoPacsResponse(
     contracts = contracts.map { pac ->
-        CreatePacsResponse.Contract(
+        DoPacsResponse.Contract(
             id = pac.id.underlying,
             status = pac.status.key,
             statusDetails = pac.statusDetails.key,
@@ -15,32 +15,32 @@ fun CreatePacsResult.convert() = CreatePacsResponse(
             awardId = pac.awardId.toString(),
             suppliers = pac.suppliers
                 ?.map { supplier ->
-                    CreatePacsResponse.Contract.Supplier(
+                    DoPacsResponse.Contract.Supplier(
                         id = supplier.id,
                         name = supplier.name
                     )
                 },
             agreedMetrics = pac.agreedMetrics
                 ?.map { agreedMetric ->
-                    CreatePacsResponse.Contract.AgreedMetric(
+                    DoPacsResponse.Contract.AgreedMetric(
                         id = agreedMetric.id,
                         title = agreedMetric.title,
                         observations = agreedMetric.observations.map { observation ->
-                            CreatePacsResponse.Contract.AgreedMetric.Observation(
+                            DoPacsResponse.Contract.AgreedMetric.Observation(
                                 id = observation.id,
                                 notes = observation.notes,
                                 measure = observation.measure,
                                 relatedRequirementId = observation.relatedRequirementId,
                                 period = observation.period
                                     ?.let { period ->
-                                        CreatePacsResponse.Contract.AgreedMetric.Observation.Period(
+                                        DoPacsResponse.Contract.AgreedMetric.Observation.Period(
                                             startDate = period.startDate.asString(),
                                             endDate = period.endDate.asString()
                                         )
                                     },
                                 unit = observation.unit
                                     ?.let { unit ->
-                                        CreatePacsResponse.Contract.AgreedMetric.Observation.Unit(
+                                        DoPacsResponse.Contract.AgreedMetric.Observation.Unit(
                                             id = unit.id,
                                             name = unit.name
                                         )

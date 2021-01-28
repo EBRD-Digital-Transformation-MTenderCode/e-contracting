@@ -3,7 +3,7 @@ package com.procurement.contracting.infrastructure.handler.v2.model.response
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class CreatePacsResponse(
+data class DoPacsResponse(
     @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>,
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
