@@ -20,6 +20,7 @@ import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.get
 import com.procurement.contracting.lib.functional.MaybeFail
+import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -66,6 +67,8 @@ internal class PacServiceImplTest {
             .thenReturn(PAC_ID)
         whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
+        whenever(pacRepository.findBy(cpid = any(), ocid = any()))
+            .thenReturn(Result.success(emptyList()))
         whenever(transform.trySerialization(value = any<Pac>()))
             .thenReturn("string".asSuccess())
 
@@ -97,6 +100,8 @@ internal class PacServiceImplTest {
             .thenReturn(PAC_ID)
         whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
+        whenever(pacRepository.findBy(cpid = any(), ocid = any()))
+            .thenReturn(Result.success(emptyList()))
         whenever(transform.trySerialization(value = any<Pac>()))
             .thenReturn("string".asSuccess())
 
@@ -169,6 +174,8 @@ internal class PacServiceImplTest {
             .thenReturn(PAC_ID)
         whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
+        whenever(pacRepository.findBy(cpid = any(), ocid = any()))
+            .thenReturn(Result.success(emptyList()))
         whenever(transform.trySerialization(value = any<Pac>()))
             .thenReturn("string".asSuccess())
 
