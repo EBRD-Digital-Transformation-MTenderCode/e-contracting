@@ -2,6 +2,8 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacEntity
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsParams
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsResult
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.domain.model.award.AwardId
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service
 
 interface PacService {
     fun create(params: DoPacsParams): Result<DoPacsResult, Fail>
+    fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail>
 }
 
 @Service
@@ -58,6 +61,23 @@ class PacServiceImpl(
 
         return convertToPacResult(createdPacs).asSuccess()
     }
+
+    override fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail> {
+        val receivedLots = params.tender.lots.toSetBy { it.id }
+
+        return pacRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, Pac::class.java) }
+            .onFailure { return it }
+            .filter { it.isActive() && it.isForLot() && it.hasRelationWithLots(receivedLots) }
+            .map { FindPacsByLotIdsResult.fromDomain(it) }
+            .let { FindPacsByLotIdsResult(it) }
+            .asSuccess()
+    }
+
+    private fun Pac.isActive(): Boolean = this.status == PacStatus.PENDING
+    private fun Pac.isForLot(): Boolean = this.relatedLots.isNotEmpty()
+    private fun Pac.hasRelationWithLots(lots: Collection<String>): Boolean = this.relatedLots.any { it.underlying in lots }
 
     private fun convertToPacResult(createdPacs: List<Pac>): DoPacsResult {
         return DoPacsResult(

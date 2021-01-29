@@ -15,6 +15,7 @@ class CommandServiceV2(
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
     private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
+    private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
 ) {
 
     fun execute(descriptor: CommandDescriptor): ApiResponseV2 {
@@ -22,6 +23,7 @@ class CommandServiceV2(
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
+            CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
             CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
 
             else -> {
