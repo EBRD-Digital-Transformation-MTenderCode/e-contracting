@@ -13,7 +13,7 @@ import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import java.time.LocalDateTime
 
-data class PacEntity(
+data class PacRecord(
     val cpid: Cpid,
     val ocid: Ocid,
     val id: PacId,
@@ -24,9 +24,9 @@ data class PacEntity(
     val jsonData: String
 ) {
     companion object {
-        fun of(cpid: Cpid, ocid: Ocid, pac: Pac, transform: Transform): Result<PacEntity, Fail> {
-            val json = transform.trySerialization(pac).onFailure { return it }
-            return PacEntity(
+        fun of(cpid: Cpid, ocid: Ocid, pac: Pac, transform: Transform): Result<PacRecord, Fail> {
+            val json = transform.trySerialization(pac.toEntity()).onFailure { return it }
+            return PacRecord(
                 cpid = cpid,
                 ocid = ocid,
                 id = pac.id,

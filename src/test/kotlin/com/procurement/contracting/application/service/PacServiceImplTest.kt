@@ -10,7 +10,7 @@ import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
-import com.procurement.contracting.domain.model.fc.Pac
+import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
@@ -62,11 +62,11 @@ internal class PacServiceImplTest {
         val paramsWithoutAwards = getParams().copy(awards = emptyList())
         whenever(generationService.pacId())
             .thenReturn(PAC_ID)
-        whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
+        whenever(pacRepository.save(records = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
         whenever(pacRepository.findBy(cpid = any(), ocid = any()))
             .thenReturn(Result.success(emptyList()))
-        whenever(transform.trySerialization(value = any<Pac>()))
+        whenever(transform.trySerialization(value = any<PacEntity>()))
             .thenReturn("string".asSuccess())
 
 
@@ -81,11 +81,11 @@ internal class PacServiceImplTest {
         val paramsWithAwards = getParams()
         whenever(generationService.pacId())
             .thenReturn(PAC_ID)
-        whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
+        whenever(pacRepository.save(records = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
         whenever(pacRepository.findBy(cpid = any(), ocid = any()))
             .thenReturn(Result.success(emptyList()))
-        whenever(transform.trySerialization(value = any<Pac>()))
+        whenever(transform.trySerialization(value = any<PacEntity>()))
             .thenReturn("string".asSuccess())
 
 
@@ -153,11 +153,11 @@ internal class PacServiceImplTest {
 
         whenever(generationService.pacId())
             .thenReturn(PAC_ID)
-        whenever(pacRepository.save(entities = ArgumentMatchers.anyCollection()))
+        whenever(pacRepository.save(records = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
         whenever(pacRepository.findBy(cpid = any(), ocid = any()))
             .thenReturn(Result.success(emptyList()))
-        whenever(transform.trySerialization(value = any<Pac>()))
+        whenever(transform.trySerialization(value = any<PacEntity>()))
             .thenReturn("string".asSuccess())
 
 
