@@ -48,12 +48,18 @@ class PacServiceImpl(
             .filter { (id, _) -> id !in receivedAwardsId }
             .map { (_, pac) -> pac.copy(status = PacStatus.CANCELLED) }
 
-        val pacEntities = (createdPacs + canceledPacs)
+        val createdPacEntities = (createdPacs)
             .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
             .onFailure { return it }
 
-        pacRepository.save(pacEntities)
+        pacRepository.save(createdPacEntities)
             .doOnFail { return it.asFailure() }
+
+        canceledPacs
+            .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
+            .onFailure { return it }
+            .mapResult { canceledPac -> pacRepository.update(canceledPac) }
+            .onFailure { return it }
 
         return convertToPacResult(createdPacs).asSuccess()
     }
