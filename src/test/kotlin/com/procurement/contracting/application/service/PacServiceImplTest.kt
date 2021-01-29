@@ -71,19 +71,7 @@ internal class PacServiceImplTest {
 
 
         val actual = pacService.create(paramsWithoutAwards).get()
-        val expected = DoPacsResult(
-            contracts = listOf(
-                DoPacsResult.Contract(
-                    id = PAC_ID,
-                    status = PacStatus.PENDING,
-                    date = DATE,
-                    relatedLots = listOf((LOT_ID)),
-                    suppliers = emptyList(),
-                    awardId = null,
-                    agreedMetrics = emptyList()
-                )
-            )
-        )
+        val expected = DoPacsResult(contracts = emptyList())
 
         assertEquals(expected, actual)
     }
