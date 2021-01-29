@@ -70,7 +70,6 @@ class PacServiceImpl(
                 DoPacsResult.Contract(
                     id = pac.id,
                     status = pac.status,
-                    statusDetails = pac.statusDetails,
                     date = pac.date,
                     relatedLots = pac.relatedLots,
                     awardId = pac.awardId,
@@ -107,8 +106,7 @@ class PacServiceImpl(
                         )
                     }
                 )
-            },
-            token = createdPacs.first().token
+            }
         )
     }
 
@@ -119,7 +117,6 @@ class PacServiceImpl(
         status = PacStatus.PENDING,
         statusDetails = PacStatusDetails.ALL_REJECTED,
         relatedLots = listOf(params.tender.lots.first().id),
-        token = generationService.token()
     )
 
 

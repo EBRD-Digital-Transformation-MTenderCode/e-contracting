@@ -9,7 +9,6 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacEntity
 import com.procurement.contracting.domain.model.Owner
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
@@ -32,7 +31,6 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                SELECT ${Database.PAC.COLUMN_CPID},
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
-                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_OWNER},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
@@ -47,7 +45,6 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                SELECT ${Database.PAC.COLUMN_CPID},
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
-                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_OWNER},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
@@ -64,14 +61,13 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                       ${Database.PAC.COLUMN_CPID},
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
-                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_OWNER},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
                       ${Database.PAC.COLUMN_JSON_DATA}
                )
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
 
@@ -135,11 +131,10 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             cpid = Cpid.orNull(getString(Database.PAC.COLUMN_CPID))!!,
             ocid = Ocid.orNull(getString(Database.PAC.COLUMN_OCID))!!,
             id = PacId.orNull(getString(Database.PAC.COLUMN_ID))!!,
-            token = getString(Database.PAC.COLUMN_TOKEN)?.let { Token.orNull(it)!! },
             owner = Owner.orNull(getString(Database.PAC.COLUMN_OWNER))!!,
             createdDate = getTimestamp(Database.PAC.COLUMN_CREATED_DATE).toLocalDateTime(),
             status = PacStatus.creator(getString(Database.PAC.COLUMN_STATUS)),
-            statusDetails = PacStatusDetails.creator(getString(Database.PAC.COLUMN_STATUS_DETAILS)),
+            statusDetails = getString(Database.PAC.COLUMN_STATUS_DETAILS)?.let { PacStatusDetails.creator(it) },
             jsonData = getString(Database.PAC.COLUMN_JSON_DATA)
         )
     }
@@ -163,7 +158,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                 setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
                 setString(Database.PAC.COLUMN_ID, entity.id.underlying)
                 setString(Database.PAC.COLUMN_STATUS, entity.status.key)
-                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails?.key)
                 setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
             }
             .tryExecute(session)
@@ -196,11 +191,10 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                 setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
                 setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
                 setString(Database.PAC.COLUMN_ID, entity.id.underlying)
-                setString(Database.PAC.COLUMN_TOKEN, entity.token?.toString())
                 setString(Database.PAC.COLUMN_OWNER, entity.owner.underlying)
                 setTimestamp(Database.PAC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
                 setString(Database.PAC.COLUMN_STATUS, entity.status.key)
-                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails?.key)
                 setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
             }
     }

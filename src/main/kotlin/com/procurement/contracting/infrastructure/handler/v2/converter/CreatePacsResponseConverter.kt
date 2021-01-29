@@ -9,12 +9,11 @@ fun DoPacsResult.convert() = DoPacsResponse(
         DoPacsResponse.Contract(
             id = pac.id.underlying,
             status = pac.status.key,
-            statusDetails = pac.statusDetails.key,
             date = pac.date.asString(),
             relatedLots = pac.relatedLots.map { it.underlying },
             awardId = pac.awardId.toString(),
             suppliers = pac.suppliers
-                ?.map { supplier ->
+                .map { supplier ->
                     DoPacsResponse.Contract.Supplier(
                         id = supplier.id,
                         name = supplier.name
@@ -50,6 +49,5 @@ fun DoPacsResult.convert() = DoPacsResponse(
                     )
                 }
         )
-    },
-    token = token.toString()
+    }
 )

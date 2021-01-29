@@ -1,25 +1,21 @@
 package com.procurement.contracting.application.service.model.pacs
 
 import com.procurement.contracting.domain.model.DynamicValue
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
-import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import java.time.LocalDateTime
 
 data class DoPacsResult(
-    val contracts: List<Contract>,
-    val token: Token?
+    val contracts: List<Contract>
 ) {
     data class Contract(
         val id: PacId,
         val status: PacStatus,
-        val statusDetails: PacStatusDetails,
         val date: LocalDateTime,
         val relatedLots: List<LotId>,
-        val suppliers: List<Supplier>?,
+        val suppliers: List<Supplier>,
         val awardId: AwardId?,
         val agreedMetrics: List<AgreedMetric>?
     ) {
