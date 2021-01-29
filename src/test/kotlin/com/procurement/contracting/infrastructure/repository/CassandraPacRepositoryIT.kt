@@ -15,7 +15,6 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.pac.model.PacEntity
 import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.model.Owner
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
@@ -46,7 +45,6 @@ class CassandraPacRepositoryIT {
         private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
         private val OCID = Ocid.orNull("ocds-b3wdp1-MD-1580458690892-AC-1580123456789")!!
         private val PAC_ID = PacId.generate()
-        private val TOKEN = Token.generate()
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val CREATE_DATE = LocalDateTime.now()
         private val PAC_STATUS = PacStatus.PENDING
@@ -99,13 +97,13 @@ class CassandraPacRepositoryIT {
     }
 
     @Test
-    fun findByWithNullableToken() {
-        insertPac(token = null)
+    fun findByWithNullableStatusDetails() {
+        insertPac(statusDetails = null)
 
         val actualPac: PacEntity? =
             pacRepository.findBy(cpid = CPID, ocid = OCID, contractId = PAC_ID).get()
 
-        val expected = expectedPac(token = null)
+        val expected = expectedPac(statusDetails = null)
         assertEquals(expected, actualPac)
     }
 
@@ -166,8 +164,8 @@ class CassandraPacRepositoryIT {
     }
 
     @Test
-    fun saveNewWithNullableToken() {
-        val entity = expectedPac(token = null)
+    fun saveNewWithNullableStatusDetails() {
+        val entity = expectedPac(statusDetails = null)
 
         pacRepository.saveNew(entity)
 
@@ -248,7 +246,6 @@ class CassandraPacRepositoryIT {
                     cpid           TEXT,
                     ocid           TEXT,
                     id             TEXT,
-                    token_entity   TEXT,
                     owner          TEXT,
                     created_date   TIMESTAMP,
                     status         TEXT,
@@ -262,33 +259,29 @@ class CassandraPacRepositoryIT {
 
     private fun insertPac(
         status: PacStatus = PAC_STATUS,
-        statusDetails: PacStatusDetails = PAC_STATUS_DETAILS,
-        jsonData: String = JSON_DATA,
-        token: Token? = TOKEN
+        statusDetails: PacStatusDetails? = PAC_STATUS_DETAILS,
+        jsonData: String = JSON_DATA
     ) {
         val rec = QueryBuilder.insertInto("ocds", "contracting_pac")
             .value("cpid", CPID.underlying)
             .value("ocid", OCID.underlying)
             .value("id", PAC_ID.underlying)
-            .value("token_entity", token?.toString())
             .value("owner", OWNER.underlying)
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("status", status.key)
-            .value("status_details", statusDetails.key)
+            .value("status_details", statusDetails?.key)
             .value("json_data", jsonData)
         session.execute(rec)
     }
 
     private fun expectedPac(
         status: PacStatus = PAC_STATUS,
-        statusDetails: PacStatusDetails = PAC_STATUS_DETAILS,
+        statusDetails: PacStatusDetails? = PAC_STATUS_DETAILS,
         jsonData: String = JSON_DATA,
-        token: Token? = TOKEN
     ) = PacEntity(
         cpid = CPID,
         ocid = OCID,
         id = PAC_ID,
-        token = token,
         owner = OWNER,
         createdDate = CREATE_DATE,
         status = status,

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
@@ -14,10 +13,12 @@ import java.time.LocalDateTime
 
 data class Pac(
     @param:JsonProperty("id") @field:JsonProperty("id") val id: PacId,
-    @param:JsonProperty("token") @field:JsonProperty("token") val token: Token? = null,
     @param:JsonProperty("owner") @field:JsonProperty("owner") val owner: Owner,
     @param:JsonProperty("status") @field:JsonProperty("status") val status: PacStatus,
-    @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: PacStatusDetails,
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: PacStatusDetails?,
+
     @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime,
     @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<LotId>,
 

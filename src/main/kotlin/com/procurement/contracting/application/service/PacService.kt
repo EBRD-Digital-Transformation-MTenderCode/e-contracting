@@ -8,7 +8,6 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
-import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
@@ -34,26 +33,28 @@ class PacServiceImpl(
             .mapResult { transform.tryDeserialization(it.jsonData, Pac::class.java) }
             .onFailure { return it }
             .filter { it.status == PacStatus.PENDING && it.awardId != null} // find active PAC's created on award
-            .associateBy { it.awardId }
+            .associateBy { it.awardId!! }
 
-        val createdPacs = if (params.awards.isNotEmpty())
-            // create PACs for new awards from request
-            createPacsByAwards(params, activePacByAwardId).onFailure { return it }
-        else
-            // create PAC for lot from request
-            listOf(createPac(params))
+        // create PACs for new awards from request
+        val createdPacs = createPacsByAwards(params, activePacByAwardId).onFailure { return it }
 
         val receivedAwardsId = params.awards.toSetBy { it.id }
         val canceledPacs = activePacByAwardId
             .filter { (id, _) -> id !in receivedAwardsId }
             .map { (_, pac) -> pac.copy(status = PacStatus.CANCELLED) }
 
-        val pacEntities = (createdPacs + canceledPacs)
+        val createdPacEntities = (createdPacs)
             .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
             .onFailure { return it }
 
-        pacRepository.save(pacEntities)
+        pacRepository.save(createdPacEntities)
             .doOnFail { return it.asFailure() }
+
+        canceledPacs
+            .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
+            .onFailure { return it }
+            .mapResult { canceledPac -> pacRepository.update(canceledPac) }
+            .onFailure { return it }
 
         return convertToPacResult(createdPacs).asSuccess()
     }
@@ -64,7 +65,6 @@ class PacServiceImpl(
                 DoPacsResult.Contract(
                     id = pac.id,
                     status = pac.status,
-                    statusDetails = pac.statusDetails,
                     date = pac.date,
                     relatedLots = pac.relatedLots,
                     awardId = pac.awardId,
@@ -101,23 +101,11 @@ class PacServiceImpl(
                         )
                     }
                 )
-            },
-            token = createdPacs.first().token
+            }
         )
     }
 
-    private fun createPac(params: DoPacsParams) = Pac(
-        id = generationService.pacId(),
-        date = params.date,
-        owner = params.owner,
-        status = PacStatus.PENDING,
-        statusDetails = PacStatusDetails.ALL_REJECTED,
-        relatedLots = listOf(params.tender.lots.first().id),
-        token = generationService.token()
-    )
-
-
-    private fun createPacsByAwards(params: DoPacsParams, activePacByAwardId: Map<AwardId?, Pac>): Result<List<Pac>, Fail.Incident> {
+    private fun createPacsByAwards(params: DoPacsParams, activePacByAwardId: Map<AwardId, Pac>): Result<List<Pac>, Fail.Incident> {
         return params.awards
             .filter { award -> activePacByAwardId[award.id] == null } // find awards for creating new PAC
             .map { award -> createPac(generationService.pacId(), award, params) }
@@ -140,7 +128,7 @@ class PacServiceImpl(
             owner = params.owner,
             awardId = award.id,
             status = PacStatus.PENDING,
-            statusDetails = PacStatusDetails.CONCLUDED,
+            statusDetails = null,
             suppliers = suppliers,
             relatedLots = listOf(params.tender.lots.first().id),
             agreedMetrics = createAgreedMetrics(params, suppliers),

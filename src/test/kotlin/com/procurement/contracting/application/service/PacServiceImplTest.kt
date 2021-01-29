@@ -8,14 +8,12 @@ import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
-import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
-import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.get
@@ -35,7 +33,6 @@ internal class PacServiceImplTest {
     companion object {
         private val CPID = Cpid.orNull("ocds-b3wdp1-MD-1580458690892")!!
         private val OCID = Ocid.orNull("ocds-b3wdp1-MD-1580458690892-EV-1580458791896")!!
-        private val TOKEN: Token = Token.orNull("2909bc16-82c7-4281-8f35-3f0bb13476b8")!!
         private val PAC_ID = PacId.orNull("c9e933a7-027e-497b-bbee-eb334fb795bb")!!
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
         private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
@@ -74,21 +71,7 @@ internal class PacServiceImplTest {
 
 
         val actual = pacService.create(paramsWithoutAwards).get()
-        val expected = DoPacsResult(
-            token = actual.token,
-            contracts = listOf(
-                DoPacsResult.Contract(
-                    id = PAC_ID,
-                    status = PacStatus.PENDING,
-                    statusDetails = PacStatusDetails.ALL_REJECTED,
-                    date = DATE,
-                    relatedLots = listOf((LOT_ID)),
-                    suppliers = emptyList(),
-                    awardId = null,
-                    agreedMetrics = emptyList()
-                )
-            )
-        )
+        val expected = DoPacsResult(contracts = emptyList())
 
         assertEquals(expected, actual)
     }
@@ -115,12 +98,10 @@ internal class PacServiceImplTest {
     private fun getExpectedPacsResult(
         params: DoPacsParams
     ) = DoPacsResult(
-        token = null,
         contracts = listOf(
             DoPacsResult.Contract(
                 id = PAC_ID,
                 status = PacStatus.PENDING,
-                statusDetails = PacStatusDetails.CONCLUDED,
                 date = DATE,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
@@ -189,12 +170,10 @@ internal class PacServiceImplTest {
     private fun getExpectedPacsResultWithoutObservations(
         params: DoPacsParams
     ) = DoPacsResult(
-        token = null,
         contracts = listOf(
             DoPacsResult.Contract(
                 id = PAC_ID,
                 status = PacStatus.PENDING,
-                statusDetails = PacStatusDetails.CONCLUDED,
                 date = DATE,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
