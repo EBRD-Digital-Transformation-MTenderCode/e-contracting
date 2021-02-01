@@ -11,6 +11,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
     DO_PACS("doPacs"),
     FIND_CAN_IDS("findCANIds"),
+    FIND_PACS_BY_LOT_IDS("findPacsByLotIds"),
     ;
 
     override fun toString(): String = key

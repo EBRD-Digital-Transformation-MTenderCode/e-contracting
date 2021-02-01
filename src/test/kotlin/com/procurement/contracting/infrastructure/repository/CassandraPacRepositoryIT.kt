@@ -12,7 +12,7 @@ import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.exception.repository.SaveEntityException
-import com.procurement.contracting.application.repository.pac.model.PacEntity
+import com.procurement.contracting.application.repository.pac.model.PacRecord
 import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.pac.PacId
@@ -89,7 +89,7 @@ class CassandraPacRepositoryIT {
     fun findBy() {
         insertPac()
 
-        val actualPac: PacEntity? =
+        val actualPac: PacRecord? =
             pacRepository.findBy(cpid = CPID, ocid = OCID, contractId = PAC_ID).get()
 
         val expected = expectedPac()
@@ -100,7 +100,7 @@ class CassandraPacRepositoryIT {
     fun findByWithNullableStatusDetails() {
         insertPac(statusDetails = null)
 
-        val actualPac: PacEntity? =
+        val actualPac: PacRecord? =
             pacRepository.findBy(cpid = CPID, ocid = OCID, contractId = PAC_ID).get()
 
         val expected = expectedPac(statusDetails = null)
@@ -278,7 +278,7 @@ class CassandraPacRepositoryIT {
         status: PacStatus = PAC_STATUS,
         statusDetails: PacStatusDetails? = PAC_STATUS_DETAILS,
         jsonData: String = JSON_DATA,
-    ) = PacEntity(
+    ) = PacRecord(
         cpid = CPID,
         ocid = OCID,
         id = PAC_ID,
