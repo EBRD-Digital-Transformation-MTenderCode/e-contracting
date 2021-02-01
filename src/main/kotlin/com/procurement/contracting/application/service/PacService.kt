@@ -107,8 +107,9 @@ class PacServiceImpl(
         val targetPacs = pacRepository
             .findBy(params.cpid, params.ocid)
             .onFailure { return it }
-            .mapResult { transform.tryDeserialization(it.jsonData, Pac::class.java) }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
             .onFailure { return it }
+            .map { it.toDomain() }
             .filter { it.hasRelationWithLots(receivedLots) }
 
         if (targetPacs.size < receivedLots.size) {

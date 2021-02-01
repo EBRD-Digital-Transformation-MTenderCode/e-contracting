@@ -67,7 +67,7 @@ class SetStateForContractsParams private constructor(
         val lots: List<Lot>
     ) {
         companion object {
-            fun tryCreate(lots: List<Tender.Lot>): Result<Tender, DataErrors.Validation.UniquenessDataMismatch> {
+            fun tryCreate(lots: List<Lot>): Result<Tender, DataErrors.Validation.UniquenessDataMismatch> {
 
                 val duplicate = lots.getDuplicate { it.id }
                 if (duplicate != null)
