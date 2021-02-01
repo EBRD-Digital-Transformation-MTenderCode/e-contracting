@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
+import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.award.AwardId
@@ -47,6 +48,7 @@ internal class PacServiceImplTest {
     lateinit var pacService: PacService
     lateinit var transform: Transform
     lateinit var generationService: GenerationService
+    lateinit var rulesService: RulesService
 
 
     @BeforeEach
@@ -54,7 +56,8 @@ internal class PacServiceImplTest {
         pacRepository = mock()
         transform = mock()
         generationService = mock()
-        pacService = PacServiceImpl(generationService, transform, pacRepository)
+        rulesService = mock()
+        pacService = PacServiceImpl(generationService, transform, pacRepository, rulesService)
     }
 
     @Test

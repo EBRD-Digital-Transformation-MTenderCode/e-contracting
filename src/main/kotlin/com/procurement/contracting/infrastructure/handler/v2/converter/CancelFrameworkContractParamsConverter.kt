@@ -37,6 +37,7 @@ private val allowedOperationType = OperationType.allowedElements
     .filter {
         when (it) {
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> true
+            OperationType.COMPLETE_SOURCING -> false
         }
     }
     .toSet()

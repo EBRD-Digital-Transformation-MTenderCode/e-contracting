@@ -16,6 +16,7 @@ class CommandServiceV2(
     private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
     private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
+    private val setStateForContractsHandler: SetStateForContractsHandler,
 ) {
 
     fun execute(descriptor: CommandDescriptor): ApiResponseV2 {
@@ -25,6 +26,7 @@ class CommandServiceV2(
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
             CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
+            CommandTypeV2.SET_STATE_FOR_CONTRACTS -> setStateForContractsHandler.handle(descriptor)
 
             else -> {
                 val errorDescription = "Unknown action '${descriptor.action.key}'."
