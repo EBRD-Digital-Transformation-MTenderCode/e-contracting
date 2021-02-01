@@ -15,5 +15,11 @@ data class FrameworkContract(
     @field:JsonProperty("status") @param:JsonProperty("status") val status: FrameworkContractStatus,
     @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: FrameworkContractStatusDetails,
     @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
+    @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier>,
     @get:JsonProperty("isFrameworkOrDynamic") @param:JsonProperty("isFrameworkOrDynamic") val isFrameworkOrDynamic: Boolean
-)
+) {
+    data class Supplier(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("name") @param:JsonProperty("name") val name: String
+    )
+}
