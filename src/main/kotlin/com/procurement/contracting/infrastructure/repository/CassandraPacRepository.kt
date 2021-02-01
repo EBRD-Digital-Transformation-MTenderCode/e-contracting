@@ -7,7 +7,7 @@ import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.pac.PacRepository
-import com.procurement.contracting.application.repository.pac.model.PacEntity
+import com.procurement.contracting.application.repository.pac.model.PacRecord
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
@@ -88,7 +88,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
     private val preparedUpdateCQL = session.prepare(UPDATE_STATUSES_CQL)
 
-    override fun findBy(cpid: Cpid, ocid: Ocid): Result<List<PacEntity>, Fail.Incident.Database> =
+    override fun findBy(cpid: Cpid, ocid: Ocid): Result<List<PacRecord>, Fail.Incident.Database> =
         preparedFindByCpidAndOcidCQL.bind()
             .apply {
                 setString(Database.PAC.COLUMN_CPID, cpid.underlying)
@@ -108,7 +108,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
         cpid: Cpid,
         ocid: Ocid,
         contractId: PacId
-    ): Result<PacEntity?, Fail.Incident.Database> =
+    ): Result<PacRecord?, Fail.Incident.Database> =
         preparedFindByCpidAndOcidAndIdCQL.bind()
             .apply {
                 setString(Database.PAC.COLUMN_CPID, cpid.underlying)
@@ -126,8 +126,8 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             ?.convert()
             .asSuccess()
 
-    private fun Row.convert(): PacEntity {
-        return PacEntity(
+    private fun Row.convert(): PacRecord {
+        return PacRecord(
             cpid = Cpid.orNull(getString(Database.PAC.COLUMN_CPID))!!,
             ocid = Ocid.orNull(getString(Database.PAC.COLUMN_OCID))!!,
             id = PacId.orNull(getString(Database.PAC.COLUMN_ID))!!,
@@ -139,8 +139,8 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
         )
     }
 
-    override fun saveNew(entity: PacEntity): Result<Boolean, Fail.Incident.Database> =
-        getSaveStatement(entity)
+    override fun saveNew(record: PacRecord): Result<Boolean, Fail.Incident.Database> =
+        getSaveStatement(record)
             .tryExecute(session)
             .mapFailure {
                 Fail.Incident.Database.DatabaseInteractionIncident(
@@ -151,15 +151,15 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             .wasApplied()
             .asSuccess()
 
-    override fun update(entity: PacEntity): Result<Boolean, Fail.Incident.Database> =
+    override fun update(record: PacRecord): Result<Boolean, Fail.Incident.Database> =
         preparedUpdateCQL.bind()
             .apply {
-                setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
-                setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
-                setString(Database.PAC.COLUMN_ID, entity.id.underlying)
-                setString(Database.PAC.COLUMN_STATUS, entity.status.key)
-                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails?.key)
-                setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
+                setString(Database.PAC.COLUMN_CPID, record.cpid.underlying)
+                setString(Database.PAC.COLUMN_OCID, record.ocid.underlying)
+                setString(Database.PAC.COLUMN_ID, record.id.underlying)
+                setString(Database.PAC.COLUMN_STATUS, record.status.key)
+                setString(Database.PAC.COLUMN_STATUS_DETAILS, record.statusDetails?.key)
+                setString(Database.PAC.COLUMN_JSON_DATA, record.jsonData)
             }
             .tryExecute(session)
             .mapFailure {
@@ -171,10 +171,10 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             .wasApplied()
             .asSuccess()
 
-    override fun save(entities: Collection<PacEntity>): MaybeFail<Fail.Incident.Database> {
+    override fun save(records: Collection<PacRecord>): MaybeFail<Fail.Incident.Database> {
         val batchStatement = BatchStatement()
 
-        entities.forEach { entity ->
+        records.forEach { entity ->
            val statement = getSaveStatement(entity)
             batchStatement.add(statement)
         }
@@ -185,17 +185,17 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
         return MaybeFail.none()
     }
 
-    private fun getSaveStatement(entity: PacEntity): BoundStatement {
+    private fun getSaveStatement(record: PacRecord): BoundStatement {
         return preparedSaveNewCQL.bind()
             .apply {
-                setString(Database.PAC.COLUMN_CPID, entity.cpid.underlying)
-                setString(Database.PAC.COLUMN_OCID, entity.ocid.underlying)
-                setString(Database.PAC.COLUMN_ID, entity.id.underlying)
-                setString(Database.PAC.COLUMN_OWNER, entity.owner.underlying)
-                setTimestamp(Database.PAC.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
-                setString(Database.PAC.COLUMN_STATUS, entity.status.key)
-                setString(Database.PAC.COLUMN_STATUS_DETAILS, entity.statusDetails?.key)
-                setString(Database.PAC.COLUMN_JSON_DATA, entity.jsonData)
+                setString(Database.PAC.COLUMN_CPID, record.cpid.underlying)
+                setString(Database.PAC.COLUMN_OCID, record.ocid.underlying)
+                setString(Database.PAC.COLUMN_ID, record.id.underlying)
+                setString(Database.PAC.COLUMN_OWNER, record.owner.underlying)
+                setTimestamp(Database.PAC.COLUMN_CREATED_DATE, record.createdDate.toCassandraTimestamp())
+                setString(Database.PAC.COLUMN_STATUS, record.status.key)
+                setString(Database.PAC.COLUMN_STATUS_DETAILS, record.statusDetails?.key)
+                setString(Database.PAC.COLUMN_JSON_DATA, record.jsonData)
             }
     }
 }

@@ -1,11 +1,14 @@
 package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.pac.PacRepository
-import com.procurement.contracting.application.repository.pac.model.PacEntity
+import com.procurement.contracting.application.repository.pac.model.PacRecord
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsParams
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsResult
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.Pac
+import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.util.extension.mapResult
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service
 
 interface PacService {
     fun create(params: DoPacsParams): Result<DoPacsResult, Fail>
+    fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail>
 }
 
 @Service
@@ -30,8 +34,9 @@ class PacServiceImpl(
     override fun create(params: DoPacsParams): Result<DoPacsResult, Fail> {
         val activePacByAwardId = pacRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it }
-            .mapResult { transform.tryDeserialization(it.jsonData, Pac::class.java) }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
             .onFailure { return it }
+            .map { it.toDomain() }
             .filter { it.status == PacStatus.PENDING && it.awardId != null} // find active PAC's created on award
             .associateBy { it.awardId!! }
 
@@ -44,20 +49,38 @@ class PacServiceImpl(
             .map { (_, pac) -> pac.copy(status = PacStatus.CANCELLED) }
 
         val createdPacEntities = (createdPacs)
-            .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
+            .mapResult { pac -> PacRecord.of(params.cpid, params.ocid, pac, transform = transform) }
             .onFailure { return it }
 
         pacRepository.save(createdPacEntities)
             .doOnFail { return it.asFailure() }
 
         canceledPacs
-            .mapResult { pac -> PacEntity.of(params.cpid, params.ocid, pac, transform = transform) }
+            .mapResult { pac -> PacRecord.of(params.cpid, params.ocid, pac, transform = transform) }
             .onFailure { return it }
             .mapResult { canceledPac -> pacRepository.update(canceledPac) }
             .onFailure { return it }
 
         return convertToPacResult(createdPacs).asSuccess()
     }
+
+    override fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail> {
+        val receivedLots = params.tender.lots.toSetBy { it.id }
+
+        return pacRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
+            .onFailure { return it }
+            .map { it.toDomain() }
+            .filter { it.isActive() && it.isForLot() && it.hasRelationWithLots(receivedLots) }
+            .map { FindPacsByLotIdsResult.fromDomain(it) }
+            .let { FindPacsByLotIdsResult(it) }
+            .asSuccess()
+    }
+
+    private fun Pac.isActive(): Boolean = this.status == PacStatus.PENDING
+    private fun Pac.isForLot(): Boolean = this.relatedLots.isNotEmpty()
+    private fun Pac.hasRelationWithLots(lots: Collection<String>): Boolean = this.relatedLots.any { it.underlying in lots }
 
     private fun convertToPacResult(createdPacs: List<Pac>): DoPacsResult {
         return DoPacsResult(

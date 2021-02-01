@@ -1,0 +1,33 @@
+{
+  "contracts": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "pending",
+      "date": "2020-12-11T15:11:37Z",
+      "relatedLots": [
+        "string"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "awardId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "agreedMetrics ": [
+        {
+          "id": "string",
+          "title": "string",
+          "observations": [
+            {
+              "id": "string",
+              "notes": "string",
+              "measure": "Unknown Type: string,number,integer",
+              "relatedRequirementId": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
