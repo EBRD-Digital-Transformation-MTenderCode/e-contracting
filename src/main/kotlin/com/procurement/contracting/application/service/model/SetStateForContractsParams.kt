@@ -1,57 +1,29 @@
 package com.procurement.contracting.application.service.model
 
-import com.procurement.contracting.domain.model.OperationType
+import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseEnum
 import com.procurement.contracting.domain.model.parseOcid
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.util.extension.getDuplicate
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import com.procurement.contracting.domain.model.OperationType as ParentOperationType
 
 class SetStateForContractsParams private constructor(
     val cpid: Cpid,
     val ocid: Ocid,
-    val pmd: ProcurementMethodDetails,
+    val pmd: ProcurementMethod,
     val country: String,
     val operationType: OperationType,
     val tender: Tender
 ) {
 
     companion object {
-
-        private val allowedPmd = ProcurementMethodDetails.allowedElements
-            .filter {
-                when (it) {
-                    ProcurementMethodDetails.CF, ProcurementMethodDetails.TEST_CF,
-                    ProcurementMethodDetails.OF, ProcurementMethodDetails.TEST_OF -> true
-
-                    ProcurementMethodDetails.CD, ProcurementMethodDetails.TEST_CD,
-                    ProcurementMethodDetails.DA, ProcurementMethodDetails.TEST_DA,
-                    ProcurementMethodDetails.DC, ProcurementMethodDetails.TEST_DC,
-                    ProcurementMethodDetails.FA, ProcurementMethodDetails.TEST_FA,
-                    ProcurementMethodDetails.GPA, ProcurementMethodDetails.TEST_GPA,
-                    ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP,
-                    ProcurementMethodDetails.MV, ProcurementMethodDetails.TEST_MV,
-                    ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
-                    ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
-                    ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
-                    ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
-                    ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> false
-                }
-            }
-            .toSet()
-
-        private val allowedOperationType = OperationType.allowedElements
-            .filter {
-                when (it) {
-                    OperationType.COMPLETE_SOURCING -> true
-                    OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> false
-                }
-            }
-            .toSet()
 
         fun tryCreate(
             cpid: String,
@@ -66,14 +38,14 @@ class SetStateForContractsParams private constructor(
 
             val parsedPmd = parseEnum(
                 value = pmd,
-                allowedEnums = allowedPmd,
+                allowedEnums = ProcurementMethod.allowedElements,
                 attributeName = "pmd",
-                target = ProcurementMethodDetails
+                target = ProcurementMethod
             ).onFailure { return it }
 
             val parsedOperationType = parseEnum(
                 value = operationType,
-                allowedEnums = allowedOperationType,
+                allowedEnums = OperationType.allowedElements,
                 attributeName = "operationType",
                 target = OperationType
             ).onFailure { return it }
@@ -94,9 +66,47 @@ class SetStateForContractsParams private constructor(
     data class Tender(
         val lots: List<Lot>
     ) {
+        companion object {
+            fun tryCreate(lots: List<Tender.Lot>): Result<Tender, DataErrors.Validation.UniquenessDataMismatch> {
+
+                val duplicate = lots.getDuplicate { it.id }
+                if (duplicate != null)
+                    return DataErrors.Validation.UniquenessDataMismatch(name = "lots.id", value = duplicate.id).asFailure()
+
+                return Tender(lots = lots).asSuccess()
+            }
+        }
+
         data class Lot(
             val id: String
         )
     }
 
+    enum class OperationType(val base: ParentOperationType) : EnumElementProvider.Element {
+
+        COMPLETE_SOURCING(ParentOperationType.COMPLETE_SOURCING);
+
+        override val key: String
+            get() = base.key
+
+        override val deprecated: Boolean
+            get() = base.deprecated
+
+        companion object : EnumElementProvider<OperationType>(info = info())
+    }
+
+    enum class ProcurementMethod(val base: ProcurementMethodDetails) : EnumElementProvider.Element {
+
+        CF(ProcurementMethodDetails.CF), TEST_CF(ProcurementMethodDetails.TEST_CF),
+        OF(ProcurementMethodDetails.OF), TEST_OF(ProcurementMethodDetails.TEST_OF),
+        ;
+
+        override val key: String
+            get() = base.key
+
+        override val deprecated: Boolean
+            get() = base.deprecated
+
+        companion object : EnumElementProvider<ProcurementMethod>(info = info())
+    }
 }
