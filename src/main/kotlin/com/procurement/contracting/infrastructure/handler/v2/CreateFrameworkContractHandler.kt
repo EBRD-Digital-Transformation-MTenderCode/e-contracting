@@ -1,6 +1,6 @@
 package com.procurement.contracting.infrastructure.handler.v2
 
-import com.procurement.contracting.application.service.CreateFrameworkContractService
+import com.procurement.contracting.application.service.FrameworkContractService
 import com.procurement.contracting.application.service.Logger
 import com.procurement.contracting.application.service.Transform
 import com.procurement.contracting.infrastructure.api.v2.CommandTypeV2
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class CreateFrameworkContractHandler(
-    private val createContractService: CreateFrameworkContractService,
+    private val frameworkContractService: FrameworkContractService,
     transform: Transform,
     historyRepository: HistoryRepository,
     logger: Logger
@@ -31,7 +31,7 @@ class CreateFrameworkContractHandler(
             .flatMap { it.convert() }
             .onFailure { return it }
 
-        return createContractService.create(params = params)
+        return frameworkContractService.create(params = params)
             .map { it.convert() }
     }
 }

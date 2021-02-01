@@ -13,20 +13,21 @@ import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatu
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
-interface CreateFrameworkContractService {
+interface FrameworkContractService {
     fun create(params: CreateFrameworkContractParams): Result<CreateFrameworkContractResult, Fail>
     fun addSupplierReferences(params: AddSupplierReferencesInFCParams): Result<AddSupplierReferencesInFCResponse, Fail>
 }
 
 @Service
-class CreateFrameworkContractServiceImpl(
+class FrameworkContractServiceImpl(
     private val generationService: GenerationService,
     private val transform: Transform,
     private val fcRepository: FrameworkContractRepository
-) : CreateFrameworkContractService {
+) : FrameworkContractService {
 
     override fun create(params: CreateFrameworkContractParams): Result<CreateFrameworkContractResult, Fail> {
         val fc = FrameworkContract(
@@ -60,7 +61,10 @@ class CreateFrameworkContractServiceImpl(
         val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
             .onFailure { return it }
 
-        fcRepository.update(updatedFrameworkContractRecord)
+        val wapAssplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
+        if (!wapAssplied)
+            return Fail.Incident.Database.ConsistencyIncident("Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
+                "by cpid = ${params.cpid} and ocid = ${params.ocid}.").asFailure()
 
         return AddSupplierReferencesInFCResponse.fromDomain(updatedFrameworkContract).asSuccess()
     }
