@@ -3,6 +3,7 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.service.converter.convert
+import com.procurement.contracting.application.service.model.AddSupplierReferencesInFCParams
 import com.procurement.contracting.application.service.model.CreateFrameworkContractParams
 import com.procurement.contracting.application.service.model.CreateFrameworkContractResult
 import com.procurement.contracting.domain.model.Token
@@ -10,12 +11,14 @@ import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
 interface CreateFrameworkContractService {
     fun create(params: CreateFrameworkContractParams): Result<CreateFrameworkContractResult, Fail>
+    fun addSupplierReferences(params: AddSupplierReferencesInFCParams): Result<AddSupplierReferencesInFCResponse, Fail>
 }
 
 @Service
@@ -33,7 +36,8 @@ class CreateFrameworkContractServiceImpl(
             date = params.date,
             status = FrameworkContractStatus.PENDING,
             statusDetails = FrameworkContractStatusDetails.CONTRACT_PROJECT,
-            isFrameworkOrDynamic = false
+            isFrameworkOrDynamic = false,
+            suppliers = emptyList()
         )
 
         val entity = FrameworkContractEntity
@@ -42,5 +46,22 @@ class CreateFrameworkContractServiceImpl(
 
         fcRepository.saveNew(entity).onFailure { return it }
         return fc.convert().asSuccess()
+    }
+
+    override fun addSupplierReferences(params: AddSupplierReferencesInFCParams): Result<AddSupplierReferencesInFCResponse, Fail> {
+        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
+            .first() // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
+
+        val newSuppliers = params.parties.map { it.toDomain() }
+
+        val updatedFrameworkContract = frameworkContract.copy(suppliers = frameworkContract.suppliers + newSuppliers)
+        val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
+            .onFailure { return it }
+
+        fcRepository.update(updatedFrameworkContractRecord)
+
+        return AddSupplierReferencesInFCResponse.fromDomain(updatedFrameworkContract).asSuccess()
     }
 }
