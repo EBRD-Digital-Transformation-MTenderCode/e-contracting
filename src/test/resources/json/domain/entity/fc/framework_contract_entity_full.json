@@ -5,5 +5,11 @@
   "status": "pending",
   "statusDetails": "contractProject",
   "date": "2019-01-01T10:00:00Z",
+  "suppliers": [
+    {
+      "id": "id",
+      "name": "name"
+    }
+  ],
   "isFrameworkOrDynamic": true
 }

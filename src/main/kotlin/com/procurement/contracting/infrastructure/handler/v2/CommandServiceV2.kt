@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class CommandServiceV2(
     private val logger: Logger,
+    private val addSupplierReferencesInFCHandler: AddSupplierReferencesInFCHandler,
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
     private val doPacsHandler: DoPacsHandler,
@@ -21,6 +22,7 @@ class CommandServiceV2(
 
     fun execute(descriptor: CommandDescriptor): ApiResponseV2 {
         return when (descriptor.action) {
+            CommandTypeV2.ADD_SUPPLIER_REFERENCES_IN_FC -> addSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
