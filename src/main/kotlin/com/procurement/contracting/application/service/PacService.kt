@@ -27,7 +27,7 @@ import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
 interface PacService {
-    fun create(params: DoPacsParams): Result<DoPacsResult, Fail>
+    fun create(params: DoPacsParams): Result<DoPacsResult?, Fail>
     fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail>
     fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail>
 }
@@ -40,7 +40,7 @@ class PacServiceImpl(
     private val rulesService: RulesService
 ) : PacService {
 
-    override fun create(params: DoPacsParams): Result<DoPacsResult, Fail> {
+    override fun create(params: DoPacsParams): Result<DoPacsResult?, Fail> {
         val activePacByAwardId = pacRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it }
             .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
@@ -70,7 +70,10 @@ class PacServiceImpl(
             .mapResult { canceledPac -> pacRepository.update(canceledPac) }
             .onFailure { return it }
 
-        return convertToPacResult(createdPacs).asSuccess()
+        return if (createdPacs.isNotEmpty())
+            convertToPacResult(createdPacs).asSuccess()
+        else
+            null.asSuccess()
     }
 
     override fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail> {

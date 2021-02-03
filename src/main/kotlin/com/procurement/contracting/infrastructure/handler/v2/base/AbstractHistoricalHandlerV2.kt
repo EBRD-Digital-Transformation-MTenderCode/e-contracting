@@ -11,7 +11,7 @@ import com.procurement.contracting.infrastructure.handler.v2.model.CommandDescri
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.utils.toJson
 
-abstract class AbstractHistoricalHandlerV2<R : Any>(
+abstract class AbstractHistoricalHandlerV2<R : Any?>(
     private val transform: Transform,
     private val historyRepository: HistoryRepository,
     private val logger: Logger
