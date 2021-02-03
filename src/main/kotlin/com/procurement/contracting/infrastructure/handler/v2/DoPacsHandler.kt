@@ -21,17 +21,17 @@ class DoPacsHandler(
     transform: Transform,
     historyRepository: HistoryRepository,
     logger: Logger
-) : AbstractHistoricalHandlerV2<DoPacsResponse>(transform, historyRepository, logger) {
+) : AbstractHistoricalHandlerV2<DoPacsResponse?>(transform, historyRepository, logger) {
 
     override val action: CommandTypeV2 = CommandTypeV2.DO_PACS
 
-    override fun execute(descriptor: CommandDescriptor): Result<DoPacsResponse, Fail> {
+    override fun execute(descriptor: CommandDescriptor): Result<DoPacsResponse?, Fail> {
         val params = descriptor.body.asJsonNode
             .params<DoPacsRequest>()
             .flatMap { it.convert() }
             .onFailure { return it }
 
         return pacService.create(params = params)
-            .map { it.convert() }
+            .map { it?.convert() }
     }
 }
