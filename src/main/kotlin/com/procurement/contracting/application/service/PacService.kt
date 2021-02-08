@@ -1,80 +1,180 @@
 package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.pac.PacRepository
-import com.procurement.contracting.application.repository.pac.model.PacEntity
-import com.procurement.contracting.application.service.model.pacs.CreatePacsParams
-import com.procurement.contracting.application.service.model.pacs.CreatePacsResult
+import com.procurement.contracting.application.repository.pac.model.PacRecord
+import com.procurement.contracting.application.service.errors.SetStateForContractsErrors
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsParams
+import com.procurement.contracting.application.service.model.FindPacsByLotIdsResult
+import com.procurement.contracting.application.service.model.SetStateForContractsParams
+import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.COMPLETE_SOURCING
+import com.procurement.contracting.application.service.model.pacs.DoPacsParams
+import com.procurement.contracting.application.service.model.pacs.DoPacsResult
+import com.procurement.contracting.application.service.rule.RulesService
+import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.Pac
+import com.procurement.contracting.domain.model.fc.PacEntity
+import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
+import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.infrastructure.fail.Fail.Incident
+import com.procurement.contracting.infrastructure.handler.v2.model.response.SetStateForContractsResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
 interface PacService {
-    fun create(params: CreatePacsParams): Result<CreatePacsResult, Fail>
+    fun create(params: DoPacsParams): Result<DoPacsResult?, Fail>
+    fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail>
+    fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail>
 }
 
 @Service
 class PacServiceImpl(
     private val generationService: GenerationService,
     private val transform: Transform,
-    private val pacRepository: PacRepository
+    private val pacRepository: PacRepository,
+    private val rulesService: RulesService
 ) : PacService {
 
-    override fun create(params: CreatePacsParams): Result<CreatePacsResult, Fail> {
-        val createdPacs = if (params.awards.isNotEmpty())
-            createPacsByAwards(params)
-        else
-            listOf(createPac(params))
+    override fun create(params: DoPacsParams): Result<DoPacsResult?, Fail> {
+        val activePacByAwardId = pacRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
+            .onFailure { return it }
+            .map { it.toDomain() }
+            .filter { it.status == PacStatus.PENDING && it.awardId != null} // find active PAC's created on award
+            .associateBy { it.awardId!! }
 
-        val pacEntities = createdPacs.map { pac ->
-            PacEntity.of(params.cpid, params.ocid, pac, transform = transform)
-                .onFailure { return it }
-        }
-        pacRepository.save(pacEntities)
+        // create PACs for new awards from request
+        val createdPacs = createPacsByAwards(params, activePacByAwardId).onFailure { return it }
+
+        val receivedAwardsId = params.awards.toSetBy { it.id }
+        val canceledPacs = activePacByAwardId
+            .filter { (id, _) -> id !in receivedAwardsId }
+            .map { (_, pac) -> pac.copy(status = PacStatus.CANCELLED) }
+
+        val createdPacEntities = (createdPacs)
+            .mapResult { pac -> PacRecord.of(params.cpid, params.ocid, pac, transform = transform) }
+            .onFailure { return it }
+
+        pacRepository.save(createdPacEntities)
             .doOnFail { return it.asFailure() }
 
-        return convertToPacResult(createdPacs).asSuccess()
+        canceledPacs
+            .mapResult { pac -> PacRecord.of(params.cpid, params.ocid, pac, transform = transform) }
+            .onFailure { return it }
+            .mapResult { canceledPac -> pacRepository.update(canceledPac) }
+            .onFailure { return it }
+
+        return if (createdPacs.isNotEmpty())
+            convertToPacResult(createdPacs).asSuccess()
+        else
+            null.asSuccess()
     }
 
-    private fun convertToPacResult(createdPacs: List<Pac>): CreatePacsResult {
-        return CreatePacsResult(
+    override fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail> {
+        val receivedLots = params.tender.lots.toSetBy { it.id }
+
+        return pacRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
+            .onFailure { return it }
+            .map { it.toDomain() }
+            .filter { it.isActive() && it.isForLot() && it.hasRelationWithLots(receivedLots) }
+            .map { FindPacsByLotIdsResult.fromDomain(it) }
+            .let { FindPacsByLotIdsResult(it) }
+            .asSuccess()
+    }
+
+    private fun Pac.isActive(): Boolean = this.status == PacStatus.PENDING
+    private fun Pac.isForLot(): Boolean = this.relatedLots.isNotEmpty()
+    private fun Pac.hasRelationWithLots(lots: Collection<String>): Boolean = this.relatedLots.any { it.underlying in lots }
+
+    override fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
+        when (params.operationType) {
+            COMPLETE_SOURCING -> setStateForComleteSourcing(params)
+        }
+
+    private fun setStateForComleteSourcing(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
+        val receivedLots = params.tender.lots.toSetBy { it.id }
+        val stateForSetting = rulesService.getStateForSetting(
+            country = params.country,
+            pmd = params.pmd.base,
+            operationType = params.operationType.base
+        ).onFailure { return it }
+
+        val targetPacs = pacRepository
+            .findBy(params.cpid, params.ocid)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
+            .onFailure { return it }
+            .map { it.toDomain() }
+            .filter { it.hasRelationWithLots(receivedLots) }
+
+        if (targetPacs.size < receivedLots.size) {
+            val unknownLots = receivedLots - targetPacs.flatMap { it.relatedLots }
+                .map { it.underlying }
+            return SetStateForContractsErrors.PacNotFound(unknownLots.first()).asFailure()
+        }
+
+        val updatedPacs = targetPacs
+            .map { it.copy(
+                status = PacStatus.orNull(stateForSetting.status)!!,
+                statusDetails = PacStatusDetails.orNull(stateForSetting.statusDetails))
+            }
+
+        updatedPacs
+            .mapResult { pac -> PacRecord.of(params.cpid, params.ocid, pac, transform = transform) }
+            .onFailure { return it }
+            .forEach { updatedPac ->
+                val wasApplied = pacRepository.update(updatedPac).onFailure { return it }
+                if (!wasApplied)
+                    return Incident.Database.ConsistencyIncident(message = "Cannot update PAC (id = ${updatedPac.id})").asFailure()
+            }
+
+        return updatedPacs
+            .map { SetStateForContractsResponse.fromDomain(it) }
+            .let { SetStateForContractsResponse(it) }
+            .asSuccess()
+    }
+
+    private fun convertToPacResult(createdPacs: List<Pac>): DoPacsResult {
+        return DoPacsResult(
             contracts = createdPacs.map { pac ->
-                CreatePacsResult.Contract(
+                DoPacsResult.Contract(
                     id = pac.id,
                     status = pac.status,
-                    statusDetails = pac.statusDetails,
                     date = pac.date,
                     relatedLots = pac.relatedLots,
                     awardId = pac.awardId,
                     suppliers = pac.suppliers.map { supplier ->
-                        CreatePacsResult.Contract.Supplier(
+                        DoPacsResult.Contract.Supplier(
                             id = supplier.id,
                             name = supplier.name
                         )
                     },
                     agreedMetrics = pac.agreedMetrics.map { agreedMetric ->
-                        CreatePacsResult.Contract.AgreedMetric(
+                        DoPacsResult.Contract.AgreedMetric(
                             id = agreedMetric.id,
                             title = agreedMetric.title,
                             observations = agreedMetric.observations.map { observation ->
-                                CreatePacsResult.Contract.AgreedMetric.Observation(
+                                DoPacsResult.Contract.AgreedMetric.Observation(
                                     id = observation.id,
                                     notes = observation.notes,
                                     measure = observation.measure,
                                     relatedRequirementId = observation.relatedRequirementId,
                                     period = observation.period?.let { period ->
-                                        CreatePacsResult.Contract.AgreedMetric.Observation.Period(
+                                        DoPacsResult.Contract.AgreedMetric.Observation.Period(
                                             startDate = period.startDate,
                                             endDate = period.endDate
                                         )
                                     },
                                     unit = observation.unit?.let { unit ->
-                                        CreatePacsResult.Contract.AgreedMetric.Observation.Unit(
+                                        DoPacsResult.Contract.AgreedMetric.Observation.Unit(
                                             id = unit.id,
                                             name = unit.name
                                         )
@@ -84,39 +184,18 @@ class PacServiceImpl(
                         )
                     }
                 )
-            },
-            token = createdPacs.first().token
+            }
         )
     }
 
-    private fun createPac(params: CreatePacsParams) = Pac(
-        id = generationService.pacId(),
-        date = params.date,
-        owner = params.owner,
-        status = PacStatus.PENDING,
-        statusDetails = PacStatusDetails.ALL_REJECTED,
-        relatedLots = listOf(params.tender.lots.first().id),
-        token = generationService.token()
-    )
+    private fun createPacsByAwards(params: DoPacsParams, activePacByAwardId: Map<AwardId, Pac>): Result<List<Pac>, Fail.Incident> {
+        return params.awards
+            .filter { award -> activePacByAwardId[award.id] == null } // find awards for creating new PAC
+            .map { award -> createPac(generationService.pacId(), award, params) }
+            .asSuccess()
+    }
 
-
-    private fun createPacsByAwards(params: CreatePacsParams) =
-        params.awards.map { award ->
-            val suppliers = createSuppliers(award)
-            Pac(
-                id = generationService.pacId(),
-                date = params.date,
-                owner = params.owner,
-                awardId = award.id,
-                status = PacStatus.PENDING,
-                statusDetails = PacStatusDetails.CONCLUDED,
-                suppliers = suppliers,
-                relatedLots = listOf(params.tender.lots.first().id),
-                agreedMetrics = createAgreedMetrics(params, suppliers),
-            )
-        }
-
-    private fun createSuppliers(award: CreatePacsParams.Award) =
+    private fun createSuppliers(award: DoPacsParams.Award) =
         award.suppliers.map { supplier ->
             Pac.Supplier(
                 id = supplier.id,
@@ -124,8 +203,23 @@ class PacServiceImpl(
             )
         }
 
+    private fun createPac(pacId: PacId, award: DoPacsParams.Award, params: DoPacsParams): Pac {
+        val suppliers = createSuppliers(award)
+        return Pac(
+            id = pacId,
+            date = params.date,
+            owner = params.owner,
+            awardId = award.id,
+            status = PacStatus.PENDING,
+            statusDetails = null,
+            suppliers = suppliers,
+            relatedLots = listOf(params.tender.lots.first().id),
+            agreedMetrics = createAgreedMetrics(params, suppliers),
+        )
+    }
+
     private fun createAgreedMetrics(
-        params: CreatePacsParams,
+        params: DoPacsParams,
         suppliers: List<Pac.Supplier>
     ): List<Pac.AgreedMetric> =
         params.tender.criteria.map { criterion ->
@@ -137,7 +231,7 @@ class PacServiceImpl(
         }
 
     private fun createObservations(
-        params: CreatePacsParams,
+        params: DoPacsParams,
         suppliers: List<Pac.Supplier>
     ): List<Pac.AgreedMetric.Observation> {
         val responsesByRequirementIds = params.bids?.details.orEmpty()
@@ -161,9 +255,9 @@ class PacServiceImpl(
         }
     }
 
-    private fun CreatePacsParams.Tender.Criteria.RequirementGroup.Requirement.toObservation(
-        responsesByRequirementIds: Map<String, CreatePacsParams.Bids.Detail.RequirementResponse>,
-        observationsByRequirementId: Map<String?, CreatePacsParams.Tender.Target.Observation>
+    private fun DoPacsParams.Tender.Criteria.RequirementGroup.Requirement.toObservation(
+        responsesByRequirementIds: Map<String, DoPacsParams.Bids.Detail.RequirementResponse>,
+        observationsByRequirementId: Map<String?, DoPacsParams.Tender.Target.Observation>
     ): Pac.AgreedMetric.Observation {
 
         val requirementResponse = responsesByRequirementIds.getValue(id)
@@ -190,7 +284,7 @@ class PacServiceImpl(
     }
 
     private fun belongsToSuppliers(
-        detail: CreatePacsParams.Bids.Detail,
+        detail: DoPacsParams.Bids.Detail,
         suppliers: List<Pac.Supplier>
     ): Boolean {
         val tenderersIds = detail.tenderers.toSetBy { tenderer -> tenderer.id }

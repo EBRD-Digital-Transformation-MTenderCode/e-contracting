@@ -6,7 +6,8 @@ import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class PacStatus(@JsonValue override val key: String) : EnumElementProvider.Element {
 
-    PENDING("pending")
+    PENDING("pending"),
+    CANCELLED("cancelled")
     ;
 
     override fun toString(): String = key

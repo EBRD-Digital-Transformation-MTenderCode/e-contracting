@@ -1,5 +1,6 @@
 package com.procurement.contracting.domain.model.fc
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
@@ -15,5 +16,14 @@ data class FrameworkContract(
     @field:JsonProperty("status") @param:JsonProperty("status") val status: FrameworkContractStatus,
     @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: FrameworkContractStatusDetails,
     @field:JsonProperty("date") @param:JsonProperty("date") val date: LocalDateTime,
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @field:JsonProperty("suppliers") @param:JsonProperty("suppliers") val suppliers: List<Supplier> = emptyList(),
+
     @get:JsonProperty("isFrameworkOrDynamic") @param:JsonProperty("isFrameworkOrDynamic") val isFrameworkOrDynamic: Boolean
-)
+) {
+    data class Supplier(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
+        @field:JsonProperty("name") @param:JsonProperty("name") val name: String
+    )
+}

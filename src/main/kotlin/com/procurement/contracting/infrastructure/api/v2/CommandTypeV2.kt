@@ -7,10 +7,13 @@ import com.procurement.contracting.infrastructure.api.Action
 
 enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvider.Element, Action {
 
+    ADD_SUPPLIER_REFERENCES_IN_FC("addSupplierReferencesInFC"),
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
-    CREATE_PACS("createPacs"),
+    DO_PACS("doPacs"),
     FIND_CAN_IDS("findCANIds"),
+    FIND_PACS_BY_LOT_IDS("findPacsByLotIds"),
+    SET_STATE_FOR_CONTRACTS("setStateForContracts"),
     ;
 
     override fun toString(): String = key

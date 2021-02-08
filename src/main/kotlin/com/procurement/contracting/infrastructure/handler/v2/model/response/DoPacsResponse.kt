@@ -3,24 +3,16 @@ package com.procurement.contracting.infrastructure.handler.v2.model.response
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class CreatePacsResponse(
-    @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>,
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @param:JsonProperty("token") @field:JsonProperty("token") val token: String?
+data class DoPacsResponse(
+    @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>
 ) {
     data class Contract(
         @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
         @param:JsonProperty("status") @field:JsonProperty("status") val status: String,
-        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: String,
         @param:JsonProperty("date") @field:JsonProperty("date") val date: String,
         @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
-
-        @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>?,
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: String?,
+        @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
+        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: String,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @param:JsonProperty("agreedMetrics ") @field:JsonProperty("agreedMetrics ") val agreedMetrics: List<AgreedMetric>?

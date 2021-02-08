@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 
 enum class OperationType(@JsonValue override val key: String) : EnumElementProvider.Element {
 
+    COMPLETE_SOURCING("completeSourcing"),
     WITHDRAW_QUALIFICATION_PROTOCOL("withdrawQualificationProtocol");
 
     override fun toString(): String = key
