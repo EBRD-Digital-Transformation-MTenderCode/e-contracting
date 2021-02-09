@@ -11,18 +11,24 @@ import org.springframework.stereotype.Service
 @Service
 class CommandServiceV2(
     private val logger: Logger,
+    private val addSupplierReferencesInFCHandler: AddSupplierReferencesInFCHandler,
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
-    private val createPacsHandler: CreatePacsHandler,
+    private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
+    private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
+    private val setStateForContractsHandler: SetStateForContractsHandler,
 ) {
 
     fun execute(descriptor: CommandDescriptor): ApiResponseV2 {
         return when (descriptor.action) {
+            CommandTypeV2.ADD_SUPPLIER_REFERENCES_IN_FC -> addSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
-            CommandTypeV2.CREATE_PACS -> createPacsHandler.handle(descriptor)
+            CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
+            CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
+            CommandTypeV2.SET_STATE_FOR_CONTRACTS -> setStateForContractsHandler.handle(descriptor)
 
             else -> {
                 val errorDescription = "Unknown action '${descriptor.action.key}'."

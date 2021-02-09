@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.DynamicValue
 
-data class CreatePacsRequest(
+data class DoPacsRequest(
     @param:JsonProperty("cpid") @field:JsonProperty("cpid") val cpid: String,
     @param:JsonProperty("ocid") @field:JsonProperty("ocid") val ocid: String,
     @param:JsonProperty("tender") @field:JsonProperty("tender") val tender: Tender,

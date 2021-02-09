@@ -14,7 +14,7 @@ sealed class Fail {
 
     abstract fun logging(logger: Logger)
 
-    abstract class Error() : Fail() {
+    abstract class Error(val prefix: String = "") : Fail() {
         companion object {
             fun <T, E : Error> E.toResult(): Result<T, E> = Result.failure(this)
             fun <E : Error> E.toValidationResult(): ValidationResult<E> = ValidationResult.error(this)
@@ -50,7 +50,7 @@ sealed class Fail {
                 }
             }
 
-            class SaveIncident(message: String) : Incident(
+            class ConsistencyIncident(message: String) : Incident(
                 level = Level.ERROR,
                 number = "1.2",
                 description = "Database consistency incident. $message"

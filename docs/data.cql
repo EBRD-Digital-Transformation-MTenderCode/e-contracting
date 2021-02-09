@@ -182,3 +182,5 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_pac
     json_data      TEXT,
     PRIMARY KEY (cpid, ocid, id)
 );
+
+ALTER TABLE ocds.contracting_pac DROP token_entity;
