@@ -9,6 +9,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
 
     ADD_SUPPLIER_REFERENCES_IN_FC("addSupplierReferencesInFC"),
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
+    CHECK_CONTRACT_STATE("checkContractState"),
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
     DO_PACS("doPacs"),
     FIND_CAN_IDS("findCANIds"),
