@@ -4,8 +4,10 @@ import com.procurement.contracting.application.repository.fc.FrameworkContractRe
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.service.converter.convert
 import com.procurement.contracting.application.service.errors.CheckContractStateErrors
+import com.procurement.contracting.application.service.errors.CheckExistenceSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.model.AddSupplierReferencesInFCParams
 import com.procurement.contracting.application.service.model.CheckContractStateParams
+import com.procurement.contracting.application.service.model.CheckExistenceSupplierReferencesInFCParams
 import com.procurement.contracting.application.service.model.CreateFrameworkContractParams
 import com.procurement.contracting.application.service.model.CreateFrameworkContractResult
 import com.procurement.contracting.application.service.rule.RulesService
@@ -27,6 +29,7 @@ interface FrameworkContractService {
     fun create(params: CreateFrameworkContractParams): Result<CreateFrameworkContractResult, Fail>
     fun addSupplierReferences(params: AddSupplierReferencesInFCParams): Result<AddSupplierReferencesInFCResponse, Fail>
     fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail>
+    fun checkExistenceSupplierReferencesInFC(params: CheckExistenceSupplierReferencesInFCParams): ValidationResult<Fail>
 }
 
 @Service
@@ -97,6 +100,26 @@ class FrameworkContractServiceImpl(
 
         if (currentState !in validStates)
             return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+
+        return ValidationResult.ok()
+    }
+
+    override fun checkExistenceSupplierReferencesInFC(params: CheckExistenceSupplierReferencesInFCParams): ValidationResult<Fail> {
+        val frameworkContracts = fcRepository.findBy(params.cpid, params.ocid)
+            .onFailure { return it.reason.asValidationError() }
+            .map { transform
+                .tryDeserialization(it.jsonData, FrameworkContract::class.java)
+                .onFailure { return it.reason.asValidationError() }
+            }
+
+        if (frameworkContracts.isEmpty())
+            return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
+
+        // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
+        val frameworkContract = frameworkContracts.first()
+
+        if (frameworkContract.suppliers.isEmpty())
+            return CheckExistenceSupplierReferencesInFCErrors.SuppliersNotFound().asValidationError()
 
         return ValidationResult.ok()
     }
