@@ -3,6 +3,7 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.service.converter.convert
+import com.procurement.contracting.application.service.errors.AddSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.errors.CheckContractStateErrors
 import com.procurement.contracting.application.service.errors.CheckExistenceSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.model.AddSupplierReferencesInFCParams
@@ -64,7 +65,8 @@ class FrameworkContractServiceImpl(
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it }
             .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
-            .first() // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
+            .find { it.status == FrameworkContractStatus.PENDING }
+            ?: return AddSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
 
         val newSuppliers = params.parties.map { it.toDomain() }
 
