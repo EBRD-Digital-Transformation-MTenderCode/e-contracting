@@ -226,13 +226,14 @@ class PacServiceImpl(
             Pac.AgreedMetric(
                 id = criterion.id,
                 title = criterion.title,
-                observations = createObservations(params, suppliers)
+                observations = createObservations(params, suppliers, criterion)
             )
         }
 
     private fun createObservations(
         params: DoPacsParams,
-        suppliers: List<Pac.Supplier>
+        suppliers: List<Pac.Supplier>,
+        criterion: DoPacsParams.Tender.Criteria
     ): List<Pac.AgreedMetric.Observation> {
         val responsesByRequirementIds = params.bids?.details.orEmpty()
             .asSequence()
@@ -240,11 +241,9 @@ class PacServiceImpl(
             .flatMap { it.requirementResponses }
             .associateBy { it.requirement.id }
 
-        val requirements = params.tender.criteria.asSequence()
-            .flatMap { it.requirementGroups }
+        val requirements = criterion.requirementGroups
             .flatMap { it.requirements }
-            .filter { requirement -> requirement.id in responsesByRequirementIds.keys }
-            .toList()
+            .filter { requirement -> requirement.id in responsesByRequirementIds }
 
         val observationsByRequirementId = params.tender.targets
             .flatMap { it.observations }
