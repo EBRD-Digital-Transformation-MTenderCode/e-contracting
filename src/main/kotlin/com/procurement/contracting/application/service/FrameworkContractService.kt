@@ -91,15 +91,14 @@ class FrameworkContractServiceImpl(
         if (frameworkContracts.isEmpty())
             return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
 
-        // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
-        val frameworkContract = frameworkContracts.first()
-
-        val currentState = ValidFCStatesRule.State(frameworkContract.status, frameworkContract.statusDetails);
         val validStates = rulesService.getValidFCStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
-        if (currentState !in validStates)
-            return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+        frameworkContracts.forEach { contract ->
+            val currentState = ValidFCStatesRule.State(contract.status, contract.statusDetails);
+            if (currentState !in validStates)
+                return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+        }
 
         return ValidationResult.ok()
     }
