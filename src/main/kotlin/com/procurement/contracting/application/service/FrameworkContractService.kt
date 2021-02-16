@@ -65,7 +65,7 @@ class FrameworkContractServiceImpl(
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it }
             .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
-            .find { it.status == FrameworkContractStatus.PENDING }
+            .find { it.status == PENDING }
             ?: return AddSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
 
         val newSuppliers = params.parties.map { it.toDomain() }
