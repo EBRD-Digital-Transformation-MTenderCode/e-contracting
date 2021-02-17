@@ -70,8 +70,10 @@ class PacServiceImpl(
             .mapResult { canceledPac -> pacRepository.update(canceledPac) }
             .onFailure { return it }
 
-        return if (createdPacs.isNotEmpty())
-            convertToPacResult(createdPacs).asSuccess()
+        val pacsForResponse = createdPacs + canceledPacs
+
+        return if (pacsForResponse.isNotEmpty())
+            convertToPacResult(pacsForResponse).asSuccess()
         else
             null.asSuccess()
     }
