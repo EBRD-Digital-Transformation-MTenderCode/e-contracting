@@ -3,6 +3,7 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.service.converter.convert
+import com.procurement.contracting.application.service.errors.AddSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.errors.CheckContractStateErrors
 import com.procurement.contracting.application.service.errors.CheckExistenceSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.model.AddSupplierReferencesInFCParams
@@ -14,7 +15,7 @@ import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.application.service.rule.model.ValidFCStatesRule
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.fc.FrameworkContract
-import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus
+import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus.PENDING
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
@@ -46,7 +47,7 @@ class FrameworkContractServiceImpl(
             token = Token.generate(),
             owner = params.owner,
             date = params.date,
-            status = FrameworkContractStatus.PENDING,
+            status = PENDING,
             statusDetails = FrameworkContractStatusDetails.CONTRACT_PROJECT,
             isFrameworkOrDynamic = false,
             suppliers = emptyList()
@@ -64,7 +65,8 @@ class FrameworkContractServiceImpl(
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it }
             .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
-            .first() // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
+            .find { it.status == PENDING }
+            ?: return AddSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
 
         val newSuppliers = params.parties.map { it.toDomain() }
 
@@ -91,32 +93,27 @@ class FrameworkContractServiceImpl(
         if (frameworkContracts.isEmpty())
             return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
 
-        // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
-        val frameworkContract = frameworkContracts.first()
-
-        val currentState = ValidFCStatesRule.State(frameworkContract.status, frameworkContract.statusDetails);
         val validStates = rulesService.getValidFCStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
-        if (currentState !in validStates)
-            return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+        frameworkContracts.forEach { contract ->
+            val currentState = ValidFCStatesRule.State(contract.status, contract.statusDetails);
+            if (currentState !in validStates)
+                return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+        }
 
         return ValidationResult.ok()
     }
 
     override fun checkExistenceSupplierReferencesInFC(params: CheckExistenceSupplierReferencesInFCParams): ValidationResult<Fail> {
-        val frameworkContracts = fcRepository.findBy(params.cpid, params.ocid)
+        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
             .onFailure { return it.reason.asValidationError() }
             .map { transform
                 .tryDeserialization(it.jsonData, FrameworkContract::class.java)
                 .onFailure { return it.reason.asValidationError() }
             }
-
-        if (frameworkContracts.isEmpty())
-            return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
-
-        // TEMP. At the moment of implementation is predicted only one FC record by cpid and ocid
-        val frameworkContract = frameworkContracts.first()
+            .find { it.status == PENDING }
+            ?: return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
 
         if (frameworkContract.suppliers.isEmpty())
             return CheckExistenceSupplierReferencesInFCErrors.SuppliersNotFound().asValidationError()
