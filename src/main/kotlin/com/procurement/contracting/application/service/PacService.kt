@@ -1,5 +1,7 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
+import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacRecord
 import com.procurement.contracting.application.service.errors.SetStateForContractsErrors
@@ -7,12 +9,16 @@ import com.procurement.contracting.application.service.model.FindPacsByLotIdsPar
 import com.procurement.contracting.application.service.model.FindPacsByLotIdsResult
 import com.procurement.contracting.application.service.model.SetStateForContractsParams
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.COMPLETE_SOURCING
+import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.ISSUING_FRAMEWORK_CONTRACT
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.fc.PacEntity
+import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus
+import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
@@ -37,6 +43,7 @@ class PacServiceImpl(
     private val generationService: GenerationService,
     private val transform: Transform,
     private val pacRepository: PacRepository,
+    private val frameworkContractRepository: FrameworkContractRepository,
     private val rulesService: RulesService
 ) : PacService {
 
@@ -98,10 +105,49 @@ class PacServiceImpl(
 
     override fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
         when (params.operationType) {
-            COMPLETE_SOURCING -> setStateForComleteSourcing(params)
+            COMPLETE_SOURCING -> setStateForCompleteSourcing(params)
+            ISSUING_FRAMEWORK_CONTRACT -> setStateForIssuingFC(params)
         }
 
-    private fun setStateForComleteSourcing(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
+    private fun setStateForIssuingFC(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
+        if (params.contracts.isEmpty())
+            return SetStateForContractsErrors.ContractsMissing().asFailure()
+
+        val frameworkContract = frameworkContractRepository
+            .findBy(params.cpid, params.ocid, params.contracts[0].id)
+            .onFailure { return it }
+            ?.let { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java) }
+            ?.onFailure { return it }
+            ?: return SetStateForContractsErrors.FCNotFound(params.cpid, params.ocid, params.contracts[0].id).asFailure()
+
+        val stateForSetting = rulesService.getStateForSetting(
+            country = params.country,
+            pmd = params.pmd.base,
+            operationType = params.operationType.base
+        ).onFailure { return it }
+
+        val updatedFrameworkContract = frameworkContract.copy(
+            status = FrameworkContractStatus.orNull(stateForSetting.status)!!,
+            statusDetails = FrameworkContractStatusDetails.orNull(stateForSetting.statusDetails)!!
+        )
+
+        val updatedEntity = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
+            .onFailure { return it }
+
+        val wasApplied = frameworkContractRepository.update(updatedEntity).onFailure { return it }
+        if (!wasApplied)
+            return Incident.Database.ConsistencyIncident(message = "Cannot update FC (id = ${updatedFrameworkContract.id})").asFailure()
+
+        return updatedFrameworkContract
+            .let { SetStateForContractsResponse.fromDomain(it) }
+            .let { SetStateForContractsResponse(listOf(it)) }
+            .asSuccess()
+    }
+
+    private fun setStateForCompleteSourcing(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
+        if (params.tender == null)
+            return SetStateForContractsErrors.TenderMissing().asFailure()
+
         val receivedLots = params.tender.lots.toSetBy { it.id }
         val stateForSetting = rulesService.getStateForSetting(
             country = params.country,

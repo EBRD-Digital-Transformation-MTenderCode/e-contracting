@@ -2,16 +2,20 @@ package com.procurement.contracting.application.service.model
 
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
+import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseEnum
+import com.procurement.contracting.domain.model.parseIdFC
 import com.procurement.contracting.domain.model.parseOcid
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.util.extension.getDuplicate
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.infrastructure.handler.v2.converter.rule.notEmptyRule
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import com.procurement.contracting.lib.functional.validate
 import com.procurement.contracting.domain.model.OperationType as ParentOperationType
 
 class SetStateForContractsParams private constructor(
@@ -20,7 +24,8 @@ class SetStateForContractsParams private constructor(
     val pmd: ProcurementMethod,
     val country: String,
     val operationType: OperationType,
-    val tender: Tender
+    val tender: Tender?,
+    val contracts: List<Contract>
 ) {
 
     companion object {
@@ -31,7 +36,8 @@ class SetStateForContractsParams private constructor(
             pmd: String,
             country: String,
             operationType: String,
-            tender: Tender
+            tender: Tender?,
+            contracts: List<Contract>?
         ) : Result<SetStateForContractsParams, DataErrors.Validation> {
             val parsedCpid = parseCpid(value = cpid).onFailure { return it }
             val parsedOcid = parseOcid(value = ocid).onFailure { return it }
@@ -50,13 +56,17 @@ class SetStateForContractsParams private constructor(
                 target = OperationType
             ).onFailure { return it }
 
+            contracts.validate(notEmptyRule("contracts"))
+                .onFailure { return it }
+
             return SetStateForContractsParams(
                 cpid = parsedCpid,
                 ocid = parsedOcid,
                 pmd = parsedPmd,
                 country = country,
                 operationType = parsedOperationType,
-                tender = tender
+                tender = tender,
+                contracts = contracts.orEmpty()
             ).asSuccess()
 
         }
@@ -82,9 +92,21 @@ class SetStateForContractsParams private constructor(
         )
     }
 
+    class Contract private constructor(
+        val id: FrameworkContractId
+    ){
+        companion object{
+            fun tryCreate(id: String): Result<Contract, DataErrors> {
+                val id = parseIdFC(id, "contracts.id").onFailure { return it }
+                return Contract(id).asSuccess()
+            }
+        }
+    }
+
     enum class OperationType(val base: ParentOperationType) : EnumElementProvider.Element {
 
-        COMPLETE_SOURCING(ParentOperationType.COMPLETE_SOURCING);
+        COMPLETE_SOURCING(ParentOperationType.COMPLETE_SOURCING),
+        ISSUING_FRAMEWORK_CONTRACT(ParentOperationType.ISSUING_FRAMEWORK_CONTRACT);
 
         override val key: String
             get() = base.key

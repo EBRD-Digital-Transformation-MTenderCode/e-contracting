@@ -5,6 +5,7 @@ import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
@@ -65,6 +66,16 @@ fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErro
         ?: DataErrors.Validation.DataFormatMismatch(
             name = attributeName,
             expectedFormat = AwardId.pattern,
+            actualValue = value
+        ).asFailure()
+
+
+fun parseIdFC(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
+    FrameworkContractId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = LotId.pattern,
             actualValue = value
         ).asFailure()
 
