@@ -7,6 +7,7 @@ import com.procurement.contracting.infrastructure.api.Action
 
 enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvider.Element, Action {
 
+    ADD_GENERATED_DOCUMENT_TO_CONTRACT("addGeneratedDocumentToContract"),
     ADD_SUPPLIER_REFERENCES_IN_FC("addSupplierReferencesInFC"),
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
     CHECK_CONTRACT_STATE("checkContractState"),
