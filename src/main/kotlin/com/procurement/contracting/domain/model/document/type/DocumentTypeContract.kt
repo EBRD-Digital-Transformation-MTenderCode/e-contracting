@@ -20,7 +20,9 @@ enum class DocumentTypeContract(@JsonValue override val key: String) : EnumEleme
     CONFLICT_OF_INTEREST("conflictOfInterest"),
     CANCELLATION_DETAILS("cancellationDetails"),
     BUYERS_RESPONSE_ADD("buyersResponseAdd"),
-    EVALUATION_REPORT("evaluationReports");
+    EVALUATION_REPORT("evaluationReports"),
+    X_FRAMEWORK_PROJECT("x_frameworkProject"),
+    ;
 
     override fun toString(): String = key
 
