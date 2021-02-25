@@ -9,5 +9,9 @@ fun CheckContractStateRequest.convert() =
         ocid = ocid,
         pmd = pmd,
         country = country,
-        operationType = operationType
+        operationType = operationType,
+        contracts = contracts.map { it.convert().onFailure { return it } }
     )
+
+fun CheckContractStateRequest.Contract.convert() =
+    CheckContractStateParams.Contract.tryCreate(id = id)
