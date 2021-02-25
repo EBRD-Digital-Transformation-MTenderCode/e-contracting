@@ -134,7 +134,7 @@ class FrameworkContractServiceImpl(
                 .tryDeserialization(it.jsonData, FrameworkContract::class.java)
                 .onFailure { return it.reason.asValidationError() }
             }
-            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
+            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asValidationError()
 
         val validStates = rulesService.getValidFCStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
