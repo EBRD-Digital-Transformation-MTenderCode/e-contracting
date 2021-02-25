@@ -126,24 +126,22 @@ class FrameworkContractServiceImpl(
     }
 
     override fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail> {
-        val frameworkContracts = fcRepository.findBy(params.cpid, params.ocid)
+        val receivedContractId = params.contracts.first().id
+
+        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
             .onFailure { return it.reason.asValidationError() }
-            .map { transform
+            ?.let { transform
                 .tryDeserialization(it.jsonData, FrameworkContract::class.java)
                 .onFailure { return it.reason.asValidationError() }
             }
-
-        if (frameworkContracts.isEmpty())
-            return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
+            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asValidationError()
 
         val validStates = rulesService.getValidFCStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
-        frameworkContracts.forEach { contract ->
-            val currentState = ValidFCStatesRule.State(contract.status, contract.statusDetails);
-            if (currentState !in validStates)
-                return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
-        }
+        val currentState = ValidFCStatesRule.State(frameworkContract.status, frameworkContract.statusDetails);
+        if (currentState !in validStates)
+            return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
 
         return ValidationResult.ok()
     }
