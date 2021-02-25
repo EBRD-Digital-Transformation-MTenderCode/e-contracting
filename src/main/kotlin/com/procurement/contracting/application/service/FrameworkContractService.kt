@@ -147,14 +147,14 @@ class FrameworkContractServiceImpl(
     }
 
     override fun checkExistenceSupplierReferencesInFC(params: CheckExistenceSupplierReferencesInFCParams): ValidationResult<Fail> {
-        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
+        val receivedContractId = params.contracts.first().id
+        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
             .onFailure { return it.reason.asValidationError() }
-            .map { transform
+            ?.let { transform
                 .tryDeserialization(it.jsonData, FrameworkContract::class.java)
                 .onFailure { return it.reason.asValidationError() }
             }
-            .find { it.status == PENDING }
-            ?: return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid).asValidationError()
+            ?: return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asValidationError()
 
         if (frameworkContract.suppliers.isEmpty())
             return CheckExistenceSupplierReferencesInFCErrors.SuppliersNotFound().asValidationError()
