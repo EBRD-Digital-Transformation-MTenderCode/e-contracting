@@ -3,9 +3,11 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.service.converter.convert
+import com.procurement.contracting.application.service.errors.AddGeneratedDocumentToContractErrors
 import com.procurement.contracting.application.service.errors.AddSupplierReferencesInFCErrors
 import com.procurement.contracting.application.service.errors.CheckContractStateErrors
 import com.procurement.contracting.application.service.errors.CheckExistenceSupplierReferencesInFCErrors
+import com.procurement.contracting.application.service.model.AddGeneratedDocumentToContractParams
 import com.procurement.contracting.application.service.model.AddSupplierReferencesInFCParams
 import com.procurement.contracting.application.service.model.CheckContractStateParams
 import com.procurement.contracting.application.service.model.CheckExistenceSupplierReferencesInFCParams
@@ -13,12 +15,17 @@ import com.procurement.contracting.application.service.model.CreateFrameworkCont
 import com.procurement.contracting.application.service.model.CreateFrameworkContractResult
 import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.application.service.rule.model.ValidFCStatesRule
+import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.document.type.DocumentTypeContract.X_FRAMEWORK_PROJECT
 import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus.PENDING
-import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails
+import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails.CONTRACT_PROJECT
+import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails.ISSUED
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.infrastructure.handler.v2.model.response.AddGeneratedDocumentToContractResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
+import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.ValidationResult
 import com.procurement.contracting.lib.functional.asFailure
@@ -29,6 +36,7 @@ import org.springframework.stereotype.Service
 interface FrameworkContractService {
     fun create(params: CreateFrameworkContractParams): Result<CreateFrameworkContractResult, Fail>
     fun addSupplierReferences(params: AddSupplierReferencesInFCParams): Result<AddSupplierReferencesInFCResponse, Fail>
+    fun addGeneratedDocumentToContract(params: AddGeneratedDocumentToContractParams): Result<AddGeneratedDocumentToContractResponse, Fail>
     fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail>
     fun checkExistenceSupplierReferencesInFC(params: CheckExistenceSupplierReferencesInFCParams): ValidationResult<Fail>
 }
@@ -48,7 +56,7 @@ class FrameworkContractServiceImpl(
             owner = params.owner,
             date = params.date,
             status = PENDING,
-            statusDetails = FrameworkContractStatusDetails.CONTRACT_PROJECT,
+            statusDetails = CONTRACT_PROJECT,
             isFrameworkOrDynamic = false,
             suppliers = emptyList()
         )
@@ -74,12 +82,47 @@ class FrameworkContractServiceImpl(
         val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
             .onFailure { return it }
 
-        val wapAssplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
-        if (!wapAssplied)
+        val wasApplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
+        if (!wasApplied)
             return Fail.Incident.Database.ConsistencyIncident("Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
                 "by cpid = ${params.cpid} and ocid = ${params.ocid}.").asFailure()
 
         return AddSupplierReferencesInFCResponse.fromDomain(updatedFrameworkContract).asSuccess()
+    }
+
+    override fun addGeneratedDocumentToContract(params: AddGeneratedDocumentToContractParams): Result<AddGeneratedDocumentToContractResponse, Fail> {
+        val updatedFrameworkContract = when (params.documentInitiator) {
+            OperationType.ISSUING_FRAMEWORK_CONTRACT -> {
+                val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
+                    .onFailure { return it }
+                    .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
+                    .find { it.status == PENDING }
+                    ?: return AddGeneratedDocumentToContractErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
+
+                val receivedDocuments = params.contracts
+                    .flatMap { it.documents }
+                    .map { FrameworkContract.Document(id = it.id, documentType = X_FRAMEWORK_PROJECT) }
+
+                val updatedDocuments = frameworkContract.documents + receivedDocuments
+                frameworkContract.copy(documents = updatedDocuments, statusDetails = ISSUED)
+            }
+
+            OperationType.COMPLETE_SOURCING,
+            OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> throw NotImplementedError()
+        }
+
+        val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
+            .onFailure { return it }
+
+        val wasApplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
+        if (!wasApplied)
+            return Fail.Incident.Database.ConsistencyIncident("Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
+                "by cpid = ${params.cpid} and ocid = ${params.ocid}.").asFailure()
+
+        return AddGeneratedDocumentToContractResponse.Contract
+            .fromDomain(updatedFrameworkContract)
+            .let { AddGeneratedDocumentToContractResponse(listOf(it)) }
+            .asSuccess()
     }
 
     override fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail> {
