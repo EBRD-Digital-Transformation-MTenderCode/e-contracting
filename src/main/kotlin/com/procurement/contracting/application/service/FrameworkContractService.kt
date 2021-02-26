@@ -91,13 +91,16 @@ class FrameworkContractServiceImpl(
     }
 
     override fun addGeneratedDocumentToContract(params: AddGeneratedDocumentToContractParams): Result<AddGeneratedDocumentToContractResponse, Fail> {
+        val receivedContractId = params.contracts.first().id
         val updatedFrameworkContract = when (params.documentInitiator) {
             OperationType.ISSUING_FRAMEWORK_CONTRACT -> {
-                val frameworkContract = fcRepository.findBy(params.cpid, params.ocid)
+                val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
                     .onFailure { return it }
-                    .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
-                    .find { it.status == PENDING }
-                    ?: return AddGeneratedDocumentToContractErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
+                    ?.let { transform
+                            .tryDeserialization(it.jsonData, FrameworkContract::class.java)
+                            .onFailure { return it }
+                    }
+                    ?: return AddGeneratedDocumentToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asFailure()
 
                 val receivedDocuments = params.contracts
                     .flatMap { it.documents }

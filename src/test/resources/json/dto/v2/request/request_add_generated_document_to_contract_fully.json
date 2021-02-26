@@ -4,6 +4,7 @@
   "documentInitiator": "issuingFrameworkContract",
   "contracts": [
     {
+      "id": "contract-id",
       "documents": [
         {
           "id": "string"
