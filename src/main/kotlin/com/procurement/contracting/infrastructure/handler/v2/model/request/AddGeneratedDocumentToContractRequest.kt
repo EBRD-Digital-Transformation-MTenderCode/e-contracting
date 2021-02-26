@@ -9,6 +9,7 @@ data class AddGeneratedDocumentToContractRequest(
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>
 ) {
     data class Contract(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("documents") @param:JsonProperty("documents") val documents: List<Document>
     ) {
         data class Document(
