@@ -1,0 +1,15 @@
+{
+  "contracts": [
+    {
+      "id": "string",
+      "status": "pending",
+      "statusDetails": "issued",
+      "documents": [
+        {
+          "id": "string",
+          "documentType": "x_frameworkProject"
+        }
+      ]
+    }
+  ]
+}

@@ -3,5 +3,10 @@
   "ocid": "ocds-t1s2t3-MD-1542649756688-AC-1543656767420",
   "operationType": "updateAC",
   "country": "MD",
-  "pmd": "TEST_OT"
+  "pmd": "TEST_OT",
+  "contracts": [
+    {
+      "id": "string"
+    }
+  ]
 }

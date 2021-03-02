@@ -2,6 +2,7 @@ package com.procurement.contracting.infrastructure.handler.v2.model.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.Pac
 
 data class SetStateForContractsResponse(
@@ -21,6 +22,13 @@ data class SetStateForContractsResponse(
                 id = pac.id.underlying,
                 status = pac.status.key,
                 statusDetails = pac.statusDetails?.key
+            )
+
+        fun fromDomain(fc: FrameworkContract): Contract =
+            Contract(
+                id = fc.id.underlying,
+                status = fc.status.key,
+                statusDetails = fc.statusDetails.key
             )
     }
 }
