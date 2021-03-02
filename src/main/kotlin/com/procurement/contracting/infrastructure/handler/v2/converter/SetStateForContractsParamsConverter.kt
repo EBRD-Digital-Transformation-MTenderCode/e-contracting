@@ -1,12 +1,13 @@
 package com.procurement.contracting.infrastructure.handler.v2.converter
 
 import com.procurement.contracting.application.service.model.SetStateForContractsParams
+import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.infrastructure.handler.v2.model.request.SetStateForContractsRequest
 import com.procurement.contracting.lib.functional.Result
 
 fun SetStateForContractsRequest.convert(): Result<SetStateForContractsParams, DataErrors> {
-    val convertedTender = tender.convert().onFailure { return it }
+    val convertedTender = tender?.convert()?.onFailure { return it }
 
     return SetStateForContractsParams.tryCreate(
         cpid = cpid,
@@ -14,9 +15,13 @@ fun SetStateForContractsRequest.convert(): Result<SetStateForContractsParams, Da
         pmd = pmd,
         country = country,
         operationType = operationType,
-        tender = convertedTender
+        tender = convertedTender,
+        contracts = contracts?.mapResult { it.convert() }?.onFailure { return it }
     )
 }
+
+fun SetStateForContractsRequest.Contract.convert(): Result<SetStateForContractsParams.Contract, DataErrors> =
+    SetStateForContractsParams.Contract.tryCreate(id)
 
 fun SetStateForContractsRequest.Tender.convert(): Result<SetStateForContractsParams.Tender, DataErrors> {
     val convertedLots = lots.map { it.convert() }

@@ -1,5 +1,8 @@
 package com.procurement.contracting.application.service.errors
 
+import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.infrastructure.fail.error.ValidationCommandError
 
 sealed class SetStateForContractsErrors(
@@ -12,5 +15,20 @@ sealed class SetStateForContractsErrors(
     class PacNotFound(relatedLot: String) : SetStateForContractsErrors(
         numberError = "6.6.1",
         description = "Cannot find pac with related lot $relatedLot."
+    )
+
+    class TenderMissing() : SetStateForContractsErrors(
+        numberError = "6.6.2",
+        description = "Tender is missing from request."
+    )
+
+    class ContractsMissing() : SetStateForContractsErrors(
+        numberError = "6.6.3",
+        description = "Contracts are missing from request."
+    )
+
+    class FCNotFound(cpid: Cpid, ocid: Ocid, id: FrameworkContractId) : SetStateForContractsErrors(
+        numberError = "6.6.4",
+        description = "Framework Contract not found by cpid '$cpid', ocid '$ocid' and id '$id'."
     )
 }
