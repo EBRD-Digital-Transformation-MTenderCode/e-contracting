@@ -14,6 +14,7 @@ enum class Stage(@JsonValue override val key: String) : EnumElementProvider.Elem
     NP("NP"),
     PC("PC"),
     PN("PN"),
+    RQ("RQ"),
     TP("TP");
 
     override fun toString(): String = key
