@@ -20,6 +20,7 @@ class CommandServiceV2(
     private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
     private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
+    private val getContractStateHandler: GetContractStateHandler,
     private val setStateForContractsHandler: SetStateForContractsHandler,
 ) {
 
@@ -31,9 +32,10 @@ class CommandServiceV2(
             CommandTypeV2.CHECK_CONTRACT_STATE -> checkContractStateHandler.handle(descriptor)
             CommandTypeV2.CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC -> checkExistenceSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
+            CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
-            CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
+            CommandTypeV2.GET_CONTRACT_STATE -> getContractStateHandler.handle(descriptor)
             CommandTypeV2.SET_STATE_FOR_CONTRACTS -> setStateForContractsHandler.handle(descriptor)
 
             else -> {
