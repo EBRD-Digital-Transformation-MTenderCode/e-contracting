@@ -50,7 +50,6 @@ class ContractStateServiceImpl(
                     ?: return GetContractStateErrors.ContractNotFound(params.cpid, params.ocid).asFailure()
 
                 GetContractStateResponse.Contract.fromDomain(targetAwardedContract.contract)
-
             }
 
             Stage.EV,
