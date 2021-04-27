@@ -16,6 +16,7 @@ class CommandServiceV2(
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
     private val checkContractStateHandler: CheckContractStateHandler,
     private val checkExistenceSupplierReferencesInFCHandler: CheckExistenceSupplierReferencesInFCHandler,
+    private val createConfirmationRequestsHandler: CreateConfirmationRequestsHandler,
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
     private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
@@ -30,6 +31,7 @@ class CommandServiceV2(
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CHECK_CONTRACT_STATE -> checkContractStateHandler.handle(descriptor)
             CommandTypeV2.CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC -> checkExistenceSupplierReferencesInFCHandler.handle(descriptor)
+            CommandTypeV2.CREATE_CONFIRMATION_REQUESTS -> createConfirmationRequestsHandler.handle(descriptor)
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
