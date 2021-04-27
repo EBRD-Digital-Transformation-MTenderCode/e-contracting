@@ -65,6 +65,16 @@ object Database {
         const val COLUMN_JSON_DATA = "json_data"
     }
 
+    object ConfirmationRequest {
+        const val TABLE = "contracting_confirmation_requests"
+        const val COLUMN_CPID = "cpid"
+        const val COLUMN_OCID = "ocid"
+        const val COLUMN_CONTRACT_ID = "contract_id"
+        const val COLUMN_ID = "id"
+        const val COLUMN_GROUPS = "groups"
+        const val COLUMN_JSON_DATA = "json_data"
+    }
+
     object Template {
         const val TABLE = "contracting_templates"
         const val COLUMN_COUNTRY = "country"
