@@ -1,0 +1,55 @@
+{
+  "cpid": "ocds-b3wdp1-MD-1580458690892",
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "role": "buyer",
+  "contracts": [
+    {
+      "id": "string",
+      "documents": [
+        {
+          "id": "string"
+        }
+      ]
+    }
+  ],
+  "access": {
+    "buyers": [
+      {
+        "id": "string",
+        "name": "string",
+        "owner": "string"
+      }
+    ],
+    "procuringEntity": {
+      "id": "string",
+      "name": "string",
+      "owner": "string"
+    }
+  },
+  "dossier": {
+    "candidates": [
+      {
+        "owner": "string",
+        "organizations": [
+          {
+            "id": "string",
+            "name": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "submission": {
+    "tenderers": [
+      {
+        "owner": "string",
+        "organizations": [
+          {
+            "id": "string",
+            "name": "string"
+          }
+        ]
+      }
+    ]
+  }
+}
