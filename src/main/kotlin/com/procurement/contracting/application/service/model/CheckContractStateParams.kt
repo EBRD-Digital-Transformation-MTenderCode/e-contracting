@@ -48,6 +48,8 @@ class CheckContractStateParams private constructor(
         private val allowedOperationType = OperationType.allowedElements
             .filter {
                 when (it) {
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
                     OperationType.ISSUING_FRAMEWORK_CONTRACT -> true
 
                     OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,

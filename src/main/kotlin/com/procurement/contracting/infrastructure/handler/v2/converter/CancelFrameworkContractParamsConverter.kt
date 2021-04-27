@@ -37,7 +37,10 @@ private val allowedOperationType = OperationType.allowedElements
     .filter {
         when (it) {
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> true
+
             OperationType.COMPLETE_SOURCING,
+            OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
+            OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
             OperationType.ISSUING_FRAMEWORK_CONTRACT -> false
         }
     }

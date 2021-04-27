@@ -25,8 +25,10 @@ data class AddGeneratedDocumentToContractParams(
                 when (it) {
                     OperationType.ISSUING_FRAMEWORK_CONTRACT -> true
 
-                    OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,
-                    OperationType.COMPLETE_SOURCING -> false
+                    OperationType.COMPLETE_SOURCING,
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
+                    OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> false
                 }
             }
             .toSet()

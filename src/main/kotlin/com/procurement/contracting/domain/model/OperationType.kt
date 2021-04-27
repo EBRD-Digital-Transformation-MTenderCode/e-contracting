@@ -7,7 +7,9 @@ enum class OperationType(@JsonValue override val key: String) : EnumElementProvi
 
     COMPLETE_SOURCING("completeSourcing"),
     ISSUING_FRAMEWORK_CONTRACT("issuingFrameworkContract"),
-    WITHDRAW_QUALIFICATION_PROTOCOL("withdrawQualificationProtocol")
+    WITHDRAW_QUALIFICATION_PROTOCOL("withdrawQualificationProtocol"),
+    CREATE_CONFIRMATION_RESPONSE_BY_BUYER("createConfirmationResponseByBuyer"),
+    CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE("createConfirmationResponseByInvitedCandidate"),
     ;
 
     override fun toString(): String = key
