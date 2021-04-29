@@ -1,6 +1,7 @@
 {
   "contracts": [
     {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "confirmationRequests": [
         {
           "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -8,7 +9,7 @@
           "relatesTo": "document",
           "relatedItem": "string",
           "source": "buyer",
-          "requestGroups": [
+          "requests": [
             {
               "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
               "relatedOrganization": {

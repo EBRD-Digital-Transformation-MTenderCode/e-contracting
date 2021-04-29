@@ -9,9 +9,9 @@ data class ConfirmationRequest(
     @field:JsonProperty("relatesTo") @param:JsonProperty("relatesTo") val relatesTo: ConfirmationRequestReleaseTo,
     @field:JsonProperty("relatedItem") @param:JsonProperty("relatedItem") val relatedItem: String,
     @field:JsonProperty("source") @param:JsonProperty("source") val source: ConfirmationRequestSource,
-    @field:JsonProperty("requestGroups") @param:JsonProperty("requestGroups") val requestGroups: List<RequestGroup>,
+    @field:JsonProperty("requests") @param:JsonProperty("requests") val requests: List<Request>,
 ) {
-    data class RequestGroup(
+    data class Request(
         @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("owner") @param:JsonProperty("owner") val owner: String,
         @field:JsonProperty("token") @param:JsonProperty("token") val token: Token,

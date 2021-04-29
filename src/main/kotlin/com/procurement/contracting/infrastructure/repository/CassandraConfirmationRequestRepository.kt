@@ -26,7 +26,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
                       ${Database.ConfirmationRequest.COLUMN_OCID},
                       ${Database.ConfirmationRequest.COLUMN_CONTRACT_ID},
                       ${Database.ConfirmationRequest.COLUMN_ID},
-                      ${Database.ConfirmationRequest.COLUMN_GROUPS},
+                      ${Database.ConfirmationRequest.COLUMN_REQUESTS},
                       ${Database.ConfirmationRequest.COLUMN_JSON_DATA}
                )
                VALUES(?, ?, ?, ?, ?, ?)
@@ -38,7 +38,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
                       ${Database.ConfirmationRequest.COLUMN_OCID},
                       ${Database.ConfirmationRequest.COLUMN_CONTRACT_ID},
                       ${Database.ConfirmationRequest.COLUMN_ID},
-                      ${Database.ConfirmationRequest.COLUMN_GROUPS},
+                      ${Database.ConfirmationRequest.COLUMN_REQUESTS},
                       ${Database.ConfirmationRequest.COLUMN_JSON_DATA}
                  FROM ${Database.KEYSPACE}.${Database.ConfirmationRequest.TABLE}
                 WHERE ${Database.ConfirmationRequest.COLUMN_CPID}=?
@@ -56,7 +56,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
                 setString(Database.ConfirmationRequest.COLUMN_OCID, entity.ocid.underlying)
                 setString(Database.ConfirmationRequest.COLUMN_ID, entity.id.underlying.toString())
                 setString(Database.ConfirmationRequest.COLUMN_CONTRACT_ID, entity.contractId)
-                setSet(Database.ConfirmationRequest.COLUMN_GROUPS, entity.groups)
+                setSet(Database.ConfirmationRequest.COLUMN_REQUESTS, entity.requests)
                 setString(Database.ConfirmationRequest.COLUMN_JSON_DATA, entity.jsonData)
             }
             .tryExecute(session)
@@ -90,7 +90,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
         ocid = Ocid.orNull(getString(Database.ConfirmationRequest.COLUMN_OCID))!!,
         contractId = getString(Database.ConfirmationRequest.COLUMN_CONTRACT_ID),
         id = ConfirmationRequestId.orNull(getString(Database.ConfirmationRequest.COLUMN_ID))!!,
-        groups = getSet(Database.ConfirmationRequest.COLUMN_GROUPS, String::class.java),
+        requests = getSet(Database.ConfirmationRequest.COLUMN_REQUESTS, String::class.java),
         jsonData = getString(Database.ConfirmationRequest.COLUMN_JSON_DATA)
     )
 }

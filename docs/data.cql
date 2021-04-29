@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_confirmation_requests
     ocid           TEXT,
     contract_id    TEXT,
     id             TEXT,
-    groups         set<TEXT>,
+    requests       set<TEXT>,
     json_data      TEXT,
     PRIMARY KEY (cpid, ocid, contract_id, id)
 );

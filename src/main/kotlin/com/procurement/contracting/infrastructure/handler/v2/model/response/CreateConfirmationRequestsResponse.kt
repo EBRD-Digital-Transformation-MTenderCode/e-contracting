@@ -9,6 +9,7 @@ data class CreateConfirmationRequestsResponse(
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>,
 ) {
     data class Contract(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("confirmationRequests") @param:JsonProperty("confirmationRequests") val confirmationRequests: List<ConfirmationRequest>,
     ) {
         data class ConfirmationRequest(
@@ -17,10 +18,10 @@ data class CreateConfirmationRequestsResponse(
             @field:JsonProperty("relatesTo") @param:JsonProperty("relatesTo") val relatesTo: String,
             @field:JsonProperty("relatedItem") @param:JsonProperty("relatedItem") val relatedItem: String,
             @field:JsonProperty("source") @param:JsonProperty("source") val source: String,
-            @field:JsonProperty("requestGroups") @param:JsonProperty("requestGroups") val requestGroups: List<RequestGroup>,
+            @field:JsonProperty("requests") @param:JsonProperty("requests") val requests: List<Request>,
         ) { companion object;
 
-            data class RequestGroup(
+            data class Request(
                 @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
                 @field:JsonProperty("owner") @param:JsonProperty("owner") val owner: String,
                 @field:JsonProperty("token") @param:JsonProperty("token") val token: Token,
@@ -42,15 +43,15 @@ fun CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.Companion.fr
         relatesTo = confirmationRequest.relatesTo.key,
         relatedItem = confirmationRequest.relatedItem,
         source = confirmationRequest.source.key,
-        requestGroups = confirmationRequest.requestGroups
+        requests = confirmationRequest.requests
             .map { group ->
-                CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.RequestGroup(
+                CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.Request(
                     id = group.id,
                     owner = group.owner,
                     token = group.token,
                     relatedOrganization = group.relatedOrganization
                         .let { organization ->
-                            CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.RequestGroup.Organization(
+                            CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.Request.Organization(
                                 id = organization.id,
                                 name = organization.name
                             )
