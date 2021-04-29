@@ -88,7 +88,7 @@ class CassandraConfirmationRequestRepositoryIT {
         val expectedStoredEntitiesAmount = 1
         val expectedEntity = generateConfirmationRequestEntity()
             .copy(
-                groups = setOf("1","2","4"),
+                requests = setOf("1","2","4"),
                 jsonData = " some json data "
             )
 
@@ -122,7 +122,7 @@ class CassandraConfirmationRequestRepositoryIT {
     fun `should fails when saving the same record twice`() {
         val expectedEntity = generateConfirmationRequestEntity()
             .copy(
-                groups = setOf("1","2","4"),
+                requests = setOf("1","2","4"),
                 jsonData = " some json data "
             )
 
@@ -140,7 +140,7 @@ class CassandraConfirmationRequestRepositoryIT {
 
         val expectedEntity = generateConfirmationRequestEntity()
             .copy(
-                groups = setOf("1","2","4"),
+                requests = setOf("1","2","4"),
                 jsonData = " some json data "
             )
 
@@ -167,7 +167,7 @@ class CassandraConfirmationRequestRepositoryIT {
                         ocid           TEXT,
                         contract_id    TEXT,
                         id             TEXT,
-                        groups         set<TEXT>,
+                        requests       set<TEXT>,
                         json_data      TEXT,
                         PRIMARY KEY (cpid, ocid, contract_id, id)
                     );
@@ -180,7 +180,7 @@ class CassandraConfirmationRequestRepositoryIT {
         ocid = OCID,
         contractId = CONTRACT_ID,
         id = CONFIRMATION_REQUEST_ID,
-        groups = emptySet(),
+        requests = emptySet(),
         jsonData = ""
     )
 
@@ -190,12 +190,12 @@ class CassandraConfirmationRequestRepositoryIT {
         relatesTo = ConfirmationRequestReleaseTo.CONTRACT,
         relatedItem = UUID.randomUUID().toString(),
         source = ConfirmationRequestSource.INVITED_CANDIDATE,
-        requestGroups = listOf(
-            ConfirmationRequest.RequestGroup(
+        requests = listOf(
+            ConfirmationRequest.Request(
                 id = UUID.randomUUID().toString(),
                 owner = UUID.randomUUID().toString(),
                 token = Token.generate(),
-                relatedOrganization = ConfirmationRequest.RequestGroup.Organization(
+                relatedOrganization = ConfirmationRequest.Request.Organization(
                     id = UUID.randomUUID().toString(),
                     name = "SAMPLE BUYER INC"
                 )

@@ -58,11 +58,11 @@ class ConfirmationRequestServiceImpl(
             relatesTo = defineRelation(receivedContract.documents), // FR.COM-6.12.4
             relatedItem = defineRelatedItem(receivedContract), // FR.COM-6.12.5
             source = defineSource(params.role), // FR.COM-6.12.6
-            requestGroups = receivedOrganizations
+            requests = receivedOrganizations
                 .map {
-                    ConfirmationRequest.RequestGroup(
+                    ConfirmationRequest.Request(
                         id = generationService.getTimeBasedUUID(),  // FR.COM-6.12.7
-                        relatedOrganization  = ConfirmationRequest.RequestGroup.Organization(
+                        relatedOrganization  = ConfirmationRequest.Request.Organization(
                             id = it.id,    // FR.COM-6.12.8
                             name = it.name // FR.COM-6.12.9
                         ),

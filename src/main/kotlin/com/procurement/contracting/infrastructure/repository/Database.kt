@@ -71,7 +71,7 @@ object Database {
         const val COLUMN_OCID = "ocid"
         const val COLUMN_CONTRACT_ID = "contract_id"
         const val COLUMN_ID = "id"
-        const val COLUMN_GROUPS = "groups"
+        const val COLUMN_REQUESTS = "requests"
         const val COLUMN_JSON_DATA = "json_data"
     }
 

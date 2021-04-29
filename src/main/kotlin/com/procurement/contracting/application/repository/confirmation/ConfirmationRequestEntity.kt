@@ -15,7 +15,7 @@ data class ConfirmationRequestEntity(
     val ocid: Ocid,
     val contractId: String,
     val id: ConfirmationRequestId,
-    val groups: Set<String>,
+    val requests: Set<String>,
     val jsonData: String
 ) {
     companion object {
@@ -32,7 +32,7 @@ data class ConfirmationRequestEntity(
                 ocid = ocid,
                 contractId = contractId,
                 id = confirmationRequests.id,
-                groups = confirmationRequests.requestGroups.toSetBy { it.id },
+                requests = confirmationRequests.requests.toSetBy { it.id },
                 jsonData = json
             ).asSuccess()
         }
