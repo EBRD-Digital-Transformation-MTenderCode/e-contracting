@@ -23,6 +23,7 @@ class CommandServiceV2(
     private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
     private val getContractStateHandler: GetContractStateHandler,
     private val setStateForContractsHandler: SetStateForContractsHandler,
+    private val validateConfirmationResponseDataHandler: ValidateConfirmationResponseDataHandler,
 ) {
 
     fun execute(descriptor: CommandDescriptor): ApiResponseV2 {
@@ -39,6 +40,7 @@ class CommandServiceV2(
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
             CommandTypeV2.GET_CONTRACT_STATE -> getContractStateHandler.handle(descriptor)
             CommandTypeV2.SET_STATE_FOR_CONTRACTS -> setStateForContractsHandler.handle(descriptor)
+            CommandTypeV2.VALIDATE_CONFIRMATION_RESPONSE_DATA -> validateConfirmationResponseDataHandler.handle(descriptor)
 
             else -> {
                 val errorDescription = "Unknown action '${descriptor.action.key}'."
