@@ -92,7 +92,7 @@ class FrameworkContractServiceImpl(
 
     override fun addGeneratedDocumentToContract(params: AddGeneratedDocumentToContractParams): Result<AddGeneratedDocumentToContractResponse, Fail> {
         val receivedContractId = params.contracts.first().id
-        val updatedFrameworkContract = when (params.documentInitiator) {
+        val updatedFrameworkContract = when (params.processInitiator) {
             OperationType.ISSUING_FRAMEWORK_CONTRACT -> {
                 val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
                     .onFailure { return it }
