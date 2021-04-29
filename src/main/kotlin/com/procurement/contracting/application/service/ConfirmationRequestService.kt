@@ -80,7 +80,7 @@ class ConfirmationRequestServiceImpl(
             return Fail.Incident.Database.ConsistencyIncident("Record already exists.").asFailure()
 
         return CreateConfirmationRequestsResponse.Contract.ConfirmationRequest.fromDomain(confirmationRequest)
-            .let { CreateConfirmationRequestsResponse.Contract(confirmationRequests = listOf(it)) }
+            .let { CreateConfirmationRequestsResponse.Contract(id = receivedContract.id, confirmationRequests = listOf(it)) }
             .let { CreateConfirmationRequestsResponse(contracts = listOf(it)) }
             .asSuccess()
     }

@@ -9,6 +9,7 @@ data class CreateConfirmationRequestsResponse(
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>,
 ) {
     data class Contract(
+        @field:JsonProperty("id") @param:JsonProperty("id") val id: String,
         @field:JsonProperty("confirmationRequests") @param:JsonProperty("confirmationRequests") val confirmationRequests: List<ConfirmationRequest>,
     ) {
         data class ConfirmationRequest(
