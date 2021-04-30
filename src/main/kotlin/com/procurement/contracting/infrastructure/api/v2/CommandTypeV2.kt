@@ -19,6 +19,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     FIND_PACS_BY_LOT_IDS("findPacsByLotIds"),
     GET_CONTRACT_STATE("getContractState"),
     SET_STATE_FOR_CONTRACTS("setStateForContracts"),
+    VALIDATE_CONFIRMATION_RESPONSE_DATA("validateConfirmationResponseData"),
     ;
 
     override fun toString(): String = key

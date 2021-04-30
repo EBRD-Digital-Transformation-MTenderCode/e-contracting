@@ -6,7 +6,9 @@ import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class ConfirmationResponseType(@JsonValue override val key: String) : EnumElementProvider.Element {
     CODE("code"),
-    DOCUMENT("document");
+    DOCUMENT("document"),
+    HASH("hash"),
+    ;
 
     override fun toString(): String = key
 

@@ -24,8 +24,10 @@ import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationRequestsResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.ValidationResult
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import com.procurement.contracting.lib.functional.asValidationError
 import org.springframework.stereotype.Service
 
 interface ConfirmationRequestService {
@@ -46,8 +48,8 @@ class ConfirmationRequestServiceImpl(
 
     override fun create(params: CreateConfirmationRequestsParams): Result<CreateConfirmationRequestsResponse, Fail> {
         val receivedContract = params.contracts.first()
-        checkContractExists(params, receivedContract).onFailure { return it.reason.asFailure() }
-        checkContractDocuments(receivedContract)
+        checkContractExists(params, receivedContract).doOnError { return it.asFailure() }
+        checkContractDocuments(receivedContract).doOnError { return it.asFailure() }
 
         val receivedOrganizations = getOrganizationsByRole(params).onFailure { return it }
 
@@ -88,46 +90,45 @@ class ConfirmationRequestServiceImpl(
     private fun checkContractExists(
         params: CreateConfirmationRequestsParams,
         receivedContract: CreateConfirmationRequestsParams.Contract
-    ): Result<Unit, Fail> {
+    ): ValidationResult<Fail> {
         val cpid = params.cpid
         val ocid = params.ocid
         val contractId = receivedContract.id
 
         when (ocid.stage) {
             Stage.FE -> fcRepository
-                .findBy(cpid, ocid, FrameworkContractId.orNull(contractId)!!).onFailure { return it }
-                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asFailure()
+                .findBy(cpid, ocid, FrameworkContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
 
             Stage.EV,
             Stage.TP,
             Stage.NP -> canRepository
-                .findBy(cpid, CANId.orNull(contractId)!!).onFailure { return it }
-                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asFailure()
+                .findBy(cpid, CANId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
 
             Stage.AC -> acRepository
-                .findBy(cpid, AwardContractId.orNull(contractId)!!).onFailure { return it }
-                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asFailure()
+                .findBy(cpid, AwardContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
 
             Stage.PC -> pacRepository
-                .findBy(cpid, ocid, PacId.orNull(contractId)!!).onFailure { return it }
-                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asFailure()
+                .findBy(cpid, ocid, PacId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationRequestsErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
 
             Stage.EI,
             Stage.FS,
             Stage.PN,
-            Stage.RQ -> return CreateConfirmationRequestsErrors.InvalidStage(ocid.stage).asFailure()
+            Stage.RQ -> return CreateConfirmationRequestsErrors.InvalidStage(ocid.stage).asValidationError()
         }
 
-        return Unit.asSuccess()
+        return ValidationResult.ok()
     }
 
 
-    private fun checkContractDocuments(receivedContract: CreateConfirmationRequestsParams.Contract): Result<Unit, CreateConfirmationRequestsErrors> =
+    private fun checkContractDocuments(receivedContract: CreateConfirmationRequestsParams.Contract): ValidationResult<CreateConfirmationRequestsErrors> =
         if (receivedContract.documents.size > 1)
-            CreateConfirmationRequestsErrors.TooMachDocuments().asFailure()
+            CreateConfirmationRequestsErrors.TooMachDocuments().asValidationError()
         else
-            Unit.asSuccess()
-
+            ValidationResult.ok()
 
     private fun defineRelation(documents: List<CreateConfirmationRequestsParams.Contract.Document>): ConfirmationRequestReleaseTo =
         if (documents.isNotEmpty())
