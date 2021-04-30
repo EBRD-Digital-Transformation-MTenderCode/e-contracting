@@ -22,6 +22,7 @@ class CommandServiceV2(
     private val findCANIdsHandler: FindCANIdsHandler,
     private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
     private val getContractStateHandler: GetContractStateHandler,
+    private val getRequestByConfirmationResponseHandler: GetRequestByConfirmationResponseHandler,
     private val setStateForContractsHandler: SetStateForContractsHandler,
     private val validateConfirmationResponseDataHandler: ValidateConfirmationResponseDataHandler,
 ) {
@@ -39,6 +40,7 @@ class CommandServiceV2(
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
             CommandTypeV2.GET_CONTRACT_STATE -> getContractStateHandler.handle(descriptor)
+            CommandTypeV2.GET_REQUEST_BY_CONFIRMATION_RESPONSE -> getRequestByConfirmationResponseHandler.handle(descriptor)
             CommandTypeV2.SET_STATE_FOR_CONTRACTS -> setStateForContractsHandler.handle(descriptor)
             CommandTypeV2.VALIDATE_CONFIRMATION_RESPONSE_DATA -> validateConfirmationResponseDataHandler.handle(descriptor)
 
