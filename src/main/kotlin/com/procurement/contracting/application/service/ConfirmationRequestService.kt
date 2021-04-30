@@ -154,6 +154,7 @@ class ConfirmationRequestServiceImpl(
         when (params.role) {
             OrganizationRole.BUYER -> params.access?.buyers
                 ?.map { Organization(id = it.id, name = it.name, owner = it.owner) }
+                ?.takeIf { it.isNotEmpty() }
                 ?.asSuccess()
                 ?: CreateConfirmationRequestsErrors.AttributeNotFound("access.buyers").asFailure()
 
@@ -162,6 +163,7 @@ class ConfirmationRequestServiceImpl(
                     tenderer.organizations
                         .map { Organization(id = it.id, name = it.name, owner = tenderer.owner)  }
                 }
+                ?.takeIf { it.isNotEmpty() }
                 ?.asSuccess()
                 ?: CreateConfirmationRequestsErrors.AttributeNotFound("submission.tenderers").asFailure()
 
@@ -175,6 +177,7 @@ class ConfirmationRequestServiceImpl(
                     candidate.organizations
                         .map { Organization(id = it.id, name = it.name, owner = candidate.owner) }
                 }
+                ?.takeIf { it.isNotEmpty() }
                 ?.asSuccess()
                 ?: CreateConfirmationRequestsErrors.AttributeNotFound("dossier.candidates").asFailure()
         }
