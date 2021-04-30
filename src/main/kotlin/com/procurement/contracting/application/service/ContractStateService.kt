@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.PacEntity
+import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
@@ -41,12 +42,10 @@ class ContractStateServiceImpl(
         val stage = params.ocid.stage
         val targetContract = when (stage) {
             Stage.FE -> {
-                val frameworkContracts = frameworkContractRepository
-                    .findBy(params.cpid, params.ocid).onFailure { return it }
-                    .map { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
-
-                val targetFrameworkContract = frameworkContracts
-                    .maxByOrNull { fc -> fc.date }
+                val frameworkContractId = FrameworkContractId.orNull(receivedContract.id)!!
+                val targetFrameworkContract = frameworkContractRepository
+                    .findBy(params.cpid, params.ocid, frameworkContractId).onFailure { return it }
+                    ?.let { transform.tryDeserialization(it.jsonData, FrameworkContract::class.java).onFailure { return it } }
                     ?: return GetContractStateErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id).asFailure()
 
                 GetContractStateResponse.Contract.fromDomain(targetFrameworkContract)
