@@ -7,7 +7,9 @@ import com.procurement.contracting.application.repository.confirmation.Confirmat
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.service.errors.CreateConfirmationRequestsErrors
+import com.procurement.contracting.application.service.errors.GetRequestByConfirmationResponseErrors
 import com.procurement.contracting.application.service.model.CreateConfirmationRequestsParams
+import com.procurement.contracting.application.service.model.GetRequestByConfirmationResponseParams
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.can.CANId
@@ -19,9 +21,12 @@ import com.procurement.contracting.domain.model.confirmation.request.Confirmatio
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.organization.OrganizationRole
 import com.procurement.contracting.domain.model.pac.PacId
+import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationRequestsResponse
+import com.procurement.contracting.infrastructure.handler.v2.model.response.GetRequestByConfirmationResponseResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.ValidationResult
@@ -32,6 +37,7 @@ import org.springframework.stereotype.Service
 
 interface ConfirmationRequestService {
     fun create(params: CreateConfirmationRequestsParams): Result<CreateConfirmationRequestsResponse, Fail>
+    fun get(params: GetRequestByConfirmationResponseParams): Result<GetRequestByConfirmationResponseResponse, Fail>
 }
 
 @Service
@@ -48,7 +54,7 @@ class ConfirmationRequestServiceImpl(
 
     override fun create(params: CreateConfirmationRequestsParams): Result<CreateConfirmationRequestsResponse, Fail> {
         val receivedContract = params.contracts.first()
-        checkContractExists(params, receivedContract).doOnError { return it.asFailure() }
+        checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asFailure() }
         checkContractDocuments(receivedContract).doOnError { return it.asFailure() }
 
         val receivedOrganizations = getOrganizationsByRole(params).onFailure { return it }
@@ -87,12 +93,63 @@ class ConfirmationRequestServiceImpl(
             .asSuccess()
     }
 
+    override fun get(params: GetRequestByConfirmationResponseParams): Result<GetRequestByConfirmationResponseResponse, Fail> {
+        val receivedContract = params.contracts.first()
+        val receivedConfirmationResponse = receivedContract.confirmationResponses.first()
+        val targetRequestId = receivedConfirmationResponse.requestId.toString()
+
+        checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asFailure() }
+
+        val targetConfirmationRequest = confirmationRequestRepository
+            .findBy(params.cpid, params.ocid).onFailure { return it }
+            .find { confirmationRequest -> confirmationRequest.requests.any { it == targetRequestId } }
+            ?.let { transform.tryDeserialization(it.jsonData, ConfirmationRequest::class.java).onFailure { return it } }
+            ?: return GetRequestByConfirmationResponseErrors.ConfirmationRequestNotFound(params.cpid, params.ocid, targetRequestId).asFailure()
+
+        return GetRequestByConfirmationResponseResponse.Contract.ConfirmationRequest.fromDomain(targetConfirmationRequest)
+            .let { GetRequestByConfirmationResponseResponse.Contract(id = receivedContract.id, confirmationRequests = listOf(it)) }
+            .let { GetRequestByConfirmationResponseResponse(contracts = listOf(it)) }
+            .asSuccess()
+    }
+
     private fun checkContractExists(
-        params: CreateConfirmationRequestsParams,
+        cpid: Cpid, ocid: Ocid,
+        receivedContract: GetRequestByConfirmationResponseParams.Contract
+    ): ValidationResult<Fail> {
+        val contractId = receivedContract.id
+
+        when (ocid.stage) {
+            Stage.FE -> fcRepository
+                .findBy(cpid, ocid, FrameworkContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return GetRequestByConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.EV,
+            Stage.TP,
+            Stage.NP -> canRepository
+                .findBy(cpid, CANId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return GetRequestByConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.AC -> acRepository
+                .findBy(cpid, AwardContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return GetRequestByConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.PC -> pacRepository
+                .findBy(cpid, ocid, PacId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return GetRequestByConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.EI,
+            Stage.FS,
+            Stage.PN,
+            Stage.RQ -> return GetRequestByConfirmationResponseErrors.InvalidStage(ocid.stage).asValidationError()
+        }
+
+        return ValidationResult.ok()
+    }
+
+    private fun checkContractExists(
+        cpid: Cpid, ocid: Ocid,
         receivedContract: CreateConfirmationRequestsParams.Contract
     ): ValidationResult<Fail> {
-        val cpid = params.cpid
-        val ocid = params.ocid
         val contractId = receivedContract.id
 
         when (ocid.stage) {
