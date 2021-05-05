@@ -10,6 +10,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     ADD_GENERATED_DOCUMENT_TO_CONTRACT("addGeneratedDocumentToContract"),
     ADD_SUPPLIER_REFERENCES_IN_FC("addSupplierReferencesInFC"),
     CANCEL_FRAMEWORK_CONTRACT("cancelFrameworkContract"),
+    CHECK_ACCESS_TO_REQUEST_OF_CONFIRMATION("checkAccessToRequestOfConfirmation"),
     CHECK_CONTRACT_STATE("checkContractState"),
     CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC("checkExistenceSupplierReferencesInFC"),
     CREATE_CONFIRMATION_REQUESTS("createConfirmationRequests"),

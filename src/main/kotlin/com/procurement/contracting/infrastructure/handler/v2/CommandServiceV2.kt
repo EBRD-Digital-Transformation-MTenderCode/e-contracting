@@ -14,6 +14,7 @@ class CommandServiceV2(
     private val addGeneratedDocumentToContractHandler: AddGeneratedDocumentToContractHandler,
     private val addSupplierReferencesInFCHandler: AddSupplierReferencesInFCHandler,
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
+    private val checkAccessToRequestOfConfirmationHandler: CheckAccessToRequestOfConfirmationHandler,
     private val checkContractStateHandler: CheckContractStateHandler,
     private val checkExistenceSupplierReferencesInFCHandler: CheckExistenceSupplierReferencesInFCHandler,
     private val createConfirmationRequestsHandler: CreateConfirmationRequestsHandler,
@@ -32,6 +33,7 @@ class CommandServiceV2(
             CommandTypeV2.ADD_GENERATED_DOCUMENT_TO_CONTRACT -> addGeneratedDocumentToContractHandler.handle(descriptor)
             CommandTypeV2.ADD_SUPPLIER_REFERENCES_IN_FC -> addSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
+            CommandTypeV2.CHECK_ACCESS_TO_REQUEST_OF_CONFIRMATION -> checkAccessToRequestOfConfirmationHandler.handle(descriptor)
             CommandTypeV2.CHECK_CONTRACT_STATE -> checkContractStateHandler.handle(descriptor)
             CommandTypeV2.CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC -> checkExistenceSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CREATE_CONFIRMATION_REQUESTS -> createConfirmationRequestsHandler.handle(descriptor)
