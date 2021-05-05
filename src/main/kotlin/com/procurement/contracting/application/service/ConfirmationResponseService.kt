@@ -3,15 +3,20 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.repository.ac.AwardContractRepository
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.confirmation.ConfirmationRequestRepository
+import com.procurement.contracting.application.repository.confirmation.ConfirmationResponseEntity
+import com.procurement.contracting.application.repository.confirmation.ConfirmationResponseRepository
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.pac.PacRepository
+import com.procurement.contracting.application.service.errors.CreateConfirmationResponseErrors
 import com.procurement.contracting.application.service.errors.ValidateConfirmationResponseDataErrors
+import com.procurement.contracting.application.service.model.CreateConfirmationResponseParams
 import com.procurement.contracting.application.service.model.ValidateConfirmationResponseDataParams
 import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequest
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
+import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponse
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
@@ -20,15 +25,20 @@ import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.domain.util.extension.getDuplicate
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.fail.error.BadRequest
+import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationResponseResponse
+import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.Result.Companion.success
 import com.procurement.contracting.lib.functional.ValidationResult
 import com.procurement.contracting.lib.functional.asFailure
+import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.lib.functional.asValidationError
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 interface ConfirmationResponseService {
     fun validate(params: ValidateConfirmationResponseDataParams): ValidationResult<Fail>
+    fun create(params: CreateConfirmationResponseParams): Result<CreateConfirmationResponseResponse, Fail>
 }
 
 @Service
@@ -39,6 +49,7 @@ class ConfirmationResponseServiceImpl(
     private val canRepository: CANRepository,
     private val pacRepository: PacRepository,
     private val confirmationRequestRepository: ConfirmationRequestRepository,
+    private val confirmationResponseRepository: ConfirmationResponseRepository,
 ) : ConfirmationResponseService {
 
 
@@ -46,7 +57,7 @@ class ConfirmationResponseServiceImpl(
         val receivedContract = params.contracts.first()
         val receivedConfirmationResponse = receivedContract.confirmationResponses.first()
 
-        checkContractExists(params, receivedContract).doOnError { return it.asValidationError() }
+        checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asValidationError() }
         val storedConfirmationRequest = getConfirmationRequest(params.cpid, params.ocid, receivedConfirmationResponse)
             .onFailure { return it.reason.asValidationError()}
 
@@ -55,12 +66,122 @@ class ConfirmationResponseServiceImpl(
         return ValidationResult.ok()
     }
 
+    override fun create(params: CreateConfirmationResponseParams): Result<CreateConfirmationResponseResponse, Fail> {
+        val receivedContract = params.contracts.firstOrNull()
+            ?: return BadRequest(exception = IllegalArgumentException("Missing 'contracts' attributes in request.")).asFailure()
+
+        val receivedConfirmationResponse = receivedContract.confirmationResponses.firstOrNull()
+            ?: return BadRequest(exception = IllegalArgumentException("Missing 'confirmationResponses' attributes in request.")).asFailure()
+
+
+        checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asFailure() }
+
+        // FR.COM-6.15.1
+        val createdConfirmationResponse = createConfirmationResponse(receivedConfirmationResponse, params.date)
+
+        val confirmationResponseEntity = ConfirmationResponseEntity
+            .of(params.cpid, params.ocid, receivedContract.id, createdConfirmationResponse, transform).onFailure { return it }
+
+        val wasApplied = confirmationResponseRepository.save(confirmationResponseEntity).onFailure { return it }
+        if (!wasApplied)
+            return Fail.Incident.Database.ConsistencyIncident("Confirmation response with with id '${receivedConfirmationResponse.id}' already exists").asFailure()
+
+        return createdConfirmationResponse
+            .let { CreateConfirmationResponseResponse.Contract.ConfirmationResponse.fromDomain(it) }
+            .let { CreateConfirmationResponseResponse.Contract(receivedContract.id, listOf(it)) }
+            .let { CreateConfirmationResponseResponse(contracts = listOf(it)) }
+            .asSuccess()
+    }
+
+    private fun createConfirmationResponse(
+        receivedConfirmationResponse: CreateConfirmationResponseParams.Contract.ConfirmationResponse,
+        date: LocalDateTime
+    ): ConfirmationResponse =
+        ConfirmationResponse(
+            id = receivedConfirmationResponse.id, // FR.COM-6.15.2
+            date = date, // FR.COM-6.15.3
+            requestId = receivedConfirmationResponse.requestId, // FR.COM-6.15.4
+            type = receivedConfirmationResponse.type, // FR.COM-6.15.5
+            value = receivedConfirmationResponse.value, // FR.COM-6.15.6
+            relatedPerson = receivedConfirmationResponse.relatedPerson // FR.COM-6.15.7
+                .let { person ->
+                    ConfirmationResponse.Person(
+                        id = person.id,
+                        title = person.title,
+                        name = person.name,
+                        identifier = person.identifier
+                            .let { identifier ->
+                                ConfirmationResponse.Person.Identifier(
+                                    id = identifier.id,
+                                    scheme = identifier.scheme,
+                                    uri = identifier.uri
+                                )
+                            },
+                        businessFunctions = person.businessFunctions
+                            .map { businessFunction ->
+                                ConfirmationResponse.Person.BusinessFunction(
+                                    id = businessFunction.id,
+                                    type = businessFunction.type,
+                                    jobTitle = businessFunction.jobTitle,
+                                    period = businessFunction.period
+                                        .let { period ->
+                                            ConfirmationResponse.Person.BusinessFunction.Period(
+                                                startDate = period.startDate
+                                            )
+                                        },
+                                    documents = businessFunction.documents
+                                        .map { document ->
+                                            ConfirmationResponse.Person.BusinessFunction.Document(
+                                                id = document.id,
+                                                documentType = document.documentType,
+                                                title = document.title,
+                                                description = document.description
+                                            )
+                                        },
+                                )
+                            }
+                    )
+                }
+        )
+
     private fun checkContractExists(
-        params: ValidateConfirmationResponseDataParams,
+        cpid: Cpid, ocid: Ocid,
+        receivedContract: CreateConfirmationResponseParams.Contract
+    ): ValidationResult<Fail> {
+        val contractId = receivedContract.id
+
+        when (ocid.stage) {
+            Stage.FE -> fcRepository
+                .findBy(cpid, ocid, FrameworkContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.EV,
+            Stage.TP,
+            Stage.NP -> canRepository
+                .findBy(cpid, CANId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.AC -> acRepository
+                .findBy(cpid, AwardContractId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.PC -> pacRepository
+                .findBy(cpid, ocid, PacId.orNull(contractId)!!).onFailure { return it.reason.asValidationError() }
+                ?: return CreateConfirmationResponseErrors.ContractNotFound(cpid, ocid, contractId).asValidationError()
+
+            Stage.EI,
+            Stage.FS,
+            Stage.PN,
+            Stage.RQ -> return BadRequest(description = "Invalid stage '${ocid.stage}'.", IllegalArgumentException()).asValidationError()
+        }
+
+        return ValidationResult.ok()
+    }
+
+    private fun checkContractExists(
+        cpid: Cpid, ocid: Ocid,
         receivedContract: ValidateConfirmationResponseDataParams.Contract
     ): ValidationResult<Fail> {
-        val cpid = params.cpid
-        val ocid = params.ocid
         val contractId = receivedContract.id
 
         when (ocid.stage) {
