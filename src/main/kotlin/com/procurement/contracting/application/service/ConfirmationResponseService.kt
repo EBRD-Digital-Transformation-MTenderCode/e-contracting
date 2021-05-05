@@ -73,7 +73,6 @@ class ConfirmationResponseServiceImpl(
         val receivedConfirmationResponse = receivedContract.confirmationResponses.firstOrNull()
             ?: return BadRequest(exception = IllegalArgumentException("Missing 'confirmationResponses' attributes in request.")).asFailure()
 
-
         checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asFailure() }
 
         // FR.COM-6.15.1
