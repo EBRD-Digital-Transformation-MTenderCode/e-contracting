@@ -195,3 +195,14 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_confirmation_requests
     json_data      TEXT,
     PRIMARY KEY (cpid, ocid, contract_id, id)
 );
+
+CREATE TABLE IF NOT EXISTS ocds.contracting_confirmation_responses
+(
+    cpid           TEXT,
+    ocid           TEXT,
+    contract_id    TEXT,
+    id             TEXT,
+    request_id     TEXT,
+    json_data      TEXT,
+    PRIMARY KEY (cpid, ocid, contract_id, id)
+);
