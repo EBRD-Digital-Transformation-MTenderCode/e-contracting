@@ -17,8 +17,13 @@ sealed class GetContractStateErrors(
         description = "Unexpected stage '$stage'."
     )
 
-    class ContractNotFound(cpid: Cpid, ocid: Ocid) : GetContractStateErrors(
+    class ContractNotFound(cpid: Cpid, ocid: Ocid, contractId: String) : GetContractStateErrors(
         numberError = "6.11.2",
-        description = "Contract not found by cpid '$cpid' and ocid '$ocid'."
+        description = "Contract not found by cpid '$cpid', ocid '$ocid' and contract id '$contractId'."
+    )
+
+    class InvalidContractId(id: String, pattern: String) : GetContractStateErrors(
+        numberError = "6.11.3",
+        description = "Invalid contract id '$id'. Mismatch to pattern '$pattern'."
     )
 }

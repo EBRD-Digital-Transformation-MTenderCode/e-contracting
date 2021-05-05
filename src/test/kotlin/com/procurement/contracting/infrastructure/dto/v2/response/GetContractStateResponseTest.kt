@@ -10,4 +10,9 @@ class GetContractStateResponseTest : AbstractDTOTestBase<GetContractStateRespons
     fun fully() {
         testBindingAndMapping("json/dto/v2/request/get_contract_state_response_fully.json")
     }
+
+    @Test
+    fun required1() {
+        testBindingAndMapping("json/dto/v2/request/get_contract_state_response_required_1.json")
+    }
 }
