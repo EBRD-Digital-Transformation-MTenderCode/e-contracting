@@ -1,6 +1,7 @@
 package com.procurement.contracting.application.service.model
 
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
+import com.procurement.contracting.domain.model.bid.PersonTitle
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestId
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponseType
 import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
@@ -100,7 +101,7 @@ class ValidateConfirmationResponseDataParams private constructor(
 
             class Person private constructor(
                 val id: String,
-                val title: String,
+                val title: PersonTitle,
                 val name: String,
                 val identifier: Identifier,
                 val businessFunctions: List<BusinessFunction>,
@@ -116,9 +117,12 @@ class ValidateConfirmationResponseDataParams private constructor(
                         if (businessFunctions.isEmpty())
                             return DataErrors.Validation.EmptyArray(name = "businessFunctions").asFailure()
 
+                        val parsedTitle = parseEnum(title, PersonTitle.allowedElements.toSet(), "title", PersonTitle)
+                            .onFailure { return it }
+
                         return Person(
                             id = id,
-                            title = title,
+                            title = parsedTitle,
                             name = name,
                             identifier = identifier,
                             businessFunctions = businessFunctions
