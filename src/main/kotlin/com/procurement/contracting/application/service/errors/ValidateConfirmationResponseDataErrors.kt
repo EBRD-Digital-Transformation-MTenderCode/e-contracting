@@ -37,4 +37,9 @@ sealed class ValidateConfirmationResponseDataErrors(
         description = "Business function documents ids must be unique. Duplicated id '$duplicatedId'."
     )
 
+    class ResponseAlreadyExists : ValidateConfirmationResponseDataErrors(
+        numberError = "6.14.6",
+        description = "Confirmation response on request already exists."
+    )
+
 }

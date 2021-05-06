@@ -11,7 +11,6 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.confirmation.ConfirmationResponseEntity
 import com.procurement.contracting.application.repository.confirmation.ConfirmationResponseRepository
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
@@ -146,10 +145,29 @@ class CassandraConfirmationResponseRepositoryIT {
                 jsonData = " some json data "
             )
 
-        val exception = assertThrows<SaveEntityException> {
+        assertThrows<RuntimeException> {
             confirmationResponseRepository.save(expectedEntity).orThrow { it.exception }
         }
-        assertTrue(exception.message!!.contains("Error writing"))
+    }
+
+    @Test
+    fun `should successful find  by contract id`() {
+        val expectedStoredEntitiesAmount = 1
+        val expectedEntity = generateConfirmationResponseEntity()
+            .copy(
+                contractId = CONTRACT_ID,
+                requestId = CONFIRMATION_REQUEST_ID,
+                jsonData = " some json data "
+            )
+
+        confirmationResponseRepository.save(expectedEntity)
+
+        val storedEntities: List<ConfirmationResponseEntity> = confirmationResponseRepository.findBy(cpid = CPID, ocid = OCID, CONTRACT_ID).get()
+        assertTrue(storedEntities.isNotEmpty())
+        assertEquals(expectedStoredEntitiesAmount, storedEntities.size)
+
+        val actualEntity = storedEntities.first()
+        assertEquals(expectedEntity, actualEntity)
     }
 
     private fun createKeyspace() {

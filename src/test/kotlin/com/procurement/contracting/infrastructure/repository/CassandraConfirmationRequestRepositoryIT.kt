@@ -11,7 +11,6 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.confirmation.ConfirmationRequestEntity
 import com.procurement.contracting.application.repository.confirmation.ConfirmationRequestRepository
 import com.procurement.contracting.domain.model.Token
@@ -144,10 +143,9 @@ class CassandraConfirmationRequestRepositoryIT {
                 jsonData = " some json data "
             )
 
-        val exception = assertThrows<SaveEntityException> {
+        assertThrows<RuntimeException> {
             confirmationRequestRepository.save(expectedEntity).orThrow { it.exception }
         }
-        assertTrue(exception.message!!.contains("Error writing"))
     }
 
     @Test
