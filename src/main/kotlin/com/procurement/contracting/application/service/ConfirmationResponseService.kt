@@ -15,6 +15,7 @@ import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequest
+import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestId
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestSource
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponse
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
@@ -58,6 +59,8 @@ class ConfirmationResponseServiceImpl(
         val receivedConfirmationResponse = receivedContract.confirmationResponses.first()
 
         checkContractExists(params.cpid, params.ocid, receivedContract).doOnError { return it.asValidationError() }
+        checkResponseNotExists(params.cpid, params.ocid, receivedContract.id, receivedConfirmationResponse.requestId).doOnError { return it.asValidationError() }
+
         val storedConfirmationRequest = getConfirmationRequest(params.cpid, params.ocid, receivedConfirmationResponse)
             .onFailure { return it.reason.asValidationError()}
 
@@ -173,6 +176,17 @@ class ConfirmationResponseServiceImpl(
             Stage.PN,
             Stage.RQ -> return BadRequest(description = "Invalid stage '${ocid.stage}'.", IllegalArgumentException()).asValidationError()
         }
+
+        return ValidationResult.ok()
+    }
+
+    private fun checkResponseNotExists(cpid: Cpid, ocid: Ocid, contractId: String, requestId: ConfirmationRequestId): ValidationResult<Fail> {
+        val alreadyGivenResponses = confirmationResponseRepository
+            .findBy(cpid, ocid, contractId).onFailure { return it.reason.asValidationError() }
+            .filter { it.requestId == requestId }
+
+        if (alreadyGivenResponses.isNotEmpty())
+            return ValidateConfirmationResponseDataErrors.ResponseAlreadyExists().asValidationError()
 
         return ValidationResult.ok()
     }
