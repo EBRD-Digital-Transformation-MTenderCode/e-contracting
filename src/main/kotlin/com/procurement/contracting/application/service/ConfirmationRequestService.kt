@@ -6,8 +6,10 @@ import com.procurement.contracting.application.repository.confirmation.Confirmat
 import com.procurement.contracting.application.repository.confirmation.ConfirmationRequestRepository
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.pac.PacRepository
+import com.procurement.contracting.application.service.errors.CheckAccessToRequestOfConfirmationErrors
 import com.procurement.contracting.application.service.errors.CreateConfirmationRequestsErrors
 import com.procurement.contracting.application.service.errors.GetRequestByConfirmationResponseErrors
+import com.procurement.contracting.application.service.model.CheckAccessToRequestOfConfirmationParams
 import com.procurement.contracting.application.service.model.CreateConfirmationRequestsParams
 import com.procurement.contracting.application.service.model.GetRequestByConfirmationResponseParams
 import com.procurement.contracting.domain.model.Token
@@ -25,6 +27,7 @@ import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.infrastructure.fail.error.BadRequest
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationRequestsResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.GetRequestByConfirmationResponseResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
@@ -38,6 +41,7 @@ import org.springframework.stereotype.Service
 interface ConfirmationRequestService {
     fun create(params: CreateConfirmationRequestsParams): Result<CreateConfirmationRequestsResponse, Fail>
     fun get(params: GetRequestByConfirmationResponseParams): Result<GetRequestByConfirmationResponseResponse, Fail>
+    fun checkAccess(params: CheckAccessToRequestOfConfirmationParams): ValidationResult<Fail>
 }
 
 @Service
@@ -110,6 +114,32 @@ class ConfirmationRequestServiceImpl(
             .let { GetRequestByConfirmationResponseResponse.Contract(id = receivedContract.id, confirmationRequests = listOf(it)) }
             .let { GetRequestByConfirmationResponseResponse(contracts = listOf(it)) }
             .asSuccess()
+    }
+
+    override fun checkAccess(params: CheckAccessToRequestOfConfirmationParams): ValidationResult<Fail> {
+        val receivedContract = params.contracts.firstOrNull()
+            ?: return BadRequest(exception = IllegalArgumentException("Missing 'contracts' attribute in request.")).asValidationError()
+
+        val receivedConfirmationResponse = receivedContract.confirmationResponses.firstOrNull()
+            ?: return BadRequest(exception = IllegalArgumentException("Missing 'confirmationResponses' attribute in request.")).asValidationError()
+
+        val receivedRequestId = receivedConfirmationResponse.requestId.underlying.toString()
+
+        val confirmationRequestEntity = confirmationRequestRepository
+            .findBy(params.cpid, params.ocid, receivedContract.id).onFailure { return it.reason.asValidationError() }
+            .find { request -> request.requests.any { it == receivedRequestId } }
+            ?: return CheckAccessToRequestOfConfirmationErrors.ContractNotFound(params.cpid, params.ocid, receivedRequestId).asValidationError()
+
+        val confirmationRequest = transform.tryDeserialization(confirmationRequestEntity.jsonData, ConfirmationRequest::class.java).onFailure { return it.reason.asValidationError() }
+        val storedRequest = confirmationRequest.requests.find { it.id == receivedRequestId }!!
+
+        if (storedRequest.token != params.token)
+            return CheckAccessToRequestOfConfirmationErrors.InvalidToken().asValidationError()
+
+        if (storedRequest.owner != params.owner.underlying)
+            return CheckAccessToRequestOfConfirmationErrors.InvalidOwner().asValidationError()
+
+        return ValidationResult.ok()
     }
 
     private fun checkContractExists(
