@@ -3,7 +3,6 @@ package com.procurement.contracting.application.service.model
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequestId
-import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseOcid
 import com.procurement.contracting.domain.model.parseOwner
@@ -47,20 +46,15 @@ class CheckAccessToRequestOfConfirmationParams private constructor(
     }
 
     data class Contract(
-        val id: FrameworkContractId,
+        val id: String,
         val confirmationResponses: List<ConfirmationResponse>,
     ) {
         companion object {
             fun tryCreate(id: String, confirmationResponses: List<ConfirmationResponse>): Result<Contract, DataErrors> {
-                val contractId = FrameworkContractId.orNull(id)
-                    ?: return DataErrors.Validation.DataMismatchToPattern(
-                        name = "id", pattern = FrameworkContractId.pattern, actualValue = id
-                    ).asFailure()
-
                 if (confirmationResponses.isEmpty())
                     return DataErrors.Validation.EmptyArray(name = "confirmationResponses").asFailure()
 
-                return Contract(contractId, confirmationResponses).asSuccess()
+                return Contract(id, confirmationResponses).asSuccess()
             }
         }
 

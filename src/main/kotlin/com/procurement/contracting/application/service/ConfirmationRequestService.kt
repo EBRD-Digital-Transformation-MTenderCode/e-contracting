@@ -126,7 +126,7 @@ class ConfirmationRequestServiceImpl(
         val receivedRequestId = receivedConfirmationResponse.requestId.underlying.toString()
 
         val confirmationRequestEntity = confirmationRequestRepository
-            .findBy(params.cpid, params.ocid).onFailure { return it.reason.asValidationError() }
+            .findBy(params.cpid, params.ocid, receivedContract.id).onFailure { return it.reason.asValidationError() }
             .find { request -> request.requests.any { it == receivedRequestId } }
             ?: return CheckAccessToRequestOfConfirmationErrors.ContractNotFound(params.cpid, params.ocid, receivedRequestId).asValidationError()
 
@@ -136,7 +136,7 @@ class ConfirmationRequestServiceImpl(
         if (storedRequest.token != params.token)
             return CheckAccessToRequestOfConfirmationErrors.InvalidToken().asValidationError()
 
-        if (storedRequest.owner != params.owner.toString())
+        if (storedRequest.owner != params.owner.underlying)
             return CheckAccessToRequestOfConfirmationErrors.InvalidOwner().asValidationError()
 
         return ValidationResult.ok()

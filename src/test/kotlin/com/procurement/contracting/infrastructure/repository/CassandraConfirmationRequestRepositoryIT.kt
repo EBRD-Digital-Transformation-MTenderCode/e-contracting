@@ -150,6 +150,23 @@ class CassandraConfirmationRequestRepositoryIT {
         assertTrue(exception.message!!.contains("Error writing"))
     }
 
+    @Test
+    fun `should successful find by contract id`() {
+        val expectedStoredEntitiesAmount = 1
+        val expectedConfirmationRequest = generateConfirmationRequest()
+        val expectedEntity = ConfirmationRequestEntity.of(CPID, OCID, CONTRACT_ID, expectedConfirmationRequest, transform).get()
+
+        confirmationRequestRepository.save(expectedEntity)
+
+        val storedEntities: List<ConfirmationRequestEntity> = confirmationRequestRepository.findBy(cpid = CPID, ocid = OCID, CONTRACT_ID).get()
+
+        assertTrue(storedEntities.isNotEmpty())
+        assertEquals(expectedStoredEntitiesAmount, storedEntities.size)
+
+        val actualEntity = storedEntities.first()
+        assertEquals(expectedEntity, actualEntity)
+    }
+
     private fun createKeyspace() {
         session.execute("CREATE KEYSPACE ocds WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};")
     }

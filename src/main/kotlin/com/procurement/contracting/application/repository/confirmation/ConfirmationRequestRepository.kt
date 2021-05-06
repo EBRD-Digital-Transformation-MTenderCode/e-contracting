@@ -8,4 +8,5 @@ import com.procurement.contracting.lib.functional.Result
 interface ConfirmationRequestRepository {
     fun save(entity: ConfirmationRequestEntity): Result<Boolean, Fail.Incident.Database>
     fun findBy(cpid: Cpid, ocid: Ocid): Result<List<ConfirmationRequestEntity>, Fail.Incident.Database>
+    fun findBy(cpid: Cpid, ocid: Ocid, contractId: String): Result<List<ConfirmationRequestEntity>, Fail.Incident.Database>
 }
