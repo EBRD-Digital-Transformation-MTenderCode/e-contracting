@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class AddGeneratedDocumentToContractRequest(
     @field:JsonProperty("cpid") @param:JsonProperty("cpid") val cpid: String,
     @field:JsonProperty("ocid") @param:JsonProperty("ocid") val ocid: String,
-    @field:JsonProperty("documentInitiator") @param:JsonProperty("documentInitiator") val documentInitiator: String,
+    @field:JsonProperty("processInitiator") @param:JsonProperty("processInitiator") val processInitiator: String,
     @field:JsonProperty("contracts") @param:JsonProperty("contracts") val contracts: List<Contract>
 ) {
     data class Contract(
