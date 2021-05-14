@@ -10,6 +10,7 @@ import com.procurement.contracting.infrastructure.bind.api.command.id.CommandIdM
 import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionModule
 import com.procurement.contracting.infrastructure.bind.award.id.AwardIdModule
 import com.procurement.contracting.infrastructure.bind.can.id.CANIdModule
+import com.procurement.contracting.infrastructure.bind.confirmation.ConfirmationRequestIdModule
 import com.procurement.contracting.infrastructure.bind.contract.id.AwardContractIdModule
 import com.procurement.contracting.infrastructure.bind.date.JsonDateTimeModule
 import com.procurement.contracting.infrastructure.bind.dynamic.DynamicValueModule
@@ -30,6 +31,7 @@ fun ObjectMapper.configuration() {
     registerModule(CommandIdModule())
     registerModule(JsonDateTimeModule())
     registerModule(TokenModule())
+    registerModule(ConfirmationRequestIdModule())
     registerModule(OwnerModule())
     registerModule(LotIdModule())
     registerModule(CANIdModule())

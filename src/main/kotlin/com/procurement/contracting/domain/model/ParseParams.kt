@@ -129,3 +129,12 @@ fun parseOwner(value: String): Result<Owner, DataErrors.Validation.DataFormatMis
                     actualValue = value,
                     expectedFormat = "uuid"
                 ).asFailure()
+
+fun parseToken(value: String): Result<Token, DataErrors.Validation.DataFormatMismatch> =
+    Token.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = "token",
+            actualValue = value,
+            expectedFormat = "uuid"
+        ).asFailure()

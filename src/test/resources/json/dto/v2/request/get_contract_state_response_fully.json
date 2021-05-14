@@ -1,0 +1,9 @@
+{
+  "contracts": [
+    {
+      "id": "string",
+      "status": "pending",
+      "statusDetails": "issued"
+    }
+  ]
+}

@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class ConfirmationRequestReleaseTo(@JsonValue override val key: String) : EnumElementProvider.Element {
-    DOCUMENT("document");
+    DOCUMENT("document"),
+    CONTRACT("contract"),
+    ;
 
     override fun toString(): String = key
 

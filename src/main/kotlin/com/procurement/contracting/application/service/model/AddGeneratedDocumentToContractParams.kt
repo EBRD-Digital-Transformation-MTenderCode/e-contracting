@@ -15,7 +15,7 @@ import com.procurement.contracting.lib.functional.asSuccess
 data class AddGeneratedDocumentToContractParams(
     val cpid: Cpid,
     val ocid: Ocid,
-    val documentInitiator: OperationType,
+    val processInitiator: OperationType,
     val contracts: List<Contract>
 ) {
 
@@ -25,8 +25,10 @@ data class AddGeneratedDocumentToContractParams(
                 when (it) {
                     OperationType.ISSUING_FRAMEWORK_CONTRACT -> true
 
-                    OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,
-                    OperationType.COMPLETE_SOURCING -> false
+                    OperationType.COMPLETE_SOURCING,
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
+                    OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> false
                 }
             }
             .toSet()
@@ -34,22 +36,22 @@ data class AddGeneratedDocumentToContractParams(
         fun tryCreate(
             cpid: String,
             ocid: String,
-            documentInitiator: String,
+            processInitiator: String,
             contracts: List<Contract>
         ): Result<AddGeneratedDocumentToContractParams, DataErrors> {
             val parsedCpid = parseCpid(value = cpid).onFailure { return it }
             val parsedOcid = parseOcid(value = ocid).onFailure { return it }
             val parsedOperationType = parseEnum(
-                value = documentInitiator,
+                value = processInitiator,
                 allowedEnums = allowedOperationType,
-                attributeName = "documentInitiator",
+                attributeName = "processInitiator",
                 target = OperationType
             ).onFailure { return it }
 
             return AddGeneratedDocumentToContractParams(
                 cpid = parsedCpid,
                 ocid = parsedOcid,
-                documentInitiator = parsedOperationType,
+                processInitiator = parsedOperationType,
                 contracts = contracts
             ).asSuccess()
         }

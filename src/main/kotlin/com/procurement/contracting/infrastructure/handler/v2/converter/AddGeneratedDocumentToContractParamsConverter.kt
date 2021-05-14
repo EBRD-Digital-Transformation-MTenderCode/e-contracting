@@ -10,7 +10,7 @@ fun AddGeneratedDocumentToContractRequest.convert(): Result<AddGeneratedDocument
     AddGeneratedDocumentToContractParams.tryCreate(
         cpid = cpid,
         ocid = ocid,
-        documentInitiator = documentInitiator,
+        processInitiator = processInitiator,
         contracts = contracts
             .mapResult { it.convert() }
             .onFailure { return it }

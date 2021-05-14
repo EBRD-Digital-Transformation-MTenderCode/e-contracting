@@ -1,0 +1,36 @@
+{
+  "contracts": [
+    {
+      "id": "string",
+      "confirmationResponses": [
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "date": "2021-05-05T06:56:22Z",
+          "requestId": "string",
+          "type": "document",
+          "value": "string",
+          "relatedPerson": {
+            "title": "Mr.",
+            "name": "string",
+            "identifier": {
+              "scheme": "string",
+              "id": "string",
+              "uri": "string"
+            },
+            "businessFunctions": [
+              {
+                "id": "string",
+                "type": "authority",
+                "jobTitle": "string",
+                "period": {
+                  "startDate": "2021-04-29T09:49:58Z"
+                }
+              }
+            ],
+            "id": "string"
+          }
+        }
+      ]
+    }
+  ]
+}

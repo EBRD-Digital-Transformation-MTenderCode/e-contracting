@@ -1,0 +1,43 @@
+{
+  "cpid": "ocds-b3wdp1-MD-1580458690892",
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "contracts": [
+    {
+      "id": "string",
+      "confirmationResponses": [
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "requestId": "string",
+          "type": "document",
+          "value": "string",
+          "relatedPerson": {
+            "title": "Mr.",
+            "name": "string",
+            "identifier": {
+              "scheme": "string",
+              "id": "string"
+            },
+            "businessFunctions": [
+              {
+                "id": "string",
+                "type": "authority",
+                "jobTitle": "string",
+                "period": {
+                  "startDate": "2021-04-29T09:49:58.743Z"
+                },
+                "documents": [
+                  {
+                    "id": "string",
+                    "documentType": "regulatoryDocument",
+                    "title": "string"
+                  }
+                ]
+              }
+            ],
+            "id": "string"
+          }
+        }
+      ]
+    }
+  ]
+}
