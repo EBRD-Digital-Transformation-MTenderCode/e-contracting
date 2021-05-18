@@ -19,7 +19,6 @@ import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails
-import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import com.procurement.contracting.domain.util.extension.mapResult
@@ -197,6 +196,7 @@ class PacServiceImpl(
                     id = pac.id,
                     status = pac.status,
                     date = pac.date,
+                    token = pac.token,
                     relatedLots = pac.relatedLots,
                     awardId = pac.awardId,
                     suppliers = pac.suppliers.map { supplier ->
@@ -239,7 +239,7 @@ class PacServiceImpl(
     private fun createPacsByAwards(params: DoPacsParams, activePacByAwardId: Map<AwardId, Pac>): Result<List<Pac>, Fail.Incident> {
         return params.awards
             .filter { award -> activePacByAwardId[award.id] == null } // find awards for creating new PAC
-            .map { award -> createPac(generationService.pacId(), award, params) }
+            .map { award -> createPac(award, params) }
             .asSuccess()
     }
 
@@ -251,12 +251,13 @@ class PacServiceImpl(
             )
         }
 
-    private fun createPac(pacId: PacId, award: DoPacsParams.Award, params: DoPacsParams): Pac {
+    private fun createPac(award: DoPacsParams.Award, params: DoPacsParams): Pac {
         val suppliers = createSuppliers(award)
         return Pac(
-            id = pacId,
+            id = generationService.pacId(),
             date = params.date,
             owner = params.owner,
+            token = generationService.token(),
             awardId = award.id,
             status = PacStatus.PENDING,
             statusDetails = null,

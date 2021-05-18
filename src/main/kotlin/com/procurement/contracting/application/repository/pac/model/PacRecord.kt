@@ -2,6 +2,7 @@ package com.procurement.contracting.application.repository.pac.model
 
 import com.procurement.contracting.application.service.Transform
 import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
@@ -18,6 +19,7 @@ data class PacRecord(
     val ocid: Ocid,
     val id: PacId,
     val owner: Owner,
+    val token: Token,
     val createdDate: LocalDateTime,
     val status: PacStatus,
     val statusDetails: PacStatusDetails?,
@@ -31,6 +33,7 @@ data class PacRecord(
                 ocid = ocid,
                 id = pac.id,
                 owner = pac.owner,
+                token = pac.token,
                 createdDate = pac.date,
                 status = pac.status,
                 statusDetails = pac.statusDetails,
