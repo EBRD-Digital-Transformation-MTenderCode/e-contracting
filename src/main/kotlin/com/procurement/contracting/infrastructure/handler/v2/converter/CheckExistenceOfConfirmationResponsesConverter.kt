@@ -38,6 +38,9 @@ private val allowedPmd = ProcurementMethodDetails.allowedElements
 private val allowedOperationTypes = OperationType.allowedElements
     .filter {
         when (it) {
+            OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
+            OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
+            OperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION -> true
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,
             OperationType.COMPLETE_SOURCING,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
@@ -56,7 +59,7 @@ fun CheckExistenceOfConfirmationResponsesRequest.convert(): Result<CheckExistenc
         ocid = parseOcid(ocid).onFailure { return it },
         pmd = parsePmd(pmd, allowedPmd).onFailure { return it },
         country = country,
-        operationType = parseOperationType(operationType, allowedOperationTypes).onFailure { return it }, //TODO()
+        operationType = parseOperationType(operationType, allowedOperationTypes).onFailure { return it },
         contracts = contracts.map { CheckExistenceOfConfirmationResponsesParams.Contract(it.id) }
     ).asSuccess()
 }
