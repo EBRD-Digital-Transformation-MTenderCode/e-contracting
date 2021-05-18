@@ -6,10 +6,13 @@ import com.fasterxml.jackson.annotation.JsonValue
 enum class OperationType(@JsonValue override val key: String) : EnumElementProvider.Element {
 
     COMPLETE_SOURCING("completeSourcing"),
-    ISSUING_FRAMEWORK_CONTRACT("issuingFrameworkContract"),
-    WITHDRAW_QUALIFICATION_PROTOCOL("withdrawQualificationProtocol"),
     CREATE_CONFIRMATION_RESPONSE_BY_BUYER("createConfirmationResponseByBuyer"),
     CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE("createConfirmationResponseByInvitedCandidate"),
+    ISSUING_FRAMEWORK_CONTRACT("issuingFrameworkContract"),
+    NEXT_STEP_AFTER_BUYERS_CONFIRMATION("nextStepAfterBuyersConfirmation"),
+    NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION("nextStepAfterInvitedCandidatesConfirmation"),
+    NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION("nextStepAfterSuppliersConfirmation"),
+    WITHDRAW_QUALIFICATION_PROTOCOL("withdrawQualificationProtocol")
     ;
 
     override fun toString(): String = key
