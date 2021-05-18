@@ -23,7 +23,7 @@ class MinReceivedConfResponsesRuleDeserializer : JsonDeserializer<MinReceivedCon
             JsonNodeType.STRING -> MinReceivedConfResponsesRule.String.QuantityValue
                 .creator(quantity.asText())
                 .let { MinReceivedConfResponsesRule.String(it) }
-            JsonNodeType.NUMBER -> MinReceivedConfResponsesRule.Number(jsonParser.intValue)
+            JsonNodeType.NUMBER -> MinReceivedConfResponsesRule.Number(Integer.valueOf(quantity.asText()))
             else -> throw ErrorException(ErrorType.JSON_TYPE, jsonParser.currentName)
         }
     }
