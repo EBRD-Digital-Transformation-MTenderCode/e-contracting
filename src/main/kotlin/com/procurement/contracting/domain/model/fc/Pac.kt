@@ -2,6 +2,7 @@ package com.procurement.contracting.domain.model.fc
 
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
@@ -13,6 +14,7 @@ import java.time.LocalDateTime
 data class Pac(
     val id: PacId,
     val owner: Owner,
+    val token: Token,
     val status: PacStatus,
     val statusDetails: PacStatusDetails?,
     val date: LocalDateTime,
@@ -55,6 +57,7 @@ data class Pac(
         return PacEntity(
             id = id.underlying,
             owner = owner.underlying,
+            token = token.underlying.toString(),
             statusDetails = statusDetails?.key,
             status = status.key,
             date = date.asString(),
