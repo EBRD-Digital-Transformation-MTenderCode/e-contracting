@@ -16,6 +16,7 @@ class CommandServiceV2(
     private val cancelFrameworkContractHandler: CancelFrameworkContractHandler,
     private val checkAccessToRequestOfConfirmationHandler: CheckAccessToRequestOfConfirmationHandler,
     private val checkContractStateHandler: CheckContractStateHandler,
+    private val checkExistenceOfConfirmationResponsesHandler: CheckExistenceOfConfirmationResponsesHandler,
     private val checkExistenceSupplierReferencesInFCHandler: CheckExistenceSupplierReferencesInFCHandler,
     private val createConfirmationRequestsHandler: CreateConfirmationRequestsHandler,
     private val createConfirmationResponseHandler: CreateConfirmationResponseHandler,
@@ -36,6 +37,7 @@ class CommandServiceV2(
             CommandTypeV2.CANCEL_FRAMEWORK_CONTRACT -> cancelFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.CHECK_ACCESS_TO_REQUEST_OF_CONFIRMATION -> checkAccessToRequestOfConfirmationHandler.handle(descriptor)
             CommandTypeV2.CHECK_CONTRACT_STATE -> checkContractStateHandler.handle(descriptor)
+            CommandTypeV2.CHECK_EXISTENCE_OF_CONFIRMATION_RESPONSES -> checkExistenceOfConfirmationResponsesHandler.handle(descriptor)
             CommandTypeV2.CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC -> checkExistenceSupplierReferencesInFCHandler.handle(descriptor)
             CommandTypeV2.CREATE_CONFIRMATION_REQUESTS -> createConfirmationRequestsHandler.handle(descriptor)
             CommandTypeV2.CREATE_CONFIRMATION_RESPONSE -> createConfirmationResponseHandler.handle(descriptor)
