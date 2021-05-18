@@ -10,6 +10,7 @@ fun DoPacsResult.convert() = DoPacsResponse(
             id = pac.id.underlying,
             status = pac.status.key,
             date = pac.date.asString(),
+            token = pac.token.underlying.toString(),
             relatedLots = pac.relatedLots.map { it.underlying },
             awardId = pac.awardId.toString(),
             suppliers = pac.suppliers

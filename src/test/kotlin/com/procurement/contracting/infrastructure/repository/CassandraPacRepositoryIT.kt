@@ -15,6 +15,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.pac.model.PacRecord
 import com.procurement.contracting.assertFailure
 import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
@@ -46,6 +47,7 @@ class CassandraPacRepositoryIT {
         private val OCID = Ocid.orNull("ocds-b3wdp1-MD-1580458690892-AC-1580123456789")!!
         private val PAC_ID = PacId.generate()
         private val OWNER = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
+        private val TOKEN = Token.orNull("159a0645-a074-47d2-9c02-d9fbb6cb16a3")!!
         private val CREATE_DATE = LocalDateTime.now()
         private val PAC_STATUS = PacStatus.PENDING
         private val PAC_STATUS_DETAILS = PacStatusDetails.CONCLUDED
@@ -247,6 +249,7 @@ class CassandraPacRepositoryIT {
                     ocid           TEXT,
                     id             TEXT,
                     owner          TEXT,
+                    token_entity   TEXT,
                     created_date   TIMESTAMP,
                     status         TEXT,
                     status_details TEXT,
@@ -267,6 +270,7 @@ class CassandraPacRepositoryIT {
             .value("ocid", OCID.underlying)
             .value("id", PAC_ID.underlying)
             .value("owner", OWNER.underlying)
+            .value("token_entity", TOKEN.underlying.toString())
             .value("created_date", CREATE_DATE.toCassandraTimestamp())
             .value("status", status.key)
             .value("status_details", statusDetails?.key)
@@ -283,6 +287,7 @@ class CassandraPacRepositoryIT {
         ocid = OCID,
         id = PAC_ID,
         owner = OWNER,
+        token = TOKEN,
         createdDate = CREATE_DATE,
         status = status,
         statusDetails = statusDetails,
