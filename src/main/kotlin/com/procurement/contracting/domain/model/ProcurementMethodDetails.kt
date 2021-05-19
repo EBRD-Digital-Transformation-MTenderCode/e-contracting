@@ -18,6 +18,7 @@ enum class ProcurementMethodDetails(@JsonValue override val key: String, val pro
     OF(key = "OF", procurementMethod = "selective"),
     OP(key = "OP", procurementMethod = "selective"),
     OT(key = "OT", procurementMethod = "open"),
+    RFQ(key = "RFQ", procurementMethod = "selective"),
     RT(key = "RT", procurementMethod = "selective"),
     SV(key = "SV", procurementMethod = "open"),
     TEST_CD(key = "TEST_CD", procurementMethod = "selective"),
@@ -34,6 +35,7 @@ enum class ProcurementMethodDetails(@JsonValue override val key: String, val pro
     TEST_OT(key = "TEST_OT", procurementMethod = "open"),
     TEST_RT(key = "TEST_RT", procurementMethod = "selective"),
     TEST_SV(key = "TEST_SV", procurementMethod = "open"),
+    TEST_RFQ(key = "TEST_RFQ", procurementMethod = "selective"),
     ;
 
     override fun toString(): String = key
