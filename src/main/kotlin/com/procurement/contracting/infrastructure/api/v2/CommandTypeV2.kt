@@ -20,7 +20,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     CREATE_FRAMEWORK_CONTRACT("createFrameworkContract"),
     DO_PACS("doPacs"),
     FIND_CAN_IDS("findCANIds"),
-    FIN_DCONTRACT_DOCUMENT_ID("findContractDocumentId"),
+    FIND_CONTRACT_DOCUMENT_ID("findContractDocumentId"),
     FIND_PACS_BY_LOT_IDS("findPacsByLotIds"),
     GET_CONTRACT_STATE("getContractState"),
     GET_REQUEST_BY_CONFIRMATION_RESPONSE("getRequestByConfirmationResponse"),

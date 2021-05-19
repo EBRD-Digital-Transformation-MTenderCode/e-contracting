@@ -23,7 +23,7 @@ class FindContractDocumentIdHandler(
     logger: Logger
 ) : AbstractHistoricalHandlerV2<FindContractDocumentIdResponse?>(transform, historyRepository, logger) {
 
-    override val action: CommandTypeV2 = CommandTypeV2.FIN_DCONTRACT_DOCUMENT_ID
+    override val action: CommandTypeV2 = CommandTypeV2.FIND_CONTRACT_DOCUMENT_ID
 
     override fun execute(descriptor: CommandDescriptor): Result<FindContractDocumentIdResponse?, Fail> {
         val params = descriptor.body.asJsonNode
