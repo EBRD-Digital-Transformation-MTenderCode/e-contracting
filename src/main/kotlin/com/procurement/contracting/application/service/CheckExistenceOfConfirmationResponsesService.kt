@@ -6,12 +6,16 @@ import com.procurement.contracting.application.service.errors.CheckExistenceOfCo
 import com.procurement.contracting.application.service.model.CheckExistenceOfConfirmationResponsesParams
 import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.application.service.rule.model.MinReceivedConfResponsesRule
+import com.procurement.contracting.application.service.rule.model.SourceOfConfirmationRequestRule
 import com.procurement.contracting.domain.model.confirmation.request.ConfirmationRequest
 import com.procurement.contracting.domain.model.confirmation.response.ConfirmationResponse
 import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.ValidationResult
+import com.procurement.contracting.lib.functional.asFailure
+import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.lib.functional.asValidationError
 import org.springframework.stereotype.Service
 
@@ -32,52 +36,78 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             .getSourceOfConfirmationRequest(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
-        val contractReceived = params.contracts.first()
-        val confirmationRequests = confirmationRequestRepository
-            .findBy(params.cpid, params.ocid, contractReceived.id)
-            .onFailure { return it.reason.asValidationError() }
-            .mapResult { transform.tryDeserialization(it.jsonData, ConfirmationRequest::class.java) }
+        val contract = params.contracts.first()
+
+        val confirmationRequest = getConfirmationRequest(params, contract, sourceOfConfirmationRequest)
             .onFailure { return it.reason.asValidationError() }
 
-        val targetConfirmationRequest = confirmationRequests
-            .firstOrNull { it.source == sourceOfConfirmationRequest.role }
-            ?: return CheckExistenceOfConfirmationResponsesErrors.ConfirmationRequestNotFound(
-                params.cpid, params.ocid, contractReceived.id, sourceOfConfirmationRequest.role
-            ).asValidationError()
-
-        val requestsIds = targetConfirmationRequest.requests.toSetBy { it.id }
-
-        val confirmationResponses = confirmationResponseRepository
-            .findBy(params.cpid, params.ocid, contractReceived.id)
+        val confirmationResponses = confirmationRequest.getLinkedConfirmationResponses(params, contract)
             .onFailure { return it.reason.asValidationError() }
-            .mapResult { transform.tryDeserialization(it.jsonData, ConfirmationResponse::class.java) }
-            .onFailure { return it.reason.asValidationError() }
-
-        val confirmationResponsesLinkedToConfirmationRequest = confirmationResponses
-            .filter { requestsIds.contains(it.requestId.underlying.toString()) }
 
         val minReceivedConfResponses = rulesService
             .getMinReceivedConfResponses(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
+        checkConfirmationResponsesQuantity(minReceivedConfResponses, confirmationResponses, confirmationRequest)
+            .doOnError { return it.asValidationError() }
+
+        return ValidationResult.ok()
+    }
+
+    fun getConfirmationRequest(
+        params: CheckExistenceOfConfirmationResponsesParams,
+        contractReceived: CheckExistenceOfConfirmationResponsesParams.Contract,
+        sourceOfConfirmationRequest: SourceOfConfirmationRequestRule,
+    ): Result<ConfirmationRequest, Fail> =
+        confirmationRequestRepository
+            .findBy(params.cpid, params.ocid, contractReceived.id)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, ConfirmationRequest::class.java) }
+            .onFailure { return it }
+            .firstOrNull { it.source == sourceOfConfirmationRequest.role }
+            ?.asSuccess()
+            ?: CheckExistenceOfConfirmationResponsesErrors.ConfirmationRequestNotFound(
+                params.cpid, params.ocid, contractReceived.id, sourceOfConfirmationRequest.role
+            ).asFailure()
+
+    private fun ConfirmationRequest.getLinkedConfirmationResponses(
+        params: CheckExistenceOfConfirmationResponsesParams,
+        contractReceived: CheckExistenceOfConfirmationResponsesParams.Contract
+    ): Result<List<ConfirmationResponse>, Fail> {
+        val requestsIds = requests.toSetBy { it.id }
+        val confirmationResponses = confirmationResponseRepository
+            .findBy(params.cpid, params.ocid, contractReceived.id)
+            .onFailure { return it }
+            .mapResult { transform.tryDeserialization(it.jsonData, ConfirmationResponse::class.java) }
+            .onFailure { return it }
+
+        return confirmationResponses
+            .filter { requestsIds.contains(it.requestId.underlying.toString()) }
+            .asSuccess()
+    }
+
+    private fun checkConfirmationResponsesQuantity(
+        minReceivedConfResponses: MinReceivedConfResponsesRule,
+        confirmationResponses: List<ConfirmationResponse>,
+        confirmationRequest: ConfirmationRequest
+    ): ValidationResult<CheckExistenceOfConfirmationResponsesErrors> {
         when (minReceivedConfResponses) {
             is MinReceivedConfResponsesRule.Number -> {
-                if (confirmationResponsesLinkedToConfirmationRequest.size < minReceivedConfResponses.quantity)
+                if (confirmationResponses.size < minReceivedConfResponses.quantity)
                     CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
                         minimumQuantity = minReceivedConfResponses.quantity,
-                        actualQuantity = confirmationResponsesLinkedToConfirmationRequest.size
+                        actualQuantity = confirmationResponses.size
                     ).asValidationError()
             }
             is MinReceivedConfResponsesRule.String -> {
-                val numberOfRequests = targetConfirmationRequest.requests.size
-                if (confirmationResponsesLinkedToConfirmationRequest.size != numberOfRequests)
+                val numberOfRequests = confirmationRequest.requests.size
+                if (confirmationResponses.size != numberOfRequests)
                     CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
                         minimumQuantity = numberOfRequests,
-                        actualQuantity = confirmationResponsesLinkedToConfirmationRequest.size
+                        actualQuantity = confirmationResponses.size
                     ).asValidationError()
             }
         }
-
         return ValidationResult.ok()
     }
 }
