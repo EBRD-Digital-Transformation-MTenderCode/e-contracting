@@ -2,6 +2,7 @@ package com.procurement.contracting.application.service
 
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
+import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.service.converter.convert
 import com.procurement.contracting.application.service.errors.AddGeneratedDocumentToContractErrors
 import com.procurement.contracting.application.service.errors.AddSupplierReferencesInFCErrors
@@ -14,14 +15,17 @@ import com.procurement.contracting.application.service.model.CheckExistenceSuppl
 import com.procurement.contracting.application.service.model.CreateFrameworkContractParams
 import com.procurement.contracting.application.service.model.CreateFrameworkContractResult
 import com.procurement.contracting.application.service.rule.RulesService
-import com.procurement.contracting.application.service.rule.model.ValidFCStatesRule
+import com.procurement.contracting.application.service.rule.model.ValidContractStatesRule
 import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract.X_FRAMEWORK_PROJECT
 import com.procurement.contracting.domain.model.fc.FrameworkContract
+import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatus.PENDING
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails.CONTRACT_PROJECT
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails.ISSUED
+import com.procurement.contracting.domain.model.pac.PacId
+import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddGeneratedDocumentToContractResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
@@ -46,6 +50,7 @@ class FrameworkContractServiceImpl(
     private val generationService: GenerationService,
     private val transform: Transform,
     private val fcRepository: FrameworkContractRepository,
+    private val pacRepository: PacRepository,
     private val rulesService: RulesService
 ) : FrameworkContractService {
 
@@ -134,22 +139,63 @@ class FrameworkContractServiceImpl(
     }
 
     override fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail> {
-        val receivedContractId = params.contracts.first().id
-
-        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
-            .onFailure { return it.reason.asValidationError() }
-            ?.let { transform
-                .tryDeserialization(it.jsonData, FrameworkContract::class.java)
-                .onFailure { return it.reason.asValidationError() }
-            }
-            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asValidationError()
-
-        val validStates = rulesService.getValidFCStates(params.country, params.pmd, params.operationType)
+        val validStates = rulesService.getValidContractStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
-        val currentState = ValidFCStatesRule.State(frameworkContract.status, frameworkContract.statusDetails);
+        return when (val stage = params.ocid.stage) {
+            Stage.FE -> checkContractStateForFE(params, validStates)
+            Stage.PC -> checkContractStateForPAC(params, validStates)
+            Stage.TP,
+            Stage.RQ,
+            Stage.PN,
+            Stage.NP,
+            Stage.FS,
+            Stage.EV,
+            Stage.EI,
+            Stage.AC -> CheckContractStateErrors.InvalidStage(stage).asValidationError()
+        }
+    }
+
+    private fun checkContractStateForPAC(
+        params: CheckContractStateParams,
+        validStates: ValidContractStatesRule
+    ): ValidationResult<Fail> {
+        val pacId = PacId.orNull(params.contracts.first().id)!!
+
+        val pac = pacRepository
+            .findBy(params.cpid, params.ocid, pacId)
+            .onFailure { return it.reason.asValidationError() }
+            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
+                .asValidationError()
+
+        validStates.firstOrNull { it.status == pac.status.key && it.statusDetails == pac.statusDetails?.key }
+            ?: return CheckContractStateErrors.InvalidContractState(
+                pac.status.key, pac.statusDetails?.key, validStates
+            ).asValidationError()
+
+        return ValidationResult.ok()
+    }
+
+    private fun checkContractStateForFE(
+        params: CheckContractStateParams,
+        validStates: ValidContractStatesRule
+    ): ValidationResult<Fail> {
+        val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)!!
+
+        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, frameworkContractId)
+            .onFailure { return it.reason.asValidationError() }
+            ?: return CheckContractStateErrors.ContractNotFound(
+                params.cpid, params.ocid, frameworkContractId.underlying
+            ).asValidationError()
+
+        val currentState = ValidContractStatesRule.State(
+            frameworkContract.status.key,
+            frameworkContract.statusDetails.key
+        )
         if (currentState !in validStates)
-            return CheckContractStateErrors.InvalidContractState(currentState, validStates).asValidationError()
+            return CheckContractStateErrors.InvalidContractState(
+                currentState.status, currentState.statusDetails, validStates
+            ).asValidationError()
 
         return ValidationResult.ok()
     }
