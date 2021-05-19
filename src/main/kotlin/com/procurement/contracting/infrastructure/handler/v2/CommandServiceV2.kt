@@ -24,6 +24,7 @@ class CommandServiceV2(
     private val createFrameworkContractHandler: CreateFrameworkContractHandler,
     private val doPacsHandler: DoPacsHandler,
     private val findCANIdsHandler: FindCANIdsHandler,
+    private val findContractDocumentIdHandler: FindContractDocumentIdHandler,
     private val findPacsByLotIdsHandler: FindPacsByLotIdsHandler,
     private val getContractStateHandler: GetContractStateHandler,
     private val getRequestByConfirmationResponseHandler: GetRequestByConfirmationResponseHandler,
@@ -46,6 +47,7 @@ class CommandServiceV2(
             CommandTypeV2.CREATE_FRAMEWORK_CONTRACT -> createFrameworkContractHandler.handle(descriptor)
             CommandTypeV2.DO_PACS -> doPacsHandler.handle(descriptor)
             CommandTypeV2.FIND_CAN_IDS -> findCANIdsHandler.handle(descriptor)
+            CommandTypeV2.FIND_CONTRACT_DOCUMENT_ID -> findContractDocumentIdHandler.handle(descriptor)
             CommandTypeV2.FIND_PACS_BY_LOT_IDS -> findPacsByLotIdsHandler.handle(descriptor)
             CommandTypeV2.GET_CONTRACT_STATE -> getContractStateHandler.handle(descriptor)
             CommandTypeV2.GET_REQUEST_BY_CONFIRMATION_RESPONSE -> getRequestByConfirmationResponseHandler.handle(descriptor)
