@@ -34,17 +34,16 @@ class FindContractDocumentIdServiceImpl(
 ) : FindContractDocumentIdService {
 
     override fun find(params: FindContractDocumentIdParams): Result<FindContractDocumentIdResponse?, Fail> {
-        val contract = params.contracts.first()
         val stage = params.ocid.stage
         val documentId = when (stage) {
-            Stage.FE -> getFEDocumentOrNull(contract, params)
+            Stage.FE -> getFEDocumentOrNull(params)
                 .onFailure { return it }
             Stage.EV,
             Stage.NP,
-            Stage.TP -> getCANDocumentOrNull(contract, params)
+            Stage.TP -> getCANDocumentOrNull(params)
                 .onFailure { return it }
 
-            Stage.PC -> getPACDocumentOrNull(contract, params)
+            Stage.PC -> getPACDocumentOrNull(params)
                 .onFailure { return it }
             Stage.AC,
             Stage.EI,
@@ -57,7 +56,7 @@ class FindContractDocumentIdServiceImpl(
             FindContractDocumentIdResponse(
                 contracts = listOf(
                     FindContractDocumentIdResponse.Contract(
-                        id = contract.id,
+                        id = params.contracts.first().id,
                         documents = listOf(
                             FindContractDocumentIdResponse.Contract.Document(documentId)
                         )
@@ -68,9 +67,9 @@ class FindContractDocumentIdServiceImpl(
     }
 
     private fun getFEDocumentOrNull(
-        receivedContract: FindContractDocumentIdParams.Contract,
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
+        val receivedContract = params.contracts.first()
         val frameworkContractId = FrameworkContractId.orNull(receivedContract.id)
             ?: return CheckAccessToContractErrors
                 .InvalidContractId(id = receivedContract.id, pattern = FrameworkContractId.pattern).asFailure()
@@ -94,9 +93,9 @@ class FindContractDocumentIdServiceImpl(
     }
 
     private fun getCANDocumentOrNull(
-        receivedContract: FindContractDocumentIdParams.Contract,
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
+        val receivedContract = params.contracts.first()
         val canId = CANId.orNull(receivedContract.id)
             ?: return CheckAccessToContractErrors
                 .InvalidContractId(id = receivedContract.id, pattern = CANId.pattern).asFailure()
@@ -120,9 +119,9 @@ class FindContractDocumentIdServiceImpl(
     }
 
     private fun getPACDocumentOrNull(
-        receivedContract: FindContractDocumentIdParams.Contract,
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
+        val receivedContract = params.contracts.first()
         val pacId = PacId.orNull(receivedContract.id)
             ?: return CheckAccessToContractErrors
                 .InvalidContractId(id = receivedContract.id, pattern = PacId.pattern).asFailure()
