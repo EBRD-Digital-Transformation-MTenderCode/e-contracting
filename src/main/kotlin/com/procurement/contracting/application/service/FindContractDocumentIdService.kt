@@ -26,7 +26,7 @@ interface FindContractDocumentIdService {
 }
 
 @Service
-class CheckExistenceOfConfirmationResponsesServiceImpl(
+class FindContractDocumentIdServiceImpl(
     private val transform: Transform,
     private val frameworkContractRepository: FrameworkContractRepository,
     private val canRepository: CANRepository,
