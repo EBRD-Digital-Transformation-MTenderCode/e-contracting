@@ -44,9 +44,8 @@ internal class RulesServiceIT {
         whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
             .thenReturn("{\"quantity\": \"all\"}".asSuccess())
 
-        val expected = MinReceivedConfResponsesRule.String(MinReceivedConfResponsesRule.String.QuantityValue.ALL)
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE).get()
-        assertEquals(expected, actual)
+        assertTrue(actual.quantity is MinReceivedConfResponsesRule.Quantity.All)
     }
 
     @Test
@@ -64,9 +63,9 @@ internal class RulesServiceIT {
         whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
             .thenReturn("{\"quantity\": 1}".asSuccess())
 
-        val expected = MinReceivedConfResponsesRule.Number(1)
+        val expected = MinReceivedConfResponsesRule.Quantity.Number(1)
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE).get()
-        assertEquals(expected, actual)
+        assertEquals(expected, actual.quantity)
     }
 
     @Test

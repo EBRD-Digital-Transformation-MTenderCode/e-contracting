@@ -18,7 +18,7 @@ import com.procurement.contracting.infrastructure.bind.dynamic.DynamicValueModul
 import com.procurement.contracting.infrastructure.bind.fc.id.FrameworkContractIdModule
 import com.procurement.contracting.infrastructure.bind.lot.id.LotIdModule
 import com.procurement.contracting.infrastructure.bind.owner.OwnerModule
-import com.procurement.contracting.infrastructure.bind.rule.MinReceivedConfResponsesRuleDeserializer
+import com.procurement.contracting.infrastructure.bind.rule.MinReceivedConfResponsesQuantityDeserializer
 import com.procurement.contracting.infrastructure.bind.token.TokenModule
 
 fun ObjectMapper.configuration() {
@@ -26,7 +26,7 @@ fun ObjectMapper.configuration() {
         .apply {
             addDeserializer(String::class.java, StringsDeserializer())
             addDeserializer(Int::class.java, IntDeserializer())
-            addDeserializer(MinReceivedConfResponsesRule::class.java, MinReceivedConfResponsesRuleDeserializer())
+            addDeserializer(MinReceivedConfResponsesRule.Quantity::class.java, MinReceivedConfResponsesQuantityDeserializer())
         }
 
     registerModule(module)
