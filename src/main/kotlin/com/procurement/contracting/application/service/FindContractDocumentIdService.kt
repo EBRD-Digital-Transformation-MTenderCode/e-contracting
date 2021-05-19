@@ -12,6 +12,7 @@ import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.pac.PacId
+import com.procurement.contracting.domain.model.process.ProcessInitiator
 import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.FindContractDocumentIdResponse
@@ -21,7 +22,7 @@ import com.procurement.contracting.lib.functional.asSuccess
 import org.springframework.stereotype.Service
 
 interface FindContractDocumentIdService {
-    fun find(params: FindContractDocumentIdParams): Result<FindContractDocumentIdResponse, Fail>
+    fun find(params: FindContractDocumentIdParams): Result<FindContractDocumentIdResponse?, Fail>
 }
 
 @Service
@@ -32,18 +33,18 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
     private val pacRepository: PacRepository,
 ) : FindContractDocumentIdService {
 
-    override fun find(params: FindContractDocumentIdParams): Result<FindContractDocumentIdResponse, Fail> {
-        val receivedContract = params.contracts.first()
+    override fun find(params: FindContractDocumentIdParams): Result<FindContractDocumentIdResponse?, Fail> {
+        val contract = params.contracts.first()
         val stage = params.ocid.stage
         val documentId = when (stage) {
-            Stage.FE -> getFEDocumentOrNull(receivedContract, params)
+            Stage.FE -> getFEDocumentOrNull(contract, params)
                 .onFailure { return it }
             Stage.EV,
             Stage.NP,
-            Stage.TP -> getCANDocumentOrNull(receivedContract, params)
+            Stage.TP -> getCANDocumentOrNull(contract, params)
                 .onFailure { return it }
 
-            Stage.PC -> getPACDocumentOrNull(receivedContract, params)
+            Stage.PC -> getPACDocumentOrNull(contract, params)
                 .onFailure { return it }
             Stage.AC,
             Stage.EI,
@@ -52,7 +53,18 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             Stage.RQ -> return CheckAccessToContractErrors.UnexpectedStage(stage).asFailure()
         }
 
-        return documentId
+        return documentId?.let {
+            FindContractDocumentIdResponse(
+                contracts = listOf(
+                    FindContractDocumentIdResponse.Contract(
+                        id = contract.id,
+                        documents = listOf(
+                            FindContractDocumentIdResponse.Contract.Document(documentId)
+                        )
+                    )
+                )
+            )
+        }.asSuccess()
     }
 
     private fun getFEDocumentOrNull(
@@ -73,9 +85,12 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id)
                 .asFailure()
 
-        return frameworkContract.documents
-            .firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_CONTRACT }?.id
-            .asSuccess()
+        return when (params.processInitiator) {
+            ProcessInitiator.NEXT_STEP_AFTER_BUYERS_CONFIRMATION -> return frameworkContract.documents
+                .firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_CONTRACT }?.id
+                .asSuccess()
+            ProcessInitiator.ISSUING_FRAMEWORK_CONTRACT -> null.asSuccess()
+        }
     }
 
     private fun getCANDocumentOrNull(
@@ -96,9 +111,12 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id)
                 .asFailure()
 
-        return can.documents
-            ?.firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_CONTRACT }?.id
-            .asSuccess()
+        return when (params.processInitiator) {
+            ProcessInitiator.NEXT_STEP_AFTER_BUYERS_CONFIRMATION -> return can.documents
+                ?.firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_CONTRACT }?.id
+                .asSuccess()
+            ProcessInitiator.ISSUING_FRAMEWORK_CONTRACT -> null.asSuccess()
+        }
     }
 
     private fun getPACDocumentOrNull(
@@ -109,7 +127,7 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             ?: return CheckAccessToContractErrors
                 .InvalidContractId(id = receivedContract.id, pattern = PacId.pattern).asFailure()
 
-        val pac = pacRepository
+        pacRepository
             .findBy(params.cpid, params.ocid, pacId)
             .onFailure { return it.reason.asFailure() }
             ?.let {
