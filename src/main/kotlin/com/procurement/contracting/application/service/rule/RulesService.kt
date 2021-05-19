@@ -82,6 +82,5 @@ class RulesService(
         private const val PARAMETER_VALID_CONTRACT_STATES = "validContractStates"
         private const val SOURCE_OF_CONFIRMATION_REQUEST = "sourceOfConfirmationRequest"
         private const val MIN_RECEIVED_CONF_RESPONSES = "minReceivedConfResponses"
-
     }
 }
