@@ -1,0 +1,12 @@
+{
+  "contracts": [
+    {
+      "id": "string",
+      "documents": [
+        {
+          "id": "string"
+        }
+      ]
+    }
+  ]
+}
