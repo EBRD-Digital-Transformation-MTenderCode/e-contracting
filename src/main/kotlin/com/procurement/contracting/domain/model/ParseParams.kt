@@ -9,6 +9,7 @@ import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.model.process.ProcessInitiator
 import com.procurement.contracting.domain.util.extension.toLocalDateTime
 import com.procurement.contracting.domain.util.extension.tryUUID
 import com.procurement.contracting.extension.UUID_PATTERN
@@ -89,6 +90,13 @@ fun parseCANStatusDetails(
 ): Result<CANStatusDetails, DataErrors.Validation.UnknownValue> =
     parseEnum(
         value = statusDetails, allowedEnums = allowedStatuses, attributeName = attributeName, target = CANStatusDetails
+    )
+
+fun parseProcessInitiator(
+    statusDetails: String, allowedStatuses: Set<ProcessInitiator>
+): Result<ProcessInitiator, DataErrors.Validation.UnknownValue> =
+    parseEnum(
+        value = statusDetails, allowedEnums = allowedStatuses, attributeName = "processInitiator", target = ProcessInitiator
     )
 
 fun <T> parseEnum(
