@@ -69,10 +69,9 @@ class FindContractDocumentIdServiceImpl(
     private fun getFEDocumentOrNull(
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
-        val receivedContract = params.contracts.first()
-        val frameworkContractId = FrameworkContractId.orNull(receivedContract.id)
+        val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)
             ?: return CheckAccessToContractErrors
-                .InvalidContractId(id = receivedContract.id, pattern = FrameworkContractId.pattern).asFailure()
+                .InvalidContractId(id = params.contracts.first().id, pattern = FrameworkContractId.pattern).asFailure()
 
         val frameworkContract = frameworkContractRepository
             .findBy(params.cpid, params.ocid, frameworkContractId)
@@ -81,7 +80,7 @@ class FindContractDocumentIdServiceImpl(
                 transform.tryDeserialization(it.jsonData, FrameworkContract::class.java)
                     .onFailure { return it }
             }
-            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id)
+            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, frameworkContractId.underlying)
                 .asFailure()
 
         return when (params.processInitiator) {
@@ -95,10 +94,9 @@ class FindContractDocumentIdServiceImpl(
     private fun getCANDocumentOrNull(
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
-        val receivedContract = params.contracts.first()
-        val canId = CANId.orNull(receivedContract.id)
+        val canId = CANId.orNull(params.contracts.first().id)
             ?: return CheckAccessToContractErrors
-                .InvalidContractId(id = receivedContract.id, pattern = CANId.pattern).asFailure()
+                .InvalidContractId(id = params.contracts.first().id, pattern = CANId.pattern).asFailure()
 
         val can = canRepository
             .findBy(params.cpid, canId)
@@ -107,7 +105,7 @@ class FindContractDocumentIdServiceImpl(
                 transform.tryDeserialization(it.jsonData, CAN::class.java)
                     .onFailure { return it }
             }
-            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id)
+            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, canId.underlying.toString())
                 .asFailure()
 
         return when (params.processInitiator) {
@@ -121,10 +119,9 @@ class FindContractDocumentIdServiceImpl(
     private fun getPACDocumentOrNull(
         params: FindContractDocumentIdParams
     ): Result<String?, Fail> {
-        val receivedContract = params.contracts.first()
-        val pacId = PacId.orNull(receivedContract.id)
+        val pacId = PacId.orNull(params.contracts.first().id)
             ?: return CheckAccessToContractErrors
-                .InvalidContractId(id = receivedContract.id, pattern = PacId.pattern).asFailure()
+                .InvalidContractId(id = params.contracts.first().id, pattern = PacId.pattern).asFailure()
 
         pacRepository
             .findBy(params.cpid, params.ocid, pacId)
@@ -133,7 +130,7 @@ class FindContractDocumentIdServiceImpl(
                 transform.tryDeserialization(it.jsonData, PacEntity::class.java)
                     .onFailure { return it }
             }
-            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContract.id)
+            ?: return CheckAccessToContractErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
                 .asFailure()
 
         return null.asSuccess()
