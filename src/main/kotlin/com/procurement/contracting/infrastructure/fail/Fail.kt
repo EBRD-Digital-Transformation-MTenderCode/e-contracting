@@ -41,9 +41,12 @@ sealed class Fail {
 
             abstract val exception: Exception
 
-            class DatabaseInteractionIncident(override val exception: Exception) : Database(
+            class DatabaseInteractionIncident(
+                override val exception: Exception,
+                shortDescription: String = ""
+            ) : Database(
                 number = "1.1",
-                description = "Database incident."
+                description = "Database incident. $shortDescription"
             ) {
                 override fun logging(logger: Logger) {
                     logger.error(message = message, exception = exception)

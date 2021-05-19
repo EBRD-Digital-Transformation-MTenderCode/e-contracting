@@ -92,6 +92,21 @@ fun parseCANStatusDetails(
         value = statusDetails, allowedEnums = allowedStatuses, attributeName = attributeName, target = CANStatusDetails
     )
 
+fun parsePmd(
+    value: String, allowedValues: Set<ProcurementMethodDetails>
+): Result<ProcurementMethodDetails, DataErrors.Validation.UnknownValue> =
+    parseEnum(
+        value = value,
+        allowedEnums = allowedValues,
+        attributeName = "pmd",
+        target = ProcurementMethodDetails
+    )
+
+fun parseOperationType(
+    value: String, allowedValues: Set<OperationType>
+): Result<OperationType, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = "operationType", target = OperationType)
+
 fun parseProcessInitiator(
     statusDetails: String, allowedStatuses: Set<ProcessInitiator>
 ): Result<ProcessInitiator, DataErrors.Validation.UnknownValue> =

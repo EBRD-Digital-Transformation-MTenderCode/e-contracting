@@ -13,6 +13,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     CHECK_ACCESS_TO_CONTRACT("checkAccessToContract"),
     CHECK_ACCESS_TO_REQUEST_OF_CONFIRMATION("checkAccessToRequestOfConfirmation"),
     CHECK_CONTRACT_STATE("checkContractState"),
+    CHECK_EXISTENCE_OF_CONFIRMATION_RESPONSES("checkExistenceOfConfirmationResponses"),
     CHECK_EXISTENCE_SUPPLIER_REFERENCES_IN_FC("checkExistenceSupplierReferencesInFC"),
     CREATE_CONFIRMATION_REQUESTS("createConfirmationRequests"),
     CREATE_CONFIRMATION_RESPONSE("createConfirmationResponse"),
