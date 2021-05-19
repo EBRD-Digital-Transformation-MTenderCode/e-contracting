@@ -5,7 +5,7 @@ import com.procurement.contracting.application.service.Transform
 import com.procurement.contracting.application.service.rule.model.MinReceivedConfResponsesRule
 import com.procurement.contracting.application.service.rule.model.SourceOfConfirmationRequestRule
 import com.procurement.contracting.application.service.rule.model.StateForSettingRule
-import com.procurement.contracting.application.service.rule.model.ValidFCStatesRule
+import com.procurement.contracting.application.service.rule.model.ValidContractStatesRule
 import com.procurement.contracting.application.service.tryDeserialization
 import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
@@ -33,15 +33,15 @@ class RulesService(
                 }
         }
 
-    fun getValidFCStates(
+    fun getValidContractStates(
         country: String,
         pmd: ProcurementMethodDetails,
         operationType: OperationType
-    ): Result<ValidFCStatesRule, Fail> = ruleRepository
+    ): Result<ValidContractStatesRule, Fail> = ruleRepository
         .get(country, pmd, PARAMETER_VALID_CONTRACT_STATES, operationType)
         .onFailure { return it }
         .let { json ->
-            json.tryDeserialization<ValidFCStatesRule>(transform)
+            json.tryDeserialization<ValidContractStatesRule>(transform)
                 .mapFailure {
                     Fail.Incident.Database.DatabaseInteractionIncident(it.exception)
                 }
