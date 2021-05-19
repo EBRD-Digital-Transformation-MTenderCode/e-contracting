@@ -28,4 +28,10 @@ sealed class CheckContractStateErrors(
         numberError = "6.8.3",
         description = "Stage '$stage' is invalid"
     )
+
+    class InvalidContractId(id: String, pattern: String) : CheckContractStateErrors(
+        numberError = "6.8.4",
+        description = "Invalid contract id '$id'. Mismatch to pattern '$pattern'."
+    )
+
 }

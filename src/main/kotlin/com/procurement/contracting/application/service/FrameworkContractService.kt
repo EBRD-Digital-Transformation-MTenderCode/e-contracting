@@ -160,7 +160,8 @@ class FrameworkContractServiceImpl(
         params: CheckContractStateParams,
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
-        val pacId = PacId.orNull(params.contracts.first().id)!!
+        val pacId = PacId.orNull(params.contracts.first().id)
+            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, PacId.pattern).asValidationError()
 
         val pac = pacRepository
             .findBy(params.cpid, params.ocid, pacId)
@@ -180,7 +181,9 @@ class FrameworkContractServiceImpl(
         params: CheckContractStateParams,
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
-        val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)!!
+        val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)
+            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, FrameworkContractId.pattern)
+                .asValidationError()
 
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, frameworkContractId)
             .onFailure { return it.reason.asValidationError() }
