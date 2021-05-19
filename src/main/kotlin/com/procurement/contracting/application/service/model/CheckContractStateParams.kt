@@ -39,6 +39,7 @@ class CheckContractStateParams private constructor(
                     ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
                     ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
                     ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+                    ProcurementMethodDetails.RFQ, ProcurementMethodDetails.TEST_RFQ,
                     ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
                     ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> false
                 }
