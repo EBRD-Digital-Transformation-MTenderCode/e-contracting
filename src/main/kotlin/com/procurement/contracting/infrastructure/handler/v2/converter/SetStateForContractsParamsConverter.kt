@@ -1,7 +1,6 @@
 package com.procurement.contracting.infrastructure.handler.v2.converter
 
 import com.procurement.contracting.application.service.model.SetStateForContractsParams
-import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.infrastructure.handler.v2.model.request.SetStateForContractsRequest
 import com.procurement.contracting.lib.functional.Result
@@ -16,12 +15,9 @@ fun SetStateForContractsRequest.convert(): Result<SetStateForContractsParams, Da
         country = country,
         operationType = operationType,
         tender = convertedTender,
-        contracts = contracts?.mapResult { it.convert() }?.onFailure { return it }
+        contracts = contracts?.map { SetStateForContractsParams.Contract(it.id) }
     )
 }
-
-fun SetStateForContractsRequest.Contract.convert(): Result<SetStateForContractsParams.Contract, DataErrors> =
-    SetStateForContractsParams.Contract.tryCreate(id)
 
 fun SetStateForContractsRequest.Tender.convert(): Result<SetStateForContractsParams.Tender, DataErrors> {
     val convertedLots = lots.map { it.convert() }
