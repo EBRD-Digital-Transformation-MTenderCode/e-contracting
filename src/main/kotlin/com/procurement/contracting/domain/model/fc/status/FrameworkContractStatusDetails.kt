@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class FrameworkContractStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Element {
 
+    APPROVED("approved"),
     CONTRACT_PROJECT("contractProject"),
     ISSUED("issued"),
     ISSUING("issuing"),
