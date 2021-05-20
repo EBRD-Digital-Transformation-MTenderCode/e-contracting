@@ -94,7 +94,7 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
         when (val quantity = minReceivedConfResponses.quantity) {
             is MinReceivedConfResponsesRule.Quantity.Number -> {
                 if (confirmationResponses.size < quantity.underlying)
-                    CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
+                    return CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
                         minimumQuantity = quantity.underlying,
                         actualQuantity = confirmationResponses.size
                     ).asValidationError()
@@ -102,7 +102,7 @@ class CheckExistenceOfConfirmationResponsesServiceImpl(
             is MinReceivedConfResponsesRule.Quantity.All -> {
                 val numberOfRequests = confirmationRequest.requests.size
                 if (confirmationResponses.size != numberOfRequests)
-                    CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
+                    return CheckExistenceOfConfirmationResponsesErrors.IncorrectNumberOfConfirmatonResponses(
                         minimumQuantity = numberOfRequests,
                         actualQuantity = confirmationResponses.size
                     ).asValidationError()
