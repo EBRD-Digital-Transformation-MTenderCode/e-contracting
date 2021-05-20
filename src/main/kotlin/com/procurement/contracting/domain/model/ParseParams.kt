@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.model.process.ProcessInitiator
@@ -71,12 +72,21 @@ fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErro
         ).asFailure()
 
 
-fun parseIdFC(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
+fun parseFCId(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
     FrameworkContractId.orNull(value)
         ?.asSuccess()
         ?: DataErrors.Validation.DataFormatMismatch(
             name = attributeName,
-            expectedFormat = LotId.pattern,
+            expectedFormat = FrameworkContractId.pattern,
+            actualValue = value
+        ).asFailure()
+
+fun parsePACId(value: String, attributeName: String): Result<PacId, DataErrors.Validation.DataFormatMismatch> =
+    PacId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = PacId.pattern,
             actualValue = value
         ).asFailure()
 
