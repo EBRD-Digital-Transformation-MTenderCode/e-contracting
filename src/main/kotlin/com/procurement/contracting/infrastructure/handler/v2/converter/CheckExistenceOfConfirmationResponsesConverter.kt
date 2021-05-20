@@ -46,6 +46,7 @@ private val allowedOperationTypes = OperationType.allowedElements
             OperationType.COMPLETE_SOURCING,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
+            OperationType.CREATE_CONFIRMATION_RESPONSE_BY_SUPPLIER,
             OperationType.ISSUING_FRAMEWORK_CONTRACT -> false
         }
     }
