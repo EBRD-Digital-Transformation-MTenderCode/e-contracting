@@ -40,7 +40,7 @@ class GetSupplierIdsByContractServiceImpl(
         return GetSupplierIdsByContractResponse(
             contracts = listOf(
                 GetSupplierIdsByContractResponse.Contract(
-                    id = params.contracts.first().id,
+                    id = params.contracts.first().id.underlying,
                     suppliers = pac.suppliers.map { supplier ->
                         GetSupplierIdsByContractResponse.Contract.Supplier(supplier.id)
                     }
