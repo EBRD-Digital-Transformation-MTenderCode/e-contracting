@@ -10,6 +10,7 @@ enum class FrameworkContractStatusDetails(@JsonValue override val key: String) :
     CONTRACT_PROJECT("contractProject"),
     ISSUED("issued"),
     ISSUING("issuing"),
+    SIGNED("signed"),
     WITHDRAWN_QUALIFICATION_PROTOCOL("withdrawnQualificationProtocol"),
     ;
 
