@@ -170,7 +170,9 @@ class FrameworkContractServiceImpl(
             ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
                 .asValidationError()
 
-        validStates.firstOrNull { it.status == pac.status.key && it.statusDetails == pac.statusDetails?.key }
+        val currentState = ValidContractStatesRule.State(pac.status.key, pac.statusDetails?.key)
+
+        validStates.firstOrNull { currentState.matches(expected = it) }
             ?: return CheckContractStateErrors.InvalidContractState(
                 pac.status.key, pac.statusDetails?.key, validStates
             ).asValidationError()
@@ -196,8 +198,8 @@ class FrameworkContractServiceImpl(
             frameworkContract.status.key,
             frameworkContract.statusDetails.key
         )
-        if (currentState !in validStates)
-            return CheckContractStateErrors.InvalidContractState(
+        validStates.firstOrNull { currentState.matches(expected = it) }
+            ?: return CheckContractStateErrors.InvalidContractState(
                 currentState.status, currentState.statusDetails, validStates
             ).asValidationError()
 
