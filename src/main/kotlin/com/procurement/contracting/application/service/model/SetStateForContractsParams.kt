@@ -2,10 +2,8 @@ package com.procurement.contracting.application.service.model
 
 import com.procurement.contracting.domain.model.EnumElementProvider
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
-import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseEnum
-import com.procurement.contracting.domain.model.parseIdFC
 import com.procurement.contracting.domain.model.parseOcid
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
@@ -92,19 +90,15 @@ class SetStateForContractsParams private constructor(
         )
     }
 
-    class Contract private constructor(
-        val id: FrameworkContractId
-    ){
-        companion object{
-            fun tryCreate(id: String): Result<Contract, DataErrors> {
-                val id = parseIdFC(id, "contracts.id").onFailure { return it }
-                return Contract(id).asSuccess()
-            }
-        }
-    }
+    class Contract(
+        val id: String
+    )
 
     enum class OperationType(val base: ParentOperationType) : EnumElementProvider.Element {
 
+        NEXT_STEP_AFTER_BUYERS_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION),
+        NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION),
+        NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION),
         COMPLETE_SOURCING(ParentOperationType.COMPLETE_SOURCING),
         ISSUING_FRAMEWORK_CONTRACT(ParentOperationType.ISSUING_FRAMEWORK_CONTRACT);
 
@@ -121,6 +115,7 @@ class SetStateForContractsParams private constructor(
 
         CF(ProcurementMethodDetails.CF), TEST_CF(ProcurementMethodDetails.TEST_CF),
         OF(ProcurementMethodDetails.OF), TEST_OF(ProcurementMethodDetails.TEST_OF),
+        RFQ(ProcurementMethodDetails.RFQ), TEST_RFQ(ProcurementMethodDetails.TEST_RFQ)
         ;
 
         override val key: String

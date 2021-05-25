@@ -10,6 +10,7 @@ import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
 import com.procurement.contracting.domain.model.fc.PacEntity
@@ -37,6 +38,7 @@ internal class PacServiceImplTest {
         private val OCID = Ocid.orNull("ocds-b3wdp1-MD-1580458690892-EV-1580458791896")!!
         private val PAC_ID = PacId.orNull("c9e933a7-027e-497b-bbee-eb334fb795bb")!!
         private val OWNER: Owner = Owner.orNull("d0da4c24-1a2a-4b39-a1fd-034cb887c93b")!!
+        private val TOKEN: Token = Token.orNull("62a72137-cdfa-4056-a56a-e519e56798a4")!!
         private val LOT_ID: LotId = LotId.orNull("f02720a6-de85-4a50-aa3d-e9348f1669dc")!!
 
         private const val FORMAT_PATTERN = "uuuu-MM-dd'T'HH:mm:ss'Z'"
@@ -87,6 +89,8 @@ internal class PacServiceImplTest {
         val paramsWithAwards = getParams()
         whenever(generationService.pacId())
             .thenReturn(PAC_ID)
+        whenever(generationService.token())
+            .thenReturn(TOKEN)
         whenever(pacRepository.save(records = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
         whenever(pacRepository.findBy(cpid = any(), ocid = any()))
@@ -109,6 +113,7 @@ internal class PacServiceImplTest {
                 id = PAC_ID,
                 status = PacStatus.PENDING,
                 date = DATE,
+                token = TOKEN,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
                     DoPacsResult.Contract.Supplier(
@@ -159,6 +164,8 @@ internal class PacServiceImplTest {
 
         whenever(generationService.pacId())
             .thenReturn(PAC_ID)
+        whenever(generationService.token())
+            .thenReturn(TOKEN)
         whenever(pacRepository.save(records = ArgumentMatchers.anyCollection()))
             .thenReturn(MaybeFail.none())
         whenever(pacRepository.findBy(cpid = any(), ocid = any()))
@@ -181,6 +188,7 @@ internal class PacServiceImplTest {
                 id = PAC_ID,
                 status = PacStatus.PENDING,
                 date = DATE,
+                token = TOKEN,
                 relatedLots = listOf(LOT_ID),
                 suppliers = listOf(
                     DoPacsResult.Contract.Supplier(

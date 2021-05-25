@@ -1,0 +1,12 @@
+{
+  "contracts": [
+    {
+      "id": "string",
+      "suppliers": [
+        {
+          "id": "string"
+        }
+      ]
+    }
+  ]
+}

@@ -32,6 +32,11 @@ sealed class ValidationResult<out E> {
         if (this is Error) block(this.reason)
     }
 
+    inline fun onFailure(f: (Error<@UnsafeVariance E>) -> Nothing): Unit = when (this) {
+        is Ok -> Unit
+        is Error -> f(this)
+    }
+
     object Ok : ValidationResult<Nothing>() {
         override val isOk: Boolean = true
         override val isError: Boolean = !isOk

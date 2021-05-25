@@ -6,8 +6,9 @@ import com.procurement.contracting.domain.model.EnumElementProvider
 
 enum class PacStatusDetails(@JsonValue override val key: String) : EnumElementProvider.Element {
 
+    ALL_REJECTED("allRejected"),
     CONCLUDED("concluded"),
-    ALL_REJECTED("allRejected")
+    SIGNED("signed")
     ;
 
     override fun toString(): String = key

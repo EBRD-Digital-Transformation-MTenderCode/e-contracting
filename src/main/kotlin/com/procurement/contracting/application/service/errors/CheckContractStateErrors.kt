@@ -1,9 +1,9 @@
 package com.procurement.contracting.application.service.errors
 
-import com.procurement.contracting.application.service.rule.model.ValidFCStatesRule.State
-import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
+import com.procurement.contracting.application.service.rule.model.ValidContractStatesRule.State
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.error.ValidationCommandError
 
 sealed class CheckContractStateErrors(
@@ -13,14 +13,25 @@ sealed class CheckContractStateErrors(
 
     override val code: String = prefix + numberError
 
-    class InvalidContractState(currentState: State, validStates: List<State>) : CheckContractStateErrors(
+    class InvalidContractState(currentStatus: String, currentStatusDetails: String?, validStates: List<State>) : CheckContractStateErrors(
         numberError = "6.8.2",
-        description = "Contract has invalid state (status: '${currentState.status}' and statusDetails: '${currentState.statusDetails}')." +
+        description = "Contract has invalid state (status: '${currentStatus}' and statusDetails: '${currentStatusDetails}')." +
             "Valid states: $validStates."
     )
 
-    class ContractNotFound(cpid: Cpid, ocid: Ocid, id: FrameworkContractId) : CheckContractStateErrors(
+    class ContractNotFound(cpid: Cpid, ocid: Ocid, id: String) : CheckContractStateErrors(
         numberError = "6.8.1",
         description = "Contract not found by cpid '$cpid', ocid '$ocid' and contract id '$id'."
     )
+
+    class InvalidStage(stage: Stage) : CheckContractStateErrors(
+        numberError = "6.8.3",
+        description = "Stage '$stage' is invalid"
+    )
+
+    class InvalidContractId(id: String, pattern: String) : CheckContractStateErrors(
+        numberError = "6.8.4",
+        description = "Invalid contract id '$id'. Mismatch to pattern '$pattern'."
+    )
+
 }

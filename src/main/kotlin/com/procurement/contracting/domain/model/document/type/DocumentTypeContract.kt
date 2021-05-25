@@ -21,6 +21,7 @@ enum class DocumentTypeContract(@JsonValue override val key: String) : EnumEleme
     CANCELLATION_DETAILS("cancellationDetails"),
     BUYERS_RESPONSE_ADD("buyersResponseAdd"),
     EVALUATION_REPORT("evaluationReports"),
+    X_FRAMEWORK_CONTRACT("x_frameworkContract"),
     X_FRAMEWORK_PROJECT("x_frameworkProject"),
     ;
 
