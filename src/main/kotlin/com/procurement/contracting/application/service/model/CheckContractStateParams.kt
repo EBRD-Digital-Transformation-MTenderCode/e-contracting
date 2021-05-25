@@ -2,7 +2,6 @@ package com.procurement.contracting.application.service.model
 
 import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
-import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseEnum
 import com.procurement.contracting.domain.model.parseOcid
@@ -10,7 +9,6 @@ import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.lib.functional.Result
-import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 
 class CheckContractStateParams private constructor(
@@ -39,6 +37,7 @@ class CheckContractStateParams private constructor(
                     ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
                     ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
                     ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+                    ProcurementMethodDetails.RFQ, ProcurementMethodDetails.TEST_RFQ,
                     ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
                     ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> false
                 }
@@ -50,7 +49,11 @@ class CheckContractStateParams private constructor(
                 when (it) {
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
-                    OperationType.ISSUING_FRAMEWORK_CONTRACT -> true
+                    OperationType.CREATE_CONFIRMATION_RESPONSE_BY_SUPPLIER,
+                    OperationType.ISSUING_FRAMEWORK_CONTRACT,
+                    OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
+                    OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
+                    OperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION -> true
 
                     OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,
                     OperationType.COMPLETE_SOURCING -> false
@@ -98,17 +101,6 @@ class CheckContractStateParams private constructor(
     }
 
     data class Contract(
-        val id: FrameworkContractId
-    ) {
-        companion object {
-            fun tryCreate(id: String): Result<Contract, DataErrors> {
-                val contractId = FrameworkContractId.orNull(id)
-                    ?: return DataErrors.Validation.DataMismatchToPattern(
-                        name = "id", pattern = FrameworkContractId.pattern, actualValue = id
-                    ).asFailure()
-
-                return Contract(contractId).asSuccess()
-            }
-        }
-    }
+        val id: String
+    )
 }

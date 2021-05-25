@@ -27,6 +27,7 @@ private val allowedPmd = ProcurementMethodDetails.allowedElements
             ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
             ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
             ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+            ProcurementMethodDetails.RFQ, ProcurementMethodDetails.TEST_RFQ,
             ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
             ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> false
         }
@@ -41,7 +42,11 @@ private val allowedOperationType = OperationType.allowedElements
             OperationType.COMPLETE_SOURCING,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
-            OperationType.ISSUING_FRAMEWORK_CONTRACT -> false
+            OperationType.CREATE_CONFIRMATION_RESPONSE_BY_SUPPLIER,
+            OperationType.ISSUING_FRAMEWORK_CONTRACT,
+            OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
+            OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
+            OperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION -> false
         }
     }
     .toSet()

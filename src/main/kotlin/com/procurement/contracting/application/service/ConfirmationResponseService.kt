@@ -26,6 +26,8 @@ import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.domain.util.extension.getDuplicate
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.fail.error.BadRequest
+import com.procurement.contracting.infrastructure.fail.error.DataErrors
+import com.procurement.contracting.infrastructure.handler.v2.converter.extension.checkForBlank
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationResponseResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.fromDomain
 import com.procurement.contracting.lib.functional.Result
@@ -55,6 +57,8 @@ class ConfirmationResponseServiceImpl(
 
 
     override fun validate(params: ValidateConfirmationResponseDataParams): ValidationResult<Fail> {
+        validateTextAttributes(params).onFailure { return it }
+
         val receivedContract = params.contracts.first()
         val receivedConfirmationResponse = receivedContract.confirmationResponses.first()
 
@@ -66,6 +70,52 @@ class ConfirmationResponseServiceImpl(
 
         checkBusinessFunction(storedConfirmationRequest, receivedConfirmationResponse).doOnError { return it.asValidationError() }
 
+        return ValidationResult.ok()
+    }
+
+    fun validateTextAttributes(params: ValidateConfirmationResponseDataParams): ValidationResult<DataErrors.Validation.EmptyString> {
+        params.contracts
+            .forEachIndexed { contractIdx, contract ->
+                contract.confirmationResponses
+                    .forEachIndexed { confirmationResponseIdx, confirmationResponse ->
+                        confirmationResponse.apply {
+                            value.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].value")
+                                .onFailure { return it }
+
+                            relatedPerson.apply {
+                                name.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.name")
+                                    .onFailure { return it }
+
+                                identifier.apply {
+                                    id.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.identifier.id")
+                                        .onFailure { return it }
+                                    scheme.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.identifier.scheme")
+                                        .onFailure { return it }
+                                    uri.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.identifier.uri")
+                                        .onFailure { return it }
+                                }
+
+                                businessFunctions.forEachIndexed { businessFunctionIdx, businessFunction ->
+                                    businessFunction.apply {
+                                        id.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.businessFunctions[$businessFunctionIdx].id")
+                                            .onFailure { return it }
+                                        jobTitle.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.businessFunctions[$businessFunctionIdx].jobTitle")
+                                            .onFailure { return it }
+
+                                        documents.forEachIndexed { documentIdx, document ->
+                                            document.apply {
+                                                title.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.businessFunctions[$businessFunctionIdx].documents[$documentIdx].title")
+                                                    .onFailure { return it }
+                                                description.checkForBlank("contracts[$contractIdx].confirmationResponses[$confirmationResponseIdx].relatedPerson.businessFunctions[$businessFunctionIdx].documents[$documentIdx].description")
+                                                    .onFailure { return it }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
         return ValidationResult.ok()
     }
 

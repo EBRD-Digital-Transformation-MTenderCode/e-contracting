@@ -10,6 +10,7 @@ data class DoPacsResponse(
         @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
         @param:JsonProperty("status") @field:JsonProperty("status") val status: String,
         @param:JsonProperty("date") @field:JsonProperty("date") val date: String,
+        @param:JsonProperty("token") @field:JsonProperty("token") val token: String,
         @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
         @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
         @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: String,

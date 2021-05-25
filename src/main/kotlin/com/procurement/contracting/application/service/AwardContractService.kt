@@ -431,7 +431,8 @@ class AwardContractServiceImpl(
             ProcurementMethodDetails.OF, ProcurementMethodDetails.TEST_OF,
             ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP,
             ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
-            ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP -> {
+            ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
+            ProcurementMethodDetails.RFQ, ProcurementMethodDetails.TEST_RFQ -> {
                 emptyList()
             }
         }

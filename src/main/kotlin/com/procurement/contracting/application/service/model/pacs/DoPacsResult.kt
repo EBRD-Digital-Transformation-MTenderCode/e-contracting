@@ -1,6 +1,7 @@
 package com.procurement.contracting.application.service.model.pacs
 
 import com.procurement.contracting.domain.model.DynamicValue
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
@@ -14,6 +15,7 @@ data class DoPacsResult(
         val id: PacId,
         val status: PacStatus,
         val date: LocalDateTime,
+        val token: Token,
         val relatedLots: List<LotId>,
         val suppliers: List<Supplier>,
         val awardId: AwardId?,

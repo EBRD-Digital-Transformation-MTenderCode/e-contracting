@@ -7,8 +7,10 @@ import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.model.process.ProcessInitiator
 import com.procurement.contracting.domain.util.extension.toLocalDateTime
 import com.procurement.contracting.domain.util.extension.tryUUID
 import com.procurement.contracting.extension.UUID_PATTERN
@@ -70,12 +72,21 @@ fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErro
         ).asFailure()
 
 
-fun parseIdFC(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
+fun parseFCId(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
     FrameworkContractId.orNull(value)
         ?.asSuccess()
         ?: DataErrors.Validation.DataFormatMismatch(
             name = attributeName,
-            expectedFormat = LotId.pattern,
+            expectedFormat = FrameworkContractId.pattern,
+            actualValue = value
+        ).asFailure()
+
+fun parsePACId(value: String, attributeName: String): Result<PacId, DataErrors.Validation.DataFormatMismatch> =
+    PacId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = PacId.pattern,
             actualValue = value
         ).asFailure()
 
@@ -89,6 +100,28 @@ fun parseCANStatusDetails(
 ): Result<CANStatusDetails, DataErrors.Validation.UnknownValue> =
     parseEnum(
         value = statusDetails, allowedEnums = allowedStatuses, attributeName = attributeName, target = CANStatusDetails
+    )
+
+fun parsePmd(
+    value: String, allowedValues: Set<ProcurementMethodDetails>
+): Result<ProcurementMethodDetails, DataErrors.Validation.UnknownValue> =
+    parseEnum(
+        value = value,
+        allowedEnums = allowedValues,
+        attributeName = "pmd",
+        target = ProcurementMethodDetails
+    )
+
+fun parseOperationType(
+    value: String, allowedValues: Set<OperationType>
+): Result<OperationType, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = "operationType", target = OperationType)
+
+fun parseProcessInitiator(
+    statusDetails: String, allowedStatuses: Set<ProcessInitiator>
+): Result<ProcessInitiator, DataErrors.Validation.UnknownValue> =
+    parseEnum(
+        value = statusDetails, allowedEnums = allowedStatuses, attributeName = "processInitiator", target = ProcessInitiator
     )
 
 fun <T> parseEnum(

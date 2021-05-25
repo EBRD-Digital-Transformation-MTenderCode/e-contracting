@@ -9,6 +9,7 @@ import com.procurement.contracting.application.exception.repository.SaveEntityEx
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacRecord
 import com.procurement.contracting.domain.model.Owner
+import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
@@ -32,6 +33,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
                       ${Database.PAC.COLUMN_OWNER},
+                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
@@ -46,6 +48,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
                       ${Database.PAC.COLUMN_OWNER},
+                       ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
@@ -62,12 +65,13 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
                       ${Database.PAC.COLUMN_OWNER},
+                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
                       ${Database.PAC.COLUMN_JSON_DATA}
                )
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
 
@@ -132,6 +136,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             ocid = Ocid.orNull(getString(Database.PAC.COLUMN_OCID))!!,
             id = PacId.orNull(getString(Database.PAC.COLUMN_ID))!!,
             owner = Owner.orNull(getString(Database.PAC.COLUMN_OWNER))!!,
+            token = Token.orNull(getString(Database.PAC.COLUMN_TOKEN))!!,
             createdDate = getTimestamp(Database.PAC.COLUMN_CREATED_DATE).toLocalDateTime(),
             status = PacStatus.creator(getString(Database.PAC.COLUMN_STATUS)),
             statusDetails = getString(Database.PAC.COLUMN_STATUS_DETAILS)?.let { PacStatusDetails.creator(it) },
@@ -192,6 +197,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                 setString(Database.PAC.COLUMN_OCID, record.ocid.underlying)
                 setString(Database.PAC.COLUMN_ID, record.id.underlying)
                 setString(Database.PAC.COLUMN_OWNER, record.owner.underlying)
+                setString(Database.PAC.COLUMN_TOKEN, record.token.underlying.toString())
                 setTimestamp(Database.PAC.COLUMN_CREATED_DATE, record.createdDate.toCassandraTimestamp())
                 setString(Database.PAC.COLUMN_STATUS, record.status.key)
                 setString(Database.PAC.COLUMN_STATUS_DETAILS, record.statusDetails?.key)

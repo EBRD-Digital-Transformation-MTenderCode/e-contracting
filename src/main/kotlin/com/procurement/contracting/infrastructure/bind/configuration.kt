@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.procurement.contracting.application.service.rule.model.MinReceivedConfResponsesRule
 import com.procurement.contracting.infrastructure.bind.api.command.id.CommandIdModule
 import com.procurement.contracting.infrastructure.bind.api.version.ApiVersionModule
 import com.procurement.contracting.infrastructure.bind.award.id.AwardIdModule
@@ -17,6 +18,7 @@ import com.procurement.contracting.infrastructure.bind.dynamic.DynamicValueModul
 import com.procurement.contracting.infrastructure.bind.fc.id.FrameworkContractIdModule
 import com.procurement.contracting.infrastructure.bind.lot.id.LotIdModule
 import com.procurement.contracting.infrastructure.bind.owner.OwnerModule
+import com.procurement.contracting.infrastructure.bind.rule.MinReceivedConfResponsesQuantityDeserializer
 import com.procurement.contracting.infrastructure.bind.token.TokenModule
 
 fun ObjectMapper.configuration() {
@@ -24,6 +26,7 @@ fun ObjectMapper.configuration() {
         .apply {
             addDeserializer(String::class.java, StringsDeserializer())
             addDeserializer(Int::class.java, IntDeserializer())
+            addDeserializer(MinReceivedConfResponsesRule.Quantity::class.java, MinReceivedConfResponsesQuantityDeserializer())
         }
 
     registerModule(module)

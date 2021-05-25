@@ -1,7 +1,5 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.ac.AwardContractRepository
-import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.service.errors.GetContractStateErrors
@@ -26,9 +24,7 @@ interface ContractStateService {
 
 @Service
 class ContractStateServiceImpl(
-    private val awardContractRepository: AwardContractRepository,
     private val frameworkContractRepository: FrameworkContractRepository,
-    private val canRepository: CANRepository,
     private val pacRepository: PacRepository,
     private val transform: Transform,
 ) : ContractStateService {
