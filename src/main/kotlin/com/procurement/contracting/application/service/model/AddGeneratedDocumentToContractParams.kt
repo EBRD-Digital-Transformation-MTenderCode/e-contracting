@@ -25,6 +25,7 @@ data class AddGeneratedDocumentToContractParams(
                 when (it) {
                     OperationType.ISSUING_FRAMEWORK_CONTRACT -> true
 
+                    OperationType.APPLY_CONFIRMATIONS,
                     OperationType.COMPLETE_SOURCING,
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
