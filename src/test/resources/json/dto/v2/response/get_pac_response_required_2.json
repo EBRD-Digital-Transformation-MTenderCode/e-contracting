@@ -1,0 +1,19 @@
+{
+  "contracts": [
+    {
+      "id": "254b0af1-c969-48f7-841f-5df2436c9474",
+      "status": "pending",
+      "relatedLots": [
+        "ef86d8fb-8f08-4c49-ab1f-407b12cc7457"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "awardId": "a2cad5c2-7bfb-498c-a115-688ba137b162",
+      "date": "2021-05-26T07:22:02Z"
+    }
+  ]
+}
