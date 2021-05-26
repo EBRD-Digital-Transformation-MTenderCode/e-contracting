@@ -7,16 +7,12 @@ import com.procurement.contracting.lib.functional.Result
 
 interface RuleRepository {
     fun find(
-        country: String,
-        pmd: ProcurementMethodDetails,
+        key: String,
         parameter: String,
-        operationType: OperationType? = null
     ): Result<String?, Fail.Incident.Database.DatabaseInteractionIncident>
 
     fun get(
-        country: String,
-        pmd: ProcurementMethodDetails,
+        key: String,
         parameter: String,
-        operationType: OperationType?
     ): Result<String, Fail>
 }
