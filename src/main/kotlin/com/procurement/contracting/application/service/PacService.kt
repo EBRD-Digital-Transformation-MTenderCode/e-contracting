@@ -4,9 +4,11 @@ import com.procurement.contracting.application.repository.fc.FrameworkContractRe
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.repository.pac.model.PacRecord
+import com.procurement.contracting.application.service.errors.GetPacErrors
 import com.procurement.contracting.application.service.errors.SetStateForContractsErrors
 import com.procurement.contracting.application.service.model.FindPacsByLotIdsParams
 import com.procurement.contracting.application.service.model.FindPacsByLotIdsResult
+import com.procurement.contracting.application.service.model.GetPacParams
 import com.procurement.contracting.application.service.model.SetStateForContractsParams
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.APPLY_CONFIRMATIONS
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.COMPLETE_SOURCING
@@ -33,6 +35,7 @@ import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.fail.Fail.Incident
+import com.procurement.contracting.infrastructure.handler.v2.model.response.GetPacResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.SetStateForContractsResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.ValidationResult
@@ -45,6 +48,7 @@ interface PacService {
     fun create(params: DoPacsParams): Result<DoPacsResult?, Fail>
     fun findPacsByLotIds(params: FindPacsByLotIdsParams): Result<FindPacsByLotIdsResult, Fail>
     fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail>
+    fun getPac(params: GetPacParams): Result<GetPacResponse, Fail>
 }
 
 @Service
@@ -62,7 +66,7 @@ class PacServiceImpl(
             .mapResult { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
             .onFailure { return it }
             .map { it.toDomain() }
-            .filter { it.status == PacStatus.PENDING && it.awardId != null} // find active PAC's created on award
+            .filter { it.status == PacStatus.PENDING && it.awardId != null } // find active PAC's created on award
             .associateBy { it.awardId!! }
 
         // create PACs for new awards from request
@@ -110,7 +114,8 @@ class PacServiceImpl(
 
     private fun Pac.isActive(): Boolean = this.status == PacStatus.PENDING
     private fun Pac.isForLot(): Boolean = this.relatedLots.isNotEmpty()
-    private fun Pac.hasRelationWithLots(lots: Collection<String>): Boolean = this.relatedLots.any { it.underlying in lots }
+    private fun Pac.hasRelationWithLots(lots: Collection<String>): Boolean =
+        this.relatedLots.any { it.underlying in lots }
 
     override fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
         when (params.operationType) {
@@ -129,6 +134,20 @@ class PacServiceImpl(
                 setStateForFC(params)
             }
         }
+
+    override fun getPac(params: GetPacParams): Result<GetPacResponse, Fail> {
+        val contractId = params.contracts.first().id
+        val pacRecord = pacRepository.findBy(params.cpid, params.ocid, contractId)
+            .onFailure { return it }
+            ?: return GetPacErrors.PacNotFound(cpid = params.cpid, ocid = params.ocid, contractId = contractId)
+                .asFailure()
+
+        val pacEntity = transform.tryDeserialization(pacRecord.jsonData, Pac::class.java)
+            .onFailure { return it }
+
+        return GetPacResponse.ResponseConverter.fromDomain(pacEntity = pacEntity).asSuccess()
+
+    }
 
     private fun checkStageForPACState(stage: Stage): ValidationResult<Fail> =
         when (stage) {
@@ -187,7 +206,8 @@ class PacServiceImpl(
 
         val wasApplied = frameworkContractRepository.update(updatedEntity).onFailure { return it }
         if (!wasApplied)
-            return Incident.Database.ConsistencyIncident(message = "Cannot update FC (id = ${updatedFrameworkContract.id})").asFailure()
+            return Incident.Database.ConsistencyIncident(message = "Cannot update FC (id = ${updatedFrameworkContract.id})")
+                .asFailure()
 
         return updatedFrameworkContract
             .let { SetStateForContractsResponse.fromDomain(it) }
@@ -221,9 +241,11 @@ class PacServiceImpl(
         }
 
         val updatedPacs = targetPacs
-            .map { it.copy(
-                status = PacStatus.orNull(stateForSetting.status)!!,
-                statusDetails = PacStatusDetails.orNull(stateForSetting.statusDetails))
+            .map {
+                it.copy(
+                    status = PacStatus.orNull(stateForSetting.status)!!,
+                    statusDetails = PacStatusDetails.orNull(stateForSetting.statusDetails)
+                )
             }
 
         updatedPacs
@@ -232,7 +254,8 @@ class PacServiceImpl(
             .forEach { updatedPac ->
                 val wasApplied = pacRepository.update(updatedPac).onFailure { return it }
                 if (!wasApplied)
-                    return Incident.Database.ConsistencyIncident(message = "Cannot update PAC (id = ${updatedPac.id})").asFailure()
+                    return Incident.Database.ConsistencyIncident(message = "Cannot update PAC (id = ${updatedPac.id})")
+                        .asFailure()
             }
 
         return updatedPacs
@@ -253,7 +276,8 @@ class PacServiceImpl(
             ?.let { transform.tryDeserialization(it.jsonData, PacEntity::class.java) }
             ?.onFailure { return it }
             ?.toDomain()
-            ?: return SetStateForContractsErrors.PacNotFound(params.cpid, params.ocid, params.contracts[0].id).asFailure()
+            ?: return SetStateForContractsErrors.PacNotFound(params.cpid, params.ocid, params.contracts[0].id)
+                .asFailure()
 
         val stateForSetting = rulesService.getStateForSetting(
             country = params.country,
@@ -326,7 +350,10 @@ class PacServiceImpl(
         )
     }
 
-    private fun createPacsByAwards(params: DoPacsParams, activePacByAwardId: Map<AwardId, Pac>): Result<List<Pac>, Fail.Incident> {
+    private fun createPacsByAwards(
+        params: DoPacsParams,
+        activePacByAwardId: Map<AwardId, Pac>
+    ): Result<List<Pac>, Fail.Incident> {
         return params.awards
             .filter { award -> activePacByAwardId[award.id] == null } // find awards for creating new PAC
             .map { award -> createPac(award, params) }
