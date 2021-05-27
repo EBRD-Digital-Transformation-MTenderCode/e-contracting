@@ -35,9 +35,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 class RuleRepositoryIT {
     companion object {
         private const val PARAMETER = "someParameter"
-        private const val COUNTRY = "MD"
-        private val PMD = ProcurementMethodDetails.CF
-        private val OPERATION_TYPE = OperationType.WITHDRAW_QUALIFICATION_PROTOCOL
+        private val KEY = "MD-${ProcurementMethodDetails.CF}-${OperationType.WITHDRAW_QUALIFICATION_PROTOCOL},"
     }
 
     @Autowired
@@ -75,14 +73,14 @@ class RuleRepositoryIT {
     fun find_success() {
         val value = "10"
         insertRule(value)
-        val actual = ruleRepository.find(COUNTRY, PMD, PARAMETER, OPERATION_TYPE).get()
+        val actual = ruleRepository.find(KEY, PARAMETER).get()
 
         assertEquals(value, actual)
     }
 
     @Test
     fun find_noValueFound_success() {
-        val actual = ruleRepository.find(COUNTRY, PMD, PARAMETER, OPERATION_TYPE).get()
+        val actual = ruleRepository.find(KEY, PARAMETER).get()
 
         assertTrue(actual == null)
     }
@@ -93,7 +91,7 @@ class RuleRepositoryIT {
             .whenever(session)
             .execute(any<BoundStatement>())
 
-        val expected = ruleRepository.find(COUNTRY, PMD, PARAMETER, OPERATION_TYPE)
+        val expected = ruleRepository.find(KEY, PARAMETER)
 
         assertTrue(expected is Result.Failure)
     }
@@ -114,12 +112,10 @@ class RuleRepositoryIT {
             """
                 CREATE TABLE IF NOT EXISTS ${Database.KEYSPACE}.${Database.Rules.TABLE}
                     (
-                        ${Database.Rules.COUNTRY}        TEXT,
-                        ${Database.Rules.PMD}            TEXT,
-                        ${Database.Rules.OPERATION_TYPE} TEXT,
+                        ${Database.Rules.KEY}            TEXT,
                         ${Database.Rules.PARAMETER}      TEXT,
                         ${Database.Rules.VALUE}          TEXT,
-                        PRIMARY KEY (${Database.Rules.COUNTRY}, ${Database.Rules.PMD}, ${Database.Rules.OPERATION_TYPE}, ${Database.Rules.PARAMETER})
+                        PRIMARY KEY (${Database.Rules.KEY}, ${Database.Rules.PARAMETER})
                     );
             """
         )
@@ -127,9 +123,7 @@ class RuleRepositoryIT {
 
     private fun insertRule(value: String) {
         val record = QueryBuilder.insertInto(Database.KEYSPACE, Database.Rules.TABLE)
-            .value(Database.Rules.COUNTRY, COUNTRY)
-            .value(Database.Rules.PMD, PMD.key)
-            .value(Database.Rules.OPERATION_TYPE, OPERATION_TYPE.key)
+            .value(Database.Rules.KEY, KEY)
             .value(Database.Rules.PARAMETER, PARAMETER)
             .value(Database.Rules.VALUE, value)
 

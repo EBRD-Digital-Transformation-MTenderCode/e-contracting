@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.repository.pac.PacRepository
@@ -18,6 +19,7 @@ import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.application.service.rule.model.ValidContractStatesRule
 import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.Token
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.document.type.DocumentTypeContract.X_FRAMEWORK_PROJECT
 import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
@@ -51,6 +53,7 @@ class FrameworkContractServiceImpl(
     private val transform: Transform,
     private val fcRepository: FrameworkContractRepository,
     private val pacRepository: PacRepository,
+    private val canRepository: CANRepository,
     private val rulesService: RulesService
 ) : FrameworkContractService {
 
@@ -141,14 +144,17 @@ class FrameworkContractServiceImpl(
     }
 
     override fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail> {
+        params.contracts.singleOrNull()
+            ?: return CheckContractStateErrors.UnexpectedIdentifiers().asValidationError()
+
         val validStates = rulesService.getValidContractStates(params.country, params.pmd, params.operationType)
             .onFailure { return it.reason.asValidationError() }
 
         return when (val stage = params.ocid.stage) {
             Stage.FE -> checkContractStateForFE(params, validStates)
             Stage.PC -> checkContractStateForPAC(params, validStates)
+            Stage.RQ -> checkContractStateForCAN(params, validStates)
             Stage.TP,
-            Stage.RQ,
             Stage.PN,
             Stage.NP,
             Stage.FS,
@@ -156,6 +162,29 @@ class FrameworkContractServiceImpl(
             Stage.EI,
             Stage.AC -> CheckContractStateErrors.InvalidStage(stage).asValidationError()
         }
+    }
+
+    private fun checkContractStateForCAN(
+        params: CheckContractStateParams,
+        validStates: ValidContractStatesRule
+    ): ValidationResult<Fail> {
+        val canId = CANId.orNull(params.contracts.first().id)
+            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, CANId.pattern)
+                .asValidationError()
+
+        val can = canRepository.findBy(params.cpid, canId)
+            .onFailure { return it.reason.asValidationError() }
+            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, canId.toString())
+                .asValidationError()
+
+        val currentState = ValidContractStatesRule.State(can.status.key, can.statusDetails.key)
+
+        validStates.firstOrNull { currentState.matches(expected = it) }
+            ?: return CheckContractStateErrors.InvalidContractState(
+                can.status.key, can.statusDetails.key, validStates
+            ).asValidationError()
+
+        return ValidationResult.ok()
     }
 
     private fun checkContractStateForPAC(

@@ -41,7 +41,7 @@ internal class RulesServiceIT {
 
     @Test
     fun getMinReceivedConfResponses_string_success() {
-        whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
+        whenever(rulesRepository.get("$COUNTRY-$PMD-$OPERATION_TYPE", MIN_RECEIVED_CONF_RESPONSES))
             .thenReturn("{\"quantity\": \"all\"}".asSuccess())
 
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE).get()
@@ -50,7 +50,7 @@ internal class RulesServiceIT {
 
     @Test
     fun getMinReceivedConfResponses_stringNotInEnum_fail() {
-        whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
+        whenever(rulesRepository.get("$COUNTRY-$PMD-$OPERATION_TYPE", MIN_RECEIVED_CONF_RESPONSES))
             .thenReturn("{\"quantity\": \"string\"}".asSuccess())
 
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE) as Result.Failure
@@ -60,7 +60,7 @@ internal class RulesServiceIT {
 
     @Test
     fun getMinReceivedConfResponses_int_success() {
-        whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
+        whenever(rulesRepository.get("$COUNTRY-$PMD-$OPERATION_TYPE", MIN_RECEIVED_CONF_RESPONSES))
             .thenReturn("{\"quantity\": 1}".asSuccess())
 
         val expected = MinReceivedConfResponsesRule.Quantity.Number(1)
@@ -70,7 +70,7 @@ internal class RulesServiceIT {
 
     @Test
     fun getMinReceivedConfResponses_double_fail() {
-        whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
+        whenever(rulesRepository.get("$COUNTRY-$PMD-$OPERATION_TYPE", MIN_RECEIVED_CONF_RESPONSES))
             .thenReturn("{\"quantity\": 1.23}".asSuccess())
 
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE) as Result.Failure
@@ -81,7 +81,7 @@ internal class RulesServiceIT {
 
     @Test
     fun getMinReceivedConfResponses_boolean_fail() {
-        whenever(rulesRepository.get(COUNTRY, PMD, MIN_RECEIVED_CONF_RESPONSES, OPERATION_TYPE))
+        whenever(rulesRepository.get("$COUNTRY-$PMD-$OPERATION_TYPE", MIN_RECEIVED_CONF_RESPONSES))
             .thenReturn("{\"quantity\": true}".asSuccess())
 
         val actual = rulesService.getMinReceivedConfResponses(COUNTRY, PMD, OPERATION_TYPE) as Result.Failure
