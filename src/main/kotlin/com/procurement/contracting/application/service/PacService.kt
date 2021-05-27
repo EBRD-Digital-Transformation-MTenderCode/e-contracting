@@ -124,9 +124,7 @@ class PacServiceImpl(
                     .doOnError { return it.asFailure() }
                 setStateForPAC(params)
             }
-            APPLY_CONFIRMATIONS -> {
-                checkStageForApplyConfirmations(params)
-            }
+            APPLY_CONFIRMATIONS -> setStateForApplyConfirmations(params)
             NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
             NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
             ISSUING_FRAMEWORK_CONTRACT -> {
@@ -177,7 +175,7 @@ class PacServiceImpl(
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
         }
 
-    private fun checkStageForApplyConfirmations(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
+    private fun setStateForApplyConfirmations(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
         when (params.ocid.stage) {
             Stage.FE -> setStateForFC(params)
             Stage.PC -> setStateForPAC(params)
