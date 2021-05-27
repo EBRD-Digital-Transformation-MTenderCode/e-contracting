@@ -19,7 +19,6 @@ import com.procurement.contracting.application.service.model.SetStateForContract
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.application.service.rule.RulesService
-import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.Pac
@@ -120,11 +119,13 @@ class PacServiceImpl(
     override fun setState(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
         when (params.operationType) {
             COMPLETE_SOURCING -> setStateForPACLinkedToLot(params)
-            NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION,
-            APPLY_CONFIRMATIONS -> {
+            NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION -> {
                 checkStageForPACState(params.ocid.stage)
                     .doOnError { return it.asFailure() }
                 setStateForPAC(params)
+            }
+            APPLY_CONFIRMATIONS -> {
+                checkStageForApplyConfirmations(params)
             }
             NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
             NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
@@ -146,7 +147,6 @@ class PacServiceImpl(
             .onFailure { return it }
 
         return GetPacResponse.ResponseConverter.fromDomain(pacEntity = pacEntity).asSuccess()
-
     }
 
     private fun checkStageForPACState(stage: Stage): ValidationResult<Fail> =
@@ -175,6 +175,20 @@ class PacServiceImpl(
             Stage.PN,
             Stage.RQ,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
+        }
+
+    private fun checkStageForApplyConfirmations(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> =
+        when (params.ocid.stage) {
+            Stage.FE -> setStateForFC(params)
+            Stage.PC -> setStateForPAC(params)
+            Stage.AC,
+            Stage.EI,
+            Stage.EV,
+            Stage.FS,
+            Stage.NP,
+            Stage.PN,
+            Stage.RQ,
+            Stage.TP -> SetStateForContractsErrors.InvalidStage(params.ocid.stage).asFailure()
         }
 
     private fun setStateForFC(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
