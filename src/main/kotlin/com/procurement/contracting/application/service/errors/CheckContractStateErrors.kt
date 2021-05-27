@@ -35,7 +35,7 @@ sealed class CheckContractStateErrors(
     )
 
     class UnexpectedIdentifiers : CheckContractStateErrors(
-        numberError = "6.21.1",
+        numberError = "6.8.5",
         description = "Request has more than 1 contract identifier."
     )
 

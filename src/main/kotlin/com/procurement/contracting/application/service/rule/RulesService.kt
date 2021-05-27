@@ -92,7 +92,11 @@ class RulesService(
     private fun concatenateKey(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType?,
+        operationType: OperationType,
         stage: Stage?
-    ) = "$country-$pmd-${operationType?.key ?: "all"}-${stage ?: ""}"
+    ): String {
+        val stageString = if (stage == null) "" else "-${stage}"
+
+        return "$country-$pmd-${operationType.key}${stageString}"
+    }
 }
