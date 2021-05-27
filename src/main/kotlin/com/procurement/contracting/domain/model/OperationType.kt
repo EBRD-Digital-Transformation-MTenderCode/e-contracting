@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 
 enum class OperationType(@JsonValue override val key: String) : EnumElementProvider.Element {
 
+    APPLY_CONFIRMATIONS("applyConfirmations"),
     COMPLETE_SOURCING("completeSourcing"),
     CREATE_CONFIRMATION_RESPONSE_BY_BUYER("createConfirmationResponseByBuyer"),
     CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE("createConfirmationResponseByInvitedCandidate"),
