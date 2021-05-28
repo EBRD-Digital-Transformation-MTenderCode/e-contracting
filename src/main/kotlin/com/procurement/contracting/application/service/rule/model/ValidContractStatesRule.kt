@@ -23,6 +23,6 @@ class ValidContractStatesRule(states: List<State>) : List<ValidContractStatesRul
             if (expected.statusDetails?.value == null)
                 status.value == expected.status.value
             else status.value == expected.status.value
-                && statusDetails!!.value == expected.statusDetails.value
+                && statusDetails?.value == expected.statusDetails.value
     }
 }

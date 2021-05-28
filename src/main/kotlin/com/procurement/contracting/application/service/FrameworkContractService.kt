@@ -251,7 +251,7 @@ class FrameworkContractServiceImpl(
         )
         validStates.firstOrNull { currentState.matches(expected = it) }
             ?: return CheckContractStateErrors.InvalidContractState(
-                currentState.status.value, currentState.statusDetails.value, validStates
+                currentState.status.value, currentState.statusDetails?.value, validStates
             ).asValidationError()
 
         return ValidationResult.ok()
