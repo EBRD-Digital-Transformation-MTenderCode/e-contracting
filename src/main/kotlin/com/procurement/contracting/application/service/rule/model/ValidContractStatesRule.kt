@@ -8,7 +8,6 @@ class ValidContractStatesRule(states: List<State>) : List<ValidContractStatesRul
     data class State(
         @field:JsonProperty("status") @param:JsonProperty("status") val status: Status,
 
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: StatusDetails
     ) {
         data class Status(
