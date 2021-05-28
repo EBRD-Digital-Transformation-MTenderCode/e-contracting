@@ -8,7 +8,8 @@ class ValidContractStatesRule(states: List<State>) : List<ValidContractStatesRul
     data class State(
         @field:JsonProperty("status") @param:JsonProperty("status") val status: Status,
 
-        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: StatusDetails
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @field:JsonProperty("statusDetails") @param:JsonProperty("statusDetails") val statusDetails: StatusDetails?
     ) {
         data class Status(
             val value: String
@@ -19,9 +20,9 @@ class ValidContractStatesRule(states: List<State>) : List<ValidContractStatesRul
         )
 
         fun matches(expected: State) =
-            if (expected.statusDetails.value == null)
+            if (expected.statusDetails?.value == null)
                 status.value == expected.status.value
             else status.value == expected.status.value
-                && statusDetails.value == expected.statusDetails.value
+                && statusDetails!!.value == expected.statusDetails.value
     }
 }
