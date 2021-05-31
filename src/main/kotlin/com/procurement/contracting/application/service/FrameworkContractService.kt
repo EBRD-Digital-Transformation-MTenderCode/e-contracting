@@ -87,13 +87,16 @@ class FrameworkContractServiceImpl(
         val newSuppliers = params.parties.map { it.toDomain() }
 
         val updatedFrameworkContract = frameworkContract.copy(suppliers = frameworkContract.suppliers + newSuppliers)
-        val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
-            .onFailure { return it }
+        val updatedFrameworkContractRecord =
+            FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
+                .onFailure { return it }
 
         val wasApplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
         if (!wasApplied)
-            return Fail.Incident.Database.ConsistencyIncident("Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
-                "by cpid = ${params.cpid} and ocid = ${params.ocid}.").asFailure()
+            return Fail.Incident.Database.ConsistencyIncident(
+                "Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
+                    "by cpid = ${params.cpid} and ocid = ${params.ocid}."
+            ).asFailure()
 
         return AddSupplierReferencesInFCResponse.fromDomain(updatedFrameworkContract).asSuccess()
     }
@@ -104,11 +107,16 @@ class FrameworkContractServiceImpl(
             OperationType.ISSUING_FRAMEWORK_CONTRACT -> {
                 val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
                     .onFailure { return it }
-                    ?.let { transform
+                    ?.let {
+                        transform
                             .tryDeserialization(it.jsonData, FrameworkContract::class.java)
                             .onFailure { return it }
                     }
-                    ?: return AddGeneratedDocumentToContractErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asFailure()
+                    ?: return AddGeneratedDocumentToContractErrors.ContractNotFound(
+                        params.cpid,
+                        params.ocid,
+                        receivedContractId
+                    ).asFailure()
 
                 val receivedDocuments = params.contracts
                     .flatMap { it.documents }
@@ -129,13 +137,16 @@ class FrameworkContractServiceImpl(
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> throw NotImplementedError()
         }
 
-        val updatedFrameworkContractRecord = FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
-            .onFailure { return it }
+        val updatedFrameworkContractRecord =
+            FrameworkContractEntity.of(params.cpid, params.ocid, updatedFrameworkContract, transform)
+                .onFailure { return it }
 
         val wasApplied = fcRepository.update(updatedFrameworkContractRecord).onFailure { return it }
         if (!wasApplied)
-            return Fail.Incident.Database.ConsistencyIncident("Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
-                "by cpid = ${params.cpid} and ocid = ${params.ocid}.").asFailure()
+            return Fail.Incident.Database.ConsistencyIncident(
+                "Cannot update FC (id = ${updatedFrameworkContractRecord.id}) " +
+                    "by cpid = ${params.cpid} and ocid = ${params.ocid}."
+            ).asFailure()
 
         return AddGeneratedDocumentToContractResponse.Contract
             .fromDomain(updatedFrameworkContract)
@@ -177,12 +188,9 @@ class FrameworkContractServiceImpl(
             ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, canId.toString())
                 .asValidationError()
 
-        val currentState = ValidContractStatesRule.State(can.status.key, can.statusDetails.key)
-
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                can.status.key, can.statusDetails.key, validStates
-            ).asValidationError()
+        if (!validStates.contains(can.status, can.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(can.status.key, can.statusDetails.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }
@@ -192,7 +200,8 @@ class FrameworkContractServiceImpl(
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
         val pacId = PacId.orNull(params.contracts.first().id)
-            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, PacId.pattern).asValidationError()
+            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, PacId.pattern)
+                .asValidationError()
 
         val pac = pacRepository
             .findBy(params.cpid, params.ocid, pacId)
@@ -200,12 +209,9 @@ class FrameworkContractServiceImpl(
             ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
                 .asValidationError()
 
-        val currentState = ValidContractStatesRule.State(pac.status.key, pac.statusDetails?.key)
-
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                pac.status.key, pac.statusDetails?.key, validStates
-            ).asValidationError()
+        if (!validStates.contains(pac.status, pac.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(pac.status.key, pac.statusDetails?.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }
@@ -215,7 +221,10 @@ class FrameworkContractServiceImpl(
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
         val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)
-            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, FrameworkContractId.pattern)
+            ?: return CheckContractStateErrors.InvalidContractId(
+                params.contracts.first().id,
+                FrameworkContractId.pattern
+            )
                 .asValidationError()
 
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, frameworkContractId)
@@ -224,14 +233,9 @@ class FrameworkContractServiceImpl(
                 params.cpid, params.ocid, frameworkContractId.underlying
             ).asValidationError()
 
-        val currentState = ValidContractStatesRule.State(
-            frameworkContract.status.key,
-            frameworkContract.statusDetails.key
-        )
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                currentState.status, currentState.statusDetails, validStates
-            ).asValidationError()
+        if (!validStates.contains(frameworkContract.status, frameworkContract.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(frameworkContract.status.key, frameworkContract.statusDetails.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }
@@ -240,11 +244,16 @@ class FrameworkContractServiceImpl(
         val receivedContractId = params.contracts.first().id
         val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, receivedContractId)
             .onFailure { return it.reason.asValidationError() }
-            ?.let { transform
-                .tryDeserialization(it.jsonData, FrameworkContract::class.java)
-                .onFailure { return it.reason.asValidationError() }
+            ?.let {
+                transform
+                    .tryDeserialization(it.jsonData, FrameworkContract::class.java)
+                    .onFailure { return it.reason.asValidationError() }
             }
-            ?: return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(params.cpid, params.ocid, receivedContractId).asValidationError()
+            ?: return CheckExistenceSupplierReferencesInFCErrors.ContractNotFound(
+                params.cpid,
+                params.ocid,
+                receivedContractId
+            ).asValidationError()
 
         if (frameworkContract.suppliers.isEmpty())
             return CheckExistenceSupplierReferencesInFCErrors.SuppliersNotFound().asValidationError()
