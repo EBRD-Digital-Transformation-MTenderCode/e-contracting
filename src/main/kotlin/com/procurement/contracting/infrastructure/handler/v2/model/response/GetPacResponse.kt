@@ -16,18 +16,18 @@ data class GetPacResponse(
     @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>
 ) {
     data class Contract(
-        @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
-        @param:JsonProperty("status") @field:JsonProperty("status") val status: String,
-        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
+        @param:JsonProperty("id") @field:JsonProperty("id") val id: PacId,
+        @param:JsonProperty("status") @field:JsonProperty("status") val status: PacStatus,
+        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<LotId>,
         @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
-        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: String,
+        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @param:JsonProperty("agreedMetrics") @field:JsonProperty("agreedMetrics") val agreedMetrics: List<AgreedMetric>?,
         @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: String?
+        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: PacStatusDetails?
     ) {
         data class Supplier(
             @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
@@ -65,7 +65,7 @@ data class GetPacResponse(
     }
 
     object ResponseConverter {
-        fun fromDomain(pacEntity: PacEntity) =
+        fun fromDomain(pacEntity: Pac) =
             GetPacResponse(
                 Contract(
                     id = pacEntity.id,
@@ -74,25 +74,25 @@ data class GetPacResponse(
                     suppliers = pacEntity.suppliers.map { fromDomain(it) },
                     awardId = pacEntity.awardId!!,
                     agreedMetrics = pacEntity.agreedMetrics.map { fromDomain(it) },
-                    date = LocalDateTime.parse(pacEntity.date),
+                    date = pacEntity.date,
                     statusDetails = pacEntity.statusDetails
                 ).let { listOf(it) }
             )
 
-        fun fromDomain(supplier: PacEntity.Supplier) =
+        fun fromDomain(supplier: Pac.Supplier) =
             Contract.Supplier(
                 id = supplier.id,
                 name = supplier.name
             )
 
-        fun fromDomain(agreedMetric: PacEntity.AgreedMetric) =
+        fun fromDomain(agreedMetric: Pac.AgreedMetric) =
             Contract.AgreedMetric(
                 id = agreedMetric.id,
                 title = agreedMetric.title,
                 observations = agreedMetric.observations.map { fromDomain(it) }
             )
 
-        fun fromDomain(observation: PacEntity.AgreedMetric.Observation) =
+        fun fromDomain(observation: Pac.AgreedMetric.Observation) =
             Contract.AgreedMetric.Observation(
                 id = observation.id,
                 notes = observation.notes,
@@ -102,13 +102,13 @@ data class GetPacResponse(
                 unit = observation.unit?.let { fromDomain(it) }
             )
 
-        fun fromDomain(period: PacEntity.AgreedMetric.Observation.Period) =
+        fun fromDomain(period: Pac.AgreedMetric.Observation.Period) =
             Contract.AgreedMetric.Observation.Period(
-                startDate = LocalDateTime.parse(period.startDate),
-                endDate = LocalDateTime.parse(period.endDate)
+                startDate = period.startDate,
+                endDate = period.endDate
             )
 
-        fun fromDomain(unit: PacEntity.AgreedMetric.Observation.Unit) =
+        fun fromDomain(unit: Pac.AgreedMetric.Observation.Unit) =
             Contract.AgreedMetric.Observation.Unit(
                 id = unit.id,
                 name = unit.name

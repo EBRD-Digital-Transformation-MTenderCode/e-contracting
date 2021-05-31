@@ -143,6 +143,7 @@ class PacServiceImpl(
 
         val pacEntity = transform.tryDeserialization(pacRecord.jsonData, PacEntity::class.java)
             .onFailure { return it }
+            .toDomain()
 
         return GetPacResponse.ResponseConverter.fromDomain(pacEntity = pacEntity).asSuccess()
     }
