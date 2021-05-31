@@ -9,7 +9,7 @@ import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatu
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
 
-class ValidContractStatesRule(val states: List<State>) : List<ValidContractStatesRule.State> by states {
+class ValidContractStatesRule(states: List<State>) : List<ValidContractStatesRule.State> by states {
 
     data class State(
         @field:JsonProperty("status") @param:JsonProperty("status") val status: Status,
@@ -36,7 +36,7 @@ class ValidContractStatesRule(val states: List<State>) : List<ValidContractState
         contains(status.key, statusDetails?.key)
 
     private fun contains(status: String, statusDetails: String?): Boolean =
-        states.any { state ->
+        this.any { state ->
             if (state.statusDetails != null)
                 status == state.status.value && statusDetails == state.statusDetails.value
             else
