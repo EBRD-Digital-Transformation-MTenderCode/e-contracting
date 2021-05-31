@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.Pac
+import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
@@ -16,17 +17,17 @@ data class GetPacResponse(
 ) {
     data class Contract(
         @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
-        @param:JsonProperty("status") @field:JsonProperty("status") val status: PacStatus,
-        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<LotId>,
+        @param:JsonProperty("status") @field:JsonProperty("status") val status: String,
+        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
         @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
-        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId,
+        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: String,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @param:JsonProperty("agreedMetrics") @field:JsonProperty("agreedMetrics") val agreedMetrics: List<AgreedMetric>?,
         @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime,
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: PacStatusDetails?
+        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: String?
     ) {
         data class Supplier(
             @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
@@ -64,34 +65,34 @@ data class GetPacResponse(
     }
 
     object ResponseConverter {
-        fun fromDomain(pacEntity: Pac) =
+        fun fromDomain(pacEntity: PacEntity) =
             GetPacResponse(
                 Contract(
-                    id = pacEntity.id.toString(),
+                    id = pacEntity.id,
                     status = pacEntity.status,
                     relatedLots = pacEntity.relatedLots,
                     suppliers = pacEntity.suppliers.map { fromDomain(it) },
                     awardId = pacEntity.awardId!!,
                     agreedMetrics = pacEntity.agreedMetrics.map { fromDomain(it) },
-                    date = pacEntity.date,
+                    date = LocalDateTime.parse(pacEntity.date),
                     statusDetails = pacEntity.statusDetails
                 ).let { listOf(it) }
             )
 
-        fun fromDomain(supplier: Pac.Supplier) =
+        fun fromDomain(supplier: PacEntity.Supplier) =
             Contract.Supplier(
                 id = supplier.id,
                 name = supplier.name
             )
 
-        fun fromDomain(agreedMetric: Pac.AgreedMetric) =
+        fun fromDomain(agreedMetric: PacEntity.AgreedMetric) =
             Contract.AgreedMetric(
                 id = agreedMetric.id,
                 title = agreedMetric.title,
                 observations = agreedMetric.observations.map { fromDomain(it) }
             )
 
-        fun fromDomain(observation: Pac.AgreedMetric.Observation) =
+        fun fromDomain(observation: PacEntity.AgreedMetric.Observation) =
             Contract.AgreedMetric.Observation(
                 id = observation.id,
                 notes = observation.notes,
@@ -101,13 +102,13 @@ data class GetPacResponse(
                 unit = observation.unit?.let { fromDomain(it) }
             )
 
-        fun fromDomain(period: Pac.AgreedMetric.Observation.Period) =
+        fun fromDomain(period: PacEntity.AgreedMetric.Observation.Period) =
             Contract.AgreedMetric.Observation.Period(
-                startDate = period.startDate,
-                endDate = period.endDate
+                startDate = LocalDateTime.parse(period.startDate),
+                endDate = LocalDateTime.parse(period.endDate)
             )
 
-        fun fromDomain(unit: Pac.AgreedMetric.Observation.Unit) =
+        fun fromDomain(unit: PacEntity.AgreedMetric.Observation.Unit) =
             Contract.AgreedMetric.Observation.Unit(
                 id = unit.id,
                 name = unit.name
