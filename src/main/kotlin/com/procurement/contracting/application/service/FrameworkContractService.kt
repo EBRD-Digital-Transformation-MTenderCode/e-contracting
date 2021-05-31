@@ -158,10 +158,11 @@ class FrameworkContractServiceImpl(
         params.contracts.singleOrNull()
             ?: return CheckContractStateErrors.UnexpectedIdentifiers().asValidationError()
 
-        val validStates = rulesService.getValidContractStates(params.country, params.pmd, params.operationType)
+        val stage = params.ocid.stage
+        val validStates = rulesService.getValidContractStates(params.country, params.pmd, params.operationType, stage)
             .onFailure { return it.reason.asValidationError() }
 
-        return when (val stage = params.ocid.stage) {
+        return when (stage) {
             Stage.FE -> checkContractStateForFE(params, validStates)
             Stage.PC -> checkContractStateForPAC(params, validStates)
             Stage.RQ -> checkContractStateForCAN(params, validStates)
