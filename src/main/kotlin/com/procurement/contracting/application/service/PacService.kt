@@ -141,8 +141,9 @@ class PacServiceImpl(
             ?: return GetPacErrors.PacNotFound(cpid = params.cpid, ocid = params.ocid, contractId = contractId)
                 .asFailure()
 
-        val pacEntity = transform.tryDeserialization(pacRecord.jsonData, Pac::class.java)
+        val pacEntity = transform.tryDeserialization(pacRecord.jsonData, PacEntity::class.java)
             .onFailure { return it }
+            .toDomain()
 
         return GetPacResponse.ResponseConverter.fromDomain(pacEntity = pacEntity).asSuccess()
     }

@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.procurement.contracting.domain.model.DynamicValue
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.fc.Pac
+import com.procurement.contracting.domain.model.fc.PacEntity
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.pac.PacStatus
 import com.procurement.contracting.domain.model.pac.PacStatusDetails
 import java.time.LocalDateTime
+import java.util.*
 
 data class GetPacResponse(
     @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>
@@ -17,9 +19,9 @@ data class GetPacResponse(
     data class Contract(
         @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
         @param:JsonProperty("status") @field:JsonProperty("status") val status: PacStatus,
-        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<LotId>,
+        @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
         @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
-        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId,
+        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: UUID,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @param:JsonProperty("agreedMetrics") @field:JsonProperty("agreedMetrics") val agreedMetrics: List<AgreedMetric>?,
@@ -67,11 +69,11 @@ data class GetPacResponse(
         fun fromDomain(pacEntity: Pac) =
             GetPacResponse(
                 Contract(
-                    id = pacEntity.id.toString(),
+                    id = pacEntity.id.underlying,
                     status = pacEntity.status,
-                    relatedLots = pacEntity.relatedLots,
+                    relatedLots = pacEntity.relatedLots.map { it.underlying },
                     suppliers = pacEntity.suppliers.map { fromDomain(it) },
-                    awardId = pacEntity.awardId!!,
+                    awardId = pacEntity.awardId!!.underlying,
                     agreedMetrics = pacEntity.agreedMetrics.map { fromDomain(it) },
                     date = pacEntity.date,
                     statusDetails = pacEntity.statusDetails
