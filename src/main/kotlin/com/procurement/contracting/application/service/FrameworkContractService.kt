@@ -188,15 +188,9 @@ class FrameworkContractServiceImpl(
             ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, canId.toString())
                 .asValidationError()
 
-        val currentState = ValidContractStatesRule.State(
-            status = ValidContractStatesRule.State.Status(can.status.key),
-            statusDetails = ValidContractStatesRule.State.StatusDetails(can.statusDetails.key)
-        )
-
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                can.status.key, can.statusDetails.key, validStates
-            ).asValidationError()
+        if (!validStates.contains(can.status, can.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(can.status.key, can.statusDetails.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }
@@ -215,15 +209,9 @@ class FrameworkContractServiceImpl(
             ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
                 .asValidationError()
 
-        val currentState = ValidContractStatesRule.State(
-            status = ValidContractStatesRule.State.Status(pac.status.key),
-            statusDetails = ValidContractStatesRule.State.StatusDetails(pac.statusDetails?.key)
-        )
-
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                pac.status.key, pac.statusDetails?.key, validStates
-            ).asValidationError()
+        if (!validStates.contains(pac.status, pac.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(pac.status.key, pac.statusDetails?.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }
@@ -245,14 +233,9 @@ class FrameworkContractServiceImpl(
                 params.cpid, params.ocid, frameworkContractId.underlying
             ).asValidationError()
 
-        val currentState = ValidContractStatesRule.State(
-            status = ValidContractStatesRule.State.Status(frameworkContract.status.key),
-            statusDetails = ValidContractStatesRule.State.StatusDetails(frameworkContract.statusDetails.key)
-        )
-        validStates.firstOrNull { currentState.matches(expected = it) }
-            ?: return CheckContractStateErrors.InvalidContractState(
-                currentState.status.value, currentState.statusDetails?.value, validStates
-            ).asValidationError()
+        if (!validStates.contains(frameworkContract.status, frameworkContract.statusDetails))
+            return CheckContractStateErrors.InvalidContractState(frameworkContract.status.key, frameworkContract.statusDetails.key, validStates)
+                .asValidationError()
 
         return ValidationResult.ok()
     }

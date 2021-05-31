@@ -221,3 +221,5 @@ INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-CF-applyCon
 INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-OF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
 INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_CF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
 INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_OF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
+
+ALTER TABLE ocds.contracting_pac ADD token_entity TEXT;
