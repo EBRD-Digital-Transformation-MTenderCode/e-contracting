@@ -236,7 +236,8 @@ class PacServiceImpl(
         val stateForSetting = rulesService.getStateForSetting(
             country = params.country,
             pmd = params.pmd.base,
-            operationType = params.operationType.base
+            operationType = params.operationType.base,
+            stage = params.ocid.stage
         ).onFailure { return it }
 
         val targetPacs = pacRepository
@@ -295,7 +296,8 @@ class PacServiceImpl(
         val stateForSetting = rulesService.getStateForSetting(
             country = params.country,
             pmd = params.pmd.base,
-            operationType = params.operationType.base
+            operationType = params.operationType.base,
+            stage = params.ocid.stage
         ).onFailure { return it }
 
         val updatedPac = targetPac.copy(
