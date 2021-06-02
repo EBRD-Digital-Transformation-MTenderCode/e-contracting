@@ -96,6 +96,7 @@ class SetStateForContractsParams private constructor(
 
     enum class OperationType(val base: ParentOperationType) : EnumElementProvider.Element {
 
+        APPLY_CONFIRMATIONS(ParentOperationType.APPLY_CONFIRMATIONS),
         NEXT_STEP_AFTER_BUYERS_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION),
         NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION),
         NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION),

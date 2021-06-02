@@ -43,6 +43,7 @@ private val allowedOperationTypes = OperationType.allowedElements
             OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
             OperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION -> true
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL,
+            OperationType.APPLY_CONFIRMATIONS,
             OperationType.COMPLETE_SOURCING,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,

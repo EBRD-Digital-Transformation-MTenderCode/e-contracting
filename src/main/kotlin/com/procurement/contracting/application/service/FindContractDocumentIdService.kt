@@ -85,7 +85,7 @@ class FindContractDocumentIdServiceImpl(
 
         return when (params.processInitiator) {
             ProcessInitiator.NEXT_STEP_AFTER_BUYERS_CONFIRMATION -> return frameworkContract.documents
-                .firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_CONTRACT }?.id
+                .firstOrNull { it.documentType == DocumentTypeContract.X_FRAMEWORK_PROJECT }?.id
                 .asSuccess()
             ProcessInitiator.ISSUING_FRAMEWORK_CONTRACT -> null.asSuccess()
         }

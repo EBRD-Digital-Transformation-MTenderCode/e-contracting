@@ -9,6 +9,7 @@ import com.procurement.contracting.application.service.rule.model.ValidContractS
 import com.procurement.contracting.application.service.tryDeserialization
 import com.procurement.contracting.domain.model.OperationType
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
+import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import org.springframework.stereotype.Service
@@ -22,9 +23,10 @@ class RulesService(
     fun getStateForSetting(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType
+        operationType: OperationType,
+        stage: Stage? = null
     ): Result<StateForSettingRule, Fail> = ruleRepository
-        .get(country, pmd, PARAMETER_STATE_FOR_SETTING, operationType)
+        .get(concatenateKey(country, pmd, operationType, stage), PARAMETER_STATE_FOR_SETTING)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<StateForSettingRule>(transform)
@@ -36,9 +38,10 @@ class RulesService(
     fun getValidContractStates(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType
+        operationType: OperationType,
+        stage: Stage? = null
     ): Result<ValidContractStatesRule, Fail> = ruleRepository
-        .get(country, pmd, PARAMETER_VALID_CONTRACT_STATES, operationType)
+        .get(concatenateKey(country, pmd, operationType, stage), PARAMETER_VALID_CONTRACT_STATES)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<ValidContractStatesRule>(transform)
@@ -50,9 +53,10 @@ class RulesService(
     fun getSourceOfConfirmationRequest(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType
+        operationType: OperationType,
+        stage: Stage? = null
     ): Result<SourceOfConfirmationRequestRule, Fail> = ruleRepository
-        .get(country, pmd, SOURCE_OF_CONFIRMATION_REQUEST, operationType)
+        .get(concatenateKey(country, pmd, operationType, stage), SOURCE_OF_CONFIRMATION_REQUEST)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<SourceOfConfirmationRequestRule>(transform)
@@ -64,9 +68,10 @@ class RulesService(
     fun getMinReceivedConfResponses(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType
+        operationType: OperationType,
+        stage: Stage? = null
     ): Result<MinReceivedConfResponsesRule, Fail> = ruleRepository
-        .get(country, pmd, MIN_RECEIVED_CONF_RESPONSES, operationType)
+        .get(concatenateKey(country, pmd, operationType, stage), MIN_RECEIVED_CONF_RESPONSES)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<MinReceivedConfResponsesRule>(transform)
@@ -82,5 +87,16 @@ class RulesService(
         private const val PARAMETER_VALID_CONTRACT_STATES = "validContractStates"
         private const val SOURCE_OF_CONFIRMATION_REQUEST = "sourceOfConfirmationRequest"
         private const val MIN_RECEIVED_CONF_RESPONSES = "minReceivedConfResponses"
+    }
+
+    private fun concatenateKey(
+        country: String,
+        pmd: ProcurementMethodDetails,
+        operationType: OperationType,
+        stage: Stage?
+    ): String {
+        val stageString = if (stage == null) "" else "-${stage}"
+
+        return "$country-$pmd-${operationType.key}${stageString}"
     }
 }

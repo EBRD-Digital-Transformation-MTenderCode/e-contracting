@@ -102,5 +102,6 @@ object Database {
         const val OPERATION_TYPE = "operation_type"
         const val PARAMETER = "parameter"
         const val VALUE = "value"
+        const val KEY = "key"
     }
 }

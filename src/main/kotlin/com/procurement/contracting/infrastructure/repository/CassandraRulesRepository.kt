@@ -17,14 +17,10 @@ class CassandraRuleRepository(private val session: Session) : RuleRepository {
 
     companion object {
 
-        private const val ALL_OPERATION_TYPE = "all"
-
         private const val GET_VALUE_BY_CQL = """
                SELECT ${Database.Rules.VALUE}
                  FROM ${Database.KEYSPACE}.${Database.Rules.TABLE}
-                WHERE ${Database.Rules.COUNTRY}=? 
-                  AND ${Database.Rules.PMD}=?
-                  AND ${Database.Rules.OPERATION_TYPE}=?
+                WHERE ${Database.Rules.KEY}=? 
                   AND ${Database.Rules.PARAMETER}=?
             """
     }
@@ -32,16 +28,12 @@ class CassandraRuleRepository(private val session: Session) : RuleRepository {
     private val preparedGetValueByCQL = session.prepare(GET_VALUE_BY_CQL)
 
     override fun find(
-        country: String,
-        pmd: ProcurementMethodDetails,
-        parameter: String,
-        operationType: OperationType?
+        key: String,
+        parameter: String
     ): Result<String?, Fail.Incident.Database.DatabaseInteractionIncident> =
         preparedGetValueByCQL.bind()
             .apply {
-                setString(Database.Rules.COUNTRY, country)
-                setString(Database.Rules.PMD, pmd.name)
-                setString(Database.Rules.OPERATION_TYPE, operationType?.key ?: ALL_OPERATION_TYPE)
+                setString(Database.Rules.KEY, key)
                 setString(Database.Rules.PARAMETER, parameter)
             }
             .tryExecute(session)
@@ -51,15 +43,13 @@ class CassandraRuleRepository(private val session: Session) : RuleRepository {
             .asSuccess()
 
     override fun get(
-        country: String,
-        pmd: ProcurementMethodDetails,
+        key: String,
         parameter: String,
-        operationType: OperationType?
     ): Result<String, Fail> =
-        find(country = country, pmd = pmd, operationType = operationType, parameter = parameter)
+        find(key = key, parameter = parameter)
             .onFailure { return it }
             ?.asSuccess()
             ?: RulesError.NotFound(
-                description = "Rule '$parameter' by country '$country' and pmd '${pmd.key}' and operation type '${operationType?.key ?: ALL_OPERATION_TYPE}' is not found."
+                description = "Rule '$parameter' by key '$key' is not found."
             ).asFailure()
 }
