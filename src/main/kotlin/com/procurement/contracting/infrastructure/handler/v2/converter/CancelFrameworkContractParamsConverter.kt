@@ -39,6 +39,7 @@ private val allowedOperationType = OperationType.allowedElements
         when (it) {
             OperationType.WITHDRAW_QUALIFICATION_PROTOCOL -> true
 
+            OperationType.APPLY_CONFIRMATIONS,
             OperationType.COMPLETE_SOURCING,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,

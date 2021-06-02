@@ -34,4 +34,9 @@ sealed class CheckContractStateErrors(
         description = "Invalid contract id '$id'. Mismatch to pattern '$pattern'."
     )
 
+    class UnexpectedIdentifiers : CheckContractStateErrors(
+        numberError = "6.8.5",
+        description = "Request has more than 1 contract identifier."
+    )
+
 }

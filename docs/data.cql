@@ -206,3 +206,20 @@ CREATE TABLE IF NOT EXISTS ocds.contracting_confirmation_responses
     json_data      TEXT,
     PRIMARY KEY (cpid, ocid, contract_id, id)
 );
+
+DROP TABLE IF EXISTS ocds.contracting_rules;
+
+CREATE TABLE IF NOT EXISTS ocds.contracting_rules
+(
+    key            TEXT,
+    parameter      TEXT,
+    value          TEXT,
+    PRIMARY KEY (key, parameter)
+    );
+
+INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-CF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
+INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-OF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
+INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_CF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
+INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_OF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
+
+ALTER TABLE ocds.contracting_pac ADD token_entity TEXT;

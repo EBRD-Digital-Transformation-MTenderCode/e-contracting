@@ -8,6 +8,7 @@ enum class PacStatusDetails(@JsonValue override val key: String) : EnumElementPr
 
     ALL_REJECTED("allRejected"),
     CONCLUDED("concluded"),
+    EXECUTION("execution"),
     SIGNED("signed")
     ;
 

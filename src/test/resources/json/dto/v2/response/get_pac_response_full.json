@@ -1,0 +1,42 @@
+{
+  "contracts": [
+    {
+      "id": "2a0c4f23-2ceb-4901-ae63-63d901e0fb5f",
+      "status": "pending",
+      "relatedLots": [
+        "ef86d8fb-8f08-4c49-ab1f-407b12cc7457"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "awardId": "a2cad5c2-7bfb-498c-a115-688ba137b162",
+      "agreedMetrics": [
+        {
+          "id": "string",
+          "title": "string",
+          "observations": [
+            {
+              "id": "string",
+              "notes": "string",
+              "measure": "Unknown Type: string,number,integer",
+              "relatedRequirementId": "string",
+              "period": {
+                "startDate": "2021-05-26T07:22:02Z",
+                "endDate": "2021-05-26T07:22:02Z"
+              },
+              "unit": {
+                "id": "string",
+                "name": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "date": "2021-05-26T07:22:02Z",
+      "statusDetails": "concluded"
+    }
+  ]
+}
