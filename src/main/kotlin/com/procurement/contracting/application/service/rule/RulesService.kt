@@ -24,7 +24,7 @@ class RulesService(
         country: String,
         pmd: ProcurementMethodDetails,
         operationType: OperationType,
-        stage: Stage? = null
+        stage: Stage
     ): Result<StateForSettingRule, Fail> = ruleRepository
         .get(concatenateKey(country, pmd, operationType, stage), PARAMETER_STATE_FOR_SETTING)
         .onFailure { return it }
@@ -39,7 +39,7 @@ class RulesService(
         country: String,
         pmd: ProcurementMethodDetails,
         operationType: OperationType,
-        stage: Stage? = null
+        stage: Stage
     ): Result<ValidContractStatesRule, Fail> = ruleRepository
         .get(concatenateKey(country, pmd, operationType, stage), PARAMETER_VALID_CONTRACT_STATES)
         .onFailure { return it }
@@ -53,10 +53,9 @@ class RulesService(
     fun getSourceOfConfirmationRequest(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType,
-        stage: Stage? = null
+        operationType: OperationType
     ): Result<SourceOfConfirmationRequestRule, Fail> = ruleRepository
-        .get(concatenateKey(country, pmd, operationType, stage), SOURCE_OF_CONFIRMATION_REQUEST)
+        .get(concatenateKey(country, pmd, operationType), SOURCE_OF_CONFIRMATION_REQUEST)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<SourceOfConfirmationRequestRule>(transform)
@@ -68,10 +67,9 @@ class RulesService(
     fun getMinReceivedConfResponses(
         country: String,
         pmd: ProcurementMethodDetails,
-        operationType: OperationType,
-        stage: Stage? = null
+        operationType: OperationType
     ): Result<MinReceivedConfResponsesRule, Fail> = ruleRepository
-        .get(concatenateKey(country, pmd, operationType, stage), MIN_RECEIVED_CONF_RESPONSES)
+        .get(concatenateKey(country, pmd, operationType), MIN_RECEIVED_CONF_RESPONSES)
         .onFailure { return it }
         .let { json ->
             json.tryDeserialization<MinReceivedConfResponsesRule>(transform)
@@ -93,7 +91,7 @@ class RulesService(
         country: String,
         pmd: ProcurementMethodDetails,
         operationType: OperationType,
-        stage: Stage?
+        stage: Stage? = null
     ): String {
         val stageString = if (stage == null) "" else "-${stage}"
 

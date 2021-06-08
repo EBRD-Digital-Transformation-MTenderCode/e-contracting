@@ -37,7 +37,8 @@ class CancelFrameworkContractServiceImpl(
             .getStateForSetting(
                 country = params.country,
                 pmd = params.pmd,
-                operationType = params.operationType
+                operationType = params.operationType,
+                stage = params.ocid.stage
             )
             .onFailure { return it }
 
