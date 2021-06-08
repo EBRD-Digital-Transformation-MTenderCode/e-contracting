@@ -28,6 +28,7 @@ import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatu
 import com.procurement.contracting.domain.model.fc.status.FrameworkContractStatusDetails.ISSUED
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Stage
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddGeneratedDocumentToContractResponse
 import com.procurement.contracting.infrastructure.handler.v2.model.response.AddSupplierReferencesInFCResponse
@@ -156,9 +157,6 @@ class FrameworkContractServiceImpl(
     }
 
     override fun checkContractState(params: CheckContractStateParams): ValidationResult<Fail> {
-        params.contracts.singleOrNull()
-            ?: return CheckContractStateErrors.UnexpectedIdentifiers().asValidationError()
-
         val stage = params.ocid.stage
         val validStates = rulesService.getValidContractStates(params.country, params.pmd, params.operationType, stage)
             .onFailure { return it.reason.asValidationError() }
@@ -166,12 +164,12 @@ class FrameworkContractServiceImpl(
         return when (stage) {
             Stage.FE -> checkContractStateForFE(params, validStates)
             Stage.PC -> checkContractStateForPAC(params, validStates)
-            Stage.RQ -> checkContractStateForCAN(params, validStates)
-            Stage.TP,
-            Stage.PN,
-            Stage.NP,
-            Stage.FS,
+            Stage.RQ,
             Stage.EV,
+            Stage.TP,
+            Stage.NP, -> checkContractStateForCAN(params, validStates)
+            Stage.PN,
+            Stage.FS,
             Stage.EI,
             Stage.AC -> CheckContractStateErrors.InvalidStage(stage).asValidationError()
         }
@@ -201,19 +199,32 @@ class FrameworkContractServiceImpl(
         params: CheckContractStateParams,
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
-        val pacId = PacId.orNull(params.contracts.first().id)
-            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, PacId.pattern)
-                .asValidationError()
+        val pacIds = params.contracts
+            .map {
+                PacId.orNull(it.id)
+                    ?: return CheckContractStateErrors.InvalidContractId(it.id, PacId.pattern)
+                        .asValidationError()
+            }
 
-        val pac = pacRepository
-            .findBy(params.cpid, params.ocid, pacId)
+        val pacs = pacRepository
+            .findBy(params.cpid, params.ocid, pacIds)
             .onFailure { return it.reason.asValidationError() }
-            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, pacId.underlying)
+
+        val missingContracts = pacIds.toSet() - pacs.toSetBy { it.id }
+        if (missingContracts.isNotEmpty())
+            return CheckContractStateErrors.ContractNotFound(
+                cpid = params.cpid,
+                ocid = params.ocid,
+                ids = missingContracts.map { it.underlying })
                 .asValidationError()
 
-        if (!validStates.contains(pac.status, pac.statusDetails))
-            return CheckContractStateErrors.InvalidContractState(pac.status.key, pac.statusDetails?.key, validStates)
-                .asValidationError()
+        pacs.forEach {pac ->
+            if (!validStates.contains(pac.status, pac.statusDetails))
+                return CheckContractStateErrors.InvalidContractState(
+                    pac.id.underlying, pac.status.key, pac.statusDetails?.key, validStates
+                )
+                    .asValidationError()
+        }
 
         return ValidationResult.ok()
     }
@@ -222,22 +233,31 @@ class FrameworkContractServiceImpl(
         params: CheckContractStateParams,
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
-        val frameworkContractId = FrameworkContractId.orNull(params.contracts.first().id)
-            ?: return CheckContractStateErrors.InvalidContractId(
-                params.contracts.first().id,
-                FrameworkContractId.pattern
-            )
-                .asValidationError()
+        val frameworkContractIds = params.contracts
+            .map {
+                FrameworkContractId.orNull(it.id)
+                    ?: return CheckContractStateErrors.InvalidContractId(it.id, FrameworkContractId.pattern)
+                        .asValidationError()
+            }
 
-        val frameworkContract = fcRepository.findBy(params.cpid, params.ocid, frameworkContractId)
+        val frameworkContracts = fcRepository.findBy(params.cpid, params.ocid, frameworkContractIds)
             .onFailure { return it.reason.asValidationError() }
-            ?: return CheckContractStateErrors.ContractNotFound(
-                params.cpid, params.ocid, frameworkContractId.underlying
-            ).asValidationError()
 
-        if (!validStates.contains(frameworkContract.status, frameworkContract.statusDetails))
-            return CheckContractStateErrors.InvalidContractState(frameworkContract.status.key, frameworkContract.statusDetails.key, validStates)
+        val missingContracts = frameworkContractIds.toSet() - frameworkContracts.toSetBy { it.id }
+        if (missingContracts.isNotEmpty())
+            return CheckContractStateErrors.ContractNotFound(
+                cpid = params.cpid,
+                ocid = params.ocid,
+                ids = missingContracts.map { it.underlying })
                 .asValidationError()
+
+        frameworkContracts.forEach { contract ->
+            if (!validStates.contains(contract.status, contract.statusDetails))
+                return CheckContractStateErrors.InvalidContractState(
+                    contract.id.underlying, contract.status.key, contract.statusDetails.key, validStates
+                )
+                    .asValidationError()
+        }
 
         return ValidationResult.ok()
     }
