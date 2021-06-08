@@ -179,18 +179,33 @@ class FrameworkContractServiceImpl(
         params: CheckContractStateParams,
         validStates: ValidContractStatesRule
     ): ValidationResult<Fail> {
-        val canId = CANId.orNull(params.contracts.first().id)
-            ?: return CheckContractStateErrors.InvalidContractId(params.contracts.first().id, CANId.pattern)
-                .asValidationError()
+        val canIds = params.contracts.map {
+            CANId.orNull(it.id)
+                ?: return CheckContractStateErrors.InvalidContractId(it.id, CANId.pattern)
+                    .asValidationError()
+        }
 
-        val can = canRepository.findBy(params.cpid, canId)
+        val cans = canRepository.findBy(params.cpid, canIds)
             .onFailure { return it.reason.asValidationError() }
-            ?: return CheckContractStateErrors.ContractNotFound(params.cpid, params.ocid, canId.toString())
+
+        val missingContracts = canIds.toSet() - cans.toSetBy { it.id }
+        if (missingContracts.isNotEmpty())
+            return CheckContractStateErrors.ContractNotFound(
+                cpid = params.cpid,
+                ocid = params.ocid,
+                ids = missingContracts.map { it.underlying.toString() })
                 .asValidationError()
 
-        if (!validStates.contains(can.status, can.statusDetails))
-            return CheckContractStateErrors.InvalidContractState(can.status.key, can.statusDetails.key, validStates)
-                .asValidationError()
+        cans.forEach { can ->
+            if (!validStates.contains(can.status, can.statusDetails))
+                return CheckContractStateErrors.InvalidContractState(
+                    id = can.id.underlying.toString(),
+                    currentStatus = can.status.key,
+                    currentStatusDetails = can.statusDetails.key,
+                    validStates = validStates
+                )
+                    .asValidationError()
+        }
 
         return ValidationResult.ok()
     }
