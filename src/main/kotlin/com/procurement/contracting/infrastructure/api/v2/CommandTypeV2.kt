@@ -22,6 +22,7 @@ enum class CommandTypeV2(@JsonValue override val key: String) : EnumElementProvi
     FIND_CAN_IDS("findCANIds"),
     FIND_CONTRACT_DOCUMENT_ID("findContractDocumentId"),
     FIND_PACS_BY_LOT_IDS("findPacsByLotIds"),
+    GET_CAN_BY_IDS("getCanByIds"),
     GET_CONTRACT_STATE("getContractState"),
     GET_PAC("getPac"),
     GET_REQUEST_BY_CONFIRMATION_RESPONSE("getRequestByConfirmationResponse"),
