@@ -101,6 +101,7 @@ class SetStateForContractsParams private constructor(
         NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION),
         NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION(ParentOperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION),
         COMPLETE_SOURCING(ParentOperationType.COMPLETE_SOURCING),
+        CREATE_CONTRACT(ParentOperationType.CREATE_CONTRACT),
         ISSUING_FRAMEWORK_CONTRACT(ParentOperationType.ISSUING_FRAMEWORK_CONTRACT);
 
         override val key: String
@@ -116,7 +117,17 @@ class SetStateForContractsParams private constructor(
 
         CF(ProcurementMethodDetails.CF), TEST_CF(ProcurementMethodDetails.TEST_CF),
         OF(ProcurementMethodDetails.OF), TEST_OF(ProcurementMethodDetails.TEST_OF),
-        RFQ(ProcurementMethodDetails.RFQ), TEST_RFQ(ProcurementMethodDetails.TEST_RFQ)
+        RFQ(ProcurementMethodDetails.RFQ), TEST_RFQ(ProcurementMethodDetails.TEST_RFQ),
+        OT(ProcurementMethodDetails.OT), TEST_OT(ProcurementMethodDetails.TEST_OT),
+        MV(ProcurementMethodDetails.MV), TEST_MV(ProcurementMethodDetails.TEST_MV),
+        SV(ProcurementMethodDetails.SV), TEST_SV(ProcurementMethodDetails.TEST_SV),
+        GPA(ProcurementMethodDetails.GPA), TEST_GPA(ProcurementMethodDetails.TEST_GPA),
+        RT(ProcurementMethodDetails.RT), TEST_RT(ProcurementMethodDetails.TEST_RT),
+        DA(ProcurementMethodDetails.DA), TEST_DA(ProcurementMethodDetails.TEST_DA),
+        NP(ProcurementMethodDetails.NP), TEST_NP(ProcurementMethodDetails.TEST_NP),
+        CD(ProcurementMethodDetails.CD), TEST_CD(ProcurementMethodDetails.TEST_CD),
+        DC(ProcurementMethodDetails.DC), TEST_DC(ProcurementMethodDetails.TEST_DC),
+        IP(ProcurementMethodDetails.IP), TEST_IP(ProcurementMethodDetails.TEST_IP)
         ;
 
         override val key: String
