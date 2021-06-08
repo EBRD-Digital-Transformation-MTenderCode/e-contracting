@@ -1,0 +1,23 @@
+{
+  "contracts": [
+    {
+      "id": "588c6921-f8f7-49e7-a40f-c03493befcf4",
+      "status": "pending",
+      "statusDetails": "contractProject",
+      "awardId": "a0d23482-5ea9-4f3c-ac26-3ca97f07261c",
+      "lotId": "5f0b27ac-2f81-43db-9517-59fbe98c9299",
+      "documents": [
+        {
+          "id": "string",
+          "documentType": "evaluationReports",
+          "title": "string",
+          "description": "string",
+          "relatedLots": [
+            "e7d7b0fe-5ef2-4b59-a9cb-9391dddb3363"
+          ]
+        }
+      ],
+      "date": "2021-06-08T09:37:13Z"
+    }
+  ]
+}
