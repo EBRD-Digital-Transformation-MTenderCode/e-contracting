@@ -131,6 +131,7 @@ class FrameworkContractServiceImpl(
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
             OperationType.CREATE_CONFIRMATION_RESPONSE_BY_SUPPLIER,
+            OperationType.CREATE_CONTRACT,
             OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
             OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
             OperationType.NEXT_STEP_AFTER_SUPPLIERS_CONFIRMATION,
