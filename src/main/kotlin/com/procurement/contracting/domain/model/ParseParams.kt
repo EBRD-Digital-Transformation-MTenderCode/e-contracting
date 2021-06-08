@@ -3,6 +3,7 @@ package com.procurement.contracting.domain.model
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
@@ -87,6 +88,15 @@ fun parsePACId(value: String, attributeName: String): Result<PacId, DataErrors.V
         ?: DataErrors.Validation.DataFormatMismatch(
             name = attributeName,
             expectedFormat = PacId.pattern,
+            actualValue = value
+        ).asFailure()
+
+fun parseCANId(value: String, attributeName: String): Result<CANId, DataErrors.Validation.DataFormatMismatch> =
+    CANId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = CANId.pattern,
             actualValue = value
         ).asFailure()
 
