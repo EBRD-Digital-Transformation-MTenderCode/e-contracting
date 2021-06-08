@@ -18,18 +18,24 @@ data class GetCanByIdsResponse(
         @param:JsonProperty("id") @field:JsonProperty("id") val id: CANId,
         @param:JsonProperty("status") @field:JsonProperty("status") val status: CANStatus,
         @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: CANStatusDetails,
-        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId,
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId?,
+
         @param:JsonProperty("lotId") @field:JsonProperty("lotId") val lotId: LotId,
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @param:JsonProperty("documents") @field:JsonProperty("documents") val documents: List<Document>?,
 
-        @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime?
     ) {
         data class Document(
             @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
             @param:JsonProperty("documentType") @field:JsonProperty("documentType") val documentType: DocumentTypeContract,
-            @param:JsonProperty("title") @field:JsonProperty("title") val title: String,
+
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @param:JsonProperty("title") @field:JsonProperty("title") val title: String?,
 
             @JsonInclude(JsonInclude.Include.NON_NULL)
             @param:JsonProperty("description") @field:JsonProperty("description") val description: String?,
