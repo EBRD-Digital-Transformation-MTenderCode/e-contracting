@@ -3,29 +3,38 @@ package com.procurement.contracting.application.service
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.can.model.CANEntity
+import com.procurement.contracting.application.service.errors.GetCanByIdsErrors
 import com.procurement.contracting.application.service.model.CreateCANContext
 import com.procurement.contracting.application.service.model.CreateCANData
 import com.procurement.contracting.application.service.model.CreatedCANData
 import com.procurement.contracting.application.service.model.FindCANIdsParams
+import com.procurement.contracting.application.service.model.GetCanByIdsParams
 import com.procurement.contracting.domain.model.can.CAN
 import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.util.extension.mapResult
+import com.procurement.contracting.domain.util.extension.toSetBy
 import com.procurement.contracting.infrastructure.fail.Fail
+import com.procurement.contracting.infrastructure.handler.v2.model.response.GetCanByIdsResponse
 import com.procurement.contracting.lib.functional.Result
+import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.utils.toJson
 import org.springframework.stereotype.Service
 
 interface CANService {
     fun create(context: CreateCANContext, data: CreateCANData): CreatedCANData
     fun findCANIds(params: FindCANIdsParams): Result<List<CANId>, Fail.Incident>
+    fun getCanByIds(params: GetCanByIdsParams): Result<GetCanByIdsResponse, Fail>
 }
 
 @Service
 class CANServiceImpl(
     private val canRepository: CANRepository,
-    private val generationService: GenerationService
+    private val generationService: GenerationService,
+    private val transform: Transform
 ) : CANService {
 
     /**
@@ -148,5 +157,40 @@ class CANServiceImpl(
             documents = null,
             amendment = null
         )
+    }
+
+    override fun getCanByIds(params: GetCanByIdsParams): Result<GetCanByIdsResponse, Fail> {
+        val ids = params.contracts.toSetBy { it.id }
+        val canEntities = canRepository.findBy(cpid = params.cpid, canIds = ids.toList())
+            .onFailure { return it }
+
+        val missingCans = ids - canEntities.toSetBy { it.id }
+        if (missingCans.isNotEmpty())
+            return GetCanByIdsErrors.CanNotFound(params.cpid, ids).asFailure()
+
+        val cans = canEntities
+            .mapResult { transform.tryDeserialization(it.jsonData, Can::class.java) }
+            .onFailure { return it }
+
+        return GetCanByIdsResponse(cans.map { can ->
+            GetCanByIdsResponse.Contract(
+                id = can.id,
+                status = can.status,
+                statusDetails = can.statusDetails,
+                date = can.date,
+                awardId = can.awardId,
+                lotId = can.lotId,
+                documents = can.documents?.map { document ->
+                    GetCanByIdsResponse.Contract.Document(
+                        id = document.id,
+                        description = document.description,
+                        title = document.title,
+                        documentType = document.documentType,
+                        relatedLots = document.relatedLots
+                    )
+                }
+
+            )
+        }).asSuccess()
     }
 }
