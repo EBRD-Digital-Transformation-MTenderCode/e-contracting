@@ -1,8 +1,10 @@
-package com.procurement.contracting.infrastructure.handler.v2.base
+package com.procurement.contracting.infrastructure.handler.v2.converter
 
 import com.procurement.contracting.application.service.model.GetCanByIdsParams
+import com.procurement.contracting.domain.model.parseCANId
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseOcid
+import com.procurement.contracting.domain.util.extension.mapResult
 import com.procurement.contracting.infrastructure.fail.error.DataErrors
 import com.procurement.contracting.infrastructure.handler.v2.converter.rule.notEmptyRule
 import com.procurement.contracting.infrastructure.handler.v2.model.request.GetCanByIdsRequest
@@ -25,7 +27,14 @@ fun GetCanByIdsRequest.convert(): Result<GetCanByIdsParams, DataErrors> {
         cpid = cpidParsed,
         ocid = ocidParsed,
         contracts = contracts
-            .map { GetCanByIdsParams.Contract(it.id) }
+            .mapResult {it.convert() }.onFailure { error -> return error }
     ).asSuccess()
 }
+
+private fun GetCanByIdsRequest.Contract.convert(): Result<GetCanByIdsParams.Contract, DataErrors> {
+    val idParsed = parseCANId(id, "contracts.id")
+        .onFailure { error -> return error }
+    return GetCanByIdsParams.Contract(idParsed).asSuccess()
+}
+
 
