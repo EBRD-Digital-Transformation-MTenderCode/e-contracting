@@ -28,6 +28,8 @@ import org.springframework.stereotype.Repository
 class CassandraPacRepository(private val session: Session) : PacRepository {
 
     companion object {
+        private const val ID_VALUES = "id_values"
+
         private const val FIND_BY_CPID_AND_OCID_CQL = """
                SELECT ${Database.PAC.COLUMN_CPID},
                       ${Database.PAC.COLUMN_OCID},
@@ -57,6 +59,22 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
                 WHERE ${Database.PAC.COLUMN_CPID}=?
                   AND ${Database.PAC.COLUMN_OCID}=?
                   AND ${Database.PAC.COLUMN_ID}=?
+            """
+
+        private const val FIND_BY_CPID_AND_OCID_AND_IDS_CQL = """
+               SELECT ${Database.PAC.COLUMN_CPID},
+                      ${Database.PAC.COLUMN_OCID},
+                      ${Database.PAC.COLUMN_ID},
+                      ${Database.PAC.COLUMN_OWNER},
+                       ${Database.PAC.COLUMN_TOKEN},
+                      ${Database.PAC.COLUMN_CREATED_DATE},
+                      ${Database.PAC.COLUMN_STATUS},
+                      ${Database.PAC.COLUMN_STATUS_DETAILS},
+                      ${Database.PAC.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE}.${Database.PAC.TABLE}
+                WHERE ${Database.PAC.COLUMN_CPID}=?
+                  AND ${Database.PAC.COLUMN_OCID}=?
+                  AND ${Database.PAC.COLUMN_ID} in :$ID_VALUES;
             """
 
         private const val SAVE_NEW_CQL = """
@@ -89,6 +107,7 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
 
     private val preparedFindByCpidAndOcidCQL = session.prepare(FIND_BY_CPID_AND_OCID_CQL)
     private val preparedFindByCpidAndOcidAndIdCQL = session.prepare(FIND_BY_CPID_AND_OCID_AND_ID_CQL)
+    private val preparedFindByCpidAndOcidAndIdsCQL = session.prepare(FIND_BY_CPID_AND_OCID_AND_IDS_CQL)
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
     private val preparedUpdateCQL = session.prepare(UPDATE_STATUSES_CQL)
 
@@ -128,6 +147,18 @@ class CassandraPacRepository(private val session: Session) : PacRepository {
             .onFailure { return it }
             .one()
             ?.convert()
+            .asSuccess()
+
+    override fun findBy(cpid: Cpid,  ocid: Ocid, pacIds: List<PacId>): Result<List<PacRecord>, Fail.Incident.Database> =
+        preparedFindByCpidAndOcidAndIdsCQL.bind()
+            .apply {
+                setString(Database.PAC.COLUMN_CPID, cpid.underlying)
+                setString(Database.PAC.COLUMN_OCID, ocid.underlying)
+                setList(ID_VALUES, pacIds.map { it.underlying })
+            }
+            .tryExecute(session)
+            .onFailure { return it }
+            .map { it.convert() }
             .asSuccess()
 
     private fun Row.convert(): PacRecord {

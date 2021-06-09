@@ -25,21 +25,23 @@ class CheckContractStateParams private constructor(
             .filter {
                 when (it) {
                     ProcurementMethodDetails.CF, ProcurementMethodDetails.TEST_CF,
-                    ProcurementMethodDetails.OF, ProcurementMethodDetails.TEST_OF -> true
-
-                    ProcurementMethodDetails.CD, ProcurementMethodDetails.TEST_CD,
-                    ProcurementMethodDetails.DA, ProcurementMethodDetails.TEST_DA,
-                    ProcurementMethodDetails.DC, ProcurementMethodDetails.TEST_DC,
-                    ProcurementMethodDetails.FA, ProcurementMethodDetails.TEST_FA,
-                    ProcurementMethodDetails.GPA, ProcurementMethodDetails.TEST_GPA,
-                    ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP,
-                    ProcurementMethodDetails.MV, ProcurementMethodDetails.TEST_MV,
-                    ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
-                    ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
-                    ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+                    ProcurementMethodDetails.OF, ProcurementMethodDetails.TEST_OF,
                     ProcurementMethodDetails.RFQ, ProcurementMethodDetails.TEST_RFQ,
+                    ProcurementMethodDetails.OT, ProcurementMethodDetails.TEST_OT,
+                    ProcurementMethodDetails.MV, ProcurementMethodDetails.TEST_MV,
+                    ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV,
+                    ProcurementMethodDetails.GPA, ProcurementMethodDetails.TEST_GPA,
                     ProcurementMethodDetails.RT, ProcurementMethodDetails.TEST_RT,
-                    ProcurementMethodDetails.SV, ProcurementMethodDetails.TEST_SV -> false
+                    ProcurementMethodDetails.DA, ProcurementMethodDetails.TEST_DA,
+                    ProcurementMethodDetails.NP, ProcurementMethodDetails.TEST_NP,
+                    ProcurementMethodDetails.CD, ProcurementMethodDetails.TEST_CD,
+                    ProcurementMethodDetails.DC, ProcurementMethodDetails.TEST_DC,
+                    ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP
+                    -> true
+
+                    ProcurementMethodDetails.FA, ProcurementMethodDetails.TEST_FA,
+                    ProcurementMethodDetails.OP, ProcurementMethodDetails.TEST_OP,
+                     -> false
                 }
             }
             .toSet()
@@ -51,6 +53,7 @@ class CheckContractStateParams private constructor(
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_BUYER,
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_INVITED_CANDIDATE,
                     OperationType.CREATE_CONFIRMATION_RESPONSE_BY_SUPPLIER,
+                    OperationType.CREATE_CONTRACT,
                     OperationType.ISSUING_FRAMEWORK_CONTRACT,
                     OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION,
                     OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION,
