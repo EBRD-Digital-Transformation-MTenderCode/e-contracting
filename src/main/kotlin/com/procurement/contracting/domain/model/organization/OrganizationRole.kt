@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.model.EnumElementProvider
 enum class OrganizationRole(@JsonValue override val key: String) : EnumElementProvider.Element {
     BUYER("buyer"),
     SUPPLIER("supplier"),
+    PAYEE("payee"),
     PROCURING_ENTITY("procuringEntity"),
     INVITED_CANDIDATE("invitedCandidate")
     ;
