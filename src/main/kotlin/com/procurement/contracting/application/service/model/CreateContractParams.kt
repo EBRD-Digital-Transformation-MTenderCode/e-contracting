@@ -6,6 +6,7 @@ import com.procurement.contracting.domain.model.bid.BusinessFunctionType
 import com.procurement.contracting.domain.model.bid.PersonTitle
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.organization.OrganizationId
 import com.procurement.contracting.domain.model.organization.OrganizationRole
@@ -86,7 +87,7 @@ data class CreateContractParams(
         }
 
         data class Item(
-            val id: String,
+            val id: ItemId,
             val internalId: String?,
             val classification: Classification,
             val additionalClassifications: List<AdditionalClassification>,
