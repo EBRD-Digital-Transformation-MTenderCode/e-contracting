@@ -1,5 +1,6 @@
 package com.procurement.contracting.application.service.model
 
+import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
@@ -21,6 +22,7 @@ import java.time.LocalDateTime
 data class CreateContractParams(
     val cpid: Cpid,
     val relatedOcid: Ocid,
+    val owner: Owner,
     val tender: Tender,
     val awards: List<Award>,
     val date: LocalDateTime,
