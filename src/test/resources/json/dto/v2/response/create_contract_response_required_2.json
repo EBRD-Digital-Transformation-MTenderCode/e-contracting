@@ -1,0 +1,170 @@
+{
+  "contracts": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "pending",
+      "statusDetails": "contractProject",
+      "date": "2021-06-14T16:50:20Z",
+      "awardId": "775917c7-0242-45d9-9cad-c1c1a986cb18"
+    }
+  ],
+  "tender": {
+    "classification": {
+      "id": "string",
+      "scheme": "string",
+      "description": "string"
+    },
+    "procurementMethod": "string",
+    "procurementMethodDetails": "string",
+    "mainProcurementCategory": "goods",
+    "lots": [
+      {
+        "id": "9262c2ba-0a7b-4898-9f82-c529e316a90b",
+        "title": "string",
+        "placeOfPerformance": {
+          "address": {
+            "streetAddress": "string",
+            "addressDetails": {
+              "country": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "region": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "locality": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  },
+  "awards": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "value": {
+        "amount": 0.00,
+        "currency": "string"
+      },
+      "relatedLots": [
+        "1c1e08ec-c69e-4588-8a82-1a7cdccf787b"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "documents": [
+        {
+          "id": "string",
+          "documentType": "awardNotice",
+          "title": "string"
+        }
+      ],
+      "items": [
+        {
+          "id": "1c37f2c9-fb8d-4e9f-8a5e-8cbf3afb28e5",
+          "classification": {
+            "id": "string",
+            "scheme": "string",
+            "description": "string"
+          },
+          "quantity": 0,
+          "unit": {
+            "id": "string",
+            "name": "string"
+          },
+          "description": "string",
+          "relatedLot": "5065cbe2-b7d4-4a77-bfc8-3ed59ced38b6"
+        }
+      ]
+    }
+  ],
+  "token": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "relatedProcesses": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "relationship": [
+        "parent"
+      ],
+      "scheme": "ocid",
+      "identifier": "string",
+      "uri": "string"
+    }
+  ],
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "parties": [
+    {
+      "id": "string",
+      "name": "string",
+      "identifier": {
+        "id": "string",
+        "legalName": "string",
+        "scheme": "string"
+      },
+      "address": {
+        "streetAddress": "string",
+        "addressDetails": {
+          "country": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "region": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "locality": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string"
+          }
+        }
+      },
+      "contactPoint": {
+        "name": "string",
+        "email": "string",
+        "telephone": "string"
+      },
+      "persones": [
+        {
+          "title": "Mr.",
+          "id": "string",
+          "name": "string",
+          "identifier": {
+            "scheme": "string",
+            "id": "string",
+            "uri": "string"
+          },
+          "businessFunctions": [
+            {
+              "id": "string",
+              "type": "chairman",
+              "jobTitle": "string",
+              "period": {
+                "startDate": "2021-06-14T16:50:20Z"
+              }
+            }
+          ]
+        }
+      ],
+      "details": {
+        "scale": "micro"
+      }
+    }
+  ]
+}
