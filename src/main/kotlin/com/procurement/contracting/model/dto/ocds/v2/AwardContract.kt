@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
 import com.procurement.contracting.domain.model.ac.id.AwardContractId
 import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
@@ -18,6 +19,7 @@ import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.organization.OrganizationRole
 import com.procurement.contracting.domain.model.organization.Scale
 import com.procurement.contracting.domain.model.organization.TypeOfSupplier
+import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.model.related.process.RelatedProcessType
 import com.procurement.contracting.infrastructure.bind.amount.AmountDeserializer
@@ -27,12 +29,14 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class AwardContract(
+    @param:JsonProperty("cpid") @field:JsonProperty("cpid") val cpid: Cpid,
+    @param:JsonProperty("ocid") @field:JsonProperty("ocid") val ocid: Ocid,
     @param:JsonProperty("contracts") @field:JsonProperty("contracts") val contracts: List<Contract>,
     @param:JsonProperty("tender") @field:JsonProperty("tender") val tender: Tender,
     @param:JsonProperty("awards") @field:JsonProperty("awards") val awards: List<Award>,
     @param:JsonProperty("token") @field:JsonProperty("token") val token: Token,
+    @param:JsonProperty("owner") @field:JsonProperty("owner") val owner: Owner,
     @param:JsonProperty("relatedProcesses") @field:JsonProperty("relatedProcesses") val relatedProcesses: List<RelatedProcesse>,
-    @param:JsonProperty("ocid") @field:JsonProperty("ocid") val ocid: Ocid,
     @param:JsonProperty("parties") @field:JsonProperty("parties") val parties: List<Party>
 ) {
     data class Contract(
