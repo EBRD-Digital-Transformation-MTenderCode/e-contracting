@@ -11,6 +11,7 @@ import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
 import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
 import com.procurement.contracting.domain.model.organization.OrganizationRole
 import com.procurement.contracting.domain.model.organization.Scale
@@ -80,7 +81,6 @@ fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErro
             actualValue = value
         ).asFailure()
 
-
 fun parseFCId(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
     FrameworkContractId.orNull(value)
         ?.asSuccess()
@@ -116,6 +116,16 @@ fun parsePersonId(value: String, attributeName: String): Result<PersonId, DataEr
             expectedFormat = "string",
             actualValue = value
         ).asFailure()
+
+fun parseItemId(value: String, attributeName: String): Result<ItemId, DataErrors.Validation.DataFormatMismatch> =
+    value.tryUUID()
+        .mapFailure {
+            DataErrors.Validation.DataFormatMismatch(
+                name = attributeName,
+                expectedFormat = UUID_PATTERN,
+                actualValue = value
+            )
+        }
 
 fun parseCANStatus(
     status: String, allowedStatuses: Set<CANStatus>, attributeName: String
