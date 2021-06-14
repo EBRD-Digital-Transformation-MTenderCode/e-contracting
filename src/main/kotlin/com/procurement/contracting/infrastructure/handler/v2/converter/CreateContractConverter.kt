@@ -15,8 +15,11 @@ import com.procurement.contracting.domain.model.parseBFDocumentType
 import com.procurement.contracting.domain.model.parseBusinessFunctionType
 import com.procurement.contracting.domain.model.parseCpid
 import com.procurement.contracting.domain.model.parseDate
+import com.procurement.contracting.domain.model.parseItemId
 import com.procurement.contracting.domain.model.parseLotId
+import com.procurement.contracting.domain.model.parseOcid
 import com.procurement.contracting.domain.model.parseOrganizationRole
+import com.procurement.contracting.domain.model.parseOwner
 import com.procurement.contracting.domain.model.parsePersonId
 import com.procurement.contracting.domain.model.parsePersonTitle
 import com.procurement.contracting.domain.model.parsePmd
@@ -56,6 +59,12 @@ fun CreateContractRequest.convert(): Result<CreateContractParams, DataErrors> {
     val cpid = parseCpid(cpid)
         .onFailure { return it }
 
+    val relatedOcid = parseOcid(relatedOcid)
+        .onFailure { return it }
+
+    val owner = parseOwner(owner)
+        .onFailure { return it }
+
     val date = parseDate(date)
         .onFailure { return it }
 
@@ -75,6 +84,8 @@ fun CreateContractRequest.convert(): Result<CreateContractParams, DataErrors> {
 
     return CreateContractParams(
         cpid = cpid,
+        relatedOcid = relatedOcid,
+        owner = owner,
         date = date,
         tender = tender,
         awards = awards,
@@ -562,6 +573,9 @@ private fun CreateContractRequest.Tender.Lot.convert(path: String): Result<Creat
 }
 
 private fun CreateContractRequest.Tender.Item.convert(path: String): Result<CreateContractParams.Tender.Item, DataErrors> {
+    val id = parseItemId(id, "$path.id")
+        .onFailure { return it }
+
     val parsedRelatedLotId = parseLotId(relatedLot, "$path.relatedLot")
         .onFailure { return it }
 

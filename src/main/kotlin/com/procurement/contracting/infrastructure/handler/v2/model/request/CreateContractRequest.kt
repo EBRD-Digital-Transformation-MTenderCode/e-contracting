@@ -10,6 +10,8 @@ import java.math.BigDecimal
 
 data class CreateContractRequest(
     @param:JsonProperty("cpid") @field:JsonProperty("cpid") val cpid: String,
+    @param:JsonProperty("relatedOcid") @field:JsonProperty("relatedOcid") val relatedOcid: String,
+    @param:JsonProperty("owner") @field:JsonProperty("owner") val owner: String,
     @param:JsonProperty("tender") @field:JsonProperty("tender") val tender: Tender,
     @param:JsonProperty("awards") @field:JsonProperty("awards") val awards: List<Award>,
     @param:JsonProperty("date") @field:JsonProperty("date") val date: String,
