@@ -262,7 +262,7 @@ data class CreateContractParams(
             data class Permit(
                 val id: String,
                 val scheme: String,
-                val url: String,
+                val url: String?,
                 val permitDetails: PermitDetails
             ) {
                 data class PermitDetails(
