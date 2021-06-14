@@ -13,12 +13,14 @@ import com.procurement.contracting.domain.model.organization.OrganizationRole
 import com.procurement.contracting.domain.model.organization.Scale
 import com.procurement.contracting.domain.model.organization.TypeOfSupplier
 import com.procurement.contracting.domain.model.process.Cpid
+import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.model.dto.ocds.PersonId
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class CreateContractParams(
     val cpid: Cpid,
+    val relatedOcid: Ocid,
     val tender: Tender,
     val awards: List<Award>,
     val date: LocalDateTime,
