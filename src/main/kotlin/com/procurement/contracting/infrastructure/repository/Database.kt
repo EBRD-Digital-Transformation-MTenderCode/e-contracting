@@ -80,7 +80,7 @@ object Database {
     }
 
     object PO {
-        const val TABLE = "ac"
+        const val TABLE = "po"
         const val COLUMN_CPID = "cpid"
         const val COLUMN_OCID = "ocid"
         const val COLUMN_TOKEN = "token_entity"
