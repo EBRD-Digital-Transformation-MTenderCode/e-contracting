@@ -79,6 +79,18 @@ object Database {
         const val COLUMN_JSON_DATA = "json_data"
     }
 
+    object PO {
+        const val TABLE = "ac"
+        const val COLUMN_CPID = "cpid"
+        const val COLUMN_OCID = "ocid"
+        const val COLUMN_TOKEN = "token_entity"
+        const val COLUMN_OWNER = "owner"
+        const val COLUMN_CREATED_DATE = "created_date"
+        const val COLUMN_STATUS = "status"
+        const val COLUMN_STATUS_DETAILS = "status_details"
+        const val COLUMN_JSON_DATA = "json_data"
+    }
+
     object ConfirmationRequest {
         const val TABLE = "contracting_confirmation_requests"
         const val COLUMN_CPID = "cpid"
