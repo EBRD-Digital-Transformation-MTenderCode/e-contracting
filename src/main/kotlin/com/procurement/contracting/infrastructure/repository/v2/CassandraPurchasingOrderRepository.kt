@@ -123,7 +123,7 @@ class CassandraPurchasingOrderRepository(private val session: Session, private v
             .tryExecute(session)
             .mapFailure {
                 Fail.Incident.Database.DatabaseInteractionIncident(
-                    SaveEntityException(message = "Error writing new ac to database.", cause = it.exception)
+                    SaveEntityException(message = "Error writing new po to database.", cause = it.exception)
                 )
             }
             .onFailure { return it }
