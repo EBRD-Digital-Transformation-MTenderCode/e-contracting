@@ -91,5 +91,6 @@ enum class ErrorType constructor(val code: String, val message: String) {
     INCORRECT_VALUE_ATTRIBUTE("00.85", "Incorrect an attribute value."),
     DUPLICATE("00.86", "Duplicate."),
     INVALID_PMD("00.87", "Invalid pmd."),
+    INVALID_ORGANIZATION_ROLE("00.88", "Invalid organization role."),
     ;
 }
