@@ -100,22 +100,24 @@ class CassandraAwardContractRepository(private val session: Session, private val
             .onFailure { return Fail.Incident.Database.DatabaseInteractionIncident(it.reason.exception).asFailure() }
     ).asSuccess()
 
-    override fun save(entity: AwardContractEntity): Result<Boolean, Fail.Incident.Database> {
-        val jsonData = transform.trySerialization(entity)
+    override fun save(awardContract: AwardContract): Result<Boolean, Fail.Incident.Database> {
+        val jsonData = transform.trySerialization(awardContract)
             .onFailure { error ->
                 return Fail.Incident.Database.DatabaseInteractionIncident(error.reason.exception)
                     .asFailure()
             }
 
+        val contract = awardContract.contracts.first()
+
         return preparedSaveNewCQL.bind()
             .apply {
-                setString(Database.AC_V2.COLUMN_CPID, entity.cpid.underlying)
-                setString(Database.AC_V2.COLUMN_OCID, entity.ocid.underlying)
-                setUUID(Database.AC_V2.COLUMN_TOKEN, entity.token.underlying)
-                setString(Database.AC_V2.COLUMN_OWNER, entity.owner.underlying)
-                setTimestamp(Database.AC_V2.COLUMN_CREATED_DATE, entity.createdDate.toCassandraTimestamp())
-                setString(Database.AC_V2.COLUMN_STATUS, entity.status.key)
-                setString(Database.AC_V2.COLUMN_STATUS_DETAILS, entity.statusDetails.key)
+                setString(Database.AC_V2.COLUMN_CPID, awardContract.cpid.underlying)
+                setString(Database.AC_V2.COLUMN_OCID, awardContract.ocid.underlying)
+                setUUID(Database.AC_V2.COLUMN_TOKEN, awardContract.token.underlying)
+                setString(Database.AC_V2.COLUMN_OWNER, awardContract.owner.underlying)
+                setTimestamp(Database.AC_V2.COLUMN_CREATED_DATE, contract.date.toCassandraTimestamp())
+                setString(Database.AC_V2.COLUMN_STATUS, contract.status.key)
+                setString(Database.AC_V2.COLUMN_STATUS_DETAILS, contract.statusDetails.key)
                 setString(Database.AC_V2.COLUMN_JSON_DATA, jsonData)
             }
             .tryExecute(session)
