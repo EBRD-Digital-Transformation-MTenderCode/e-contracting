@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.procurement.contracting.domain.model.Token
-import com.procurement.contracting.domain.model.ac.id.AwardContractId
-import com.procurement.contracting.domain.model.ac.status.AwardContractStatus
-import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDetails
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BusinessFunctionType
 import com.procurement.contracting.domain.model.bid.PersonTitle
@@ -36,9 +33,9 @@ data class CreateContractResponse(
     @param:JsonProperty("parties") @field:JsonProperty("parties") val parties: List<Party>
 ) {
     data class Contract(
-        @param:JsonProperty("id") @field:JsonProperty("id") val id: AwardContractId,
-        @param:JsonProperty("status") @field:JsonProperty("status") val status: AwardContractStatus,
-        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: AwardContractStatusDetails,
+        @param:JsonProperty("id") @field:JsonProperty("id") val id: String,
+        @param:JsonProperty("status") @field:JsonProperty("status") val status: String,
+        @param:JsonProperty("statusDetails") @field:JsonProperty("statusDetails") val statusDetails: String,
         @param:JsonProperty("date") @field:JsonProperty("date") val date: LocalDateTime,
         @param:JsonProperty("awardId") @field:JsonProperty("awardId") val awardId: AwardId
     )
