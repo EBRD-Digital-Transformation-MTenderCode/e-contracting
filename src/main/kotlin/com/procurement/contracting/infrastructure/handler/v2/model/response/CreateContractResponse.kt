@@ -386,7 +386,9 @@ data class CreateContractResponse(
                 @param:JsonProperty("address") @field:JsonProperty("address") val address: Address,
                 @param:JsonProperty("identifier") @field:JsonProperty("identifier") val identifier: Identifier,
                 @param:JsonProperty("accountIdentification") @field:JsonProperty("accountIdentification") val accountIdentification: AccountIdentification,
-                @param:JsonProperty("additionalAccountIdentifiers") @field:JsonProperty("additionalAccountIdentifiers") val additionalAccountIdentifiers: List<AdditionalAccountIdentifier>
+
+                @JsonInclude(JsonInclude.Include.NON_NULL)
+                @param:JsonProperty("additionalAccountIdentifiers") @field:JsonProperty("additionalAccountIdentifiers") val additionalAccountIdentifiers: List<AdditionalAccountIdentifier>?
             ) {
                 data class Address(
                     @param:JsonProperty("streetAddress") @field:JsonProperty("streetAddress") val streetAddress: String,
