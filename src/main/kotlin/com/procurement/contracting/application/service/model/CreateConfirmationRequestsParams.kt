@@ -29,6 +29,7 @@ class CreateConfirmationRequestsParams private constructor(
                     OrganizationRole.SUPPLIER,
                     OrganizationRole.PROCURING_ENTITY,
                     OrganizationRole.INVITED_CANDIDATE -> true
+                    OrganizationRole.PAYEE -> false
                 }
             }
             .toSet()

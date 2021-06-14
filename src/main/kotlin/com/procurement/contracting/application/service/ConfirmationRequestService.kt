@@ -26,6 +26,8 @@ import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
 import com.procurement.contracting.domain.model.process.Stage
+import com.procurement.contracting.exception.ErrorException
+import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.fail.error.BadRequest
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CreateConfirmationRequestsResponse
@@ -235,6 +237,7 @@ class ConfirmationRequestServiceImpl(
             OrganizationRole.SUPPLIER -> ConfirmationRequestSource.TENDERER
             OrganizationRole.PROCURING_ENTITY -> ConfirmationRequestSource.PROCURING_ENTITY
             OrganizationRole.INVITED_CANDIDATE -> ConfirmationRequestSource.INVITED_CANDIDATE
+            OrganizationRole.PAYEE -> throw ErrorException(ErrorType.INVALID_ORGANIZATION_ROLE)
         }
 
     private fun getOrganizationsByRole(params: CreateConfirmationRequestsParams): Result<List<Organization>, Fail> =
@@ -267,6 +270,8 @@ class ConfirmationRequestServiceImpl(
                 ?.takeIf { it.isNotEmpty() }
                 ?.asSuccess()
                 ?: CreateConfirmationRequestsErrors.AttributeNotFound("dossier.candidates").asFailure()
+
+            OrganizationRole.PAYEE -> throw ErrorException(ErrorType.INVALID_ORGANIZATION_ROLE)
         }
 
     private data class Organization(val id: String, val name: String, val owner: String)
