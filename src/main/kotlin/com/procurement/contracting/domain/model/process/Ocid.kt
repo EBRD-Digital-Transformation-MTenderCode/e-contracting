@@ -3,7 +3,9 @@ package com.procurement.contracting.domain.model.process
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
+import com.procurement.contracting.domain.util.extension.toMilliseconds
 import java.io.Serializable
+import java.time.LocalDateTime
 
 class Ocid private constructor(@JsonValue val underlying: String, val stage: Stage) : Serializable {
     override fun equals(other: Any?): Boolean {
@@ -37,5 +39,8 @@ class Ocid private constructor(@JsonValue val underlying: String, val stage: Sta
                 Ocid(underlying = value, stage = stage)
             } else
                 null
+
+        fun generate(cpid: Cpid, stage: Stage, timestamp: LocalDateTime): Ocid =
+            Ocid("$cpid-$stage-${timestamp.toMilliseconds()}", stage)
     }
 }
