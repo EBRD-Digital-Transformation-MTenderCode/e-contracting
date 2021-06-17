@@ -7,7 +7,7 @@ import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.model.dto.ocds.v2.AwardContract
 
-interface AwardContractRepository {
+interface AwardContractRepositoryV2 {
     fun findBy(cpid: Cpid, ocid: Ocid, id: AwardContractId): Result<AwardContractEntity?, Fail.Incident.Database>
 
     fun save(awardContract: AwardContract): Result<Boolean, Fail.Incident.Database>
