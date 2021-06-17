@@ -23,10 +23,11 @@ import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.model.dto.ocds.v2.AwardContract
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraAwardContractRepository(private val session: Session, private val transform: Transform) :
+class CassandraAwardContractRepository(@Qualifier("contracting") private val session: Session, private val transform: Transform) :
     AwardContractRepository {
 
     companion object {

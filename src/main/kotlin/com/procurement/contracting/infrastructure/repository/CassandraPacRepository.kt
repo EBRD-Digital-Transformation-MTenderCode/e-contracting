@@ -22,10 +22,11 @@ import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.MaybeFail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraPacRepository(private val session: Session) : PacRepository {
+class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : PacRepository {
 
     companion object {
         private const val FIND_BY_CPID_AND_OCID_CQL = """
