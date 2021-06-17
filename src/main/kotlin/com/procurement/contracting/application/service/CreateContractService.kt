@@ -10,9 +10,9 @@ import com.procurement.contracting.domain.model.ac.status.AwardContractStatusDet
 import com.procurement.contracting.domain.model.po.status.PurchasingOrderStatus
 import com.procurement.contracting.domain.model.po.status.PurchasingOrderStatusDetails
 import com.procurement.contracting.domain.model.process.Ocid
+import com.procurement.contracting.domain.model.process.Stage
 import com.procurement.contracting.domain.model.related.process.RelatedProcessType
 import com.procurement.contracting.domain.util.extension.nowDefaultUTC
-import com.procurement.contracting.domain.util.extension.toMilliseconds
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
 import com.procurement.contracting.infrastructure.configuration.properties.UriProperties
@@ -24,7 +24,6 @@ import com.procurement.contracting.lib.functional.asSuccess
 import com.procurement.contracting.model.dto.ocds.v2.AwardContract
 import com.procurement.contracting.model.dto.ocds.v2.PurchasingOrder
 import org.springframework.stereotype.Service
-import java.util.*
 
 interface CreateContractService {
     fun create(params: CreateContractParams): Result<CreateContractResponse, Fail>
@@ -223,7 +222,7 @@ class CreateContractServiceImpl(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.X_EVALUATION),
                     scheme = "ocid",
-                    identifier = params.cpid.underlying,
+                    identifier = params.relatedOcid.underlying,
                     uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.relatedOcid.underlying}"
                 )
             ),
@@ -431,7 +430,7 @@ class CreateContractServiceImpl(
                 )
             },
             token = generationService.token(),
-            ocid = Ocid.orNull(params.cpid.underlying + "-AC-" + (nowDefaultUTC().toMilliseconds() + Random().nextInt()))!!,
+            ocid = Ocid.generate(params.cpid, Stage.AC, nowDefaultUTC()),
             cpid = params.cpid,
             owner = params.owner
         )
@@ -921,7 +920,7 @@ class CreateContractServiceImpl(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.X_EVALUATION),
                     scheme = "ocid",
-                    identifier = params.cpid.underlying,
+                    identifier = params.relatedOcid.underlying,
                     uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.relatedOcid.underlying}"
                 )
             ),
@@ -1129,7 +1128,7 @@ class CreateContractServiceImpl(
                 )
             },
             token = generationService.token(),
-            ocid = Ocid.orNull(params.cpid.underlying + "-AC-" + (nowDefaultUTC().toMilliseconds() + Random().nextInt()))!!,
+            ocid = Ocid.generate(params.cpid, Stage.AC, nowDefaultUTC()),
             cpid = params.cpid,
             owner = params.owner
         )
