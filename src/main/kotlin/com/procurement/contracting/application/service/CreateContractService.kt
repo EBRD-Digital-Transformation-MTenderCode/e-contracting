@@ -1,6 +1,6 @@
 package com.procurement.contracting.application.service
 
-import com.procurement.contracting.application.repository.v2.AwardContractRepository
+import com.procurement.contracting.application.repository.v2.AwardContractRepositoryV2
 import com.procurement.contracting.application.repository.v2.PurchasingOrderRepository
 import com.procurement.contracting.application.service.errors.CreateContractErrors
 import com.procurement.contracting.application.service.model.CreateContractParams
@@ -31,7 +31,7 @@ interface CreateContractService {
 
 @Service
 class CreateContractServiceImpl(
-    private val acRepository: AwardContractRepository,
+    private val acRepositoryV2: AwardContractRepositoryV2,
     private val poRepository: PurchasingOrderRepository,
     private val generationService: GenerationService,
     private val uriProperties: UriProperties
@@ -54,7 +54,7 @@ class CreateContractServiceImpl(
             ProcurementMethodDetails.DC, ProcurementMethodDetails.TEST_DC,
             ProcurementMethodDetails.IP, ProcurementMethodDetails.TEST_IP -> {
                 val awardContract = generateAwardContract(params)
-                acRepository.save(awardContract)
+                acRepositoryV2.save(awardContract)
                     .onFailure { return it }
 
                 return mapToResult(awardContract).asSuccess()

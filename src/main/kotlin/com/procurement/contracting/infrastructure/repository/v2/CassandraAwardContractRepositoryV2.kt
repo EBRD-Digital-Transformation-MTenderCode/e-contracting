@@ -5,7 +5,7 @@ import com.datastax.driver.core.Session
 import com.procurement.contracting.application.exception.repository.ReadEntityException
 import com.procurement.contracting.application.exception.repository.SaveEntityException
 import com.procurement.contracting.application.repository.v2.AwardContractEntity
-import com.procurement.contracting.application.repository.v2.AwardContractRepository
+import com.procurement.contracting.application.repository.v2.AwardContractRepositoryV2
 import com.procurement.contracting.application.service.Transform
 import com.procurement.contracting.domain.model.Owner
 import com.procurement.contracting.domain.model.Token
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val session: Session, private val transform: Transform) :
-    AwardContractRepository {
+    AwardContractRepositoryV2 {
 
     companion object {
         private const val FIND_BY_CPID_OCID_AND_ID_CQL = """
@@ -56,7 +56,7 @@ class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val s
                       ${Database.AC_V2.COLUMN_STATUS_DETAILS},
                       ${Database.AC_V2.COLUMN_JSON_DATA}
                )
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
     }
