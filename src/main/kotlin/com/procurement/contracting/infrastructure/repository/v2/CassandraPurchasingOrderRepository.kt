@@ -56,7 +56,7 @@ class CassandraPurchasingOrderRepository(@Qualifier("contracting") private val s
                       ${Database.PO.COLUMN_STATUS_DETAILS},
                       ${Database.PO.COLUMN_JSON_DATA}
                )
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
     }

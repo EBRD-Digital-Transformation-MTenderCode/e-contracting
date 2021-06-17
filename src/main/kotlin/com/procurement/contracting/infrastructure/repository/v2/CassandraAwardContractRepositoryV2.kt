@@ -56,7 +56,7 @@ class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val s
                       ${Database.AC_V2.COLUMN_STATUS_DETAILS},
                       ${Database.AC_V2.COLUMN_JSON_DATA}
                )
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                IF NOT EXISTS
             """
     }
