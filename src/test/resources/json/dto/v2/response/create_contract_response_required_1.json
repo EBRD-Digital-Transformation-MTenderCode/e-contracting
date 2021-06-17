@@ -1,0 +1,249 @@
+{
+  "contracts": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "pending",
+      "statusDetails": "contractProject",
+      "date": "2021-06-14T16:50:20Z",
+      "awardId": "775917c7-0242-45d9-9cad-c1c1a986cb18"
+    }
+  ],
+  "tender": {
+    "classification": {
+      "id": "string",
+      "scheme": "string",
+      "description": "string"
+    },
+    "procurementMethod": "string",
+    "procurementMethodDetails": "string",
+    "mainProcurementCategory": "goods",
+    "lots": [
+      {
+        "id": "6ab4abec-4620-4b31-8f43-767d0d3813ed",
+        "title": "string",
+        "placeOfPerformance": {
+          "address": {
+            "streetAddress": "string",
+            "addressDetails": {
+              "country": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "region": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "locality": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  },
+  "awards": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "value": {
+        "amount": 0.00,
+        "currency": "string"
+      },
+      "relatedLots": [
+        "4cda2717-d165-43ef-ad73-890845c1790d"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "documents": [
+        {
+          "id": "string",
+          "documentType": "awardNotice",
+          "title": "string"
+        }
+      ],
+      "items": [
+        {
+          "id": "22f0cb9e-e561-4929-882b-6cb8504c87e0",
+          "classification": {
+            "id": "string",
+            "scheme": "string",
+            "description": "string"
+          },
+          "quantity": 0,
+          "unit": {
+            "id": "string",
+            "name": "string"
+          },
+          "description": "string",
+          "relatedLot": "d61918aa-a3ac-4ef0-9913-8165b305daca"
+        }
+      ]
+    }
+  ],
+  "token": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "relatedProcesses": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "relationship": [
+        "parent"
+      ],
+      "scheme": "ocid",
+      "identifier": "string",
+      "uri": "string"
+    }
+  ],
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "parties": [
+    {
+      "id": "string",
+      "name": "string",
+      "identifier": {
+        "id": "string",
+        "legalName": "string",
+        "scheme": "string"
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "string",
+          "legalName": "string",
+          "scheme": "string"
+        }
+      ],
+      "address": {
+        "streetAddress": "string",
+        "addressDetails": {
+          "country": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "region": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "locality": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string"
+          }
+        }
+      },
+      "contactPoint": {
+        "name": "string",
+        "email": "string",
+        "telephone": "string"
+      },
+      "persones": [
+        {
+          "title": "Mr.",
+          "id": "string",
+          "name": "string",
+          "identifier": {
+            "scheme": "string",
+            "id": "string",
+            "uri": "string"
+          },
+          "businessFunctions": [
+            {
+              "id": "string",
+              "type": "chairman",
+              "jobTitle": "string",
+              "period": {
+                "startDate": "2021-06-14T16:50:20Z"
+              },
+              "documents": [
+                {
+                  "id": "string",
+                  "documentType": "regulatoryDocument",
+                  "title": "string"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "details": {
+        "mainEconomicActivities": [
+          {
+            "id": "string",
+            "scheme": "string",
+            "description": "string"
+          }
+        ],
+        "scale": "micro",
+        "permits": [
+          {
+            "id": "string",
+            "scheme": "string",
+            "permitDetails": {
+              "issuedBy": {
+                "id": "string",
+                "name": "string"
+              },
+              "issuedThought": {
+                "id": "string",
+                "name": "string"
+              },
+              "validityPeriod": {
+                "startDate": "2021-06-14T16:50:20Z"
+              }
+            }
+          }
+        ],
+        "bankAccounts": [
+          {
+            "description": "string",
+            "bankName": "string",
+            "address": {
+              "streetAddress": "string",
+              "addressDetails": {
+                "country": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                },
+                "region": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                },
+                "locality": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                }
+              }
+            },
+            "identifier": {
+              "scheme": "UA-MFO",
+              "id": "string"
+            },
+            "accountIdentification": {
+              "scheme": "IBAN",
+              "id": "string"
+            }
+          }
+        ],
+        "legalForm": {
+          "scheme": "MD-CFOJ",
+          "id": "string",
+          "description": "string"
+        }
+      }
+    }
+  ]
+}

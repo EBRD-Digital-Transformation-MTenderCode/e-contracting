@@ -7,10 +7,11 @@ import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraTemplateRepository(private val session: Session) : TemplateRepository {
+class CassandraTemplateRepository(@Qualifier("ocds") private val session: Session) : TemplateRepository {
 
     companion object {
         private const val FIND_CQL = """

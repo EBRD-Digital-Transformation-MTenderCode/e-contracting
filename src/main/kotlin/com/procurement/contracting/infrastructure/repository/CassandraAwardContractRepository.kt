@@ -19,10 +19,11 @@ import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraAwardContractRepository(private val session: Session) : AwardContractRepository {
+class CassandraAwardContractRepository(@Qualifier("ocds") private val session: Session) : AwardContractRepository {
 
     companion object {
         private const val FIND_BY_CPID_AND_ID_CQL = """

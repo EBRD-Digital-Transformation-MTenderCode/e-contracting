@@ -223,3 +223,33 @@ INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_CF-app
 INSERT INTO ocds.contracting_rules (key,parameter,value) VALUES ('MD-TEST_OF-applyConfirmations-PC','validContractStates','[{"status":{"value":"pending"},"statusDetails":{"value":"signed"}}]');
 
 ALTER TABLE ocds.contracting_pac ADD token_entity TEXT;
+
+
+CREATE KEYSPACE IF NOT EXISTS contracting WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
+
+
+CREATE TABLE IF NOT EXISTS contracting.ac
+(
+    cpid           TEXT,
+    ocid           TEXT,
+    token_entity   TEXT,
+    owner          TEXT,
+    created_date   TIMESTAMP,
+    status         TEXT,
+    status_details TEXT,
+    json_data      TEXT,
+    PRIMARY KEY (cpid, ocid)
+);
+
+CREATE TABLE IF NOT EXISTS contracting.po
+(
+    cpid           TEXT,
+    ocid           TEXT,
+    token_entity   TEXT,
+    owner          TEXT,
+    created_date   TIMESTAMP,
+    status         TEXT,
+    status_details TEXT,
+    json_data      TEXT,
+    PRIMARY KEY (cpid, ocid)
+);

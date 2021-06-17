@@ -7,6 +7,7 @@ import com.procurement.contracting.domain.util.extension.nowDefaultUTC
 import com.procurement.contracting.domain.util.extension.toMilliseconds
 import com.procurement.contracting.exception.ErrorException
 import com.procurement.contracting.exception.ErrorType
+import com.procurement.contracting.extension.isUUID
 import java.util.*
 
 class AwardContractId private constructor(val underlying: String) {
@@ -19,10 +20,13 @@ class AwardContractId private constructor(val underlying: String) {
 
         @JvmStatic
         @JsonCreator
-        fun orNull(value: String): AwardContractId? = if (value.matches(regex)) AwardContractId(underlying = value) else null
+        fun orNull(value: String): AwardContractId? = if (value.matches(regex) || value.isUUID) AwardContractId(underlying = value) else null
 
         fun generate(cpid: Cpid): AwardContractId =
             AwardContractId(cpid.underlying + "-AC-" + (nowDefaultUTC().toMilliseconds() + Random().nextInt()))
+
+        fun generate(): AwardContractId =
+            AwardContractId(UUID.randomUUID().toString())
     }
 
     override fun equals(other: Any?): Boolean {
