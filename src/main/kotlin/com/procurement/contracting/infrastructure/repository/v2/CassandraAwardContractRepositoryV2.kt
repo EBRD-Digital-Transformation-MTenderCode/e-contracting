@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraAwardContractRepository(@Qualifier("contracting") private val session: Session, private val transform: Transform) :
+class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val session: Session, private val transform: Transform) :
     AwardContractRepository {
 
     companion object {
