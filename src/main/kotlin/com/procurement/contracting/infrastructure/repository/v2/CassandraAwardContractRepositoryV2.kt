@@ -89,7 +89,7 @@ class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val s
     private fun Row.convert(): Result<AwardContractEntity, Fail.Incident.Database> = AwardContractEntity(
         cpid = Cpid.orNull(getString(Database.AC_V2.COLUMN_CPID))!!,
         ocid = Ocid.orNull(getString(Database.AC_V2.COLUMN_OCID))!!,
-        token = Token.orNull(getUUID(Database.AC_V2.COLUMN_TOKEN).toString())!!,
+        token = Token.orNull(getString(Database.AC_V2.COLUMN_TOKEN))!!,
         owner = Owner.orNull(getString(Database.AC_V2.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.AC_V2.COLUMN_CREATED_DATE).toLocalDateTime(),
         status = AwardContractStatus.creator(getString(Database.AC_V2.COLUMN_STATUS)),
@@ -114,7 +114,7 @@ class CassandraAwardContractRepositoryV2(@Qualifier("contracting") private val s
             .apply {
                 setString(Database.AC_V2.COLUMN_CPID, awardContract.cpid.underlying)
                 setString(Database.AC_V2.COLUMN_OCID, awardContract.ocid.underlying)
-                setUUID(Database.AC_V2.COLUMN_TOKEN, awardContract.token.underlying)
+                setString(Database.AC_V2.COLUMN_TOKEN, awardContract.token.underlying.toString())
                 setString(Database.AC_V2.COLUMN_OWNER, awardContract.owner.underlying)
                 setTimestamp(Database.AC_V2.COLUMN_CREATED_DATE, contract.date.toCassandraTimestamp())
                 setString(Database.AC_V2.COLUMN_STATUS, contract.status.key)

@@ -89,7 +89,7 @@ class CassandraPurchasingOrderRepository(@Qualifier("contracting") private val s
     private fun Row.convert(): Result<PurchasingOrderEntity, Fail.Incident.Database> = PurchasingOrderEntity(
         cpid = Cpid.orNull(getString(Database.PO.COLUMN_CPID))!!,
         ocid = Ocid.orNull(getString(Database.PO.COLUMN_OCID))!!,
-        token = Token.orNull(getUUID(Database.PO.COLUMN_TOKEN).toString())!!,
+        token = Token.orNull(getString(Database.PO.COLUMN_TOKEN))!!,
         owner = Owner.orNull(getString(Database.PO.COLUMN_OWNER))!!,
         createdDate = getTimestamp(Database.PO.COLUMN_CREATED_DATE).toLocalDateTime(),
         status = PurchasingOrderStatus.creator(getString(Database.PO.COLUMN_STATUS)),
@@ -114,7 +114,7 @@ class CassandraPurchasingOrderRepository(@Qualifier("contracting") private val s
             .apply {
                 setString(Database.PO.COLUMN_CPID, purchasingOrder.cpid.underlying)
                 setString(Database.PO.COLUMN_OCID, purchasingOrder.ocid.underlying)
-                setUUID(Database.PO.COLUMN_TOKEN, purchasingOrder.token.underlying)
+                setString(Database.PO.COLUMN_TOKEN, purchasingOrder.token.underlying.toString())
                 setString(Database.PO.COLUMN_OWNER, purchasingOrder.owner.underlying)
                 setTimestamp(Database.PO.COLUMN_CREATED_DATE, contract.date.toCassandraTimestamp())
                 setString(Database.PO.COLUMN_STATUS, contract.status.key)
