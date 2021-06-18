@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraRuleRepository(@Qualifier("ocds") private val session: Session) : RuleRepository {
+class CassandraRuleRepository(@Qualifier("contracting") private val session: Session) : RuleRepository {
 
     companion object {
 
         private const val GET_VALUE_BY_CQL = """
                SELECT ${Database.Rules.VALUE}
-                 FROM ${Database.KEYSPACE}.${Database.Rules.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.Rules.TABLE}
                 WHERE ${Database.Rules.KEY}=? 
                   AND ${Database.Rules.PARAMETER}=?
             """
