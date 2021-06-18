@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraHistoryRepository(@Qualifier("contracting") private val session: Session) : HistoryRepository {
+@Qualifier("ocds")
+class CassandraHistoryRepository(@Qualifier("ocds") private val session: Session) : HistoryRepository {
 
     companion object {
 
         private const val SAVE_HISTORY_CQL = """
-               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.History.TABLE}(
+               INSERT INTO ${Database.KEYSPACE}.${Database.History.TABLE}(
                       ${Database.History.COMMAND_ID},
                       ${Database.History.COMMAND_NAME},
                       ${Database.History.COMMAND_DATE},
@@ -34,7 +35,7 @@ class CassandraHistoryRepository(@Qualifier("contracting") private val session: 
                       ${Database.History.COMMAND_NAME},
                       ${Database.History.COMMAND_DATE},
                       ${Database.History.JSON_DATA}
-                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.History.TABLE}
+                 FROM ${Database.KEYSPACE}.${Database.History.TABLE}
                 WHERE ${Database.History.COMMAND_ID}=?
                   AND ${Database.History.COMMAND_NAME}=?
             """
