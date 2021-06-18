@@ -168,6 +168,7 @@ class PacServiceImpl(
             Stage.FS,
             Stage.NP,
             Stage.PN,
+            Stage.PO,
             Stage.RQ,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
         }
@@ -183,6 +184,7 @@ class PacServiceImpl(
             Stage.PC,
             Stage.PN,
             Stage.RQ,
+            Stage.PO,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
         }
 
@@ -196,6 +198,7 @@ class PacServiceImpl(
             Stage.FS,
             Stage.NP,
             Stage.PN,
+            Stage.PO,
             Stage.RQ,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(params.ocid.stage).asFailure()
         }

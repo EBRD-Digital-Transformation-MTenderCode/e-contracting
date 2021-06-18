@@ -49,6 +49,7 @@ class FindContractDocumentIdServiceImpl(
             Stage.EI,
             Stage.FS,
             Stage.PN,
+            Stage.PO,
             Stage.RQ -> return CheckAccessToContractErrors.UnexpectedStage(stage).asFailure()
         }
 

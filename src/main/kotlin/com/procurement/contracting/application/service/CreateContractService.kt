@@ -1128,7 +1128,7 @@ class CreateContractServiceImpl(
                 )
             },
             token = generationService.token(),
-            ocid = Ocid.generate(params.cpid, Stage.AC, nowDefaultUTC()),
+            ocid = Ocid.generate(params.cpid, Stage.PO, nowDefaultUTC()),
             cpid = params.cpid,
             owner = params.owner
         )

@@ -59,6 +59,7 @@ class GetSupplierIdsByContractServiceImpl(
             Stage.FS,
             Stage.NP,
             Stage.PN,
+            Stage.PO,
             Stage.RQ,
             Stage.TP -> GetSupplierIdsByContractErrors.InvalidStage(stage).asValidationError()
         }
