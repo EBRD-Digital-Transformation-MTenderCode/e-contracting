@@ -129,14 +129,14 @@ private fun CreateContractRequest.Party.convert(path: String): Result<CreateCont
             uri = identifier.uri,
             legalName = identifier.legalName
         ),
-        additionalIdentifiers = additionalIdentifiers.map { additionalIdentifier ->
+        additionalIdentifiers = additionalIdentifiers?.map { additionalIdentifier ->
             CreateContractParams.Party.AdditionalIdentifier(
                 id = additionalIdentifier.id,
                 legalName = additionalIdentifier.legalName,
                 scheme = additionalIdentifier.scheme,
                 uri = additionalIdentifier.uri
             )
-        },
+        }.orEmpty(),
         contactPoint = CreateContractParams.Party.ContactPoint(
             name = contactPoint.name,
             url = contactPoint.url,
