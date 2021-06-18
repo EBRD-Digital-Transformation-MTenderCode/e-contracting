@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraFrameworkContractRepository(@Qualifier("ocds") private val session: Session) : FrameworkContractRepository {
+class CassandraFrameworkContractRepository(@Qualifier("contracting") private val session: Session) : FrameworkContractRepository {
 
     companion object {
         private const val ID_VALUES = "id_values"
@@ -38,7 +38,7 @@ class CassandraFrameworkContractRepository(@Qualifier("ocds") private val sessio
                       ${Database.FC.COLUMN_STATUS},
                       ${Database.FC.COLUMN_STATUS_DETAILS},
                       ${Database.FC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.FC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                 WHERE ${Database.FC.COLUMN_CPID}=?
                   AND ${Database.FC.COLUMN_OCID}=?
             """
@@ -53,7 +53,7 @@ class CassandraFrameworkContractRepository(@Qualifier("ocds") private val sessio
                       ${Database.FC.COLUMN_STATUS},
                       ${Database.FC.COLUMN_STATUS_DETAILS},
                       ${Database.FC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.FC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                 WHERE ${Database.FC.COLUMN_CPID}=?
                   AND ${Database.FC.COLUMN_OCID}=?
                   AND ${Database.FC.COLUMN_ID}=?
@@ -69,14 +69,14 @@ class CassandraFrameworkContractRepository(@Qualifier("ocds") private val sessio
                       ${Database.FC.COLUMN_STATUS},
                       ${Database.FC.COLUMN_STATUS_DETAILS},
                       ${Database.FC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.FC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                 WHERE ${Database.FC.COLUMN_CPID}=?
                   AND ${Database.FC.COLUMN_OCID}=?
                   AND ${Database.FC.COLUMN_ID} in :$ID_VALUES;
             """
 
         private const val SAVE_NEW_CQL = """
-               INSERT INTO ${Database.KEYSPACE}.${Database.FC.TABLE}(
+               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}(
                       ${Database.FC.COLUMN_CPID},
                       ${Database.FC.COLUMN_OCID},
                       ${Database.FC.COLUMN_ID},
@@ -92,7 +92,7 @@ class CassandraFrameworkContractRepository(@Qualifier("ocds") private val sessio
             """
 
         private const val UPDATE_STATUSES_CQL = """
-               UPDATE ${Database.KEYSPACE}.${Database.FC.TABLE}
+               UPDATE ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                   SET ${Database.FC.COLUMN_STATUS}=?, 
                       ${Database.FC.COLUMN_STATUS_DETAILS}=?,
                       ${Database.FC.COLUMN_JSON_DATA}=?
