@@ -5,6 +5,14 @@ object Database {
     const val KEYSPACE_CONTRACTING = "contracting"
 
     object History {
+        const val TABLE = "contracting_history"
+        const val COMMAND_ID = "operation_id"
+        const val COMMAND_NAME = "command"
+        const val COMMAND_DATE = "operation_date"
+        const val JSON_DATA = "json_data"
+    }
+
+    object History_V2 {
         const val TABLE = "history"
         const val COMMAND_ID = "operation_id"
         const val COMMAND_NAME = "command"

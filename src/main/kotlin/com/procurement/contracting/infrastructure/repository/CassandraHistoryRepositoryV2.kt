@@ -22,24 +22,24 @@ class CassandraHistoryRepositoryV2(@Qualifier("contracting") private val session
     companion object {
 
         private const val SAVE_HISTORY_CQL = """
-               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.History.TABLE}(
-                      ${Database.History.COMMAND_ID},
-                      ${Database.History.COMMAND_NAME},
-                      ${Database.History.COMMAND_DATE},
-                      ${Database.History.JSON_DATA}
+               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.History_V2.TABLE}(
+                      ${Database.History_V2.COMMAND_ID},
+                      ${Database.History_V2.COMMAND_NAME},
+                      ${Database.History_V2.COMMAND_DATE},
+                      ${Database.History_V2.JSON_DATA}
                )
                VALUES(?, ?, ?, ?)
                IF NOT EXISTS
             """
 
         private const val FIND_HISTORY_ENTRY_CQL = """
-               SELECT ${Database.History.COMMAND_ID},
-                      ${Database.History.COMMAND_NAME},
-                      ${Database.History.COMMAND_DATE},
-                      ${Database.History.JSON_DATA}
-                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.History.TABLE}
-                WHERE ${Database.History.COMMAND_ID}=?
-                  AND ${Database.History.COMMAND_NAME}=?
+               SELECT ${Database.History_V2.COMMAND_ID},
+                      ${Database.History_V2.COMMAND_NAME},
+                      ${Database.History_V2.COMMAND_DATE},
+                      ${Database.History_V2.JSON_DATA}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.History_V2.TABLE}
+                WHERE ${Database.History_V2.COMMAND_ID}=?
+                  AND ${Database.History_V2.COMMAND_NAME}=?
             """
     }
 
@@ -49,13 +49,13 @@ class CassandraHistoryRepositoryV2(@Qualifier("contracting") private val session
     override fun getHistory(commandId: CommandId, action: Action): Result<String?, Fail.Incident.Database> =
         preparedFindHistoryByCpidAndCommandCQL.bind()
             .apply {
-                setString(Database.History.COMMAND_ID, commandId.underlying)
-                setString(Database.History.COMMAND_NAME, action.key)
+                setString(Database.History_V2.COMMAND_ID, commandId.underlying)
+                setString(Database.History_V2.COMMAND_NAME, action.key)
             }
             .tryExecute(session)
             .onFailure { return it }
             .one()
-            ?.getString(Database.History.JSON_DATA)
+            ?.getString(Database.History_V2.JSON_DATA)
             .asSuccess()
 
     override fun saveHistory(
@@ -64,10 +64,10 @@ class CassandraHistoryRepositoryV2(@Qualifier("contracting") private val session
         data: String
     ): Result<Boolean, Fail.Incident.Database> = preparedSaveHistoryCQL.bind()
         .apply {
-            setString(Database.History.COMMAND_ID, commandId.underlying)
-            setString(Database.History.COMMAND_NAME, action.key)
-            setTimestamp(Database.History.COMMAND_DATE, nowDefaultUTC().toCassandraTimestamp())
-            setString(Database.History.JSON_DATA, data)
+            setString(Database.History_V2.COMMAND_ID, commandId.underlying)
+            setString(Database.History_V2.COMMAND_NAME, action.key)
+            setTimestamp(Database.History_V2.COMMAND_DATE, nowDefaultUTC().toCassandraTimestamp())
+            setString(Database.History_V2.JSON_DATA, data)
         }
         .tryExecute(session)
         .onFailure { return it }
