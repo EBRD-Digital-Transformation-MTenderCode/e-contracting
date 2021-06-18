@@ -435,8 +435,8 @@ private fun CreateContractRequest.Award.convert(path: String): Result<CreateCont
     relatedLots.validate(notEmptyRule("$path.relatedLots"))
         .onFailure { return it }
 
-    val documents = documents.orEmpty().validate(notEmptyRule("$path.documents"))
-        .flatMap { it.mapResult { document -> document.convert("$path.documents") } }
+    val documents = documents.validate(notEmptyRule("$path.documents"))
+        .flatMap { it.orEmpty().mapResult { document -> document.convert("$path.documents") } }
         .onFailure { return it }
 
     return CreateContractParams.Award(
