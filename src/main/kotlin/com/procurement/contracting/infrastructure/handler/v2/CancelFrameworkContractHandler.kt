@@ -13,13 +13,14 @@ import com.procurement.contracting.infrastructure.handler.v2.model.request.Cance
 import com.procurement.contracting.infrastructure.handler.v2.model.response.CancelFrameworkContractResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.flatMap
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 @Component
 class CancelFrameworkContractHandler(
     private val cancelContractService: CancelFrameworkContractService,
     transform: Transform,
-    historyRepository: HistoryRepository,
+    @Qualifier("ocds") historyRepository: HistoryRepository,
     logger: Logger
 ) : AbstractHistoricalHandlerV2<CancelFrameworkContractResponse>(transform, historyRepository, logger) {
 
