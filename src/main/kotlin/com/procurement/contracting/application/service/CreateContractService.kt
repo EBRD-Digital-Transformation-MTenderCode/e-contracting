@@ -214,16 +214,16 @@ class CreateContractServiceImpl(
                 AwardContract.RelatedProcesse(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.PARENT),
-                    scheme = "cpid",
+                    scheme = "ocid",
                     identifier = params.cpid.underlying,
-                    uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.cpid.underlying}"
+                    uri = "${uriProperties.tender}/${params.cpid.underlying}/${params.cpid.underlying}"
                 ),
                 AwardContract.RelatedProcesse(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.X_EVALUATION),
                     scheme = "ocid",
                     identifier = params.relatedOcid.underlying,
-                    uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.relatedOcid.underlying}"
+                    uri = "${uriProperties.tender}/${params.cpid.underlying}/${params.relatedOcid.underlying}"
                 )
             ),
             parties = params.parties.map { party ->
@@ -912,16 +912,16 @@ class CreateContractServiceImpl(
                 PurchasingOrder.RelatedProcesse(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.PARENT),
-                    scheme = "cpid",
+                    scheme = "ocid",
                     identifier = params.cpid.underlying,
-                    uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.cpid.underlying}"
+                    uri = "${uriProperties.tender}/${params.cpid.underlying}/${params.cpid.underlying}"
                 ),
                 PurchasingOrder.RelatedProcesse(
                     id = generationService.relatedProcessesId(),
                     relationship = listOf(RelatedProcessType.X_EVALUATION),
                     scheme = "ocid",
                     identifier = params.relatedOcid.underlying,
-                    uri = "${uriProperties.tender}/tenders/${params.cpid.underlying}/${params.relatedOcid.underlying}"
+                    uri = "${uriProperties.tender}/${params.cpid.underlying}/${params.relatedOcid.underlying}"
                 )
             ),
             parties = params.parties.map { party ->
