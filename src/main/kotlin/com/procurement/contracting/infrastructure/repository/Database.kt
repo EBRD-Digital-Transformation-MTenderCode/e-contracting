@@ -5,7 +5,7 @@ object Database {
     const val KEYSPACE_CONTRACTING = "contracting"
 
     object History {
-        const val TABLE = "contracting_history"
+        const val TABLE = "history"
         const val COMMAND_ID = "operation_id"
         const val COMMAND_NAME = "command"
         const val COMMAND_DATE = "operation_date"
@@ -54,7 +54,7 @@ object Database {
     }
 
     object FC {
-        const val TABLE = "contracting_fc"
+        const val TABLE = "fc"
         const val COLUMN_CPID = "cpid"
         const val COLUMN_OCID = "ocid"
         const val COLUMN_ID = "id"
@@ -67,7 +67,7 @@ object Database {
     }
 
     object PAC {
-        const val TABLE = "contracting_pac"
+        const val TABLE = "pac"
         const val COLUMN_CPID = "cpid"
         const val COLUMN_OCID = "ocid"
         const val COLUMN_ID = "id"
@@ -92,7 +92,7 @@ object Database {
     }
 
     object ConfirmationRequest {
-        const val TABLE = "contracting_confirmation_requests"
+        const val TABLE = "confirmation_requests"
         const val COLUMN_CPID = "cpid"
         const val COLUMN_OCID = "ocid"
         const val COLUMN_CONTRACT_ID = "contract_id"
@@ -102,7 +102,7 @@ object Database {
     }
 
     object ConfirmationResponse {
-        const val TABLE = "contracting_confirmation_responses"
+        const val TABLE = "confirmation_responses"
         const val COLUMN_CPID = "cpid"
         const val COLUMN_OCID = "ocid"
         const val COLUMN_CONTRACT_ID = "contract_id"
@@ -112,7 +112,7 @@ object Database {
     }
 
     object Template {
-        const val TABLE = "contracting_templates"
+        const val TABLE = "templates"
         const val COLUMN_COUNTRY = "country"
         const val COLUMN_PMD = "pmd"
         const val COLUMN_TEMPLATE_ID = "template_id"
@@ -121,10 +121,7 @@ object Database {
     }
 
     object Rules {
-        const val TABLE = "contracting_rules"
-        const val COUNTRY = "country"
-        const val PMD = "pmd"
-        const val OPERATION_TYPE = "operation_type"
+        const val TABLE = "rules"
         const val PARAMETER = "parameter"
         const val VALUE = "value"
         const val KEY = "key"
