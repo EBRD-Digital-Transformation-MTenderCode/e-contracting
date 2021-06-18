@@ -171,6 +171,7 @@ class FrameworkContractServiceImpl(
             Stage.PN,
             Stage.FS,
             Stage.EI,
+            Stage.PO,
             Stage.AC -> CheckContractStateErrors.InvalidStage(stage).asValidationError()
         }
     }
