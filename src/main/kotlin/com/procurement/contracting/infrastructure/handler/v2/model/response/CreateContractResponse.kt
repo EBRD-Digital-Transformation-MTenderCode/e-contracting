@@ -329,7 +329,7 @@ data class CreateContractResponse(
 
             @param:JsonProperty("scale") @field:JsonProperty("scale") val scale: Scale,
 
-            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @param:JsonProperty("permits") @field:JsonProperty("permits") val permits: List<Permit>?,
 
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
