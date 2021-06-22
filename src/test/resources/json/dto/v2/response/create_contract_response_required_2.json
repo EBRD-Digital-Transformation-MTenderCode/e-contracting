@@ -65,13 +65,6 @@
           "name": "string"
         }
       ],
-      "documents": [
-        {
-          "id": "string",
-          "documentType": "awardNotice",
-          "title": "string"
-        }
-      ],
       "items": [
         {
           "id": "1c37f2c9-fb8d-4e9f-8a5e-8cbf3afb28e5",

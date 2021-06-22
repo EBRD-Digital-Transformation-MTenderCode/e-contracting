@@ -123,7 +123,9 @@ data class CreateContractResponse(
         @param:JsonProperty("value") @field:JsonProperty("value") val value: Value,
         @param:JsonProperty("relatedLots") @field:JsonProperty("relatedLots") val relatedLots: List<String>,
         @param:JsonProperty("suppliers") @field:JsonProperty("suppliers") val suppliers: List<Supplier>,
-        @param:JsonProperty("documents") @field:JsonProperty("documents") val documents: List<Document>,
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @param:JsonProperty("documents") @field:JsonProperty("documents") val documents: List<Document>?,
         @param:JsonProperty("items") @field:JsonProperty("items") val items: List<Item>
     ) {
         data class Value(
