@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : PacRepository {
+class CassandraPacRepository(@Qualifier("contracting") private val session: Session) : PacRepository {
 
     companion object {
         private const val ID_VALUES = "id_values"
@@ -41,7 +41,7 @@ class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : 
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
                       ${Database.PAC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.PAC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.PAC.TABLE}
                 WHERE ${Database.PAC.COLUMN_CPID}=?
                   AND ${Database.PAC.COLUMN_OCID}=?
             """
@@ -51,12 +51,12 @@ class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : 
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
                       ${Database.PAC.COLUMN_OWNER},
-                       ${Database.PAC.COLUMN_TOKEN},
+                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
                       ${Database.PAC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.PAC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.PAC.TABLE}
                 WHERE ${Database.PAC.COLUMN_CPID}=?
                   AND ${Database.PAC.COLUMN_OCID}=?
                   AND ${Database.PAC.COLUMN_ID}=?
@@ -67,19 +67,19 @@ class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : 
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
                       ${Database.PAC.COLUMN_OWNER},
-                       ${Database.PAC.COLUMN_TOKEN},
+                      ${Database.PAC.COLUMN_TOKEN},
                       ${Database.PAC.COLUMN_CREATED_DATE},
                       ${Database.PAC.COLUMN_STATUS},
                       ${Database.PAC.COLUMN_STATUS_DETAILS},
                       ${Database.PAC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.PAC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.PAC.TABLE}
                 WHERE ${Database.PAC.COLUMN_CPID}=?
                   AND ${Database.PAC.COLUMN_OCID}=?
                   AND ${Database.PAC.COLUMN_ID} in :$ID_VALUES;
             """
 
         private const val SAVE_NEW_CQL = """
-               INSERT INTO ${Database.KEYSPACE}.${Database.PAC.TABLE}(
+               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.PAC.TABLE}(
                       ${Database.PAC.COLUMN_CPID},
                       ${Database.PAC.COLUMN_OCID},
                       ${Database.PAC.COLUMN_ID},
@@ -95,7 +95,7 @@ class CassandraPacRepository(@Qualifier("ocds") private val session: Session) : 
             """
 
         private const val UPDATE_STATUSES_CQL = """
-               UPDATE ${Database.KEYSPACE}.${Database.PAC.TABLE}
+               UPDATE ${Database.KEYSPACE_CONTRACTING}.${Database.PAC.TABLE}
                   SET ${Database.PAC.COLUMN_STATUS}=?, 
                       ${Database.PAC.COLUMN_STATUS_DETAILS}=?,
                       ${Database.PAC.COLUMN_JSON_DATA}=?

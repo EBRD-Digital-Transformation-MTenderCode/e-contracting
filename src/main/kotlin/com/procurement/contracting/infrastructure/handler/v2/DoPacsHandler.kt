@@ -13,13 +13,14 @@ import com.procurement.contracting.infrastructure.handler.v2.model.request.DoPac
 import com.procurement.contracting.infrastructure.handler.v2.model.response.DoPacsResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.flatMap
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 @Component
 class DoPacsHandler(
     private val pacService: PacService,
     transform: Transform,
-    historyRepository: HistoryRepository,
+    @Qualifier("ocds") historyRepository: HistoryRepository,
     logger: Logger
 ) : AbstractHistoricalHandlerV2<DoPacsResponse?>(transform, historyRepository, logger) {
 

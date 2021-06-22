@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraTemplateRepository(@Qualifier("ocds") private val session: Session) : TemplateRepository {
+class CassandraTemplateRepository(@Qualifier("contracting") private val session: Session) : TemplateRepository {
 
     companion object {
         private const val FIND_CQL = """
                SELECT ${Database.Template.COLUMN_TEMPLATE}
-                 FROM ${Database.KEYSPACE}.${Database.Template.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.Template.TABLE}
                 WHERE ${Database.Template.COLUMN_COUNTRY}=?
                   AND ${Database.Template.COLUMN_PMD}=?
                   AND ${Database.Template.COLUMN_LANGUAGE}=?
