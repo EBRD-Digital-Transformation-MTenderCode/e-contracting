@@ -304,7 +304,7 @@ data class CreateContractResponse(
                 @param:JsonProperty("jobTitle") @field:JsonProperty("jobTitle") val jobTitle: String,
                 @param:JsonProperty("period") @field:JsonProperty("period") val period: Period,
 
-                @JsonInclude(JsonInclude.Include.NON_NULL)
+                @JsonInclude(JsonInclude.Include.NON_EMPTY)
                 @param:JsonProperty("documents") @field:JsonProperty("documents") val documents: List<Document>?
             ) {
                 data class Period(
