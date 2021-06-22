@@ -239,8 +239,8 @@ private fun CreateContractRequest.Party.Persone.BusinessFunction.convert(path: S
     val startDate = parseDate(period.startDate, "$path.period.startDate")
         .onFailure { return it }
 
-    val documents = documents.orEmpty().validate(notEmptyRule("$path.documents"))
-        .flatMap { it.mapResult { document -> document.convert("$path.documents") } }
+    val documents = documents.orEmpty()
+        .mapResult { document -> document.convert("$path.documents") }
         .onFailure { return it }
 
     return CreateContractParams.Party.Persone.BusinessFunction(
