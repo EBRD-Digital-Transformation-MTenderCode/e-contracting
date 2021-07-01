@@ -64,6 +64,7 @@ class ContractStateServiceImpl(
             Stage.EI,
             Stage.FS,
             Stage.PN,
+            Stage.PO,
             Stage.RQ -> return failure(GetContractStateErrors.UnexpectedStage(stage))
         }
 

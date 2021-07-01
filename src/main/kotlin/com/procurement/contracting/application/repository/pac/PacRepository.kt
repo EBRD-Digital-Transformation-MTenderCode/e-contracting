@@ -13,6 +13,8 @@ interface PacRepository {
 
     fun findBy(cpid: Cpid, ocid: Ocid, contractId: PacId): Result<PacRecord?, Fail.Incident.Database>
 
+    fun findBy(cpid: Cpid, ocid: Ocid, pacIds: List<PacId>): Result<List<PacRecord>, Fail.Incident.Database>
+
     fun saveNew(record: PacRecord): Result<Boolean, Fail.Incident.Database>
 
     fun update(record: PacRecord): Result<Boolean, Fail.Incident.Database>

@@ -1,0 +1,291 @@
+{
+  "contracts": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "pending",
+      "statusDetails": "contractProject",
+      "date": "2021-06-14T16:50:20Z",
+      "awardId": "775917c7-0242-45d9-9cad-c1c1a986cb18"
+    }
+  ],
+  "tender": {
+    "classification": {
+      "id": "string",
+      "scheme": "string",
+      "description": "string"
+    },
+    "procurementMethod": "string",
+    "procurementMethodDetails": "string",
+    "mainProcurementCategory": "goods",
+    "lots": [
+      {
+        "id": "e6c3391d-7f70-4e07-aa7f-04954c7e270c",
+        "internalId": "string",
+        "title": "string",
+        "description": "string",
+        "placeOfPerformance": {
+          "description": "string",
+          "address": {
+            "streetAddress": "string",
+            "postalCode": "string",
+            "addressDetails": {
+              "country": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "region": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "locality": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "additionalProcurementCategories": [
+      "goods"
+    ],
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  },
+  "awards": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "value": {
+        "amount": 0.00,
+        "currency": "string"
+      },
+      "relatedLots": [
+        "f5218e86-d7c7-4a7e-9993-064a46f676a2"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "documents": [
+        {
+          "id": "string",
+          "documentType": "awardNotice",
+          "title": "string",
+          "description": "string",
+          "relatedLots": [
+            "9b8ab8d8-038a-459e-bf74-415a88b41ee2"
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "9816722f-fcb8-4d51-ab9a-e6f60b619586",
+          "internalId": "string",
+          "classification": {
+            "id": "string",
+            "scheme": "string",
+            "description": "string"
+          },
+          "additionalClassifications": [
+            {
+              "id": "string",
+              "scheme": "string",
+              "description": "string"
+            }
+          ],
+          "quantity": 0,
+          "unit": {
+            "id": "string",
+            "name": "string"
+          },
+          "description": "string",
+          "relatedLot": "2bd13242-badf-4b75-8005-e63e49758990"
+        }
+      ]
+    }
+  ],
+  "token": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "relatedProcesses": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "relationship": [
+        "parent"
+      ],
+      "scheme": "ocid",
+      "identifier": "string",
+      "uri": "string"
+    }
+  ],
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "parties": [
+    {
+      "id": "string",
+      "name": "string",
+      "identifier": {
+        "id": "string",
+        "legalName": "string",
+        "scheme": "string",
+        "uri": "string"
+      },
+      "additionalIdentifiers": [
+        {
+          "id": "string",
+          "legalName": "string",
+          "scheme": "string",
+          "uri": "string"
+        }
+      ],
+      "address": {
+        "streetAddress": "string",
+        "postalCode": "string",
+        "addressDetails": {
+          "country": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "region": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "locality": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          }
+        }
+      },
+      "contactPoint": {
+        "name": "string",
+        "email": "string",
+        "telephone": "string",
+        "faxNumber": "string",
+        "url": "string"
+      },
+      "persones": [
+        {
+          "title": "Mr.",
+          "id": "string",
+          "name": "string",
+          "identifier": {
+            "scheme": "string",
+            "id": "string",
+            "uri": "string"
+          },
+          "businessFunctions": [
+            {
+              "id": "string",
+              "type": "chairman",
+              "jobTitle": "string",
+              "period": {
+                "startDate": "2021-06-14T16:50:20Z"
+              },
+              "documents": [
+                {
+                  "id": "string",
+                  "documentType": "regulatoryDocument",
+                  "title": "string",
+                  "description": "string"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "details": {
+        "typeOfSupplier": "company",
+        "mainEconomicActivities": [
+          {
+            "id": "string",
+            "scheme": "string",
+            "description": "string",
+            "uri": "string"
+          }
+        ],
+        "scale": "micro",
+        "permits": [
+          {
+            "id": "string",
+            "scheme": "string",
+            "url": "string",
+            "permitDetails": {
+              "issuedBy": {
+                "id": "string",
+                "name": "string"
+              },
+              "issuedThought": {
+                "id": "string",
+                "name": "string"
+              },
+              "validityPeriod": {
+                "startDate": "2021-06-14T16:50:20Z",
+                "endDate": "2021-06-14T16:50:20Z"
+              }
+            }
+          }
+        ],
+        "bankAccounts": [
+          {
+            "description": "string",
+            "bankName": "string",
+            "address": {
+              "streetAddress": "string",
+              "postalCode": "string",
+              "addressDetails": {
+                "country": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                },
+                "region": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                },
+                "locality": {
+                  "id": "string",
+                  "description": "string",
+                  "scheme": "string"
+                }
+              }
+            },
+            "identifier": {
+              "scheme": "UA-MFO",
+              "id": "string"
+            },
+            "accountIdentification": {
+              "scheme": "IBAN",
+              "id": "string"
+            },
+            "additionalAccountIdentifiers": [
+              {
+                "scheme": "fiscal",
+                "id": "string"
+              }
+            ]
+          }
+        ],
+        "legalForm": {
+          "scheme": "MD-CFOJ",
+          "id": "string",
+          "description": "string",
+          "uri": "string"
+        }
+      },
+      "roles": [
+        "supplier"
+      ]
+    }
+  ]
+}

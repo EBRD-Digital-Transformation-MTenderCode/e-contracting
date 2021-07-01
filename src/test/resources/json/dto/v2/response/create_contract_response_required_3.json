@@ -1,0 +1,141 @@
+{
+  "contracts": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "status": "pending",
+      "statusDetails": "contractProject",
+      "date": "2021-06-14T16:50:20Z",
+      "awardId": "775917c7-0242-45d9-9cad-c1c1a986cb18"
+    }
+  ],
+  "tender": {
+    "classification": {
+      "id": "string",
+      "scheme": "string",
+      "description": "string"
+    },
+    "procurementMethod": "string",
+    "procurementMethodDetails": "string",
+    "mainProcurementCategory": "goods",
+    "lots": [
+      {
+        "id": "b611f49d-4ff7-4d5e-aa90-e5f8670792d3",
+        "title": "string",
+        "placeOfPerformance": {
+          "address": {
+            "streetAddress": "string",
+            "addressDetails": {
+              "country": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "region": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string",
+                "uri": "string"
+              },
+              "locality": {
+                "id": "string",
+                "description": "string",
+                "scheme": "string"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  },
+  "awards": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "value": {
+        "amount": 0.00,
+        "currency": "string"
+      },
+      "relatedLots": [
+        "35b821dc-7c28-480b-adde-4480ef70bae5"
+      ],
+      "suppliers": [
+        {
+          "id": "string",
+          "name": "string"
+        }
+      ],
+      "items": [
+        {
+          "id": "39e28644-078b-4af3-84e2-d333ddf7c3d2",
+          "classification": {
+            "id": "string",
+            "scheme": "string",
+            "description": "string"
+          },
+          "quantity": 0,
+          "unit": {
+            "id": "string",
+            "name": "string"
+          },
+          "description": "string",
+          "relatedLot": "a8e43bed-7272-485d-9875-9b9cba399fd6"
+        }
+      ]
+    }
+  ],
+  "token": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "relatedProcesses": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "relationship": [
+        "parent"
+      ],
+      "scheme": "ocid",
+      "identifier": "string",
+      "uri": "string"
+    }
+  ],
+  "ocid": "ocds-b3wdp1-MD-1580458690892-EV-1580458791896",
+  "parties": [
+    {
+      "id": "string",
+      "name": "string",
+      "identifier": {
+        "id": "string",
+        "legalName": "string",
+        "scheme": "string"
+      },
+      "address": {
+        "streetAddress": "string",
+        "addressDetails": {
+          "country": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "region": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string",
+            "uri": "string"
+          },
+          "locality": {
+            "id": "string",
+            "description": "string",
+            "scheme": "string"
+          }
+        }
+      },
+      "contactPoint": {
+        "name": "string",
+        "email": "string",
+        "telephone": "string"
+      },
+      "details": {
+        "scale": "micro"
+      }
+    }
+  ]
+}

@@ -27,12 +27,15 @@ import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraCANRepository(private val session: Session) : CANRepository {
+class CassandraCANRepository(@Qualifier("ocds") private val session: Session) : CANRepository {
 
     companion object {
+        private const val ID_VALUES = "id_values"
+
         private const val FIND_BY_CPID_CQL = """
                SELECT ${Database.CAN.COLUMN_CPID},
                       ${Database.CAN.COLUMN_CANID},
@@ -64,6 +67,23 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
                  FROM ${Database.KEYSPACE}.${Database.CAN.TABLE}
                 WHERE ${Database.CAN.COLUMN_CPID}=?
                   AND ${Database.CAN.COLUMN_CANID}=?
+            """
+
+        private const val FIND_BY_CPID_AND_CAN_IDS_CQL = """
+               SELECT ${Database.CAN.COLUMN_CPID},
+                      ${Database.CAN.COLUMN_CANID},
+                      ${Database.CAN.COLUMN_TOKEN},
+                      ${Database.CAN.COLUMN_OWNER},
+                      ${Database.CAN.COLUMN_CREATED_DATE},
+                      ${Database.CAN.COLUMN_AWARD_ID},
+                      ${Database.CAN.COLUMN_LOT_ID},
+                      ${Database.CAN.COLUMN_AWARD_CONTRACT_ID},
+                      ${Database.CAN.COLUMN_STATUS},
+                      ${Database.CAN.COLUMN_STATUS_DETAILS},
+                      ${Database.CAN.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE}.${Database.CAN.TABLE}
+                WHERE ${Database.CAN.COLUMN_CPID}=?
+                  AND ${Database.CAN.COLUMN_CANID} in :$ID_VALUES;
             """
 
         private const val CANCEL_CQL = """
@@ -129,6 +149,7 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
     }
 
     private val preparedFindByCpidAndCanIdCQL = session.prepare(FIND_BY_CPID_AND_CAN_ID_CQL)
+    private val preparedFindByCpidAndCanIdsCQL = session.prepare(FIND_BY_CPID_AND_CAN_IDS_CQL)
     private val preparedFindByCpidCQL = session.prepare(FIND_BY_CPID_CQL)
     private val preparedCancelCQL = session.prepare(CANCEL_CQL)
     private val preparedResetCQL = session.prepare(RESET_CQL)
@@ -152,6 +173,17 @@ class CassandraCANRepository(private val session: Session) : CANRepository {
         preparedFindByCpidCQL.bind()
             .apply {
                 setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+            }
+            .tryExecute(session)
+            .onFailure { return it }
+            .map { it.convert() }
+            .asSuccess()
+
+    override fun findBy(cpid: Cpid, canIds: List<CANId>): Result<List<CANEntity>, Fail.Incident.Database> =
+        preparedFindByCpidAndCanIdsCQL.bind()
+            .apply {
+                setString(Database.CAN.COLUMN_CPID, cpid.underlying)
+                setList(ID_VALUES, canIds.map { it.underlying })
             }
             .tryExecute(session)
             .onFailure { return it }

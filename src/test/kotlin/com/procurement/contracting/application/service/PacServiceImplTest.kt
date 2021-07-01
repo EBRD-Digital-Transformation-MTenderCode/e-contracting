@@ -3,6 +3,7 @@ package com.procurement.contracting.application.service
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import com.procurement.contracting.application.repository.can.CANRepository
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.pac.PacRepository
 import com.procurement.contracting.application.service.model.pacs.DoPacsParams
@@ -48,6 +49,7 @@ internal class PacServiceImplTest {
     }
 
     lateinit var pacRepository: PacRepository
+    lateinit var canRepository: CANRepository
     lateinit var frameworkContractRepository: FrameworkContractRepository
     lateinit var pacService: PacService
     lateinit var transform: Transform
@@ -62,7 +64,8 @@ internal class PacServiceImplTest {
         generationService = mock()
         rulesService = mock()
         frameworkContractRepository = mock()
-        pacService = PacServiceImpl(generationService, transform, pacRepository, frameworkContractRepository, rulesService)
+        canRepository = mock()
+        pacService = PacServiceImpl(generationService, transform, pacRepository, canRepository, frameworkContractRepository, rulesService)
     }
 
     @Test

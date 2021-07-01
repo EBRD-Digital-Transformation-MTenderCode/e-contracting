@@ -11,15 +11,16 @@ import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraConfirmationRequestRepository(private val session: Session) : ConfirmationRequestRepository {
+class CassandraConfirmationRequestRepository(@Qualifier("contracting") private val session: Session) : ConfirmationRequestRepository {
 
     companion object {
 
         private const val SAVE_CQL = """
-               INSERT INTO ${Database.KEYSPACE}.${Database.ConfirmationRequest.TABLE}(
+               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.ConfirmationRequest.TABLE}(
                       ${Database.ConfirmationRequest.COLUMN_CPID},
                       ${Database.ConfirmationRequest.COLUMN_OCID},
                       ${Database.ConfirmationRequest.COLUMN_CONTRACT_ID},
@@ -38,7 +39,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
                       ${Database.ConfirmationRequest.COLUMN_ID},
                       ${Database.ConfirmationRequest.COLUMN_REQUESTS},
                       ${Database.ConfirmationRequest.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.ConfirmationRequest.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.ConfirmationRequest.TABLE}
                 WHERE ${Database.ConfirmationRequest.COLUMN_CPID}=?
                   AND ${Database.ConfirmationRequest.COLUMN_OCID}=?
             """
@@ -50,7 +51,7 @@ class CassandraConfirmationRequestRepository(private val session: Session) : Con
                       ${Database.ConfirmationRequest.COLUMN_ID},
                       ${Database.ConfirmationRequest.COLUMN_REQUESTS},
                       ${Database.ConfirmationRequest.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.ConfirmationRequest.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.ConfirmationRequest.TABLE}
                 WHERE ${Database.ConfirmationRequest.COLUMN_CPID}=?
                   AND ${Database.ConfirmationRequest.COLUMN_OCID}=?
                   AND ${Database.ConfirmationRequest.COLUMN_CONTRACT_ID}=?

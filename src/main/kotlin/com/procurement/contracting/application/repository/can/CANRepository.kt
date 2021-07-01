@@ -15,6 +15,8 @@ interface CANRepository {
 
     fun findBy(cpid: Cpid): Result<List<CANEntity>, Fail.Incident.Database>
 
+    fun findBy(cpid: Cpid, canIds: List<CANId>): Result<List<CANEntity>, Fail.Incident.Database>
+
     fun saveNewCAN(cpid: Cpid, entity: CANEntity): Result<Boolean, Fail.Incident.Database>
 
     fun saveCancelledCANs(

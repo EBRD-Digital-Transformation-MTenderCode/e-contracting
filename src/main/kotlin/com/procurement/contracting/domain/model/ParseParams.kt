@@ -3,10 +3,19 @@ package com.procurement.contracting.domain.model
 import com.procurement.contracting.domain.model.EnumElementProvider.Companion.keysAsStrings
 import com.procurement.contracting.domain.model.award.AwardId
 import com.procurement.contracting.domain.model.bid.BidId
+import com.procurement.contracting.domain.model.bid.BusinessFunctionType
+import com.procurement.contracting.domain.model.bid.PersonTitle
+import com.procurement.contracting.domain.model.can.CANId
 import com.procurement.contracting.domain.model.can.status.CANStatus
 import com.procurement.contracting.domain.model.can.status.CANStatusDetails
+import com.procurement.contracting.domain.model.document.type.DocumentTypeAward
+import com.procurement.contracting.domain.model.document.type.DocumentTypeBF
 import com.procurement.contracting.domain.model.fc.id.FrameworkContractId
+import com.procurement.contracting.domain.model.item.ItemId
 import com.procurement.contracting.domain.model.lot.LotId
+import com.procurement.contracting.domain.model.organization.OrganizationRole
+import com.procurement.contracting.domain.model.organization.Scale
+import com.procurement.contracting.domain.model.organization.TypeOfSupplier
 import com.procurement.contracting.domain.model.pac.PacId
 import com.procurement.contracting.domain.model.process.Cpid
 import com.procurement.contracting.domain.model.process.Ocid
@@ -19,6 +28,7 @@ import com.procurement.contracting.infrastructure.fail.error.DataTimeError
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import com.procurement.contracting.model.dto.ocds.PersonId
 import java.time.LocalDateTime
 
 fun parseCpid(value: String): Result<Cpid, DataErrors.Validation.DataMismatchToPattern> =
@@ -71,7 +81,6 @@ fun parseAwardId(value: String, attributeName: String): Result<AwardId, DataErro
             actualValue = value
         ).asFailure()
 
-
 fun parseFCId(value: String, attributeName: String): Result<FrameworkContractId, DataErrors.Validation.DataFormatMismatch> =
     FrameworkContractId.orNull(value)
         ?.asSuccess()
@@ -89,6 +98,34 @@ fun parsePACId(value: String, attributeName: String): Result<PacId, DataErrors.V
             expectedFormat = PacId.pattern,
             actualValue = value
         ).asFailure()
+
+fun parseCANId(value: String, attributeName: String): Result<CANId, DataErrors.Validation.DataFormatMismatch> =
+    CANId.orNull(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = CANId.pattern,
+            actualValue = value
+        ).asFailure()
+
+fun parsePersonId(value: String, attributeName: String): Result<PersonId, DataErrors.Validation.DataFormatMismatch> =
+    PersonId.parse(value)
+        ?.asSuccess()
+        ?: DataErrors.Validation.DataFormatMismatch(
+            name = attributeName,
+            expectedFormat = "string",
+            actualValue = value
+        ).asFailure()
+
+fun parseItemId(value: String, attributeName: String): Result<ItemId, DataErrors.Validation.DataFormatMismatch> =
+    value.tryUUID()
+        .mapFailure {
+            DataErrors.Validation.DataFormatMismatch(
+                name = attributeName,
+                expectedFormat = UUID_PATTERN,
+                actualValue = value
+            )
+        }
 
 fun parseCANStatus(
     status: String, allowedStatuses: Set<CANStatus>, attributeName: String
@@ -123,6 +160,41 @@ fun parseProcessInitiator(
     parseEnum(
         value = statusDetails, allowedEnums = allowedStatuses, attributeName = "processInitiator", target = ProcessInitiator
     )
+
+fun parseAwardDocumentType(
+    value: String, allowedValues: Set<DocumentTypeAward>, attributeName: String
+): Result<DocumentTypeAward, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = DocumentTypeAward)
+
+fun parseBFDocumentType(
+    value: String, allowedValues: Set<DocumentTypeBF>, attributeName: String
+): Result<DocumentTypeBF, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = DocumentTypeBF)
+
+fun parseOrganizationRole(
+    value: String, allowedValues: Set<OrganizationRole>, attributeName: String
+): Result<OrganizationRole, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = OrganizationRole)
+
+fun parseTypeOfSupplier(
+    value: String, allowedValues: Set<TypeOfSupplier>, attributeName: String
+): Result<TypeOfSupplier, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = TypeOfSupplier)
+
+fun parseScale(
+    value: String, allowedValues: Set<Scale>, attributeName: String
+): Result<Scale, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = Scale)
+
+fun parsePersonTitle(
+    value: String, allowedValues: Set<PersonTitle>, attributeName: String
+): Result<PersonTitle, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = PersonTitle)
+
+fun parseBusinessFunctionType(
+    value: String, allowedValues: Set<BusinessFunctionType>, attributeName: String
+): Result<BusinessFunctionType, DataErrors.Validation.UnknownValue> =
+    parseEnum(value = value, allowedEnums = allowedValues, attributeName = attributeName, target = BusinessFunctionType)
 
 fun <T> parseEnum(
     value: String, allowedEnums: Set<T>, attributeName: String, target: EnumElementProvider<T>

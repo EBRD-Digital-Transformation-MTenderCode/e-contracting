@@ -10,10 +10,12 @@ import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.handler.HistoryRepository
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraHistoryRepository(private val session: Session) : HistoryRepository {
+@Qualifier("ocds")
+class CassandraHistoryRepository(@Qualifier("ocds") private val session: Session) : HistoryRepository {
 
     companion object {
 

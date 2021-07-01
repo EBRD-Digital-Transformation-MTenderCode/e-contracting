@@ -2,24 +2,23 @@ package com.procurement.contracting.infrastructure.repository
 
 import com.datastax.driver.core.Session
 import com.procurement.contracting.application.repository.rule.RuleRepository
-import com.procurement.contracting.domain.model.OperationType
-import com.procurement.contracting.domain.model.ProcurementMethodDetails
 import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.infrastructure.fail.error.RulesError
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asFailure
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraRuleRepository(private val session: Session) : RuleRepository {
+class CassandraRuleRepository(@Qualifier("contracting") private val session: Session) : RuleRepository {
 
     companion object {
 
         private const val GET_VALUE_BY_CQL = """
                SELECT ${Database.Rules.VALUE}
-                 FROM ${Database.KEYSPACE}.${Database.Rules.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.Rules.TABLE}
                 WHERE ${Database.Rules.KEY}=? 
                   AND ${Database.Rules.PARAMETER}=?
             """

@@ -13,15 +13,15 @@ sealed class CheckContractStateErrors(
 
     override val code: String = prefix + numberError
 
-    class InvalidContractState(currentStatus: String, currentStatusDetails: String?, validStates: List<State>) : CheckContractStateErrors(
+    class InvalidContractState(id: String, currentStatus: String, currentStatusDetails: String?, validStates: List<State>) : CheckContractStateErrors(
         numberError = "6.8.2",
-        description = "Contract has invalid state (status: '${currentStatus}' and statusDetails: '${currentStatusDetails}')." +
+        description = "Contract '$id' has invalid state (status: '${currentStatus}' and statusDetails: '${currentStatusDetails}')." +
             "Valid states: $validStates."
     )
 
-    class ContractNotFound(cpid: Cpid, ocid: Ocid, id: String) : CheckContractStateErrors(
+    class ContractNotFound(cpid: Cpid, ocid: Ocid, ids: List<String>) : CheckContractStateErrors(
         numberError = "6.8.1",
-        description = "Contract not found by cpid '$cpid', ocid '$ocid' and contract id '$id'."
+        description = "Contract(s) not found by cpid '$cpid', ocid '$ocid' and contract id(s) '${ids.joinToString()}'."
     )
 
     class InvalidStage(stage: Stage) : CheckContractStateErrors(
@@ -32,11 +32,6 @@ sealed class CheckContractStateErrors(
     class InvalidContractId(id: String, pattern: String) : CheckContractStateErrors(
         numberError = "6.8.4",
         description = "Invalid contract id '$id'. Mismatch to pattern '$pattern'."
-    )
-
-    class UnexpectedIdentifiers : CheckContractStateErrors(
-        numberError = "6.8.5",
-        description = "Request has more than 1 contract identifier."
     )
 
 }

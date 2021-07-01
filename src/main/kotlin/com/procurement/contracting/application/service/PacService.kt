@@ -1,5 +1,7 @@
 package com.procurement.contracting.application.service
 
+import com.procurement.contracting.application.repository.can.CANRepository
+import com.procurement.contracting.application.repository.can.model.CANEntity
 import com.procurement.contracting.application.repository.fc.FrameworkContractRepository
 import com.procurement.contracting.application.repository.fc.model.FrameworkContractEntity
 import com.procurement.contracting.application.repository.pac.PacRepository
@@ -12,6 +14,7 @@ import com.procurement.contracting.application.service.model.GetPacParams
 import com.procurement.contracting.application.service.model.SetStateForContractsParams
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.APPLY_CONFIRMATIONS
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.COMPLETE_SOURCING
+import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.CREATE_CONTRACT
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.ISSUING_FRAMEWORK_CONTRACT
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.NEXT_STEP_AFTER_BUYERS_CONFIRMATION
 import com.procurement.contracting.application.service.model.SetStateForContractsParams.OperationType.NEXT_STEP_AFTER_INVITED_CANDIDATES_CONFIRMATION
@@ -20,6 +23,10 @@ import com.procurement.contracting.application.service.model.pacs.DoPacsParams
 import com.procurement.contracting.application.service.model.pacs.DoPacsResult
 import com.procurement.contracting.application.service.rule.RulesService
 import com.procurement.contracting.domain.model.award.AwardId
+import com.procurement.contracting.domain.model.can.CAN
+import com.procurement.contracting.domain.model.can.CANId
+import com.procurement.contracting.domain.model.can.status.CANStatus
+import com.procurement.contracting.domain.model.can.status.CANStatusDetails
 import com.procurement.contracting.domain.model.fc.FrameworkContract
 import com.procurement.contracting.domain.model.fc.Pac
 import com.procurement.contracting.domain.model.fc.PacEntity
@@ -55,6 +62,7 @@ class PacServiceImpl(
     private val generationService: GenerationService,
     private val transform: Transform,
     private val pacRepository: PacRepository,
+    private val canRepository: CANRepository,
     private val frameworkContractRepository: FrameworkContractRepository,
     private val rulesService: RulesService
 ) : PacService {
@@ -132,6 +140,8 @@ class PacServiceImpl(
                     .doOnError { return it.asFailure() }
                 setStateForFC(params)
             }
+            CREATE_CONTRACT -> setStateForCAN(params)
+                .doOnError { return it.asFailure() }
         }
 
     override fun getPac(params: GetPacParams): Result<GetPacResponse, Fail> {
@@ -158,6 +168,7 @@ class PacServiceImpl(
             Stage.FS,
             Stage.NP,
             Stage.PN,
+            Stage.PO,
             Stage.RQ,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
         }
@@ -173,6 +184,7 @@ class PacServiceImpl(
             Stage.PC,
             Stage.PN,
             Stage.RQ,
+            Stage.PO,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(stage).asValidationError()
         }
 
@@ -186,6 +198,7 @@ class PacServiceImpl(
             Stage.FS,
             Stage.NP,
             Stage.PN,
+            Stage.PO,
             Stage.RQ,
             Stage.TP -> SetStateForContractsErrors.InvalidStage(params.ocid.stage).asFailure()
         }
@@ -206,7 +219,8 @@ class PacServiceImpl(
         val stateForSetting = rulesService.getStateForSetting(
             country = params.country,
             pmd = params.pmd.base,
-            operationType = params.operationType.base
+            operationType = params.operationType.base,
+            stage = params.ocid.stage
         ).onFailure { return it }
 
         val updatedFrameworkContract = frameworkContract.copy(
@@ -317,6 +331,60 @@ class PacServiceImpl(
             .let { SetStateForContractsResponse(listOf(it)) }
             .asSuccess()
     }
+
+    private fun setStateForCAN(params: SetStateForContractsParams): Result<SetStateForContractsResponse, Fail> {
+        if (params.contracts.isEmpty())
+            return SetStateForContractsErrors.ContractsMissing().asFailure()
+
+        val canIds = params.contracts.map { CANId.orNull(it.id)!! }
+
+        val canEntities = canRepository
+            .findBy(params.cpid, canIds)
+            .onFailure { return it }
+
+        val missingCans = canIds.toSet() - canEntities.toSetBy { it.id }
+        if (missingCans.isNotEmpty())
+            return SetStateForContractsErrors.CanNotFound(params.cpid, params.ocid, missingCans)
+                .asFailure()
+
+
+        val stateForSetting = rulesService.getStateForSetting(
+            country = params.country,
+            pmd = params.pmd.base,
+            operationType = params.operationType.base,
+            stage = params.ocid.stage
+        ).onFailure { return it }
+
+        val updatedCans = canEntities
+            .associateBy { transform.tryDeserialization(it.jsonData, CAN::class.java).onFailure { return it } }
+            .mapKeys { (can, _) ->
+                can.copy(
+                    status = CANStatus.creator(stateForSetting.status),
+                    statusDetails = CANStatusDetails.creator(stateForSetting.statusDetails)
+                )
+            }
+
+        val updatedEntities = updatedCans.map { (can, entity) ->
+            CANEntity.of(
+                cpid = entity.cpid,
+                can = can,
+                owner = entity.owner,
+                awardContractId = entity.awardContractId,
+                transform = transform
+            ).onFailure { return it }
+        }
+
+        val wasApplied = canRepository.update(params.cpid, updatedEntities).onFailure { return it }
+        if (!wasApplied)
+            return Incident.Database.ConsistencyIncident(message = "Cannot update CANs (id = ${updatedEntities.joinToString()})").asFailure()
+
+        return updatedCans
+            .keys
+            .map { SetStateForContractsResponse.fromDomain(it) }
+            .let { SetStateForContractsResponse(it) }
+            .asSuccess()
+    }
+
 
     private fun convertToPacResult(createdPacs: List<Pac>): DoPacsResult {
         return DoPacsResult(

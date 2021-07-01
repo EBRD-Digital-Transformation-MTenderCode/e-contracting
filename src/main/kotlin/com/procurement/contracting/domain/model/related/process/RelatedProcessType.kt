@@ -12,7 +12,8 @@ enum class RelatedProcessType(@JsonValue override val key: String) : EnumElement
     UNSUCCESSFUL_PROCESS("unsuccessfulProcess"),
     SUB_CONTRACT("subContract"),
     REPLACEMENT_PROCESS("replacementProcess"),
-    RENEWAL_PROCESS("renewalProcess");
+    RENEWAL_PROCESS("renewalProcess"),
+    X_EVALUATION("x_evaluation");
 
     override fun toString(): String = key
 

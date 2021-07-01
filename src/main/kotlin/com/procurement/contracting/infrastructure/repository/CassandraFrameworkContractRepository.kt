@@ -19,12 +19,15 @@ import com.procurement.contracting.infrastructure.extension.cassandra.tryExecute
 import com.procurement.contracting.infrastructure.fail.Fail
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.asSuccess
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 
 @Repository
-class CassandraFrameworkContractRepository(private val session: Session) : FrameworkContractRepository {
+class CassandraFrameworkContractRepository(@Qualifier("contracting") private val session: Session) : FrameworkContractRepository {
 
     companion object {
+        private const val ID_VALUES = "id_values"
+
         private const val FIND_BY_CPID_AND_OCID_CQL = """
                SELECT ${Database.FC.COLUMN_CPID},
                       ${Database.FC.COLUMN_OCID},
@@ -35,7 +38,7 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
                       ${Database.FC.COLUMN_STATUS},
                       ${Database.FC.COLUMN_STATUS_DETAILS},
                       ${Database.FC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.FC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                 WHERE ${Database.FC.COLUMN_CPID}=?
                   AND ${Database.FC.COLUMN_OCID}=?
             """
@@ -50,14 +53,30 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
                       ${Database.FC.COLUMN_STATUS},
                       ${Database.FC.COLUMN_STATUS_DETAILS},
                       ${Database.FC.COLUMN_JSON_DATA}
-                 FROM ${Database.KEYSPACE}.${Database.FC.TABLE}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                 WHERE ${Database.FC.COLUMN_CPID}=?
                   AND ${Database.FC.COLUMN_OCID}=?
                   AND ${Database.FC.COLUMN_ID}=?
             """
 
+        private const val FIND_BY_CPID_AND_OCID_AND_IDS_CQL = """
+               SELECT ${Database.FC.COLUMN_CPID},
+                      ${Database.FC.COLUMN_OCID},
+                      ${Database.FC.COLUMN_ID},
+                      ${Database.FC.COLUMN_TOKEN},
+                      ${Database.FC.COLUMN_OWNER},
+                      ${Database.FC.COLUMN_CREATED_DATE},
+                      ${Database.FC.COLUMN_STATUS},
+                      ${Database.FC.COLUMN_STATUS_DETAILS},
+                      ${Database.FC.COLUMN_JSON_DATA}
+                 FROM ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
+                WHERE ${Database.FC.COLUMN_CPID}=?
+                  AND ${Database.FC.COLUMN_OCID}=?
+                  AND ${Database.FC.COLUMN_ID} in :$ID_VALUES;
+            """
+
         private const val SAVE_NEW_CQL = """
-               INSERT INTO ${Database.KEYSPACE}.${Database.FC.TABLE}(
+               INSERT INTO ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}(
                       ${Database.FC.COLUMN_CPID},
                       ${Database.FC.COLUMN_OCID},
                       ${Database.FC.COLUMN_ID},
@@ -73,7 +92,7 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
             """
 
         private const val UPDATE_STATUSES_CQL = """
-               UPDATE ${Database.KEYSPACE}.${Database.FC.TABLE}
+               UPDATE ${Database.KEYSPACE_CONTRACTING}.${Database.FC.TABLE}
                   SET ${Database.FC.COLUMN_STATUS}=?, 
                       ${Database.FC.COLUMN_STATUS_DETAILS}=?,
                       ${Database.FC.COLUMN_JSON_DATA}=?
@@ -86,6 +105,7 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
 
     private val preparedFindByCpidAndOcidCQL = session.prepare(FIND_BY_CPID_AND_OCID_CQL)
     private val preparedFindByCpidAndOcidAndIdCQL = session.prepare(FIND_BY_CPID_AND_OCID_AND_ID_CQL)
+    private val preparedFindByCpidAndOcidAndIdsCQL = session.prepare(FIND_BY_CPID_AND_OCID_AND_IDS_CQL)
     private val preparedSaveNewCQL = session.prepare(SAVE_NEW_CQL)
     private val preparedUpdateCQL = session.prepare(UPDATE_STATUSES_CQL)
 
@@ -125,6 +145,18 @@ class CassandraFrameworkContractRepository(private val session: Session) : Frame
             .onFailure { return it }
             .one()
             ?.convert()
+            .asSuccess()
+
+    override fun findBy(cpid: Cpid, ocid: Ocid, contractIds: List<FrameworkContractId>): Result<List<FrameworkContractEntity>, Fail.Incident.Database> =
+        preparedFindByCpidAndOcidAndIdsCQL.bind()
+            .apply {
+                setString(Database.FC.COLUMN_CPID, cpid.underlying)
+                setString(Database.FC.COLUMN_OCID, ocid.underlying)
+                setList(ID_VALUES, contractIds.map { it.underlying })
+            }
+            .tryExecute(session)
+            .onFailure { return it }
+            .map { it.convert() }
             .asSuccess()
 
     private fun Row.convert(): FrameworkContractEntity = FrameworkContractEntity(

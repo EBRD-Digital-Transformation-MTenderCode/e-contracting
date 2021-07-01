@@ -13,13 +13,14 @@ import com.procurement.contracting.infrastructure.handler.v2.model.request.SetSt
 import com.procurement.contracting.infrastructure.handler.v2.model.response.SetStateForContractsResponse
 import com.procurement.contracting.lib.functional.Result
 import com.procurement.contracting.lib.functional.flatMap
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 @Component
 class SetStateForContractsHandler(
     private val pacService: PacService,
     transform: Transform,
-    historyRepository: HistoryRepository,
+    @Qualifier("ocds") historyRepository: HistoryRepository,
     logger: Logger
 ) : AbstractHistoricalHandlerV2<SetStateForContractsResponse>(transform, historyRepository, logger) {
 
