@@ -218,7 +218,18 @@ private fun CreateContractRequest.Party.Persone.convert(path: String): Result<Cr
     ).asSuccess()
 }
 
-private val allowedBusinessFunctionTypes = BusinessFunctionType.allowedElements.toSet()
+private val allowedBusinessFunctionTypes = BusinessFunctionType.allowedElements.filter {
+    when (it) {
+        BusinessFunctionType.AUTHORITY,
+        BusinessFunctionType.CHAIRMAN,
+        BusinessFunctionType.CONTACT_POINT,
+        BusinessFunctionType.TECHNICAL_OPENER,
+        BusinessFunctionType.PRICE_OPENER,
+        BusinessFunctionType.PRICE_EVALUATOR,
+        BusinessFunctionType.TECHNICAL_EVALUATOR,
+        BusinessFunctionType.PROCUREMENT_OFFICER -> true
+    }
+}.toSet()
 
 private fun CreateContractRequest.Party.Persone.BusinessFunction.convert(path: String): Result<CreateContractParams.Party.Persone.BusinessFunction, DataErrors> {
     val businessFunctionType = parseBusinessFunctionType(type, allowedBusinessFunctionTypes, "$path.type")
