@@ -220,6 +220,7 @@ private fun CreateContractRequest.Party.Persone.convert(path: String): Result<Cr
 
 private val allowedBusinessFunctionTypes = BusinessFunctionType.allowedElements.filter {
     when (it) {
+        BusinessFunctionType.AUTHORITY,
         BusinessFunctionType.CHAIRMAN,
         BusinessFunctionType.CONTACT_POINT,
         BusinessFunctionType.TECHNICAL_OPENER,
@@ -227,8 +228,6 @@ private val allowedBusinessFunctionTypes = BusinessFunctionType.allowedElements.
         BusinessFunctionType.PRICE_EVALUATOR,
         BusinessFunctionType.TECHNICAL_EVALUATOR,
         BusinessFunctionType.PROCUREMENT_OFFICER -> true
-
-        BusinessFunctionType.AUTHORITY -> false
     }
 }.toSet()
 
