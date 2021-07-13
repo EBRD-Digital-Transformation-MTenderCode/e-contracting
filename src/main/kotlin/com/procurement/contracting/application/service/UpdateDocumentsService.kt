@@ -23,6 +23,7 @@ import com.procurement.contracting.infrastructure.handler.v1.model.request.Docum
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentContract
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentsRq
 import com.procurement.contracting.infrastructure.handler.v1.model.request.UpdateDocumentsRs
+import com.procurement.contracting.lib.errorIfBlank
 import com.procurement.contracting.model.dto.ocds.Can
 import com.procurement.contracting.model.dto.ocds.DocumentContract
 import com.procurement.contracting.utils.toJson
@@ -39,6 +40,7 @@ class UpdateDocumentsService(
         val cpid = cm.cpid
         val canId: CANId = cm.canId
         val dto = toObject(UpdateDocumentsRq::class.java, cm.data)
+        dto.validateTextAttributes()
 
         val canEntity = canRepository.findBy(cpid, canId)
             .orThrow {
@@ -76,6 +78,22 @@ class UpdateDocumentsService(
                 id = canId,
                 documents = can.documents!!
             )
+        )
+    }
+
+    private fun UpdateDocumentsRq.validateTextAttributes() {
+        documents.forEachIndexed { index, document ->
+            document.apply {
+                title.checkForBlank("documents[$index].title")
+                description.checkForBlank("documents[$index].description")
+            }
+        }
+    }
+
+    private fun String?.checkForBlank(name: String) = this.errorIfBlank {
+        ErrorException(
+            error = ErrorType.INCORRECT_VALUE_ATTRIBUTE,
+            message = "The attribute '$name' is empty or blank."
         )
     }
 
